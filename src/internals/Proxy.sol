@@ -121,6 +121,7 @@ contract Proxy {
                 mstore(add(0x04, calldatasize()), shl(0x60, caller()))
 
                 // Call so that execution happens within the main context.
+                // Out and outsize are 0 because we don't know the size yet.
                 // Calldata: [dispatch() selector (4 bytes)][calldata (N bytes)][msg.sender (20 bytes)]
                 let result := call(
                     gas(),
