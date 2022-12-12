@@ -15,9 +15,9 @@ Impact: High
 Confidence: High
 
 - [ ] ID-0
-      [BaseState.\_owner](../src/abstracts/BaseState.sol#L38) is never initialized. It is used in:
+      [BaseState.\_owner](../src/BaseState.sol#L25) is never initialized. It is used in:
 
-../src/abstracts/BaseState.sol#L38
+../src/BaseState.sol#L25
 
 ## locked-ether
 
@@ -26,10 +26,10 @@ Confidence: High
 
 - [ ] ID-1
       Contract locking ether found:
-      Contract [Proxy](../src/internals/Proxy.sol#L12-L149) has payable functions: - [Proxy.fallback()](../src/internals/Proxy.sol#L33-L148)
+      Contract [Proxy](../src/internals/Proxy.sol#L12-L151) has payable functions: - [Proxy.constructor()](../src/internals/Proxy.sol#L23-L25) - [Proxy.fallback()](../src/internals/Proxy.sol#L35-L150)
       But does not have a function to withdraw the ether
 
-../src/internals/Proxy.sol#L12-L149
+../src/internals/Proxy.sol#L12-L151
 
 ## calls-loop
 
@@ -37,34 +37,34 @@ Impact: Low
 Confidence: Medium
 
 - [ ] ID-2
-      [BaseInstaller.removeModules(address[])](../src/abstracts/BaseInstaller.sol#L160-L192) has external calls inside a loop: [existingModuleVersion = BaseModule(moduleAddress).moduleVersion()](../src/abstracts/BaseInstaller.sol#L166-L167)
+      [BaseInstaller.addModules(address[])](../src/modules/BaseInstaller.sol#L92-L113) has external calls inside a loop: [newModuleVersion = BaseModule(moduleAddress).moduleVersion()](../src/modules/BaseInstaller.sol#L98)
 
-../src/abstracts/BaseInstaller.sol#L160-L192
+../src/modules/BaseInstaller.sol#L92-L113
 
 - [ ] ID-3
-      [BaseInstaller.upgradeModules(address[])](../src/abstracts/BaseInstaller.sol#L121-L150) has external calls inside a loop: [existingModuleId = BaseModule(moduleAddress).moduleId()](../src/abstracts/BaseInstaller.sol#L126)
+      [BaseInstaller.upgradeModules(address[])](../src/modules/BaseInstaller.sol#L123-L152) has external calls inside a loop: [existingModuleVersion = BaseModule(moduleAddress).moduleVersion()](../src/modules/BaseInstaller.sol#L129-L130)
 
-../src/abstracts/BaseInstaller.sol#L121-L150
+../src/modules/BaseInstaller.sol#L123-L152
 
 - [ ] ID-4
-      [BaseInstaller.removeModules(address[])](../src/abstracts/BaseInstaller.sol#L160-L192) has external calls inside a loop: [existingModuleId = BaseModule(moduleAddress).moduleId()](../src/abstracts/BaseInstaller.sol#L165)
+      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L162-L194) has external calls inside a loop: [existingModuleVersion = BaseModule(moduleAddress).moduleVersion()](../src/modules/BaseInstaller.sol#L168-L169)
 
-../src/abstracts/BaseInstaller.sol#L160-L192
+../src/modules/BaseInstaller.sol#L162-L194
 
 - [ ] ID-5
-      [BaseInstaller.upgradeModules(address[])](../src/abstracts/BaseInstaller.sol#L121-L150) has external calls inside a loop: [existingModuleVersion = BaseModule(moduleAddress).moduleVersion()](../src/abstracts/BaseInstaller.sol#L127-L128)
+      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L162-L194) has external calls inside a loop: [existingModuleId = BaseModule(moduleAddress).moduleId()](../src/modules/BaseInstaller.sol#L167)
 
-../src/abstracts/BaseInstaller.sol#L121-L150
+../src/modules/BaseInstaller.sol#L162-L194
 
 - [ ] ID-6
-      [BaseInstaller.addModules(address[])](../src/abstracts/BaseInstaller.sol#L92-L111) has external calls inside a loop: [newModuleVersion = BaseModule(moduleAddress).moduleVersion()](../src/abstracts/BaseInstaller.sol#L96)
+      [BaseInstaller.upgradeModules(address[])](../src/modules/BaseInstaller.sol#L123-L152) has external calls inside a loop: [existingModuleId = BaseModule(moduleAddress).moduleId()](../src/modules/BaseInstaller.sol#L128)
 
-../src/abstracts/BaseInstaller.sol#L92-L111
+../src/modules/BaseInstaller.sol#L123-L152
 
 - [ ] ID-7
-      [BaseInstaller.addModules(address[])](../src/abstracts/BaseInstaller.sol#L92-L111) has external calls inside a loop: [newModuleId = BaseModule(moduleAddress).moduleId()](../src/abstracts/BaseInstaller.sol#L95)
+      [BaseInstaller.addModules(address[])](../src/modules/BaseInstaller.sol#L92-L113) has external calls inside a loop: [newModuleId = BaseModule(moduleAddress).moduleId()](../src/modules/BaseInstaller.sol#L97)
 
-../src/abstracts/BaseInstaller.sol#L92-L111
+../src/modules/BaseInstaller.sol#L92-L113
 
 ## assembly
 
@@ -72,24 +72,24 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-8
-      [Base.\_unpackMessageSender()](../src/internals/Base.sol#L47-L56) uses assembly - [INLINE ASM](../src/internals/Base.sol#L53-L55)
+      [Base.\_unpackMessageSender()](../src/internals/Base.sol#L47-L57) uses assembly - [INLINE ASM](../src/internals/Base.sol#L54-L56)
 
-../src/internals/Base.sol#L47-L56
+../src/internals/Base.sol#L47-L57
 
 - [ ] ID-9
-      [Proxy.fallback()](../src/internals/Proxy.sol#L33-L148) uses assembly - [INLINE ASM](../src/internals/Proxy.sol#L39-L102) - [INLINE ASM](../src/internals/Proxy.sol#L105-L146)
+      [Dispatcher.dispatch()](../src/Dispatcher.sol#L84-L134) uses assembly - [INLINE ASM](../src/Dispatcher.sol#L103-L133)
 
-../src/internals/Proxy.sol#L33-L148
+../src/Dispatcher.sol#L84-L134
 
 - [ ] ID-10
-      [Base.\_unpackParameters()](../src/internals/Base.sol#L61-L71) uses assembly - [INLINE ASM](../src/internals/Base.sol#L67-L70)
+      [Base.\_unpackParameters()](../src/internals/Base.sol#L62-L73) uses assembly - [INLINE ASM](../src/internals/Base.sol#L69-L72)
 
-../src/internals/Base.sol#L61-L71
+../src/internals/Base.sol#L62-L73
 
 - [ ] ID-11
-      [Dispatcher.dispatch()](../src/abstracts/Dispatcher.sol#L82-L132) uses assembly - [INLINE ASM](../src/abstracts/Dispatcher.sol#L101-L131)
+      [Proxy.fallback()](../src/internals/Proxy.sol#L35-L150) uses assembly - [INLINE ASM](../src/internals/Proxy.sol#L41-L104) - [INLINE ASM](../src/internals/Proxy.sol#L107-L148)
 
-../src/abstracts/Dispatcher.sol#L82-L132
+../src/internals/Proxy.sol#L35-L150
 
 ## costly-loop
 
@@ -97,19 +97,19 @@ Impact: Informational
 Confidence: Medium
 
 - [ ] ID-12
-      [BaseInstaller.removeModules(address[])](../src/abstracts/BaseInstaller.sol#L160-L192) has costly operations inside a loop: - [delete \_trusts[proxyAddress]](../src/abstracts/BaseInstaller.sol#L174)
+      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L162-L194) has costly operations inside a loop: - [delete \_modules[existingModuleId]](../src/modules/BaseInstaller.sol#L182)
 
-../src/abstracts/BaseInstaller.sol#L160-L192
+../src/modules/BaseInstaller.sol#L162-L194
 
 - [ ] ID-13
-      [BaseInstaller.removeModules(address[])](../src/abstracts/BaseInstaller.sol#L160-L192) has costly operations inside a loop: - [delete \_proxies[existingModuleId]](../src/abstracts/BaseInstaller.sol#L178)
+      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L162-L194) has costly operations inside a loop: - [delete \_trusts[proxyAddress]](../src/modules/BaseInstaller.sol#L176)
 
-../src/abstracts/BaseInstaller.sol#L160-L192
+../src/modules/BaseInstaller.sol#L162-L194
 
 - [ ] ID-14
-      [BaseInstaller.removeModules(address[])](../src/abstracts/BaseInstaller.sol#L160-L192) has costly operations inside a loop: - [delete \_modules[existingModuleId]](../src/abstracts/BaseInstaller.sol#L180)
+      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L162-L194) has costly operations inside a loop: - [delete \_proxies[existingModuleId]](../src/modules/BaseInstaller.sol#L180)
 
-../src/abstracts/BaseInstaller.sol#L160-L192
+../src/modules/BaseInstaller.sol#L162-L194
 
 ## naming-convention
 
@@ -117,34 +117,34 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-15
-      Variable [BaseState.\_trusts](../src/abstracts/BaseState.sol#L50) is not in mixedCase
+      Variable [BaseState.\_trusts](../src/BaseState.sol#L41) is not in mixedCase
 
-../src/abstracts/BaseState.sol#L50
+../src/BaseState.sol#L41
 
 - [ ] ID-16
-      Variable [BaseState.\_modules](../src/abstracts/BaseState.sol#L44) is not in mixedCase
+      Variable [BaseState.\_modules](../src/BaseState.sol#L33) is not in mixedCase
 
-../src/abstracts/BaseState.sol#L44
+../src/BaseState.sol#L33
 
 - [ ] ID-17
-      Variable [BaseState.\_pendingOwner](../src/abstracts/BaseState.sol#L41) is not in mixedCase
+      Variable [BaseState.\_pendingOwner](../src/BaseState.sol#L29) is not in mixedCase
 
-../src/abstracts/BaseState.sol#L41
+../src/BaseState.sol#L29
 
 - [ ] ID-18
-      Variable [BaseState.\_proxies](../src/abstracts/BaseState.sol#L47) is not in mixedCase
+      Variable [BaseState.\_proxies](../src/BaseState.sol#L37) is not in mixedCase
 
-../src/abstracts/BaseState.sol#L47
+../src/BaseState.sol#L37
 
 - [ ] ID-19
-      Variable [BaseState.\_owner](../src/abstracts/BaseState.sol#L38) is not in mixedCase
+      Variable [BaseState.\_owner](../src/BaseState.sol#L25) is not in mixedCase
 
-../src/abstracts/BaseState.sol#L38
+../src/BaseState.sol#L25
 
 - [ ] ID-20
-      Variable [BaseState.\_name](../src/abstracts/BaseState.sol#L35) is not in mixedCase
+      Variable [BaseState.\_name](../src/BaseState.sol#L21) is not in mixedCase
 
-../src/abstracts/BaseState.sol#L35
+../src/BaseState.sol#L21
 
 ## similar-names
 
@@ -152,14 +152,14 @@ Impact: Informational
 Confidence: Medium
 
 - [ ] ID-21
-      Variable [BaseModule.\_moduleVersion](../src/abstracts/BaseModule.sol#L27) is too similar to [BaseModule.constructor(uint32,uint16).moduleVersion\_](../src/abstracts/BaseModule.sol#L52)
+      Variable [BaseModule.\_moduleVersion](../src/BaseModule.sol#L27) is too similar to [BaseModule.constructor(uint32,uint16).moduleVersion\_](../src/BaseModule.sol#L52)
 
-../src/abstracts/BaseModule.sol#L27
+../src/BaseModule.sol#L27
 
 - [ ] ID-22
-      Variable [BaseModule.\_moduleVersion](../src/abstracts/BaseModule.sol#L27) is too similar to [BaseInstaller.constructor(uint16).moduleVersion\_](../src/abstracts/BaseInstaller.sol#L23)
+      Variable [BaseModule.\_moduleVersion](../src/BaseModule.sol#L27) is too similar to [BaseInstaller.constructor(uint16).moduleVersion\_](../src/modules/BaseInstaller.sol#L23)
 
-../src/abstracts/BaseModule.sol#L27
+../src/BaseModule.sol#L27
 
 ## too-many-digits
 
@@ -167,6 +167,6 @@ Impact: Informational
 Confidence: Medium
 
 - [ ] ID-23
-      [Proxy.fallback()](../src/internals/Proxy.sol#L33-L148) uses literals with too many digits: - [mstore(uint256,uint256)(0,0xe9c4a3ac00000000000000000000000000000000000000000000000000000000)](../src/internals/Proxy.sol#L111-L114)
+      [Proxy.fallback()](../src/internals/Proxy.sol#L35-L150) uses literals with too many digits: - [mstore(uint256,uint256)(0,0xe9c4a3ac00000000000000000000000000000000000000000000000000000000)](../src/internals/Proxy.sol#L113-L116)
 
-../src/internals/Proxy.sol#L33-L148
+../src/internals/Proxy.sol#L35-L150
