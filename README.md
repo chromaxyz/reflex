@@ -2,6 +2,16 @@
 
 A first-generation Solidity framework for upgradeable modules.
 
+## Positives
+
+- Upgradeable modules: single-proxy modules, multi-proxy modules and internal modules.
+- Avoids hitting the max contract size limitation of ~24kb.
+- Avoids function selector clashing, allowing to have multiple spec-compliant modules running side-by-side.
+
+## Negatives
+
+- Multiple application entrypoints via their proxies.
+
 ## Contracts
 
 ```
