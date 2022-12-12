@@ -31,7 +31,6 @@ contract Proxy {
     // TODO: add test for log emittance
 
     // solhint-disable-next-line no-complex-fallback
-    // TODO: evaluate whether assembly block is memory safe and can be decorated as such
     fallback() external payable {
         address deployer_ = _deployer;
 

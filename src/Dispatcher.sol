@@ -80,7 +80,9 @@ abstract contract Dispatcher is IDispatcher, Base {
     // ==================
 
     // TODO: optimize to use fallback function, no need to shift payload then
-    // TODO: evaluate whether assembly block is memory safe and can be decorated as such
+    /**
+     * @notice Dispatch function to module.
+     */
     function dispatch() external payable virtual {
         uint32 moduleId = _trusts[msg.sender].moduleId;
         address moduleImplementation = _trusts[msg.sender].moduleImplementation;
@@ -99,6 +101,7 @@ abstract contract Dispatcher is IDispatcher, Base {
         // 20 bytes for the trailing msg.sender.
         if (messageDataLength < 28) revert MessageTooShort();
 
+        // TODO: evaluate whether assembly block is memory safe and can be decorated as such
         // [dispatch() selector (4 bytes)][calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
             // Remove `dispatch` selector.
