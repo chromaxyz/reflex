@@ -23,7 +23,7 @@ abstract contract Base is IBase, BaseState {
      * @dev Create or return proxy by module id.
      * @param moduleId_ Module id.
      */
-    function _createProxy(uint32 moduleId_) internal returns (address) {
+    function _createProxy(uint32 moduleId_) internal virtual returns (address) {
         if (moduleId_ == 0) revert InvalidModuleId();
 
         if (moduleId_ > _EXTERNAL_SINGLE_PROXY_DELIMITER)
@@ -47,6 +47,7 @@ abstract contract Base is IBase, BaseState {
     function _unpackMessageSender()
         internal
         pure
+        virtual
         returns (address messageSender)
     {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
@@ -61,6 +62,7 @@ abstract contract Base is IBase, BaseState {
     function _unpackParameters()
         internal
         pure
+        virtual
         returns (address messageSender, address proxyAddress)
     {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]

@@ -30,14 +30,14 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     /**
      * @notice Returns the address of the owner.
      */
-    function owner() external view returns (address) {
+    function owner() external view virtual returns (address) {
         return _owner;
     }
 
     /**
      * @notice Returns the address of the pending owner.
      */
-    function pendingOwner() external view returns (address) {
+    function pendingOwner() external view virtual returns (address) {
         return _pendingOwner;
     }
 
@@ -53,7 +53,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      *
      * - The caller must be the current owner.
      */
-    function transferOwnership(address newOwner) external onlyOwner {
+    function transferOwnership(address newOwner) external virtual onlyOwner {
         if (newOwner == address(0)) revert ZeroAddress();
 
         _pendingOwner = newOwner;
@@ -68,7 +68,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      *
      * - The caller must be the pending owner.
      */
-    function acceptOwnership() external {
+    function acceptOwnership() external virtual {
         address newOwner = _unpackMessageSender();
 
         if (newOwner != _pendingOwner) revert Unauthorized();
@@ -89,7 +89,9 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      *
      * - The caller must be the current owner.
      */
-    function addModules(address[] memory moduleAddresses) external onlyOwner {
+    function addModules(
+        address[] memory moduleAddresses
+    ) external virtual onlyOwner {
         for (uint256 i = 0; i < moduleAddresses.length; ) {
             address moduleAddress = moduleAddresses[i];
             uint32 newModuleId = BaseModule(moduleAddress).moduleId();
@@ -120,7 +122,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      */
     function upgradeModules(
         address[] memory moduleAddresses
-    ) external onlyOwner {
+    ) external virtual onlyOwner {
         for (uint256 i = 0; i < moduleAddresses.length; ) {
             address moduleAddress = moduleAddresses[i];
             uint32 existingModuleId = BaseModule(moduleAddress).moduleId();
@@ -159,7 +161,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      */
     function removeModules(
         address[] memory moduleAddresses
-    ) external onlyOwner {
+    ) external virtual onlyOwner {
         for (uint256 i = 0; i < moduleAddresses.length; ) {
             address moduleAddress = moduleAddresses[i];
             uint32 existingModuleId = BaseModule(moduleAddress).moduleId();

@@ -33,7 +33,7 @@ abstract contract BaseModule is IBaseModule, Base {
     /**
      * @dev Throws if called by any account other than the owner.
      */
-    modifier onlyOwner() {
+    modifier onlyOwner() virtual {
         address messageSender = _unpackMessageSender();
 
         if (messageSender != _owner) revert Unauthorized();
@@ -65,7 +65,7 @@ abstract contract BaseModule is IBaseModule, Base {
      * @notice Get module id.
      * @return Module id.
      */
-    function moduleId() external view override returns (uint32) {
+    function moduleId() external view virtual override returns (uint32) {
         return _moduleId;
     }
 
@@ -73,7 +73,7 @@ abstract contract BaseModule is IBaseModule, Base {
      * @notice Get module version.
      * @return Module version.
      */
-    function moduleVersion() external view override returns (uint16) {
+    function moduleVersion() external view virtual override returns (uint16) {
         return _moduleVersion;
     }
 }

@@ -38,7 +38,7 @@ abstract contract Dispatcher is IDispatcher, Base {
     /**
      * @notice Returns the name of the protocol.
      */
-    function name() external view returns (string memory) {
+    function name() external view virtual returns (string memory) {
         return _name;
     }
 
@@ -49,7 +49,7 @@ abstract contract Dispatcher is IDispatcher, Base {
      */
     function moduleIdToImplementation(
         uint32 moduleId_
-    ) external view returns (address) {
+    ) external view virtual returns (address) {
         return _modules[moduleId_];
     }
 
@@ -58,7 +58,9 @@ abstract contract Dispatcher is IDispatcher, Base {
      * @param moduleId_ Module id.
      * @return address Proxy address.
      */
-    function moduleIdToProxy(uint32 moduleId_) external view returns (address) {
+    function moduleIdToProxy(
+        uint32 moduleId_
+    ) external view virtual returns (address) {
         return _proxies[moduleId_];
     }
 
@@ -69,7 +71,7 @@ abstract contract Dispatcher is IDispatcher, Base {
      */
     function proxyAddressToTrust(
         address proxyAddress_
-    ) external view returns (TrustRelation memory trust) {
+    ) external view virtual returns (TrustRelation memory trust) {
         trust = _trusts[proxyAddress_];
     }
 
@@ -79,7 +81,7 @@ abstract contract Dispatcher is IDispatcher, Base {
 
     // TODO: optimize to use fallback function, no need to shift payload then
     // TODO: evaluate whether assembly block is memory safe and can be decorated as such
-    function dispatch() external payable {
+    function dispatch() external payable virtual {
         uint32 moduleId = _trusts[msg.sender].moduleId;
         address moduleImplementation = _trusts[msg.sender].moduleImplementation;
 
