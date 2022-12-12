@@ -2,10 +2,10 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IDispatcher} from "../interfaces/IDispatcher.sol";
+import {IDispatcher} from "./interfaces/IDispatcher.sol";
 
 // Internals
-import {Base} from "../internals/Base.sol";
+import {Base} from "./internals/Base.sol";
 
 /**
  * @title Dispatcher

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Contracts
-import {Dispatcher} from "../../src/abstracts/Dispatcher.sol";
+// Sources
+import {Dispatcher} from "../../src/Dispatcher.sol";
 
 /**
  * @title Mock Dispatcher

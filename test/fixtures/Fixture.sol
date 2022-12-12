@@ -4,9 +4,11 @@ pragma solidity ^0.8.13;
 // Vendors
 import {Test} from "forge-std/Test.sol";
 
-// Abstracts
-import {BaseConstants} from "../../src/abstracts/BaseConstants.sol";
-import {BaseInstaller} from "../../src/abstracts/BaseInstaller.sol";
+// Modules
+import {BaseInstaller} from "../../src/modules/BaseInstaller.sol";
+
+// Sources
+import {BaseConstants} from "../../src/BaseConstants.sol";
 
 // Mocks
 import {MockBaseInstaller} from "../mocks/MockBaseInstaller.sol";

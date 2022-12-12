@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Abstracts
-import {Base} from "../internals/Base.sol";
-
 // Interfaces
-import {IBaseModule} from "../interfaces/IBaseModule.sol";
+import {IBaseModule} from "./interfaces/IBaseModule.sol";
+
+// Internals
+import {Base} from "./internals/Base.sol";
 
 /**
  * @title Base Module
