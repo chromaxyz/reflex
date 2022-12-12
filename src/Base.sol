@@ -2,13 +2,13 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBase} from "../interfaces/IBase.sol";
+import {IBase} from "./interfaces/IBase.sol";
 
 // Internals
-import {Proxy} from "./Proxy.sol";
+import {Proxy} from "./internals/Proxy.sol";
 
 // Sources
-import {BaseState} from "../BaseState.sol";
+import {BaseState} from "./BaseState.sol";
 
 /**
  * @title Base
