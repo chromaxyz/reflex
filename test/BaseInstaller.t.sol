@@ -137,7 +137,7 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
         );
     }
 
-    function testAddModulesMultiProxy() public {
+    function testAddModulesMultiProxy() external {
         address[] memory moduleAddresses = new address[](2);
         moduleAddresses[0] = address(
             new MockModuleMultiProxy(_EXTERNAL_SINGLE_PROXY_DELIMITER + 1, 1)
@@ -159,6 +159,22 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
                     _EXTERNAL_SINGLE_PROXY_DELIMITER + 2
                 )
         );
+    }
+
+    function testRevertAddNonContract() external {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(1);
+
+        vm.expectRevert();
+        installerProxy.addModules(moduleAddresses);
+    }
+
+    function testRevertNonModuleIdContract() external {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(reflex);
+
+        vm.expectRevert();
+        installerProxy.addModules(moduleAddresses);
     }
 
     function testUpgradeModules() external {
@@ -205,6 +221,22 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
         installerProxy.upgradeModules(moduleAddresses);
     }
 
+    function testRevertUpgradeModulesNonContract() external {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(1);
+
+        vm.expectRevert();
+        installerProxy.upgradeModules(moduleAddresses);
+    }
+
+    function testRevertUpgradeModulesNonModuleIdContract() external {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(reflex);
+
+        vm.expectRevert();
+        installerProxy.upgradeModules(moduleAddresses);
+    }
+
     function testRemoveModules() external {
         testAddModules();
 
@@ -238,6 +270,22 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
         moduleAddresses[0] = address(new MockModuleNonexistent(777, 2));
 
         vm.expectRevert(ModuleNonexistent.selector);
+        installerProxy.removeModules(moduleAddresses);
+    }
+
+    function testRevertRemoveModulesAddNonContract() external {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(1);
+
+        vm.expectRevert();
+        installerProxy.removeModules(moduleAddresses);
+    }
+
+    function testRevertRemoveModulesNonModuleIdContract() external {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(reflex);
+
+        vm.expectRevert();
         installerProxy.removeModules(moduleAddresses);
     }
 }

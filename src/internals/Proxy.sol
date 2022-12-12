@@ -28,7 +28,7 @@ contract Proxy {
     // Public functions
     // ================
 
-    // TODO: add test for log emittance
+    // TODO: add test for log emittance (log0, log1, log2, log3, log4, test edge case)
 
     // solhint-disable-next-line no-complex-fallback
     fallback() external payable {
