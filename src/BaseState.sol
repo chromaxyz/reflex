@@ -57,7 +57,6 @@ abstract contract BaseState is IBaseState, BaseConstants {
      * variables without shifting down storage in the inheritance chain.
      * The size of the __gap array is calculated so that the amount of storage used by a
      * contract always adds up to the same number (in this case 50 storage slots).
-     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
      */
     uint256[45] private __gap;
 }
