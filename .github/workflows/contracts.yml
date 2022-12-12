@@ -1,0 +1,51 @@
+name: contracts
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - development
+  pull_request:
+    branches:
+      - master
+      - development
+
+jobs:
+  contracts:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        profile: [via-ir, intense]
+        os:
+          - ubuntu-latest
+        node_version:
+          - 19
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v2
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Install dependencies
+        run: |
+          make install
+
+      - name: Run Forge build with ${{ matrix.profile }} profile
+        run: |
+          forge --version
+          FOUNDRY_PROFILE=${{ matrix.profile }} make build
+
+      - name: Run Forge tests with ${{ matrix.profile }} profile
+        run: |
+          FOUNDRY_PROFILE=${{ matrix.profile }} make test

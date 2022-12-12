@@ -1,0 +1,40 @@
+name: lint
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - development
+  pull_request:
+    branches:
+      - master
+      - development
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os:
+          - ubuntu-latest
+        node_version:
+          - 19
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v2
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Run linter
+        run: |
+          make lint-check

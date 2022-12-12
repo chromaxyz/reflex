@@ -1,0 +1,20 @@
+# See more config options https://github.com/foundry-rs/foundry/tree/master/config
+[profile.default]
+solc = "0.8.17"
+optimizer = true
+optimizer_runs = 10_000
+auto_detect_solc = false
+verbosity = 3
+libs = ["node_modules", "lib"]
+
+[profile.default.fuzz]
+runs = 256
+
+[profile.via-ir]
+via_ir = true
+
+[profile.via-ir.fuzz]
+runs = 1_000
+
+[profile.intense.fuzz]
+runs = 10_000

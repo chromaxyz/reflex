@@ -1,0 +1,17 @@
+{
+  "extends": "solhint:recommended",
+  "plugins": ["prettier"],
+  "rules": {
+    "compiler-version": ["error", "^0.8.13"],
+    "avoid-low-level-calls": "off",
+    "no-inline-assembly": "off",
+    "no-empty-blocks": "off",
+    "func-visibility": [
+      "warn",
+      {
+        "ignoreConstructors": true
+      }
+    ],
+    "private-vars-leading-underscore": "warn"
+  }
+}
