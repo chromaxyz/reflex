@@ -24,17 +24,24 @@ contract BaseModuleTest is TBaseModule, Fixture {
     // Constants
     // =========
 
-    uint32 internal constant _MOCK_MODULE_ID = 100;
-    uint16 internal constant _MOCK_MODULE_TYPE = _PROXY_TYPE_SINGLE_PROXY;
-    uint16 internal constant _MOCK_MODULE_VERSION = 1;
+    uint32 internal constant _MOCK_MODULE_SINGLE_ID = 100;
+    uint16 internal constant _MOCK_MODULE_SINGLE_TYPE =
+        _PROXY_TYPE_SINGLE_PROXY;
+    uint16 internal constant _MOCK_MODULE_SINGLE_VERSION = 1;
+
+    uint32 internal constant _MOCK_MODULE_MULTI_ID = 101;
+    uint16 internal constant _MOCK_MODULE_MULTI_TYPE = _PROXY_TYPE_MULTI_PROXY;
+    uint16 internal constant _MOCK_MODULE_MULTI_VERSION = 1;
 
     // =======
     // Storage
     // =======
 
-    MockBaseModule public module;
+    MockBaseModule public moduleSingle;
+    MockBaseModule public moduleSingleProxy;
 
-    MockBaseModule public moduleProxy;
+    MockBaseModule public moduleMulti;
+    MockBaseModule public moduleMultiProxy;
 
     // =====
     // Setup
@@ -43,19 +50,30 @@ contract BaseModuleTest is TBaseModule, Fixture {
     function setUp() public virtual override {
         super.setUp();
 
-        module = new MockBaseModule(
-            _MOCK_MODULE_ID,
-            _MOCK_MODULE_TYPE,
-            _MOCK_MODULE_VERSION
+        moduleSingle = new MockBaseModule(
+            _MOCK_MODULE_SINGLE_ID,
+            _MOCK_MODULE_SINGLE_TYPE,
+            _MOCK_MODULE_SINGLE_VERSION
         );
 
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(module);
+        moduleMulti = new MockBaseModule(
+            _MOCK_MODULE_MULTI_ID,
+            _MOCK_MODULE_MULTI_TYPE,
+            _MOCK_MODULE_MULTI_VERSION
+        );
+
+        address[] memory moduleAddresses = new address[](2);
+        moduleAddresses[0] = address(moduleSingle);
+        moduleAddresses[1] = address(moduleMulti);
 
         installerProxy.addModules(moduleAddresses);
 
-        moduleProxy = MockBaseModule(
-            dispatcher.moduleIdToProxy(_MOCK_MODULE_ID)
+        moduleSingleProxy = MockBaseModule(
+            dispatcher.moduleIdToProxy(_MOCK_MODULE_SINGLE_ID)
+        );
+
+        moduleMultiProxy = MockBaseModule(
+            dispatcher.moduleIdToProxy(_MOCK_MODULE_MULTI_ID)
         );
     }
 
@@ -64,15 +82,15 @@ contract BaseModuleTest is TBaseModule, Fixture {
     // =====
 
     function testModuleId() external {
-        assertEq(module.moduleId(), _MOCK_MODULE_ID);
+        assertEq(moduleSingle.moduleId(), _MOCK_MODULE_SINGLE_ID);
     }
 
     function testModuleType() external {
-        assertEq(module.moduleType(), _MOCK_MODULE_TYPE);
+        assertEq(moduleSingle.moduleType(), _MOCK_MODULE_SINGLE_TYPE);
     }
 
     function testModuleVersion() external {
-        assertEq(module.moduleVersion(), _MOCK_MODULE_VERSION);
+        assertEq(moduleSingle.moduleVersion(), _MOCK_MODULE_SINGLE_VERSION);
     }
 
     function testRevertBytesCustomError(
@@ -85,7 +103,7 @@ contract BaseModuleTest is TBaseModule, Fixture {
                 ICustomError.CustomErrorPayload({code: code, message: message})
             )
         );
-        module.testRevertBytesCustomError(code, message);
+        moduleSingle.testRevertBytesCustomError(code, message);
     }
 
     function testProxyLog0Topic() external {
@@ -96,7 +114,7 @@ contract BaseModuleTest is TBaseModule, Fixture {
             log0(0x00, 0x05)
         }
 
-        moduleProxy.testProxyLog0Topic();
+        moduleSingleProxy.testProxyLog0Topic();
     }
 
     function testProxyLog1Topic() external {
@@ -110,7 +128,7 @@ contract BaseModuleTest is TBaseModule, Fixture {
             log1(0x00, 0x05, message1)
         }
 
-        moduleProxy.testProxyLog1Topic();
+        moduleSingleProxy.testProxyLog1Topic();
     }
 
     function testProxyLog2Topic() external {
@@ -125,7 +143,7 @@ contract BaseModuleTest is TBaseModule, Fixture {
             log2(0x00, 0x05, message1, message2)
         }
 
-        moduleProxy.testProxyLog2Topic();
+        moduleSingleProxy.testProxyLog2Topic();
     }
 
     function testProxyLog3Topic() external {
@@ -141,7 +159,7 @@ contract BaseModuleTest is TBaseModule, Fixture {
             log3(0x00, 0x05, message1, message2, message3)
         }
 
-        moduleProxy.testProxyLog3Topic();
+        moduleSingleProxy.testProxyLog3Topic();
     }
 
     function testProxyLog4Topic() external {
@@ -158,11 +176,11 @@ contract BaseModuleTest is TBaseModule, Fixture {
             log4(0x00, 0x05, message1, message2, message3, message4)
         }
 
-        moduleProxy.testProxyLog4Topic();
+        moduleSingleProxy.testProxyLog4Topic();
     }
 
     function testRevertProxyLogOutOfBounds() external {
         vm.expectRevert(FailedToLog.selector);
-        moduleProxy.testRevertProxyLogOutOfBounds();
+        moduleSingleProxy.testRevertProxyLogOutOfBounds();
     }
 }

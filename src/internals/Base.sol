@@ -47,6 +47,8 @@ abstract contract Base is IBase, BaseState {
         return proxyAddress;
     }
 
+    // TODO: write test for this and evaluate its use
+
     /**
      * @dev Call internal module.
      * @param moduleId_ Module id.
