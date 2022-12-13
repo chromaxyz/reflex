@@ -99,20 +99,26 @@ contract BaseModuleTest is TBaseModule, Fixture {
         // TODO: add internal proxy tests
     }
 
-    // =====
-    // Tests
-    // =====
+    // =============
+    // General tests
+    // =============
 
     function testModuleId() external {
         assertEq(moduleSingle.moduleId(), _MOCK_MODULE_SINGLE_ID);
+        assertEq(moduleMulti.moduleId(), _MOCK_MODULE_MULTI_ID);
+        assertEq(moduleInternal.moduleId(), _MOCK_MODULE_INTERNAL_ID);
     }
 
     function testModuleType() external {
         assertEq(moduleSingle.moduleType(), _MOCK_MODULE_SINGLE_TYPE);
+        assertEq(moduleMulti.moduleType(), _MOCK_MODULE_MULTI_TYPE);
+        assertEq(moduleInternal.moduleType(), _MOCK_MODULE_INTERNAL_TYPE);
     }
 
     function testModuleVersion() external {
         assertEq(moduleSingle.moduleVersion(), _MOCK_MODULE_SINGLE_VERSION);
+        assertEq(moduleMulti.moduleVersion(), _MOCK_MODULE_MULTI_VERSION);
+        assertEq(moduleInternal.moduleVersion(), _MOCK_MODULE_INTERNAL_VERSION);
     }
 
     function testRevertBytesCustomError(
@@ -205,4 +211,16 @@ contract BaseModuleTest is TBaseModule, Fixture {
         vm.expectRevert(FailedToLog.selector);
         moduleSingleProxy.testRevertProxyLogOutOfBounds();
     }
+
+    // ==================
+    // Single-proxy tests
+    // ==================
+
+    // =================
+    // Multi-proxy tests
+    // =================
+
+    // ====================
+    // Internal-proxy tests
+    // ====================
 }
