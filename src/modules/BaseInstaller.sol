@@ -94,17 +94,17 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     ) external virtual onlyOwner {
         for (uint256 i = 0; i < moduleAddresses.length; ) {
             address moduleAddress = moduleAddresses[i];
-            uint32 newModuleId = BaseModule(moduleAddress).moduleId();
-            uint16 newModuleVersion = BaseModule(moduleAddress).moduleVersion();
+            uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
+            uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
 
-            _modules[newModuleId] = moduleAddress;
+            _modules[moduleId_] = moduleAddress;
 
-            if (newModuleId <= _EXTERNAL_SINGLE_PROXY_DELIMITER) {
-                address proxyAddress = _createProxy(newModuleId);
+            if (moduleId_ <= _EXTERNAL_SINGLE_PROXY_DELIMITER) {
+                address proxyAddress = _createProxy(moduleId_);
                 _trusts[proxyAddress].moduleImplementation = moduleAddress;
             }
 
-            emit ModuleAdded(newModuleId, moduleAddress, newModuleVersion);
+            emit ModuleAdded(moduleId_, moduleAddress, moduleVersion_);
 
             unchecked {
                 ++i;
@@ -125,25 +125,19 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     ) external virtual onlyOwner {
         for (uint256 i = 0; i < moduleAddresses.length; ) {
             address moduleAddress = moduleAddresses[i];
-            uint32 existingModuleId = BaseModule(moduleAddress).moduleId();
-            uint16 existingModuleVersion = BaseModule(moduleAddress)
-                .moduleVersion();
+            uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
+            uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
 
-            if (_modules[existingModuleId] == address(0))
-                revert ModuleNonexistent();
+            if (_modules[moduleId_] == address(0)) revert ModuleNonexistent();
 
-            _modules[existingModuleId] = moduleAddress;
+            _modules[moduleId_] = moduleAddress;
 
-            if (existingModuleId <= _EXTERNAL_SINGLE_PROXY_DELIMITER) {
-                address proxyAddress = _createProxy(existingModuleId);
+            if (moduleId_ <= _EXTERNAL_SINGLE_PROXY_DELIMITER) {
+                address proxyAddress = _createProxy(moduleId_);
                 _trusts[proxyAddress].moduleImplementation = moduleAddress;
             }
 
-            emit ModuleUpgraded(
-                existingModuleId,
-                moduleAddress,
-                existingModuleVersion
-            );
+            emit ModuleUpgraded(moduleId_, moduleAddress, moduleVersion_);
 
             unchecked {
                 ++i;
@@ -164,28 +158,22 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     ) external virtual onlyOwner {
         for (uint256 i = 0; i < moduleAddresses.length; ) {
             address moduleAddress = moduleAddresses[i];
-            uint32 existingModuleId = BaseModule(moduleAddress).moduleId();
-            uint16 existingModuleVersion = BaseModule(moduleAddress)
-                .moduleVersion();
+            uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
+            uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
 
-            if (_modules[existingModuleId] == address(0))
-                revert ModuleNonexistent();
+            if (_modules[moduleId_] == address(0)) revert ModuleNonexistent();
 
-            if (existingModuleId <= _EXTERNAL_SINGLE_PROXY_DELIMITER) {
-                address proxyAddress = _createProxy(existingModuleId);
+            if (moduleId_ <= _EXTERNAL_SINGLE_PROXY_DELIMITER) {
+                address proxyAddress = _createProxy(moduleId_);
                 delete _trusts[proxyAddress];
             }
 
-            if (existingModuleId <= _EXTERNAL_MULTI_PROXY_DELIMITER)
-                delete _proxies[existingModuleId];
+            if (moduleId_ <= _EXTERNAL_MULTI_PROXY_DELIMITER)
+                delete _proxies[moduleId_];
 
-            delete _modules[existingModuleId];
+            delete _modules[moduleId_];
 
-            emit ModuleRemoved(
-                existingModuleId,
-                moduleAddress,
-                existingModuleVersion
-            );
+            emit ModuleRemoved(moduleId_, moduleAddress, moduleVersion_);
 
             unchecked {
                 ++i;
