@@ -70,12 +70,12 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
     /**
      * @notice Returns the trust relation by proxy address.
      * @param proxyAddress_ Proxy address.
-     * @return trust Trust relation.
+     * @return TrustRelation Trust relation.
      */
     function proxyAddressToTrustRelation(
         address proxyAddress_
-    ) external view virtual returns (TrustRelation memory trust) {
-        trust = _trusts[proxyAddress_];
+    ) external view virtual returns (TrustRelation memory) {
+        return _trusts[proxyAddress_];
     }
 
     // ==================
