@@ -6,8 +6,6 @@ pragma solidity ^0.8.13;
  * @dev Append-only extendable
  */
 abstract contract BaseConstants {
-    // TODO: replace delimiters with enum or constants, like Balancer V2 differentiating between pools
-
     // =========
     // Constants
     // =========
@@ -27,6 +25,8 @@ abstract contract BaseConstants {
      */
     uint16 internal constant _PROXY_TYPE_INTERNAL_PROXY = 3;
 
-    // TODO: remove
-    uint32 internal constant _MODULE_ID_INSTALLER = 1;
+    /**
+     * @dev Built-in upgradeable installer module.
+     */
+    uint32 internal constant _BUILT_IN_MODULE_ID_INSTALLER = 1;
 }

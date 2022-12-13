@@ -25,7 +25,8 @@ abstract contract Fixture is Test, BaseConstants {
     address internal constant _ALICE = address(0xAAAA);
     address internal constant _BOB = address(0xBBBB);
 
-    uint32 internal constant _INSTALLER_MODULE_ID = _MODULE_ID_INSTALLER;
+    uint32 internal constant _INSTALLER_MODULE_ID =
+        _BUILT_IN_MODULE_ID_INSTALLER;
     uint16 internal constant _INSTALLER_MODULE_TYPE = _PROXY_TYPE_SINGLE_PROXY;
     uint16 internal constant _INSTALLER_MODULE_VERSION = 1;
 

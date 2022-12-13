@@ -28,9 +28,9 @@ abstract contract Dispatcher is IDispatcher, Base {
         _owner = owner_;
 
         // Register `Installer` module.
-        _modules[_MODULE_ID_INSTALLER] = installerModule_;
+        _modules[_BUILT_IN_MODULE_ID_INSTALLER] = installerModule_;
         address installerProxy = _createProxy(
-            _MODULE_ID_INSTALLER,
+            _BUILT_IN_MODULE_ID_INSTALLER,
             _PROXY_TYPE_SINGLE_PROXY
         );
         _trusts[installerProxy].moduleImplementation = installerModule_;
