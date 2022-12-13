@@ -14,6 +14,12 @@ import {MockBaseModule, ICustomError} from "./mocks/MockBaseModule.sol";
  * @title Base Module Test
  */
 contract BaseModuleTest is TBaseModule, Fixture {
+    // ======
+    // Errors
+    // ======
+
+    error FailedToLog();
+
     // =========
     // Constants
     // =========
@@ -28,6 +34,8 @@ contract BaseModuleTest is TBaseModule, Fixture {
 
     MockBaseModule public module;
 
+    MockBaseModule public moduleProxy;
+
     // =====
     // Setup
     // =====
@@ -39,6 +47,15 @@ contract BaseModuleTest is TBaseModule, Fixture {
             _MOCK_MODULE_ID,
             _MOCK_MODULE_TYPE,
             _MOCK_MODULE_VERSION
+        );
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(module);
+
+        installerProxy.addModules(moduleAddresses);
+
+        moduleProxy = MockBaseModule(
+            dispatcher.moduleIdToProxy(_MOCK_MODULE_ID)
         );
     }
 
@@ -57,5 +74,83 @@ contract BaseModuleTest is TBaseModule, Fixture {
             )
         );
         module.testRevertBytesCustomError(code, message);
+    }
+
+    function testProxyLog0Topic() external {
+        bytes32 message = bytes32(abi.encodePacked("hello"));
+
+        assembly {
+            mstore(0, message)
+            log0(0, 5)
+        }
+
+        moduleProxy.testProxyLog0Topic();
+    }
+
+    function testProxyLog1Topic() external {
+        vm.expectEmit(false, false, false, false);
+
+        bytes32 message = bytes32(abi.encodePacked("hello"));
+        bytes32 message1 = bytes32(uint256(1));
+
+        assembly {
+            mstore(0, message)
+            log1(0, 5, message1)
+        }
+
+        moduleProxy.testProxyLog1Topic();
+    }
+
+    function testProxyLog2Topic() external {
+        vm.expectEmit(true, false, false, false);
+
+        bytes32 message = bytes32(abi.encodePacked("hello"));
+        bytes32 message1 = bytes32(uint256(1));
+        bytes32 message2 = bytes32(uint256(2));
+
+        assembly {
+            mstore(0, message)
+            log2(0, 5, message1, message2)
+        }
+
+        moduleProxy.testProxyLog2Topic();
+    }
+
+    function testProxyLog3Topic() external {
+        vm.expectEmit(true, true, false, false);
+
+        bytes32 message = bytes32(abi.encodePacked("hello"));
+        bytes32 message1 = bytes32(uint256(1));
+        bytes32 message2 = bytes32(uint256(2));
+        bytes32 message3 = bytes32(uint256(3));
+
+        assembly {
+            mstore(0, message)
+            log3(0, 5, message1, message2, message3)
+        }
+
+        moduleProxy.testProxyLog3Topic();
+    }
+
+    function testProxyLog4Topic() external {
+        vm.expectEmit(true, true, true, false);
+
+        bytes32 message = bytes32(abi.encodePacked("hello"));
+        bytes32 message1 = bytes32(uint256(1));
+        bytes32 message2 = bytes32(uint256(2));
+        bytes32 message3 = bytes32(uint256(3));
+        bytes32 message4 = bytes32(uint256(4));
+
+        assembly {
+            mstore(0, message)
+            log4(0, 5, message1, message2, message3, message4)
+        }
+
+        moduleProxy.testProxyLog4Topic();
+    }
+
+    function testRevertProxyLogOutOfBounds() external {
+        vm.expectRevert(FailedToLog.selector);
+        moduleProxy.testRevertProxyLogOutOfBounds();
     }
 }
