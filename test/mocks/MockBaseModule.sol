@@ -49,7 +49,7 @@ contract MockBaseModule is BaseModule {
         _issueLogToProxy(abi.encodePacked(uint8(0), message_));
     }
 
-    function testProxyLog1Topic(bytes memory message_) external {
+    function testProxyLog1Topic(bytes calldata message_) external {
         _issueLogToProxy(
             abi.encodePacked(uint8(1), bytes32(uint256(1)), message_)
         );

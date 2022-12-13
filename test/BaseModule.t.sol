@@ -135,79 +135,103 @@ contract BaseModuleTest is TBaseModule, Fixture {
     }
 
     function testProxyLog0Topic(bytes memory message_) external {
+        vm.assume(message_.length > 0 && message_.length <= 32);
+
+        uint256 messageLength = message_.length;
         bytes32 message = bytes32(abi.encodePacked(message_));
 
+        // TODO: investigate how log0 + vm.expectEmit could work
+        // vm.expectEmit(false, false, false, false, address(moduleSingleProxy));
         assembly {
-            mstore(0x00, message)
-            log0(0x00, 0x05)
+            let ptr := mload(0x40)
+            mstore(ptr, message)
+            log0(ptr, messageLength)
         }
 
         moduleSingleProxy.testProxyLog0Topic(message_);
     }
 
     function testProxyLog1Topic(bytes memory message_) external {
-        vm.expectEmit(false, false, false, false);
+        vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
+        uint256 messageLength = message_.length;
+
         bytes32 message1 = bytes32(uint256(1));
 
+        vm.expectEmit(false, false, false, true, address(moduleSingleProxy));
         assembly {
-            mstore(0x00, message)
-            log1(0x00, 0x05, message1)
+            let ptr := mload(0x40)
+            mstore(ptr, message)
+            log1(ptr, messageLength, message1)
         }
 
         moduleSingleProxy.testProxyLog1Topic(message_);
     }
 
     function testProxyLog2Topic(bytes memory message_) external {
-        vm.expectEmit(true, false, false, false);
+        vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
+        uint256 messageLength = message_.length;
+
         bytes32 message1 = bytes32(uint256(1));
         bytes32 message2 = bytes32(uint256(2));
 
+        vm.expectEmit(true, false, false, true, address(moduleSingleProxy));
         assembly {
-            mstore(0x00, message)
-            log2(0x00, 0x05, message1, message2)
+            let ptr := mload(0x40)
+            mstore(ptr, message)
+            log2(ptr, messageLength, message1, message2)
         }
 
         moduleSingleProxy.testProxyLog2Topic(message_);
     }
 
     function testProxyLog3Topic(bytes memory message_) external {
-        vm.expectEmit(true, true, false, false);
+        vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
+        uint256 messageLength = message_.length;
+
         bytes32 message1 = bytes32(uint256(1));
         bytes32 message2 = bytes32(uint256(2));
         bytes32 message3 = bytes32(uint256(3));
 
+        vm.expectEmit(true, true, false, true, address(moduleSingleProxy));
         assembly {
-            mstore(0x00, message)
-            log3(0x00, 0x05, message1, message2, message3)
+            let ptr := mload(0x40)
+            mstore(ptr, message)
+            log3(ptr, messageLength, message1, message2, message3)
         }
 
         moduleSingleProxy.testProxyLog3Topic(message_);
     }
 
     function testProxyLog4Topic(bytes memory message_) external {
-        vm.expectEmit(true, true, true, false);
+        vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
+        uint256 messageLength = message_.length;
+
         bytes32 message1 = bytes32(uint256(1));
         bytes32 message2 = bytes32(uint256(2));
         bytes32 message3 = bytes32(uint256(3));
         bytes32 message4 = bytes32(uint256(4));
 
+        vm.expectEmit(true, true, true, true, address(moduleSingleProxy));
         assembly {
-            mstore(0x00, message)
-            log4(0x00, 0x05, message1, message2, message3, message4)
+            let ptr := mload(0x40)
+            mstore(ptr, message)
+            log4(ptr, messageLength, message1, message2, message3, message4)
         }
 
         moduleSingleProxy.testProxyLog4Topic(message_);
     }
 
     function testRevertProxyLogOutOfBounds(bytes memory message_) external {
+        vm.assume(message_.length > 0);
+
         vm.expectRevert(FailedToLog.selector);
         moduleSingleProxy.testRevertProxyLogOutOfBounds(message_);
     }
