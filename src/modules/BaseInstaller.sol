@@ -17,13 +17,15 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     // ===========
 
     /**
+     * @param moduleId_ Module id.
      * @param moduleType_ Module type.
      * @param moduleVersion_ Module version.
      */
     constructor(
+        uint32 moduleId_,
         uint16 moduleType_,
         uint16 moduleVersion_
-    ) BaseModule(_MODULE_ID_INSTALLER, moduleType_, moduleVersion_) {}
+    ) BaseModule(moduleId_, moduleType_, moduleVersion_) {}
 
     // ==============
     // View functions

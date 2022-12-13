@@ -29,14 +29,14 @@ contract DispatcherTest is TDispatcher, Fixture {
 
     function testInstallerConfiguration() external {
         assertEq(
-            reflex.moduleIdToImplementation(_MODULE_ID_INSTALLER),
+            reflex.moduleIdToImplementation(_INSTALLER_MODULE_ID),
             address(installer)
         );
 
         TDispatcher.TrustRelation memory installerTrust = reflex
             .proxyAddressToTrust(address(installerProxy));
 
-        assertEq(installerTrust.moduleId, _MODULE_ID_INSTALLER);
+        assertEq(installerTrust.moduleId, _INSTALLER_MODULE_ID);
         assertEq(address(installer), installerTrust.moduleImplementation);
     }
 

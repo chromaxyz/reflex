@@ -25,8 +25,9 @@ abstract contract Fixture is Test, BaseConstants {
     address internal constant _ALICE = address(0xAAAA);
     address internal constant _BOB = address(0xBBBB);
 
-    uint16 internal constant _MODULE_ID_INSTALLER_TYPE = 1;
-    uint16 internal constant _MODULE_ID_INSTALLER_VERSION = 1;
+    uint32 internal constant _INSTALLER_MODULE_ID = _MODULE_ID_INSTALLER;
+    uint16 internal constant _INSTALLER_MODULE_TYPE = _PROXY_TYPE_SINGLE_PROXY;
+    uint16 internal constant _INSTALLER_MODULE_VERSION = 1;
 
     // =======
     // Storage
@@ -45,8 +46,9 @@ abstract contract Fixture is Test, BaseConstants {
         vm.label(_BOB, "Bob");
 
         installer = new MockBaseInstaller(
-            _MODULE_ID_INSTALLER_TYPE,
-            _MODULE_ID_INSTALLER_VERSION
+            _INSTALLER_MODULE_ID,
+            _INSTALLER_MODULE_TYPE,
+            _INSTALLER_MODULE_VERSION
         );
         reflex = new MockDispatcher(
             "Dispatcher",
@@ -54,7 +56,7 @@ abstract contract Fixture is Test, BaseConstants {
             address(installer)
         );
         installerProxy = BaseInstaller(
-            reflex.moduleIdToProxy(_MODULE_ID_INSTALLER)
+            reflex.moduleIdToProxy(_INSTALLER_MODULE_ID)
         );
     }
 }
