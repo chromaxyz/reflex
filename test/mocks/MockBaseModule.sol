@@ -7,9 +7,9 @@ import {BaseModule} from "../../src/BaseModule.sol";
 // TODO: in progress
 
 /**
- * @title Mock Module
+ * @title Mock Base Module
  */
-contract MockModule is BaseModule {
+contract MockBaseModule is BaseModule {
     // ======
     // Errors
     // ======
