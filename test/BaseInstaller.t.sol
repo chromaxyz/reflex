@@ -19,8 +19,10 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     // =========
 
     uint32 internal constant _MODULE_ID_MOCK_MODULE = 100;
-    uint16 internal constant _MODULE_ID_MOCK_MODULE_TYPE_V1 = 1;
-    uint16 internal constant _MODULE_ID_MOCK_MODULE_TYPE_V2 = 1;
+    uint16 internal constant _MODULE_ID_MOCK_MODULE_TYPE_V1 =
+        _PROXY_TYPE_SINGLE_PROXY;
+    uint16 internal constant _MODULE_ID_MOCK_MODULE_TYPE_V2 =
+        _PROXY_TYPE_SINGLE_PROXY;
     uint16 internal constant _MODULE_ID_MOCK_MODULE_VERSION_V1 = 1;
     uint16 internal constant _MODULE_ID_MOCK_MODULE_VERSION_V2 = 2;
 
@@ -106,6 +108,10 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
 
     function testModuleId() external {
         assertEq(moduleV1.moduleId(), _MODULE_ID_MOCK_MODULE);
+    }
+
+    function testModuleType() external {
+        assertEq(moduleV1.moduleType(), _MODULE_ID_MOCK_MODULE_TYPE_V1);
     }
 
     function testModuleVersion() external {

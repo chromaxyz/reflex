@@ -27,5 +27,6 @@ abstract contract BaseConstants {
      */
     uint16 internal constant _PROXY_TYPE_INTERNAL_PROXY = 3;
 
+    // TODO: remove
     uint32 internal constant _MODULE_ID_INSTALLER = 1;
 }
