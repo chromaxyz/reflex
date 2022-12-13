@@ -25,6 +25,7 @@ abstract contract Fixture is Test, BaseConstants {
     address internal constant _ALICE = address(0xAAAA);
     address internal constant _BOB = address(0xBBBB);
 
+    uint16 internal constant _MODULE_ID_INSTALLER_TYPE = 1;
     uint16 internal constant _MODULE_ID_INSTALLER_VERSION = 1;
 
     // =======
@@ -43,7 +44,10 @@ abstract contract Fixture is Test, BaseConstants {
         vm.label(_ALICE, "Alice");
         vm.label(_BOB, "Bob");
 
-        installer = new MockBaseInstaller(_MODULE_ID_INSTALLER_VERSION);
+        installer = new MockBaseInstaller(
+            _MODULE_ID_INSTALLER_TYPE,
+            _MODULE_ID_INSTALLER_VERSION
+        );
         reflex = new MockDispatcher(
             "Dispatcher",
             address(this),

@@ -25,5 +25,7 @@ interface TBaseModule is TBase {
 interface IBaseModule is IBase, TBaseModule {
     function moduleId() external view returns (uint32);
 
+    function moduleType() external view returns (uint16);
+
     function moduleVersion() external view returns (uint16);
 }

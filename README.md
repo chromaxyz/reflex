@@ -6,7 +6,7 @@ A first-generation Solidity framework for upgradeable modules.
 
 - Upgradeable modules: single-proxy modules, multi-proxy modules and internal modules.
 - Avoids hitting the max contract size limitation of ~24kb.
-- Avoids function selector clashing, allowing to have multiple spec-compliant modules running side-by-side.
+- Avoids function selector clashing, allowing to have multiple spec-compliant modules run side-by-side.
 
 ## Negatives
 
@@ -39,6 +39,7 @@ These contracts were inspired by or directly modified from many sources, primari
 
 - [Euler](https://github.com/euler-xyz/euler-contracts)
 - [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
+- [Balancer V2](https://github.com/balancer-labs/balancer-v2-monorepo/tree/master/pkg/vault/contracts)
 
 ## License
 

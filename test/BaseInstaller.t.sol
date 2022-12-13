@@ -19,6 +19,8 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     // =========
 
     uint32 internal constant _MODULE_ID_MOCK_MODULE = 100;
+    uint16 internal constant _MODULE_ID_MOCK_MODULE_TYPE_V1 = 1;
+    uint16 internal constant _MODULE_ID_MOCK_MODULE_TYPE_V2 = 1;
     uint16 internal constant _MODULE_ID_MOCK_MODULE_VERSION_V1 = 1;
     uint16 internal constant _MODULE_ID_MOCK_MODULE_VERSION_V2 = 2;
 
@@ -38,11 +40,13 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
 
         moduleV1 = new MockModule(
             _MODULE_ID_MOCK_MODULE,
+            _MODULE_ID_MOCK_MODULE_TYPE_V1,
             _MODULE_ID_MOCK_MODULE_VERSION_V1
         );
 
         moduleV2 = new MockModule(
             _MODULE_ID_MOCK_MODULE,
+            _MODULE_ID_MOCK_MODULE_TYPE_V2,
             _MODULE_ID_MOCK_MODULE_VERSION_V2
         );
     }
@@ -140,10 +144,10 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     function testAddModulesMultiProxy() external {
         address[] memory moduleAddresses = new address[](2);
         moduleAddresses[0] = address(
-            new MockModule(_EXTERNAL_SINGLE_PROXY_DELIMITER + 1, 1)
+            new MockModule(_EXTERNAL_SINGLE_PROXY_DELIMITER + 1, 1, 1)
         );
         moduleAddresses[1] = address(
-            new MockModule(_EXTERNAL_SINGLE_PROXY_DELIMITER + 2, 1)
+            new MockModule(_EXTERNAL_SINGLE_PROXY_DELIMITER + 2, 1, 1)
         );
         installerProxy.addModules(moduleAddresses);
 
@@ -215,7 +219,7 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
 
     function testRevertUpgradeModulesModuleNonexistent() external {
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(new MockModule(777, 2));
+        moduleAddresses[0] = address(new MockModule(777, 1, 2));
 
         vm.expectRevert(ModuleNonexistent.selector);
         installerProxy.upgradeModules(moduleAddresses);
@@ -267,7 +271,7 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
 
     function testRevertRemoveModulesModuleNonexistent() external {
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(new MockModule(777, 2));
+        moduleAddresses[0] = address(new MockModule(777, 1, 2));
 
         vm.expectRevert(ModuleNonexistent.selector);
         installerProxy.removeModules(moduleAddresses);

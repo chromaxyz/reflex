@@ -22,8 +22,9 @@ contract MockModule is BaseModule {
 
     constructor(
         uint32 _moduleId,
+        uint16 _moduleType,
         uint16 _moduleVersion
-    ) BaseModule(_moduleId, _moduleVersion) {}
+    ) BaseModule(_moduleId, _moduleType, _moduleVersion) {}
 
     // =====
     // Tests

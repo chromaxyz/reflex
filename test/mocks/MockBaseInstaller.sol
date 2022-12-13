@@ -8,5 +8,8 @@ import {BaseInstaller} from "../../src/modules/BaseInstaller.sol";
  * @title Mock Base Installer
  */
 contract MockBaseInstaller is BaseInstaller {
-    constructor(uint16 moduleVersion_) BaseInstaller(moduleVersion_) {}
+    constructor(
+        uint16 moduleType,
+        uint16 moduleVersion_
+    ) BaseInstaller(moduleType, moduleVersion_) {}
 }
