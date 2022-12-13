@@ -6,7 +6,7 @@ import {IBaseState} from "./interfaces/IBaseState.sol";
 
 /**
  * @title Base Constants
- * @dev Append-only extendable, only internal constants.
+ * @dev Append-only extendable, only use internal constants!
  */
 abstract contract BaseConstants {
     // =========
@@ -36,7 +36,7 @@ abstract contract BaseConstants {
 
 /**
  * @title Base State
- * @dev Append-only extendable.
+ * @dev Append-only extendable below __gap.
  */
 abstract contract BaseState is IBaseState, BaseConstants {
     // =======
