@@ -12,21 +12,20 @@ abstract contract BaseConstants {
     // Constants
     // =========
 
-    // Proxy types
+    /**
+     * @dev These are modules that are only accessible by a single address.
+     */
     uint16 internal constant _PROXY_TYPE_SINGLE_PROXY = 1;
+
+    /**
+     * @dev These are modules that have many addresses.
+     */
     uint16 internal constant _PROXY_TYPE_MULTI_PROXY = 2;
+
+    /**
+     * @dev These are modules that are called internally by the system and don't have any public proxies.
+     */
     uint16 internal constant _PROXY_TYPE_INTERNAL_PROXY = 3;
 
-    // External single-proxy components
-    // These are modules that are only accessible by a single address.
     uint32 internal constant _MODULE_ID_INSTALLER = 1;
-    uint32 internal constant _EXTERNAL_SINGLE_PROXY_DELIMITER = 499_999;
-
-    // External multi-proxy components
-    // These are modules that have many addresses.
-    uint32 internal constant _EXTERNAL_MULTI_PROXY_DELIMITER = 999_999;
-
-    // Internal components
-    // These are modules that are called internally by the system and don't have any public proxies.
-    uint32 internal constant _INTERNAL_PROXY_DELIMITER = 1_499_999;
 }
