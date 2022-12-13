@@ -33,6 +33,11 @@ contract BaseModuleTest is TBaseModule, Fixture {
     uint16 internal constant _MOCK_MODULE_MULTI_TYPE = _PROXY_TYPE_MULTI_PROXY;
     uint16 internal constant _MOCK_MODULE_MULTI_VERSION = 1;
 
+    uint32 internal constant _MOCK_MODULE_INTERNAL_ID = 102;
+    uint16 internal constant _MOCK_MODULE_INTERNAL_TYPE =
+        _PROXY_TYPE_INTERNAL_PROXY;
+    uint16 internal constant _MOCK_MODULE_INTERNAL_VERSION = 1;
+
     // =======
     // Storage
     // =======
@@ -42,6 +47,9 @@ contract BaseModuleTest is TBaseModule, Fixture {
 
     MockBaseModule public moduleMulti;
     MockBaseModule public moduleMultiProxy;
+
+    MockBaseModule public moduleInternal;
+    MockBaseModule public moduleInternalProxy;
 
     // =====
     // Setup
@@ -62,9 +70,16 @@ contract BaseModuleTest is TBaseModule, Fixture {
             _MOCK_MODULE_MULTI_VERSION
         );
 
-        address[] memory moduleAddresses = new address[](2);
+        moduleInternal = new MockBaseModule(
+            _MOCK_MODULE_INTERNAL_ID,
+            _MOCK_MODULE_INTERNAL_TYPE,
+            _MOCK_MODULE_INTERNAL_VERSION
+        );
+
+        address[] memory moduleAddresses = new address[](3);
         moduleAddresses[0] = address(moduleSingle);
         moduleAddresses[1] = address(moduleMulti);
+        moduleAddresses[2] = address(moduleInternal);
 
         installerProxy.addModules(moduleAddresses);
 
@@ -74,6 +89,10 @@ contract BaseModuleTest is TBaseModule, Fixture {
 
         moduleMultiProxy = MockBaseModule(
             dispatcher.moduleIdToProxy(_MOCK_MODULE_MULTI_ID)
+        );
+
+        moduleInternalProxy = MockBaseModule(
+            dispatcher.moduleIdToProxy(_MOCK_MODULE_INTERNAL_ID)
         );
 
         // TODO: add multi proxy tests
