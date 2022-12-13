@@ -42,6 +42,24 @@ abstract contract Base is IBase, BaseState {
     }
 
     /**
+     * @dev Call internal module.
+     * @param moduleId_ Module id.
+     * @param input_ Input data.
+     */
+    function _callInternalModule(
+        uint32 moduleId_,
+        bytes memory input_
+    ) internal returns (bytes memory) {
+        (bool success, bytes memory result) = _modules[moduleId_].delegatecall(
+            input_
+        );
+
+        if (!success) _revertBytes(result);
+
+        return result;
+    }
+
+    /**
      * @dev Unpack message sender from calldata.
      */
     function _unpackMessageSender()
@@ -70,5 +88,19 @@ abstract contract Base is IBase, BaseState {
             messageSender := shr(0x60, calldataload(sub(calldatasize(), 0x28)))
             proxyAddress := shr(0x60, calldataload(sub(calldatasize(), 0x14)))
         }
+    }
+
+    /**
+     * @dev Revert with error message.
+     * @param errorMessage_ Error message.
+     */
+    function _revertBytes(bytes memory errorMessage_) internal pure {
+        if (errorMessage_.length > 0) {
+            assembly {
+                revert(add(32, errorMessage_), mload(errorMessage_))
+            }
+        }
+
+        revert EmptyError();
     }
 }

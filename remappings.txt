@@ -1,4 +1,1 @@
 forge-std/=lib/forge-std/src/
-permit2/=lib/permit2/src/
-solady/=lib/solady/src/
-solmate/=lib/solmate/src/

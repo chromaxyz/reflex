@@ -14,7 +14,7 @@ contract Proxy {
     // Storage
     // =======
 
-    address private immutable _deployer;
+    address internal immutable _deployer;
 
     // ===========
     // Constructor

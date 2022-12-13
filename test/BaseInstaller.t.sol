@@ -8,7 +8,7 @@ import {TBaseInstaller} from "../src/interfaces/IBaseInstaller.sol";
 import {Fixture} from "./fixtures/Fixture.sol";
 
 // Mocks
-import {MockModuleV1, MockModuleV2, MockModuleNonexistent, MockModuleMultiProxy} from "./mocks/MockModule.sol";
+import {MockModule} from "./mocks/MockModule.sol";
 
 /**
  * @title Base Installer Test
@@ -26,8 +26,8 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     // Storage
     // =======
 
-    MockModuleV1 public moduleV1;
-    MockModuleV2 public moduleV2;
+    MockModule public moduleV1;
+    MockModule public moduleV2;
 
     // =====
     // Setup
@@ -36,12 +36,12 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     function setUp() public virtual override {
         super.setUp();
 
-        moduleV1 = new MockModuleV1(
+        moduleV1 = new MockModule(
             _MODULE_ID_MOCK_MODULE,
             _MODULE_ID_MOCK_MODULE_VERSION_V1
         );
 
-        moduleV2 = new MockModuleV2(
+        moduleV2 = new MockModule(
             _MODULE_ID_MOCK_MODULE,
             _MODULE_ID_MOCK_MODULE_VERSION_V2
         );
@@ -140,10 +140,10 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     function testAddModulesMultiProxy() external {
         address[] memory moduleAddresses = new address[](2);
         moduleAddresses[0] = address(
-            new MockModuleMultiProxy(_EXTERNAL_SINGLE_PROXY_DELIMITER + 1, 1)
+            new MockModule(_EXTERNAL_SINGLE_PROXY_DELIMITER + 1, 1)
         );
         moduleAddresses[1] = address(
-            new MockModuleMultiProxy(_EXTERNAL_SINGLE_PROXY_DELIMITER + 2, 1)
+            new MockModule(_EXTERNAL_SINGLE_PROXY_DELIMITER + 2, 1)
         );
         installerProxy.addModules(moduleAddresses);
 
@@ -215,7 +215,7 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
 
     function testRevertUpgradeModulesModuleNonexistent() external {
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(new MockModuleNonexistent(777, 2));
+        moduleAddresses[0] = address(new MockModule(777, 2));
 
         vm.expectRevert(ModuleNonexistent.selector);
         installerProxy.upgradeModules(moduleAddresses);
@@ -267,7 +267,7 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
 
     function testRevertRemoveModulesModuleNonexistent() external {
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(new MockModuleNonexistent(777, 2));
+        moduleAddresses[0] = address(new MockModule(777, 2));
 
         vm.expectRevert(ModuleNonexistent.selector);
         installerProxy.removeModules(moduleAddresses);

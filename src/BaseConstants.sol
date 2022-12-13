@@ -6,6 +6,8 @@ pragma solidity ^0.8.13;
  * @dev Append-only extendable
  */
 abstract contract BaseConstants {
+    // TODO: replace delimiters with enum, like Balancer V2 differentiating between pools
+
     // =========
     // Constants
     // =========

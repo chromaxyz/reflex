@@ -4,42 +4,117 @@ pragma solidity ^0.8.13;
 // Sources
 import {BaseModule} from "../../src/BaseModule.sol";
 
-/**
- * @title Mock Module V1
- */
-contract MockModuleV1 is BaseModule {
-    constructor(
-        uint32 _moduleId,
-        uint16 _moduleVersion
-    ) BaseModule(_moduleId, _moduleVersion) {}
-}
+// TODO: in progress
 
 /**
- * @title Mock Module V2
+ * @title Mock Module
  */
-contract MockModuleV2 is BaseModule {
+contract MockModule is BaseModule {
+    // ======
+    // Errors
+    // ======
+
+    error FailedToLog();
+
+    // ===========
+    // Constructor
+    // ===========
+
     constructor(
         uint32 _moduleId,
         uint16 _moduleVersion
     ) BaseModule(_moduleId, _moduleVersion) {}
+
+    // =====
+    // Tests
+    // =====
+
+    function testRevertBytesCustomError(
+        uint256 code,
+        string calldata message
+    ) external {
+        CustomErrorThrower thrower = new CustomErrorThrower();
+
+        (, bytes memory data) = address(thrower).call(
+            abi.encodeWithSelector(
+                CustomErrorThrower.throwCustomError.selector,
+                code,
+                message
+            )
+        );
+
+        _revertBytes(data);
+    }
+
+    function testProxyLogs() external {
+        bytes memory extraData = "hello";
+
+        _issueLogToProxy(abi.encodePacked(uint8(0), extraData));
+
+        _issueLogToProxy(
+            abi.encodePacked(uint8(1), bytes32(uint256(1)), extraData)
+        );
+
+        _issueLogToProxy(
+            abi.encodePacked(
+                uint8(2),
+                bytes32(uint256(1)),
+                bytes32(uint256(2)),
+                extraData
+            )
+        );
+
+        _issueLogToProxy(
+            abi.encodePacked(
+                uint8(3),
+                bytes32(uint256(1)),
+                bytes32(uint256(2)),
+                bytes32(uint256(3)),
+                extraData
+            )
+        );
+
+        _issueLogToProxy(
+            abi.encodePacked(
+                uint8(4),
+                bytes32(uint256(1)),
+                bytes32(uint256(2)),
+                bytes32(uint256(3)),
+                bytes32(uint256(4)),
+                extraData
+            )
+        );
+    }
+
+    function _issueLogToProxy(bytes memory payload) private {
+        (, address proxyAddress) = _unpackParameters();
+
+        (bool success, ) = proxyAddress.call(payload);
+
+        if (!success) {
+            revert FailedToLog();
+        }
+    }
 }
 
-/**
- * @title Mock Module Nonexistent
- */
-contract MockModuleNonexistent is BaseModule {
-    constructor(
-        uint32 _moduleId,
-        uint16 _moduleVersion
-    ) BaseModule(_moduleId, _moduleVersion) {}
+// =========
+// Utilities
+// =========
+
+interface ICustomError {
+    struct CustomErrorPayload {
+        uint256 code;
+        string message;
+    }
+
+    error CustomError(CustomErrorPayload payload);
 }
 
-/**
- * @title Mock Module Multi Proxy
- */
-contract MockModuleMultiProxy is BaseModule {
-    constructor(
-        uint32 _moduleId,
-        uint16 _moduleVersion
-    ) BaseModule(_moduleId, _moduleVersion) {}
+contract CustomErrorThrower is ICustomError {
+    function throwCustomError(
+        uint256 code,
+        string calldata message
+    ) external pure {
+        revert CustomError(CustomErrorPayload({code: code, message: message}));
+    }
 }

@@ -1,6 +1,6 @@
 {
   "name": "reflex",
-  "description": "A first-generation Ethereum framework.",
+  "description": "A first-generation Solidity framework for upgradeable modules.",
   "version": "0.1.0",
   "license": "UNLICENSED",
   "private": true,
