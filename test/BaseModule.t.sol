@@ -80,8 +80,8 @@ contract BaseModuleTest is TBaseModule, Fixture {
         bytes32 message = bytes32(abi.encodePacked("hello"));
 
         assembly {
-            mstore(0, message)
-            log0(0, 5)
+            mstore(0x00, message)
+            log0(0x00, 0x05)
         }
 
         moduleProxy.testProxyLog0Topic();
@@ -94,8 +94,8 @@ contract BaseModuleTest is TBaseModule, Fixture {
         bytes32 message1 = bytes32(uint256(1));
 
         assembly {
-            mstore(0, message)
-            log1(0, 5, message1)
+            mstore(0x00, message)
+            log1(0x00, 0x05, message1)
         }
 
         moduleProxy.testProxyLog1Topic();
@@ -109,8 +109,8 @@ contract BaseModuleTest is TBaseModule, Fixture {
         bytes32 message2 = bytes32(uint256(2));
 
         assembly {
-            mstore(0, message)
-            log2(0, 5, message1, message2)
+            mstore(0x00, message)
+            log2(0x00, 0x05, message1, message2)
         }
 
         moduleProxy.testProxyLog2Topic();
@@ -125,8 +125,8 @@ contract BaseModuleTest is TBaseModule, Fixture {
         bytes32 message3 = bytes32(uint256(3));
 
         assembly {
-            mstore(0, message)
-            log3(0, 5, message1, message2, message3)
+            mstore(0x00, message)
+            log3(0x00, 0x05, message1, message2, message3)
         }
 
         moduleProxy.testProxyLog3Topic();
@@ -142,8 +142,8 @@ contract BaseModuleTest is TBaseModule, Fixture {
         bytes32 message4 = bytes32(uint256(4));
 
         assembly {
-            mstore(0, message)
-            log4(0, 5, message1, message2, message3, message4)
+            mstore(0x00, message)
+            log4(0x00, 0x05, message1, message2, message3, message4)
         }
 
         moduleProxy.testProxyLog4Topic();
