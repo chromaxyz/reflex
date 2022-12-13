@@ -123,12 +123,13 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
         assertEq(moduleV1Implementation, address(moduleV1));
         assertTrue(moduleProxy != address(0));
         assertTrue(
-            dispatcher.proxyAddressToTrust(moduleProxy).moduleId ==
+            dispatcher.proxyAddressToTrustRelation(moduleProxy).moduleId ==
                 _MOCK_MODULE_ID
         );
         assertTrue(
-            dispatcher.proxyAddressToTrust(moduleProxy).moduleImplementation ==
-                moduleV1Implementation
+            dispatcher
+                .proxyAddressToTrustRelation(moduleProxy)
+                .moduleImplementation == moduleV1Implementation
         );
     }
 
@@ -192,12 +193,13 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
         assertTrue(moduleV1Implementation != moduleV2Implementation);
         assertEq(moduleV2Implementation, address(moduleV2));
         assertTrue(
-            dispatcher.proxyAddressToTrust(moduleProxy).moduleId ==
+            dispatcher.proxyAddressToTrustRelation(moduleProxy).moduleId ==
                 _MOCK_MODULE_ID
         );
         assertTrue(
-            dispatcher.proxyAddressToTrust(moduleProxy).moduleImplementation ==
-                moduleV2Implementation
+            dispatcher
+                .proxyAddressToTrustRelation(moduleProxy)
+                .moduleImplementation == moduleV2Implementation
         );
     }
 
@@ -247,11 +249,13 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
             address(0)
         );
         assertEq(
-            dispatcher.proxyAddressToTrust(moduleProxy).moduleId,
+            dispatcher.proxyAddressToTrustRelation(moduleProxy).moduleId,
             uint32(0)
         );
         assertEq(
-            dispatcher.proxyAddressToTrust(moduleProxy).moduleImplementation,
+            dispatcher
+                .proxyAddressToTrustRelation(moduleProxy)
+                .moduleImplementation,
             address(0)
         );
     }

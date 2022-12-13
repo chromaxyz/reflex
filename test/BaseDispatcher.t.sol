@@ -34,7 +34,7 @@ contract BaseDispatcherTest is TBaseDispatcher, Fixture {
         );
 
         TBaseDispatcher.TrustRelation memory installerTrust = dispatcher
-            .proxyAddressToTrust(address(installerProxy));
+            .proxyAddressToTrustRelation(address(installerProxy));
 
         assertEq(installerTrust.moduleId, _INSTALLER_MODULE_ID);
         assertEq(address(installer), installerTrust.moduleImplementation);

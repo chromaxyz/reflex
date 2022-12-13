@@ -31,7 +31,7 @@ interface IBaseDispatcher is IBase, TBaseDispatcher {
 
     function name() external view returns (string memory);
 
-    function proxyAddressToTrust(
+    function proxyAddressToTrustRelation(
         address proxyAddress_
     ) external view returns (TrustRelation memory);
 }
