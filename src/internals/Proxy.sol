@@ -102,8 +102,6 @@ contract Proxy {
         } else {
             // Calldata: [calldata (N bytes)]
             assembly {
-                // TODO: optimize using fallback, potentially just use 24, not 28
-
                 // We take full control of memory in this inline assembly block because it will not return to Solidity code.
                 // We overwrite the Solidity scratch pad at memory position 0 with the `dispatch()` function signature,
                 // occuping the first 4 bytes.

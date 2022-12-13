@@ -82,7 +82,6 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
     // Fallback functions
     // ==================
 
-    // TODO: optimize to use fallback function, no need to shift payload then
     /**
      * @notice Dispatch function to module.
      */

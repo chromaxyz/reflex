@@ -75,6 +75,9 @@ contract BaseModuleTest is TBaseModule, Fixture {
         moduleMultiProxy = MockBaseModule(
             dispatcher.moduleIdToProxy(_MOCK_MODULE_MULTI_ID)
         );
+
+        // TODO: add multi proxy tests
+        // TODO: add internal proxy tests
     }
 
     // =====
