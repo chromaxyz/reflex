@@ -16,16 +16,15 @@ A first-generation Solidity framework for upgradeable modules.
 
 ```
 .
-├── BaseConstants.sol
+├── BaseDispatcher.sol
 ├── BaseModule.sol
 ├── BaseState.sol
-├── Dispatcher.sol
 ├── interfaces
+│   ├── IBaseDispatcher.sol
 │   ├── IBaseInstaller.sol
 │   ├── IBaseModule.sol
 │   ├── IBase.sol
-│   ├── IBaseState.sol
-│   └── IDispatcher.sol
+│   └── IBaseState.sol
 ├── internals
 │   ├── Base.sol
 │   └── Proxy.sol
