@@ -157,13 +157,13 @@ contract BaseModuleTest is TBaseModule, Fixture {
         bytes32 message = bytes32(abi.encodePacked(message_));
         uint256 messageLength = message_.length;
 
-        bytes32 message1 = bytes32(uint256(1));
+        bytes32 topic1 = bytes32(uint256(1));
 
         vm.expectEmit(false, false, false, true, address(moduleSingleProxy));
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
-            log1(ptr, messageLength, message1)
+            log1(ptr, messageLength, topic1)
         }
 
         moduleSingleProxy.testProxyLog1Topic(message_);
@@ -175,14 +175,14 @@ contract BaseModuleTest is TBaseModule, Fixture {
         bytes32 message = bytes32(abi.encodePacked(message_));
         uint256 messageLength = message_.length;
 
-        bytes32 message1 = bytes32(uint256(1));
-        bytes32 message2 = bytes32(uint256(2));
+        bytes32 topic1 = bytes32(uint256(1));
+        bytes32 topic2 = bytes32(uint256(2));
 
         vm.expectEmit(true, false, false, true, address(moduleSingleProxy));
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
-            log2(ptr, messageLength, message1, message2)
+            log2(ptr, messageLength, topic1, topic2)
         }
 
         moduleSingleProxy.testProxyLog2Topic(message_);
@@ -194,15 +194,15 @@ contract BaseModuleTest is TBaseModule, Fixture {
         bytes32 message = bytes32(abi.encodePacked(message_));
         uint256 messageLength = message_.length;
 
-        bytes32 message1 = bytes32(uint256(1));
-        bytes32 message2 = bytes32(uint256(2));
-        bytes32 message3 = bytes32(uint256(3));
+        bytes32 topic1 = bytes32(uint256(1));
+        bytes32 topic2 = bytes32(uint256(2));
+        bytes32 topic3 = bytes32(uint256(3));
 
         vm.expectEmit(true, true, false, true, address(moduleSingleProxy));
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
-            log3(ptr, messageLength, message1, message2, message3)
+            log3(ptr, messageLength, topic1, topic2, topic3)
         }
 
         moduleSingleProxy.testProxyLog3Topic(message_);
@@ -214,16 +214,16 @@ contract BaseModuleTest is TBaseModule, Fixture {
         bytes32 message = bytes32(abi.encodePacked(message_));
         uint256 messageLength = message_.length;
 
-        bytes32 message1 = bytes32(uint256(1));
-        bytes32 message2 = bytes32(uint256(2));
-        bytes32 message3 = bytes32(uint256(3));
-        bytes32 message4 = bytes32(uint256(4));
+        bytes32 topic1 = bytes32(uint256(1));
+        bytes32 topic2 = bytes32(uint256(2));
+        bytes32 topic3 = bytes32(uint256(3));
+        bytes32 topic4 = bytes32(uint256(4));
 
         vm.expectEmit(true, true, true, true, address(moduleSingleProxy));
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
-            log4(ptr, messageLength, message1, message2, message3, message4)
+            log4(ptr, messageLength, topic1, topic2, topic3, topic4)
         }
 
         moduleSingleProxy.testProxyLog4Topic(message_);
