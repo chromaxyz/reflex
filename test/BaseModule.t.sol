@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+// Vendor
+import {Vm} from "forge-std/Vm.sol";
+
 // Interfaces
 import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
 
@@ -140,15 +143,24 @@ contract BaseModuleTest is TBaseModule, Fixture {
         uint256 messageLength = message_.length;
         bytes32 message = bytes32(abi.encodePacked(message_));
 
-        // TODO: investigate how log0 + vm.expectEmit could work
-        // vm.expectEmit(false, false, false, false, address(moduleSingleProxy));
+        // NOTE: vm.expectEmit does not work as topic1 is checked implicitly.
+        // Therefore a workaround using record logs is being used to check manually.
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
             log0(ptr, messageLength)
         }
 
+        vm.recordLogs();
+
         moduleSingleProxy.testProxyLog0Topic(message_);
+
+        Vm.Log[] memory entries = vm.getRecordedLogs();
+
+        assertEq(entries.length, 1);
+        assertEq(entries[0].topics.length, 0);
+        assertEq(entries[0].data, message_);
+        assertEq(entries[0].emitter, address(moduleSingleProxy));
     }
 
     function testProxyLog1Topic(bytes memory message_) external {
