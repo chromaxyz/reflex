@@ -6,7 +6,7 @@ import {IBaseState} from "./interfaces/IBaseState.sol";
 
 /**
  * @title Base Constants
- * @dev Append-only extendable
+ * @dev Append-only extendable, only internal constants.
  */
 abstract contract BaseConstants {
     // =========
@@ -29,14 +29,14 @@ abstract contract BaseConstants {
     uint16 internal constant _PROXY_TYPE_INTERNAL_PROXY = 3;
 
     /**
-     * @dev Built-in upgradeable installer module.
+     * @dev Module id of built-in upgradeable installer module.
      */
     uint32 internal constant _BUILT_IN_MODULE_ID_INSTALLER = 1;
 }
 
 /**
  * @title Base State
- * @dev Append-only extendable
+ * @dev Append-only extendable.
  */
 abstract contract BaseState is IBaseState, BaseConstants {
     // =======
