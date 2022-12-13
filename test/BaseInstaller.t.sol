@@ -144,10 +144,18 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     function testAddModulesMultiProxy() external {
         address[] memory moduleAddresses = new address[](2);
         moduleAddresses[0] = address(
-            new MockModule(_EXTERNAL_SINGLE_PROXY_DELIMITER + 1, 1, 1)
+            new MockModule(
+                _EXTERNAL_SINGLE_PROXY_DELIMITER + 1,
+                _PROXY_TYPE_MULTI_PROXY,
+                1
+            )
         );
         moduleAddresses[1] = address(
-            new MockModule(_EXTERNAL_SINGLE_PROXY_DELIMITER + 2, 1, 1)
+            new MockModule(
+                _EXTERNAL_SINGLE_PROXY_DELIMITER + 2,
+                _PROXY_TYPE_MULTI_PROXY,
+                1
+            )
         );
         installerProxy.addModules(moduleAddresses);
 

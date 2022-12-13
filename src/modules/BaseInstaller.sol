@@ -97,12 +97,13 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         for (uint256 i = 0; i < moduleAddresses.length; ) {
             address moduleAddress = moduleAddresses[i];
             uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
+            uint16 moduleType_ = BaseModule(moduleAddress).moduleType();
             uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
 
             _modules[moduleId_] = moduleAddress;
 
-            if (moduleId_ <= _EXTERNAL_SINGLE_PROXY_DELIMITER) {
-                address proxyAddress = _createProxy(moduleId_);
+            if (moduleType_ == _PROXY_TYPE_SINGLE_PROXY) {
+                address proxyAddress = _createProxy(moduleId_, moduleType_);
                 _trusts[proxyAddress].moduleImplementation = moduleAddress;
             }
 
@@ -128,14 +129,15 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         for (uint256 i = 0; i < moduleAddresses.length; ) {
             address moduleAddress = moduleAddresses[i];
             uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
+            uint16 moduleType_ = BaseModule(moduleAddress).moduleType();
             uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
 
             if (_modules[moduleId_] == address(0)) revert ModuleNonexistent();
 
             _modules[moduleId_] = moduleAddress;
 
-            if (moduleId_ <= _EXTERNAL_SINGLE_PROXY_DELIMITER) {
-                address proxyAddress = _createProxy(moduleId_);
+            if (moduleType_ == _PROXY_TYPE_SINGLE_PROXY) {
+                address proxyAddress = _createProxy(moduleId_, moduleType_);
                 _trusts[proxyAddress].moduleImplementation = moduleAddress;
             }
 
@@ -161,17 +163,20 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         for (uint256 i = 0; i < moduleAddresses.length; ) {
             address moduleAddress = moduleAddresses[i];
             uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
+            uint16 moduleType_ = BaseModule(moduleAddress).moduleType();
             uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
 
             if (_modules[moduleId_] == address(0)) revert ModuleNonexistent();
 
-            if (moduleId_ <= _EXTERNAL_SINGLE_PROXY_DELIMITER) {
-                address proxyAddress = _createProxy(moduleId_);
+            if (moduleType_ == _PROXY_TYPE_SINGLE_PROXY) {
+                address proxyAddress = _createProxy(moduleId_, moduleType_);
                 delete _trusts[proxyAddress];
             }
 
-            if (moduleId_ <= _EXTERNAL_MULTI_PROXY_DELIMITER)
-                delete _proxies[moduleId_];
+            if (
+                moduleType_ == _PROXY_TYPE_SINGLE_PROXY ||
+                moduleType_ == _PROXY_TYPE_MULTI_PROXY
+            ) delete _proxies[moduleId_];
 
             delete _modules[moduleId_];
 

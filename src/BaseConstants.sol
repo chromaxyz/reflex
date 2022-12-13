@@ -13,14 +13,13 @@ abstract contract BaseConstants {
     // =========
 
     // Proxy types
-    uint32 internal constant _PROXY_TYPE_SINGLE_PROXY = 1;
-    uint32 internal constant _PROXY_TYPE_MULTI_PROXY = 2;
-    uint32 internal constant _PROXY_TYPE_INTERNAL_PROXY = 3;
+    uint16 internal constant _PROXY_TYPE_SINGLE_PROXY = 1;
+    uint16 internal constant _PROXY_TYPE_MULTI_PROXY = 2;
+    uint16 internal constant _PROXY_TYPE_INTERNAL_PROXY = 3;
 
     // External single-proxy components
     // These are modules that are only accessible by a single address.
     uint32 internal constant _MODULE_ID_INSTALLER = 1;
-    uint32 internal constant _MODULE_ID_LENS = 2;
     uint32 internal constant _EXTERNAL_SINGLE_PROXY_DELIMITER = 499_999;
 
     // External multi-proxy components

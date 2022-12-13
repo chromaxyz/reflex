@@ -10,8 +10,11 @@ import {Base} from "../../src/Base.sol";
 contract MockBase is Base {
     constructor() Base() {}
 
-    function createProxy(uint32 moduleId_) public returns (address) {
-        return _createProxy(moduleId_);
+    function createProxy(
+        uint32 moduleId_,
+        uint16 moduleType_
+    ) public returns (address) {
+        return _createProxy(moduleId_, moduleType_);
     }
 
     function unpackMessageSender() public pure returns (address) {

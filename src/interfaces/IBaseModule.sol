@@ -14,8 +14,6 @@ interface TBaseModule is TBase {
 
     error InvalidModuleVersion();
 
-    error InvalidModuleType();
-
     error Unauthorized();
 }
 

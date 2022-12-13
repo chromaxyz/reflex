@@ -36,12 +36,12 @@ contract BaseTest is TBase, Fixture {
 
     function testRevertCreateProxyInvalidModuleId() external {
         vm.expectRevert(InvalidModuleId.selector);
-        base.createProxy(uint32(0));
+        base.createProxy(uint32(0), uint16(0));
     }
 
     function testRevertCreateProxyInternalModule() external {
         vm.expectRevert(InternalModule.selector);
-        base.createProxy(_EXTERNAL_SINGLE_PROXY_DELIMITER + 1);
+        base.createProxy(5, _PROXY_TYPE_INTERNAL_PROXY);
     }
 
     // function testUnpackMessageSender() external {

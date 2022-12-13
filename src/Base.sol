@@ -23,18 +23,24 @@ abstract contract Base is IBase, BaseState {
      * @dev Create or return proxy by module id.
      * @param moduleId_ Module id.
      */
-    function _createProxy(uint32 moduleId_) internal virtual returns (address) {
+    function _createProxy(
+        uint32 moduleId_,
+        uint16 moduleType_
+    ) internal virtual returns (address) {
         if (moduleId_ == 0) revert InvalidModuleId();
+        if (moduleType_ == 0 || moduleType_ > _PROXY_TYPE_INTERNAL_PROXY)
+            revert InvalidModuleType();
 
-        if (moduleId_ > _EXTERNAL_SINGLE_PROXY_DELIMITER)
-            revert InternalModule();
+        if (moduleType_ == _PROXY_TYPE_INTERNAL_PROXY) revert InternalModule();
 
         if (_proxies[moduleId_] != address(0)) return _proxies[moduleId_];
 
         address proxyAddress = address(new Proxy());
 
-        if (moduleId_ <= _EXTERNAL_MULTI_PROXY_DELIMITER)
-            _proxies[moduleId_] = proxyAddress;
+        if (
+            moduleType_ == _PROXY_TYPE_SINGLE_PROXY ||
+            moduleType_ == _PROXY_TYPE_MULTI_PROXY
+        ) _proxies[moduleId_] = proxyAddress;
 
         _trusts[proxyAddress].moduleId = moduleId_;
 
