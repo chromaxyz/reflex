@@ -80,10 +80,11 @@ abstract contract BaseState is IBaseState, BaseConstants {
     mapping(address => TrustRelation) internal _trusts;
 
     /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
+     * @notice This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.
      * The size of the __gap array is calculated so that the amount of storage used by a
      * contract always adds up to the same number (in this case 50 storage slots).
+     * @dev Slot 6 (1440 bytes)
      */
     uint256[45] private __gap;
 }
