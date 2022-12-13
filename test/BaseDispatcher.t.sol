@@ -73,6 +73,4 @@ contract BaseDispatcherTest is TBaseDispatcher, Fixture {
         vm.expectRevert(MessageTooShort.selector);
         dispatcher.dispatch();
     }
-
-    // TODO: add test for moduleImplementation == 0
 }

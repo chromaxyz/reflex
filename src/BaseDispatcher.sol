@@ -104,7 +104,6 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         // 20 bytes for the trailing msg.sender.
         if (messageDataLength < 28) revert MessageTooShort();
 
-        // TODO: evaluate whether assembly block is memory safe and can be decorated as such
         // [dispatch() selector (4 bytes)][calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
             // Remove `dispatch` selector.
