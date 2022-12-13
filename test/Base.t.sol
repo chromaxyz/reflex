@@ -57,7 +57,14 @@ contract BaseTest is TBase, Fixture {
     //     base.unpackParameters();
     // }
 
-    function testRevertEmptyError() external {
+    function testRevertBytes(bytes memory errorMessage_) external {
+        vm.assume(errorMessage_.length > 0);
+
+        vm.expectRevert(errorMessage_);
+        base.revertBytes(errorMessage_);
+    }
+
+    function testRevertBytesEmptyError() external {
         vm.expectRevert(EmptyError.selector);
         base.revertBytes("");
     }
