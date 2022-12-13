@@ -45,50 +45,40 @@ contract MockBaseModule is BaseModule {
         _revertBytes(data);
     }
 
-    function testProxyLog0Topic() external {
-        bytes memory extraData = "hello";
-
-        _issueLogToProxy(abi.encodePacked(uint8(0), extraData));
+    function testProxyLog0Topic(bytes memory message_) external {
+        _issueLogToProxy(abi.encodePacked(uint8(0), message_));
     }
 
-    function testProxyLog1Topic() external {
-        bytes memory extraData = "hello";
-
+    function testProxyLog1Topic(bytes memory message_) external {
         _issueLogToProxy(
-            abi.encodePacked(uint8(1), bytes32(uint256(1)), extraData)
+            abi.encodePacked(uint8(1), bytes32(uint256(1)), message_)
         );
     }
 
-    function testProxyLog2Topic() external {
-        bytes memory extraData = "hello";
-
+    function testProxyLog2Topic(bytes memory message_) external {
         _issueLogToProxy(
             abi.encodePacked(
                 uint8(2),
                 bytes32(uint256(1)),
                 bytes32(uint256(2)),
-                extraData
+                message_
             )
         );
     }
 
-    function testProxyLog3Topic() external {
-        bytes memory extraData = "hello";
-
+    function testProxyLog3Topic(bytes memory message_) external {
         _issueLogToProxy(
             abi.encodePacked(
                 uint8(3),
                 bytes32(uint256(1)),
                 bytes32(uint256(2)),
                 bytes32(uint256(3)),
-                extraData
+                message_
             )
         );
     }
 
-    function testProxyLog4Topic() external {
-        bytes memory extraData = "hello";
-
+    function testProxyLog4Topic(bytes memory message_) external {
         _issueLogToProxy(
             abi.encodePacked(
                 uint8(4),
@@ -96,14 +86,12 @@ contract MockBaseModule is BaseModule {
                 bytes32(uint256(2)),
                 bytes32(uint256(3)),
                 bytes32(uint256(4)),
-                extraData
+                message_
             )
         );
     }
 
-    function testRevertProxyLogOutOfBounds() external {
-        bytes memory extraData = "hello";
-
+    function testRevertProxyLogOutOfBounds(bytes memory message_) external {
         _issueLogToProxy(
             abi.encodePacked(
                 uint8(5),
@@ -112,7 +100,7 @@ contract MockBaseModule is BaseModule {
                 bytes32(uint256(3)),
                 bytes32(uint256(4)),
                 bytes32(uint256(5)),
-                extraData
+                message_
             )
         );
     }

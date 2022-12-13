@@ -134,21 +134,21 @@ contract BaseModuleTest is TBaseModule, Fixture {
         moduleSingle.testRevertBytesCustomError(code, message);
     }
 
-    function testProxyLog0Topic() external {
-        bytes32 message = bytes32(abi.encodePacked("hello"));
+    function testProxyLog0Topic(bytes memory message_) external {
+        bytes32 message = bytes32(abi.encodePacked(message_));
 
         assembly {
             mstore(0x00, message)
             log0(0x00, 0x05)
         }
 
-        moduleSingleProxy.testProxyLog0Topic();
+        moduleSingleProxy.testProxyLog0Topic(message_);
     }
 
-    function testProxyLog1Topic() external {
+    function testProxyLog1Topic(bytes memory message_) external {
         vm.expectEmit(false, false, false, false);
 
-        bytes32 message = bytes32(abi.encodePacked("hello"));
+        bytes32 message = bytes32(abi.encodePacked(message_));
         bytes32 message1 = bytes32(uint256(1));
 
         assembly {
@@ -156,13 +156,13 @@ contract BaseModuleTest is TBaseModule, Fixture {
             log1(0x00, 0x05, message1)
         }
 
-        moduleSingleProxy.testProxyLog1Topic();
+        moduleSingleProxy.testProxyLog1Topic(message_);
     }
 
-    function testProxyLog2Topic() external {
+    function testProxyLog2Topic(bytes memory message_) external {
         vm.expectEmit(true, false, false, false);
 
-        bytes32 message = bytes32(abi.encodePacked("hello"));
+        bytes32 message = bytes32(abi.encodePacked(message_));
         bytes32 message1 = bytes32(uint256(1));
         bytes32 message2 = bytes32(uint256(2));
 
@@ -171,13 +171,13 @@ contract BaseModuleTest is TBaseModule, Fixture {
             log2(0x00, 0x05, message1, message2)
         }
 
-        moduleSingleProxy.testProxyLog2Topic();
+        moduleSingleProxy.testProxyLog2Topic(message_);
     }
 
-    function testProxyLog3Topic() external {
+    function testProxyLog3Topic(bytes memory message_) external {
         vm.expectEmit(true, true, false, false);
 
-        bytes32 message = bytes32(abi.encodePacked("hello"));
+        bytes32 message = bytes32(abi.encodePacked(message_));
         bytes32 message1 = bytes32(uint256(1));
         bytes32 message2 = bytes32(uint256(2));
         bytes32 message3 = bytes32(uint256(3));
@@ -187,13 +187,13 @@ contract BaseModuleTest is TBaseModule, Fixture {
             log3(0x00, 0x05, message1, message2, message3)
         }
 
-        moduleSingleProxy.testProxyLog3Topic();
+        moduleSingleProxy.testProxyLog3Topic(message_);
     }
 
-    function testProxyLog4Topic() external {
+    function testProxyLog4Topic(bytes memory message_) external {
         vm.expectEmit(true, true, true, false);
 
-        bytes32 message = bytes32(abi.encodePacked("hello"));
+        bytes32 message = bytes32(abi.encodePacked(message_));
         bytes32 message1 = bytes32(uint256(1));
         bytes32 message2 = bytes32(uint256(2));
         bytes32 message3 = bytes32(uint256(3));
@@ -204,12 +204,12 @@ contract BaseModuleTest is TBaseModule, Fixture {
             log4(0x00, 0x05, message1, message2, message3, message4)
         }
 
-        moduleSingleProxy.testProxyLog4Topic();
+        moduleSingleProxy.testProxyLog4Topic(message_);
     }
 
-    function testRevertProxyLogOutOfBounds() external {
+    function testRevertProxyLogOutOfBounds(bytes memory message_) external {
         vm.expectRevert(FailedToLog.selector);
-        moduleSingleProxy.testRevertProxyLogOutOfBounds();
+        moduleSingleProxy.testRevertProxyLogOutOfBounds(message_);
     }
 
     // ==================
