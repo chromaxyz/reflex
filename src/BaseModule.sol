@@ -26,11 +26,6 @@ abstract contract BaseModule is IBaseModule, Base {
      */
     uint16 private immutable _moduleVersion;
 
-    /**
-     * @notice Module type.
-     */
-    uint8 private immutable _moduleType;
-
     // =========
     // Modifiers
     // =========
@@ -53,16 +48,13 @@ abstract contract BaseModule is IBaseModule, Base {
     /**
      * @param moduleId_ Module id.
      * @param moduleVersion_ Module version.
-     * @param moduleType_ Module type.
      */
-    constructor(uint32 moduleId_, uint16 moduleVersion_, uint8 moduleType_) {
+    constructor(uint32 moduleId_, uint16 moduleVersion_) {
         if (moduleId_ == 0) revert InvalidModuleId();
         if (moduleVersion_ == 0) revert InvalidModuleVersion();
-        if (moduleType_ == 0) revert InvalidModuleType();
 
         _moduleId = moduleId_;
         _moduleVersion = moduleVersion_;
-        _moduleType = moduleType_;
     }
 
     // ==============
@@ -83,13 +75,5 @@ abstract contract BaseModule is IBaseModule, Base {
      */
     function moduleVersion() external view virtual override returns (uint16) {
         return _moduleVersion;
-    }
-
-    /**
-     * @notice Get module type.
-     * @return Module type.
-     */
-    function moduleType() external view virtual override returns (uint8) {
-        return _moduleType;
     }
 }
