@@ -63,6 +63,18 @@ contract BaseModuleTest is TBaseModule, Fixture {
     // Tests
     // =====
 
+    function testModuleId() external {
+        assertEq(module.moduleId(), _MOCK_MODULE_ID);
+    }
+
+    function testModuleType() external {
+        assertEq(module.moduleType(), _MOCK_MODULE_TYPE);
+    }
+
+    function testModuleVersion() external {
+        assertEq(module.moduleVersion(), _MOCK_MODULE_VERSION);
+    }
+
     function testRevertBytesCustomError(
         uint256 code,
         string memory message

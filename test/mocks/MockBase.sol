@@ -17,11 +17,15 @@ contract MockBase is Base {
         return _createProxy(moduleId_, moduleType_);
     }
 
-    function unpackMessageSender() public pure returns (address) {
-        return _unpackMessageSender();
-    }
+    // function unpackMessageSender() public pure returns (address) {
+    //     return _unpackMessageSender();
+    // }
 
-    function unpackParameters() public pure returns (address, address) {
-        return _unpackParameters();
+    // function unpackParameters() public pure returns (address, address) {
+    //     return _unpackParameters();
+    // }
+
+    function revertBytes(bytes memory errorMessage_) public pure {
+        return _revertBytes(errorMessage_);
     }
 }

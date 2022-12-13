@@ -103,18 +103,6 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
         installerProxy.transferOwnership(address(0));
     }
 
-    function testModuleId() external {
-        assertEq(moduleV1.moduleId(), _MOCK_MODULE_ID);
-    }
-
-    function testModuleType() external {
-        assertEq(moduleV1.moduleType(), _MOCK_MODULE_TYPE);
-    }
-
-    function testModuleVersion() external {
-        assertEq(moduleV1.moduleVersion(), _MOCK_MODULE_VERSION_V1);
-    }
-
     function testAddModules() public {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(moduleV1);
