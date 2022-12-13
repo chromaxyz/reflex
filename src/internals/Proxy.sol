@@ -28,8 +28,6 @@ contract Proxy {
     // Public functions
     // ================
 
-    // TODO: add test for log emittance (log0, log1, log2, log3, log4, test edge case)
-
     // solhint-disable-next-line no-complex-fallback
     fallback() external payable {
         address deployer_ = _deployer;
@@ -110,12 +108,12 @@ contract Proxy {
                 // We overwrite the Solidity scratch pad at memory position 0 with the `dispatch()` function signature,
                 // occuping the first 4 bytes.
                 mstore(
-                    0,
+                    0x00,
                     0xe9c4a3ac00000000000000000000000000000000000000000000000000000000
                 )
 
                 // Copy msg.data into memory, starting at position `4`.
-                calldatacopy(0x04, 0, calldatasize())
+                calldatacopy(0x04, 0x00, calldatasize())
 
                 // We store the address of the `msg.sender` at location `4 + calldatasize()`.
                 mstore(add(0x04, calldatasize()), shl(0x60, caller()))

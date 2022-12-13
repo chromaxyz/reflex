@@ -4,8 +4,6 @@ pragma solidity ^0.8.13;
 // Sources
 import {BaseModule} from "../../src/BaseModule.sol";
 
-// TODO: in progress
-
 /**
  * @title Mock Base Module
  */
