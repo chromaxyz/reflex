@@ -7,6 +7,8 @@ import {IDispatcher} from "./interfaces/IDispatcher.sol";
 // Sources
 import {Base} from "./Base.sol";
 
+// TODO: change name to BaseDispatcher?
+
 /**
  * @title Dispatcher
  * @dev Non-upgradeable
