@@ -12,7 +12,7 @@ import {BaseConstants} from "../../src/BaseConstants.sol";
 
 // Mocks
 import {MockBaseInstaller} from "../mocks/MockBaseInstaller.sol";
-import {MockDispatcher} from "../mocks/MockDispatcher.sol";
+import {MockBaseDispatcher} from "../mocks/MockBaseDispatcher.sol";
 
 /**
  * @title Fixture
@@ -35,7 +35,7 @@ abstract contract Fixture is Test, BaseConstants {
     // =======
 
     MockBaseInstaller public installer;
-    MockDispatcher public reflex;
+    MockBaseDispatcher public dispatcher;
     BaseInstaller public installerProxy;
 
     // =====
@@ -51,13 +51,13 @@ abstract contract Fixture is Test, BaseConstants {
             _INSTALLER_MODULE_TYPE,
             _INSTALLER_MODULE_VERSION
         );
-        reflex = new MockDispatcher(
+        dispatcher = new MockBaseDispatcher(
             "Dispatcher",
             address(this),
             address(installer)
         );
         installerProxy = BaseInstaller(
-            reflex.moduleIdToProxy(_INSTALLER_MODULE_ID)
+            dispatcher.moduleIdToProxy(_INSTALLER_MODULE_ID)
         );
     }
 }

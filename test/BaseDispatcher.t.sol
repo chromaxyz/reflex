@@ -2,15 +2,15 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TDispatcher} from "../src/interfaces/IDispatcher.sol";
+import {TBaseDispatcher} from "../src/interfaces/IBaseDispatcher.sol";
 
 // Fixtures
 import {Fixture} from "./fixtures/Fixture.sol";
 
 /**
- * @title Dispatcher Test
+ * @title Base Dispatcher Test
  */
-contract DispatcherTest is TDispatcher, Fixture {
+contract BaseDispatcherTest is TBaseDispatcher, Fixture {
     // =====
     // Setup
     // =====
@@ -24,16 +24,16 @@ contract DispatcherTest is TDispatcher, Fixture {
     // =====
 
     function testName() external {
-        assertEq(reflex.name(), "Dispatcher");
+        assertEq(dispatcher.name(), "Dispatcher");
     }
 
     function testInstallerConfiguration() external {
         assertEq(
-            reflex.moduleIdToImplementation(_INSTALLER_MODULE_ID),
+            dispatcher.moduleIdToImplementation(_INSTALLER_MODULE_ID),
             address(installer)
         );
 
-        TDispatcher.TrustRelation memory installerTrust = reflex
+        TBaseDispatcher.TrustRelation memory installerTrust = dispatcher
             .proxyAddressToTrust(address(installerProxy));
 
         assertEq(installerTrust.moduleId, _INSTALLER_MODULE_ID);
@@ -65,13 +65,13 @@ contract DispatcherTest is TDispatcher, Fixture {
 
     function testRevertDispatchCalledNotTrusted() external {
         vm.expectRevert(CallerNotTrusted.selector);
-        reflex.dispatch();
+        dispatcher.dispatch();
     }
 
     function testRevertDispatchMessageTooShort() external {
         vm.prank(address(installerProxy));
         vm.expectRevert(MessageTooShort.selector);
-        reflex.dispatch();
+        dispatcher.dispatch();
     }
 
     // TODO: add test for moduleImplementation == 0

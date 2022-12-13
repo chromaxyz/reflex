@@ -2,18 +2,16 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IDispatcher} from "./interfaces/IDispatcher.sol";
+import {IBaseDispatcher} from "./interfaces/IBaseDispatcher.sol";
 
-// Sources
-import {Base} from "./Base.sol";
-
-// TODO: change name to BaseDispatcher?
+// Internals
+import {Base} from "./internals/Base.sol";
 
 /**
- * @title Dispatcher
+ * @title Base Dispatcher
  * @dev Non-upgradeable
  */
-abstract contract Dispatcher is IDispatcher, Base {
+abstract contract BaseDispatcher is IBaseDispatcher, Base {
     // ===========
     // Constructor
     // ===========

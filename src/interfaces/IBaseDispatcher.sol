@@ -5,9 +5,9 @@ pragma solidity ^0.8.13;
 import {TBase, IBase} from "./IBase.sol";
 
 /**
- * @title Dispatcher Test Interface
+ * @title Base Dispatcher Test Interface
  */
-interface TDispatcher is TBase {
+interface TBaseDispatcher is TBase {
     // ======
     // Errors
     // ======
@@ -18,9 +18,9 @@ interface TDispatcher is TBase {
 }
 
 /**
- * @title Dispatcher Interface
+ * @title BaseDispatcher Interface
  */
-interface IDispatcher is IBase, TDispatcher {
+interface IBaseDispatcher is IBase, TBaseDispatcher {
     function dispatch() external payable;
 
     function moduleIdToImplementation(

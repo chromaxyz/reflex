@@ -127,18 +127,19 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
         );
         installerProxy.addModules(moduleAddresses);
 
-        address moduleV1Implementation = reflex.moduleIdToImplementation(
+        address moduleV1Implementation = dispatcher.moduleIdToImplementation(
             _MOCK_MODULE_ID
         );
-        address moduleProxy = reflex.moduleIdToProxy(_MOCK_MODULE_ID);
+        address moduleProxy = dispatcher.moduleIdToProxy(_MOCK_MODULE_ID);
 
         assertEq(moduleV1Implementation, address(moduleV1));
         assertTrue(moduleProxy != address(0));
         assertTrue(
-            reflex.proxyAddressToTrust(moduleProxy).moduleId == _MOCK_MODULE_ID
+            dispatcher.proxyAddressToTrust(moduleProxy).moduleId ==
+                _MOCK_MODULE_ID
         );
         assertTrue(
-            reflex.proxyAddressToTrust(moduleProxy).moduleImplementation ==
+            dispatcher.proxyAddressToTrust(moduleProxy).moduleImplementation ==
                 moduleV1Implementation
         );
     }
@@ -153,10 +154,10 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
         );
         installerProxy.addModules(moduleAddresses);
 
-        assertEq(reflex.moduleIdToProxy(2), reflex.moduleIdToProxy(3));
+        assertEq(dispatcher.moduleIdToProxy(2), dispatcher.moduleIdToProxy(3));
         assertTrue(
-            reflex.moduleIdToImplementation(2) !=
-                reflex.moduleIdToImplementation(3)
+            dispatcher.moduleIdToImplementation(2) !=
+                dispatcher.moduleIdToImplementation(3)
         );
     }
 
@@ -170,7 +171,7 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
 
     function testRevertNonModuleIdContract() external {
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(reflex);
+        moduleAddresses[0] = address(dispatcher);
 
         vm.expectRevert();
         installerProxy.addModules(moduleAddresses);
@@ -179,10 +180,10 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     function testUpgradeModules() external {
         testAddModules();
 
-        address moduleV1Implementation = reflex.moduleIdToImplementation(
+        address moduleV1Implementation = dispatcher.moduleIdToImplementation(
             _MOCK_MODULE_ID
         );
-        address moduleProxy = reflex.moduleIdToProxy(_MOCK_MODULE_ID);
+        address moduleProxy = dispatcher.moduleIdToProxy(_MOCK_MODULE_ID);
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(moduleV2);
@@ -195,18 +196,19 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
         );
         installerProxy.upgradeModules(moduleAddresses);
 
-        address moduleV2Implementation = reflex.moduleIdToImplementation(
+        address moduleV2Implementation = dispatcher.moduleIdToImplementation(
             _MOCK_MODULE_ID
         );
 
-        assertEq(moduleProxy, reflex.moduleIdToProxy(_MOCK_MODULE_ID));
+        assertEq(moduleProxy, dispatcher.moduleIdToProxy(_MOCK_MODULE_ID));
         assertTrue(moduleV1Implementation != moduleV2Implementation);
         assertEq(moduleV2Implementation, address(moduleV2));
         assertTrue(
-            reflex.proxyAddressToTrust(moduleProxy).moduleId == _MOCK_MODULE_ID
+            dispatcher.proxyAddressToTrust(moduleProxy).moduleId ==
+                _MOCK_MODULE_ID
         );
         assertTrue(
-            reflex.proxyAddressToTrust(moduleProxy).moduleImplementation ==
+            dispatcher.proxyAddressToTrust(moduleProxy).moduleImplementation ==
                 moduleV2Implementation
         );
     }
@@ -229,7 +231,7 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
 
     function testRevertUpgradeModulesNonModuleIdContract() external {
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(reflex);
+        moduleAddresses[0] = address(dispatcher);
 
         vm.expectRevert();
         installerProxy.upgradeModules(moduleAddresses);
@@ -238,7 +240,7 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     function testRemoveModules() external {
         testAddModules();
 
-        address moduleProxy = reflex.moduleIdToProxy(_MOCK_MODULE_ID);
+        address moduleProxy = dispatcher.moduleIdToProxy(_MOCK_MODULE_ID);
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(moduleV1);
@@ -251,11 +253,17 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
         );
         installerProxy.removeModules(moduleAddresses);
 
-        assertEq(reflex.moduleIdToProxy(_MOCK_MODULE_ID), address(0));
-        assertEq(reflex.moduleIdToImplementation(_MOCK_MODULE_ID), address(0));
-        assertEq(reflex.proxyAddressToTrust(moduleProxy).moduleId, uint32(0));
+        assertEq(dispatcher.moduleIdToProxy(_MOCK_MODULE_ID), address(0));
         assertEq(
-            reflex.proxyAddressToTrust(moduleProxy).moduleImplementation,
+            dispatcher.moduleIdToImplementation(_MOCK_MODULE_ID),
+            address(0)
+        );
+        assertEq(
+            dispatcher.proxyAddressToTrust(moduleProxy).moduleId,
+            uint32(0)
+        );
+        assertEq(
+            dispatcher.proxyAddressToTrust(moduleProxy).moduleImplementation,
             address(0)
         );
     }
@@ -278,7 +286,7 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
 
     function testRevertRemoveModulesNonModuleIdContract() external {
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(reflex);
+        moduleAddresses[0] = address(dispatcher);
 
         vm.expectRevert();
         installerProxy.removeModules(moduleAddresses);
