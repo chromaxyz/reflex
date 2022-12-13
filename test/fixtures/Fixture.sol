@@ -8,7 +8,7 @@ import {Test} from "forge-std/Test.sol";
 import {BaseInstaller} from "../../src/modules/BaseInstaller.sol";
 
 // Sources
-import {BaseConstants} from "../../src/BaseConstants.sol";
+import {BaseConstants} from "../../src/BaseState.sol";
 
 // Mocks
 import {MockBaseInstaller} from "../mocks/MockBaseInstaller.sol";
