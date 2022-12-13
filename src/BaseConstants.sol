@@ -6,11 +6,16 @@ pragma solidity ^0.8.13;
  * @dev Append-only extendable
  */
 abstract contract BaseConstants {
-    // TODO: replace delimiters with enum, like Balancer V2 differentiating between pools
+    // TODO: replace delimiters with enum or constants, like Balancer V2 differentiating between pools
 
     // =========
     // Constants
     // =========
+
+    // Proxy types
+    uint32 internal constant _PROXY_TYPE_SINGLE_PROXY = 1;
+    uint32 internal constant _PROXY_TYPE_MULTI_PROXY = 2;
+    uint32 internal constant _PROXY_TYPE_INTERNAL_PROXY = 3;
 
     // External single-proxy components
     // These are modules that are only accessible by a single address.
