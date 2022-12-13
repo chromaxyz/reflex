@@ -18,13 +18,10 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_ID_MOCK_MODULE = 100;
-    uint16 internal constant _MODULE_ID_MOCK_MODULE_TYPE_V1 =
-        _PROXY_TYPE_SINGLE_PROXY;
-    uint16 internal constant _MODULE_ID_MOCK_MODULE_TYPE_V2 =
-        _PROXY_TYPE_SINGLE_PROXY;
-    uint16 internal constant _MODULE_ID_MOCK_MODULE_VERSION_V1 = 1;
-    uint16 internal constant _MODULE_ID_MOCK_MODULE_VERSION_V2 = 2;
+    uint32 internal constant _MOCK_MODULE_ID = 100;
+    uint16 internal constant _MOCK_MODULE_TYPE = _PROXY_TYPE_SINGLE_PROXY;
+    uint16 internal constant _MOCK_MODULE_VERSION_V1 = 1;
+    uint16 internal constant _MOCK_MODULE_VERSION_V2 = 2;
 
     // =======
     // Storage
@@ -41,15 +38,15 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
         super.setUp();
 
         moduleV1 = new MockModule(
-            _MODULE_ID_MOCK_MODULE,
-            _MODULE_ID_MOCK_MODULE_TYPE_V1,
-            _MODULE_ID_MOCK_MODULE_VERSION_V1
+            _MOCK_MODULE_ID,
+            _MOCK_MODULE_TYPE,
+            _MOCK_MODULE_VERSION_V1
         );
 
         moduleV2 = new MockModule(
-            _MODULE_ID_MOCK_MODULE,
-            _MODULE_ID_MOCK_MODULE_TYPE_V2,
-            _MODULE_ID_MOCK_MODULE_VERSION_V2
+            _MOCK_MODULE_ID,
+            _MOCK_MODULE_TYPE,
+            _MOCK_MODULE_VERSION_V2
         );
     }
 
@@ -107,15 +104,15 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     }
 
     function testModuleId() external {
-        assertEq(moduleV1.moduleId(), _MODULE_ID_MOCK_MODULE);
+        assertEq(moduleV1.moduleId(), _MOCK_MODULE_ID);
     }
 
     function testModuleType() external {
-        assertEq(moduleV1.moduleType(), _MODULE_ID_MOCK_MODULE_TYPE_V1);
+        assertEq(moduleV1.moduleType(), _MOCK_MODULE_TYPE);
     }
 
     function testModuleVersion() external {
-        assertEq(moduleV1.moduleVersion(), _MODULE_ID_MOCK_MODULE_VERSION_V1);
+        assertEq(moduleV1.moduleVersion(), _MOCK_MODULE_VERSION_V1);
     }
 
     function testAddModules() public {
@@ -124,22 +121,21 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
 
         vm.expectEmit(true, true, false, false);
         emit ModuleAdded(
-            _MODULE_ID_MOCK_MODULE,
+            _MOCK_MODULE_ID,
             address(moduleV1),
-            _MODULE_ID_MOCK_MODULE_VERSION_V1
+            _MOCK_MODULE_VERSION_V1
         );
         installerProxy.addModules(moduleAddresses);
 
         address moduleV1Implementation = reflex.moduleIdToImplementation(
-            _MODULE_ID_MOCK_MODULE
+            _MOCK_MODULE_ID
         );
-        address moduleProxy = reflex.moduleIdToProxy(_MODULE_ID_MOCK_MODULE);
+        address moduleProxy = reflex.moduleIdToProxy(_MOCK_MODULE_ID);
 
         assertEq(moduleV1Implementation, address(moduleV1));
         assertTrue(moduleProxy != address(0));
         assertTrue(
-            reflex.proxyAddressToTrust(moduleProxy).moduleId ==
-                _MODULE_ID_MOCK_MODULE
+            reflex.proxyAddressToTrust(moduleProxy).moduleId == _MOCK_MODULE_ID
         );
         assertTrue(
             reflex.proxyAddressToTrust(moduleProxy).moduleImplementation ==
@@ -184,31 +180,30 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
         testAddModules();
 
         address moduleV1Implementation = reflex.moduleIdToImplementation(
-            _MODULE_ID_MOCK_MODULE
+            _MOCK_MODULE_ID
         );
-        address moduleProxy = reflex.moduleIdToProxy(_MODULE_ID_MOCK_MODULE);
+        address moduleProxy = reflex.moduleIdToProxy(_MOCK_MODULE_ID);
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(moduleV2);
 
         vm.expectEmit(true, true, false, false);
         emit ModuleUpgraded(
-            _MODULE_ID_MOCK_MODULE,
+            _MOCK_MODULE_ID,
             address(moduleV2),
-            _MODULE_ID_MOCK_MODULE_VERSION_V1
+            _MOCK_MODULE_VERSION_V1
         );
         installerProxy.upgradeModules(moduleAddresses);
 
         address moduleV2Implementation = reflex.moduleIdToImplementation(
-            _MODULE_ID_MOCK_MODULE
+            _MOCK_MODULE_ID
         );
 
-        assertEq(moduleProxy, reflex.moduleIdToProxy(_MODULE_ID_MOCK_MODULE));
+        assertEq(moduleProxy, reflex.moduleIdToProxy(_MOCK_MODULE_ID));
         assertTrue(moduleV1Implementation != moduleV2Implementation);
         assertEq(moduleV2Implementation, address(moduleV2));
         assertTrue(
-            reflex.proxyAddressToTrust(moduleProxy).moduleId ==
-                _MODULE_ID_MOCK_MODULE
+            reflex.proxyAddressToTrust(moduleProxy).moduleId == _MOCK_MODULE_ID
         );
         assertTrue(
             reflex.proxyAddressToTrust(moduleProxy).moduleImplementation ==
@@ -243,24 +238,21 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     function testRemoveModules() external {
         testAddModules();
 
-        address moduleProxy = reflex.moduleIdToProxy(_MODULE_ID_MOCK_MODULE);
+        address moduleProxy = reflex.moduleIdToProxy(_MOCK_MODULE_ID);
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(moduleV1);
 
         vm.expectEmit(true, true, false, false);
         emit ModuleRemoved(
-            _MODULE_ID_MOCK_MODULE,
+            _MOCK_MODULE_ID,
             address(moduleV1),
-            _MODULE_ID_MOCK_MODULE_VERSION_V1
+            _MOCK_MODULE_VERSION_V1
         );
         installerProxy.removeModules(moduleAddresses);
 
-        assertEq(reflex.moduleIdToProxy(_MODULE_ID_MOCK_MODULE), address(0));
-        assertEq(
-            reflex.moduleIdToImplementation(_MODULE_ID_MOCK_MODULE),
-            address(0)
-        );
+        assertEq(reflex.moduleIdToProxy(_MOCK_MODULE_ID), address(0));
+        assertEq(reflex.moduleIdToImplementation(_MOCK_MODULE_ID), address(0));
         assertEq(reflex.proxyAddressToTrust(moduleProxy).moduleId, uint32(0));
         assertEq(
             reflex.proxyAddressToTrust(moduleProxy).moduleImplementation,
