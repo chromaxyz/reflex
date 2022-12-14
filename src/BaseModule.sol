@@ -22,14 +22,14 @@ abstract contract BaseModule is IBaseModule, Base {
     uint32 private immutable _moduleId;
 
     /**
-     * @notice Module version.
-     */
-    uint16 private immutable _moduleVersion;
-
-    /**
      * @notice Module type.
      */
     uint16 private immutable _moduleType;
+
+    /**
+     * @notice Module version.
+     */
+    uint16 private immutable _moduleVersion;
 
     // =========
     // Modifiers
@@ -57,7 +57,7 @@ abstract contract BaseModule is IBaseModule, Base {
      */
     constructor(uint32 moduleId_, uint16 moduleType_, uint16 moduleVersion_) {
         if (moduleId_ == 0) revert InvalidModuleId();
-        if (moduleType_ == 0) revert InvalidModuleType();
+        if (moduleType_ == 0 || moduleType_ > 3) revert InvalidModuleType();
         if (moduleVersion_ == 0) revert InvalidModuleVersion();
 
         _moduleId = moduleId_;
