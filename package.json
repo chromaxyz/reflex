@@ -2,7 +2,7 @@
   "name": "reflex",
   "description": "A first-generation Solidity framework for upgradeable modules.",
   "version": "0.1.0",
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0-only",
   "private": true,
   "scripts": {
     "lint:check": "prettier --check 'src/**/*.sol' && solhint --config .solhint.json 'src/**/*.sol'",
