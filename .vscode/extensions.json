@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "EditorConfig.EditorConfig",
+    "eamodio.gitlens",
+    "esbenp.prettier-vscode",
+    "JuanBlanco.solidity",
+    "ryanluker.vscode-coverage-gutters"
+  ]
+}
