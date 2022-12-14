@@ -49,20 +49,6 @@ contract BaseTest is TBase, Fixture {
         base.createProxy(102, _MODULE_TYPE_INTERNAL);
     }
 
-    // TODO: add tests
-
-    // function testCallInternalModule() external {
-    //     base.callInternalModule(moduleId_, input_);
-    // }
-
-    // function testUnpackMessageSender() external {
-    //     base.unpackMessageSender();
-    // }
-
-    // function testUnpackMessageParameters() external {
-    //     base.unpackParameters();
-    // }
-
     function testRevertBytes(bytes memory errorMessage_) external {
         vm.assume(errorMessage_.length > 0);
 

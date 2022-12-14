@@ -82,4 +82,18 @@ contract BaseModuleTest is TBaseModule, Fixture {
             _MOCK_MODULE_INVALID_VERSION
         );
     }
+
+    // TODO: add tests
+
+    // function testCallInternalModule() external {
+    //     base.callInternalModule(moduleId_, input_);
+    // }
+
+    // function testUnpackMessageSender() external {
+    //     base.unpackMessageSender();
+    // }
+
+    // function testUnpackMessageParameters() external {
+    //     base.unpackParameters();
+    // }
 }

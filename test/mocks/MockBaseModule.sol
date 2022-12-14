@@ -4,10 +4,13 @@ pragma solidity ^0.8.13;
 // Sources
 import {BaseModule} from "../../src/BaseModule.sol";
 
+// Mocks
+import {MockBase} from "./MockBase.sol";
+
 /**
  * @title Mock Base Module
  */
-contract MockBaseModule is BaseModule {
+contract MockBaseModule is BaseModule, MockBase {
     // ===========
     // Constructor
     // ===========
