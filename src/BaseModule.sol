@@ -57,7 +57,8 @@ abstract contract BaseModule is IBaseModule, Base {
      */
     constructor(uint32 moduleId_, uint16 moduleType_, uint16 moduleVersion_) {
         if (moduleId_ == 0) revert InvalidModuleId();
-        if (moduleType_ == 0 || moduleType_ > 3) revert InvalidModuleType();
+        if (moduleType_ == 0 || moduleType_ > _MODULE_TYPE_INTERNAL)
+            revert InvalidModuleType();
         if (moduleVersion_ == 0) revert InvalidModuleVersion();
 
         _moduleId = moduleId_;
