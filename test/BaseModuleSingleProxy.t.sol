@@ -17,12 +17,6 @@ import {MockBaseModule, ICustomError} from "./mocks/MockBaseModule.sol";
  * @title Base Module Single Proxy Test
  */
 contract BaseModuleSingleProxyTest is TBaseModule, Fixture {
-    // ======
-    // Errors
-    // ======
-
-    error FailedToLog();
-
     // =========
     // Constants
     // =========

@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Vendor
-import {console2} from "forge-std/console2.sol";
-import {Vm} from "forge-std/Vm.sol";
-
 // Interfaces
 import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
 
@@ -12,18 +8,12 @@ import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
 import {Fixture} from "./fixtures/Fixture.sol";
 
 // Mocks
-import {MockBaseModule, ICustomError} from "./mocks/MockBaseModule.sol";
+import {MockBaseModule} from "./mocks/MockBaseModule.sol";
 
 /**
  * @title Base Module Multi Proxy Test
  */
 contract BaseModuleMultiProxyTest is TBaseModule, Fixture {
-    // ======
-    // Errors
-    // ======
-
-    error FailedToLog();
-
     // =========
     // Constants
     // =========

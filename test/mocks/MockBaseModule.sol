@@ -8,12 +8,6 @@ import {BaseModule} from "../../src/BaseModule.sol";
  * @title Mock Base Module
  */
 contract MockBaseModule is BaseModule {
-    // ======
-    // Errors
-    // ======
-
-    error FailedToLog();
-
     // ===========
     // Constructor
     // ===========
