@@ -19,7 +19,7 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     // =========
 
     uint32 internal constant _MOCK_MODULE_ID = 100;
-    uint16 internal constant _MOCK_MODULE_TYPE = _PROXY_TYPE_SINGLE_PROXY;
+    uint16 internal constant _MOCK_MODULE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
     uint16 internal constant _MOCK_MODULE_VERSION_V1 = 1;
     uint16 internal constant _MOCK_MODULE_VERSION_V2 = 2;
 
@@ -136,10 +136,10 @@ contract BaseInstallerTest is TBaseInstaller, Fixture {
     function testAddModulesMultiProxy() external {
         address[] memory moduleAddresses = new address[](2);
         moduleAddresses[0] = address(
-            new MockBaseModule(2, _PROXY_TYPE_MULTI_PROXY, 1)
+            new MockBaseModule(2, _MODULE_TYPE_MULTI_PROXY, 1)
         );
         moduleAddresses[1] = address(
-            new MockBaseModule(3, _PROXY_TYPE_MULTI_PROXY, 1)
+            new MockBaseModule(3, _MODULE_TYPE_MULTI_PROXY, 1)
         );
         installerProxy.addModules(moduleAddresses);
 

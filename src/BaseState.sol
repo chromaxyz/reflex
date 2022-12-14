@@ -16,17 +16,17 @@ abstract contract BaseConstants {
     /**
      * @dev These are modules that are only accessible by a single address.
      */
-    uint16 internal constant _PROXY_TYPE_SINGLE_PROXY = 1;
+    uint16 internal constant _MODULE_TYPE_SINGLE_PROXY = 1;
 
     /**
      * @dev These are modules that have many addresses.
      */
-    uint16 internal constant _PROXY_TYPE_MULTI_PROXY = 2;
+    uint16 internal constant _MODULE_TYPE_MULTI_PROXY = 2;
 
     /**
      * @dev These are modules that are called internally by the system and don't have any public proxies.
      */
-    uint16 internal constant _PROXY_TYPE_INTERNAL_PROXY = 3;
+    uint16 internal constant _MODULE_TYPE_INTERNAL = 3;
 
     /**
      * @dev Module id of built-in upgradeable installer module.

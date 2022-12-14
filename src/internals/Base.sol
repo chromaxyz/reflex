@@ -28,18 +28,18 @@ abstract contract Base is IBase, BaseState {
         uint16 moduleType_
     ) internal virtual returns (address) {
         if (moduleId_ == 0) revert InvalidModuleId();
-        if (moduleType_ == 0 || moduleType_ > _PROXY_TYPE_INTERNAL_PROXY)
+        if (moduleType_ == 0 || moduleType_ > _MODULE_TYPE_INTERNAL)
             revert InvalidModuleType();
 
-        if (moduleType_ == _PROXY_TYPE_INTERNAL_PROXY) revert InternalModule();
+        if (moduleType_ == _MODULE_TYPE_INTERNAL) revert InternalModule();
 
         if (_proxies[moduleId_] != address(0)) return _proxies[moduleId_];
 
         address proxyAddress = address(new Proxy());
 
         if (
-            moduleType_ == _PROXY_TYPE_SINGLE_PROXY ||
-            moduleType_ == _PROXY_TYPE_MULTI_PROXY
+            moduleType_ == _MODULE_TYPE_SINGLE_PROXY ||
+            moduleType_ == _MODULE_TYPE_MULTI_PROXY
         ) _proxies[moduleId_] = proxyAddress;
 
         _trusts[proxyAddress].moduleId = moduleId_;

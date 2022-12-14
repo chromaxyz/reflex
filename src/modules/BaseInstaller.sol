@@ -17,15 +17,17 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     // ===========
 
     /**
-     * @param moduleId_ Module id.
-     * @param moduleType_ Module type.
      * @param moduleVersion_ Module version.
      */
     constructor(
-        uint32 moduleId_,
-        uint16 moduleType_,
         uint16 moduleVersion_
-    ) BaseModule(moduleId_, moduleType_, moduleVersion_) {}
+    )
+        BaseModule(
+            _BUILT_IN_MODULE_ID_INSTALLER,
+            _MODULE_TYPE_SINGLE_PROXY,
+            moduleVersion_
+        )
+    {}
 
     // ==============
     // View functions
@@ -104,7 +106,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
             _modules[moduleId_] = moduleAddress;
 
-            if (moduleType_ == _PROXY_TYPE_SINGLE_PROXY) {
+            if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) {
                 address proxyAddress = _createProxy(moduleId_, moduleType_);
                 _trusts[proxyAddress].moduleImplementation = moduleAddress;
             }
@@ -138,7 +140,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
             _modules[moduleId_] = moduleAddress;
 
-            if (moduleType_ == _PROXY_TYPE_SINGLE_PROXY) {
+            if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) {
                 address proxyAddress = _createProxy(moduleId_, moduleType_);
                 _trusts[proxyAddress].moduleImplementation = moduleAddress;
             }
@@ -170,14 +172,14 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
             if (_modules[moduleId_] == address(0)) revert ModuleNonexistent();
 
-            if (moduleType_ == _PROXY_TYPE_SINGLE_PROXY) {
+            if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) {
                 address proxyAddress = _createProxy(moduleId_, moduleType_);
                 delete _trusts[proxyAddress];
             }
 
             if (
-                moduleType_ == _PROXY_TYPE_SINGLE_PROXY ||
-                moduleType_ == _PROXY_TYPE_MULTI_PROXY
+                moduleType_ == _MODULE_TYPE_SINGLE_PROXY ||
+                moduleType_ == _MODULE_TYPE_MULTI_PROXY
             ) delete _proxies[moduleId_];
 
             delete _modules[moduleId_];

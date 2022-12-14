@@ -25,9 +25,6 @@ abstract contract Fixture is Test, BaseConstants {
     address internal constant _ALICE = address(0xAAAA);
     address internal constant _BOB = address(0xBBBB);
 
-    uint32 internal constant _INSTALLER_MODULE_ID =
-        _BUILT_IN_MODULE_ID_INSTALLER;
-    uint16 internal constant _INSTALLER_MODULE_TYPE = _PROXY_TYPE_SINGLE_PROXY;
     uint16 internal constant _INSTALLER_MODULE_VERSION = 1;
 
     // =======
@@ -46,18 +43,14 @@ abstract contract Fixture is Test, BaseConstants {
         vm.label(_ALICE, "Alice");
         vm.label(_BOB, "Bob");
 
-        installer = new MockBaseInstaller(
-            _INSTALLER_MODULE_ID,
-            _INSTALLER_MODULE_TYPE,
-            _INSTALLER_MODULE_VERSION
-        );
+        installer = new MockBaseInstaller(_INSTALLER_MODULE_VERSION);
         dispatcher = new MockBaseDispatcher(
             "Dispatcher",
             address(this),
             address(installer)
         );
         installerProxy = BaseInstaller(
-            dispatcher.moduleIdToProxy(_INSTALLER_MODULE_ID)
+            dispatcher.moduleIdToProxy(_BUILT_IN_MODULE_ID_INSTALLER)
         );
     }
 }
