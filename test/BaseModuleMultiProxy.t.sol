@@ -59,15 +59,17 @@ contract BaseModuleMultiProxyTest is TBaseModule, Fixture {
         moduleMultiProxy = MockBaseModule(
             dispatcher.moduleIdToProxy(_MOCK_MODULE_MULTI_ID)
         );
-
-        assertTrue(
-            dispatcher.moduleIdToProxy(_MOCK_MODULE_MULTI_ID) == address(0)
-        );
     }
 
     // =====
     // Tests
     // =====
+
+    function testModuleMultiProxyZeroAddress() external {
+        assertTrue(
+            dispatcher.moduleIdToProxy(_MOCK_MODULE_MULTI_ID) == address(0)
+        );
+    }
 
     // TODO: add tests
 }
