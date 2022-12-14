@@ -62,6 +62,18 @@ contract BaseModuleInternalTest is TBaseModule, Fixture {
     // Tests
     // =====
 
+    function testModuleId() external {
+        assertEq(moduleInternal.moduleId(), _MOCK_MODULE_INTERNAL_ID);
+    }
+
+    function testModuleType() external {
+        assertEq(moduleInternal.moduleType(), _MOCK_MODULE_INTERNAL_TYPE);
+    }
+
+    function testModuleVersion() external {
+        assertEq(moduleInternal.moduleVersion(), _MOCK_MODULE_INTERNAL_VERSION);
+    }
+
     function testModuleInternalZeroAddress() external {
         assertTrue(
             dispatcher.moduleIdToProxy(_MOCK_MODULE_INTERNAL_ID) == address(0)

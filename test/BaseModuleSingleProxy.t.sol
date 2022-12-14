@@ -66,17 +66,33 @@ contract BaseModuleSingleProxyTest is TBaseModule, Fixture {
     // =====
 
     function testModuleId() external {
+        assertEq(moduleSingle.moduleId(), _MOCK_MODULE_SINGLE_ID);
         assertEq(moduleSingleProxy.moduleId(), _MOCK_MODULE_SINGLE_ID);
     }
 
     function testModuleType() external {
+        assertEq(moduleSingle.moduleType(), _MOCK_MODULE_SINGLE_TYPE);
         assertEq(moduleSingleProxy.moduleType(), _MOCK_MODULE_SINGLE_TYPE);
     }
 
     function testModuleVersion() external {
+        assertEq(moduleSingle.moduleVersion(), _MOCK_MODULE_SINGLE_VERSION);
         assertEq(
             moduleSingleProxy.moduleVersion(),
             _MOCK_MODULE_SINGLE_VERSION
+        );
+    }
+
+    function testModuleSingleProxyNonZeroAddress() external {
+        assertTrue(
+            dispatcher.moduleIdToProxy(_MOCK_MODULE_SINGLE_ID) != address(0)
+        );
+    }
+
+    function testModuleSingleProxyImplementation() external {
+        assertTrue(
+            dispatcher.moduleIdToImplementation(_MOCK_MODULE_SINGLE_ID) ==
+                address(moduleSingle)
         );
     }
 
