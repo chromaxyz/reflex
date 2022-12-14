@@ -37,8 +37,8 @@ A first-generation Solidity framework for upgradeable modules.
 These contracts were inspired by or directly modified from many sources, primarily:
 
 - [Euler](https://github.com/euler-xyz/euler-contracts)
-- [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
 - [Balancer V2](https://github.com/balancer-labs/balancer-v2-monorepo/tree/master/pkg/vault/contracts)
+- [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
 
 ## License
 
