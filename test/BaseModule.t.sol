@@ -85,15 +85,19 @@ contract BaseModuleTest is TBaseModule, Fixture {
 
     // TODO: add tests
 
+    // function testCreateProxy() external {
+    //
+    // }
+
     // function testCallInternalModule() external {
-    //     base.callInternalModule(moduleId_, input_);
+    //     module.callInternalModule(moduleId_, input_);
     // }
 
-    // function testUnpackMessageSender() external {
-    //     base.unpackMessageSender();
-    // }
+    //     function testUnpackMessageSender() external {
+    //         module.unpackMessageSender();
+    //     }
 
-    // function testUnpackMessageParameters() external {
-    //     base.unpackParameters();
-    // }
+    //     function testUnpackMessageParameters() external {
+    //         module.unpackParameters();
+    //     }
 }
