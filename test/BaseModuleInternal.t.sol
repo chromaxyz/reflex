@@ -62,6 +62,19 @@ contract BaseModuleInternalTest is TBaseModule, Fixture {
     // Tests
     // =====
 
+    function testProxyZeroAddress() external {
+        assertTrue(
+            dispatcher.moduleIdToProxy(_MOCK_MODULE_INTERNAL_ID) == address(0)
+        );
+    }
+
+    function testModuleImplementation() external {
+        assertTrue(
+            dispatcher.moduleIdToImplementation(_MOCK_MODULE_INTERNAL_ID) ==
+                address(moduleInternal)
+        );
+    }
+
     function testModuleId() external {
         assertEq(moduleInternal.moduleId(), _MOCK_MODULE_INTERNAL_ID);
     }
@@ -72,19 +85,6 @@ contract BaseModuleInternalTest is TBaseModule, Fixture {
 
     function testModuleVersion() external {
         assertEq(moduleInternal.moduleVersion(), _MOCK_MODULE_INTERNAL_VERSION);
-    }
-
-    function testModuleInternalZeroAddress() external {
-        assertTrue(
-            dispatcher.moduleIdToProxy(_MOCK_MODULE_INTERNAL_ID) == address(0)
-        );
-    }
-
-    function testModuleInternalImplementation() external {
-        assertTrue(
-            dispatcher.moduleIdToImplementation(_MOCK_MODULE_INTERNAL_ID) ==
-                address(moduleInternal)
-        );
     }
 
     // TODO: add tests

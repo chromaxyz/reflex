@@ -65,6 +65,19 @@ contract BaseModuleMultiProxyTest is TBaseModule, Fixture {
     // Tests
     // =====
 
+    function testProxyZeroAddress() external {
+        assertTrue(
+            dispatcher.moduleIdToProxy(_MOCK_MODULE_MULTI_ID) == address(0)
+        );
+    }
+
+    function testModuleImplementation() external {
+        assertTrue(
+            dispatcher.moduleIdToImplementation(_MOCK_MODULE_MULTI_ID) ==
+                address(moduleMulti)
+        );
+    }
+
     function testModuleId() external {
         assertEq(moduleMulti.moduleId(), _MOCK_MODULE_MULTI_ID);
     }
@@ -75,19 +88,6 @@ contract BaseModuleMultiProxyTest is TBaseModule, Fixture {
 
     function testModuleVersion() external {
         assertEq(moduleMulti.moduleVersion(), _MOCK_MODULE_MULTI_VERSION);
-    }
-
-    function testModuleMultiProxyZeroAddress() external {
-        assertTrue(
-            dispatcher.moduleIdToProxy(_MOCK_MODULE_MULTI_ID) == address(0)
-        );
-    }
-
-    function testModuleMultiProxyImplementation() external {
-        assertTrue(
-            dispatcher.moduleIdToImplementation(_MOCK_MODULE_MULTI_ID) ==
-                address(moduleMulti)
-        );
     }
 
     // TODO: add tests
