@@ -79,8 +79,8 @@ abstract contract BaseModule is IBaseModule, Base {
     }
 
     /**
-     * @notice Get module version.
-     * @return Module version.
+     * @notice Get module type.
+     * @return Module type.
      */
     function moduleType() external view virtual override returns (uint16) {
         return _moduleType;
