@@ -56,21 +56,24 @@ contract BaseModuleInternalTest is TBaseModule, Fixture {
         moduleAddresses[0] = address(moduleInternal);
 
         installerProxy.addModules(moduleAddresses);
-
-        assertTrue(
-            dispatcher.moduleIdToProxy(_MOCK_MODULE_INTERNAL_ID) == address(0)
-        );
     }
 
     // =====
     // Tests
     // =====
 
-    function testModuleMultiProxyZeroAddress() external {
+    function testModuleInternalZeroAddress() external {
         assertTrue(
             dispatcher.moduleIdToProxy(_MOCK_MODULE_INTERNAL_ID) == address(0)
         );
     }
 
-    // TODO: add specific tests
+    function testModuleInternalImplementation() external {
+        assertTrue(
+            dispatcher.moduleIdToImplementation(_MOCK_MODULE_INTERNAL_ID) ==
+                address(moduleInternal)
+        );
+    }
+
+    // TODO: add tests
 }

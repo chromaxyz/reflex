@@ -71,5 +71,12 @@ contract BaseModuleMultiProxyTest is TBaseModule, Fixture {
         );
     }
 
+    function testModuleMultiProxyImplementation() external {
+        assertTrue(
+            dispatcher.moduleIdToImplementation(_MOCK_MODULE_MULTI_ID) ==
+                address(moduleMulti)
+        );
+    }
+
     // TODO: add tests
 }
