@@ -18,9 +18,9 @@ contract MockBaseModule is BaseModule {
         uint16 _moduleVersion
     ) BaseModule(_moduleId, _moduleType, _moduleVersion) {}
 
-    // =====
-    // Tests
-    // =====
+    // ==========
+    // Test stubs
+    // ==========
 
     function testRevertBytesCustomError(
         uint256 code,

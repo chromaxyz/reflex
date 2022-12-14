@@ -8,7 +8,15 @@ import {Base} from "../../src/internals/Base.sol";
  * @title Mock Base
  */
 contract MockBase is Base {
+    // ===========
+    // Constructor
+    // ===========
+
     constructor() Base() {}
+
+    // ==========
+    // Test stubs
+    // ==========
 
     function createProxy(
         uint32 moduleId_,
@@ -17,20 +25,20 @@ contract MockBase is Base {
         return _createProxy(moduleId_, moduleType_);
     }
 
-    // function callInternalModule(
-    //     uint32 moduleId_,
-    //     bytes memory input_
-    // ) public returns (bytes memory) {
-    //     return _callInternalModule(moduleId_, input_);
-    // }
+    function callInternalModule(
+        uint32 moduleId_,
+        bytes memory input_
+    ) public returns (bytes memory) {
+        return _callInternalModule(moduleId_, input_);
+    }
 
-    // function unpackMessageSender() public pure returns (address) {
-    //     return _unpackMessageSender();
-    // }
+    function unpackMessageSender() public pure returns (address) {
+        return _unpackMessageSender();
+    }
 
-    // function unpackParameters() public pure returns (address, address) {
-    //     return _unpackParameters();
-    // }
+    function unpackParameters() public pure returns (address, address) {
+        return _unpackParameters();
+    }
 
     function revertBytes(bytes memory errorMessage_) public pure {
         return _revertBytes(errorMessage_);
