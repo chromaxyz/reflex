@@ -13,6 +13,8 @@ abstract contract BaseConstants {
     // Constants
     // =========
 
+    // TODO: replace with enum?
+
     /**
      * @dev These are modules that are only accessible by a single address.
      */
