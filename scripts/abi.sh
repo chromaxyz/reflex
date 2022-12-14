@@ -18,7 +18,7 @@ function log () {
     echo -e "\033[0m"
 }
 
-log $GREEN "Creating method identifier overview from $1 contract"
+log $GREEN "Creating ABI from $1 contract"
 
 # Check for arguments passed
 if [ $# -eq 0 ]
@@ -26,6 +26,6 @@ if [ $# -eq 0 ]
     echo "Please supply contract name."
 fi
 
-forge inspect $1 method-identifiers
+forge inspect $1 abi
 
 log $GREEN "Done"

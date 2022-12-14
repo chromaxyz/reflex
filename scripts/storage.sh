@@ -18,7 +18,7 @@ function log () {
     echo -e "\033[0m"
 }
 
-log $GREEN "Creating storage overview"
+log $GREEN "Creating storage overview from $1 contract"
 
 # Check for arguments passed
 if [ $# -eq 0 ]
