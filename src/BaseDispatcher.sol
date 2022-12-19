@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 // Interfaces
 import {IBaseDispatcher} from "./interfaces/IBaseDispatcher.sol";
+import {IBaseInstaller} from "./interfaces/IBaseInstaller.sol";
 
 // Internals
 import {Base} from "./internals/Base.sol";
@@ -26,6 +27,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         if (owner_ == address(0)) revert InvalidOwner();
         if (installerModule_ == address(0)) revert InvalidInstallerModule();
 
+        // TODO: possibly replace with internal unprotected functions (setOwner, setName?)
         _owner = owner_;
         _name = name_;
 
@@ -38,9 +40,13 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         _trusts[installerProxy].moduleImplementation = installerModule_;
 
         // TODO: add event emittance tests
-
         emit OwnershipTransferred(address(0), owner_);
         emit NameChanged(_owner, name_);
+        emit ModuleAdded(
+            _BUILT_IN_MODULE_ID_INSTALLER,
+            installerModule_,
+            IBaseInstaller(installerModule_).moduleVersion()
+        );
     }
 
     // ==============
