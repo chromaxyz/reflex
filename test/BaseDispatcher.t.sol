@@ -31,15 +31,6 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
         new MockBaseDispatcher("", address(this), address(installer));
     }
 
-    function testRevertInvalidNameTooLong() external {
-        vm.expectRevert(InvalidName.selector);
-        new MockBaseDispatcher(
-            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            address(this),
-            address(installer)
-        );
-    }
-
     function testRevertInvalidOwnerZeroAddress() external {
         vm.expectRevert(InvalidOwner.selector);
         new MockBaseDispatcher("Dispatchher", address(0), address(installer));

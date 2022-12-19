@@ -22,9 +22,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      * @param installerModule_ Installer module address.
      */
     constructor(string memory name_, address owner_, address installerModule_) {
-        // TODO: evaluate if > 32 is strictly necessary
-        if (bytes(name_).length == 0 || bytes(name_).length > 32)
-            revert InvalidName();
+        if (bytes(name_).length == 0) revert InvalidName();
         if (owner_ == address(0)) revert InvalidOwner();
         if (installerModule_ == address(0)) revert InvalidInstallerModule();
 
