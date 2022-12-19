@@ -14,6 +14,12 @@ interface TBaseDispatcher is TBase {
 
     error CallerNotTrusted();
 
+    error InvalidName();
+
+    error InvalidOwner();
+
+    error InvalidInstallerModule();
+
     error MessageTooShort();
 }
 

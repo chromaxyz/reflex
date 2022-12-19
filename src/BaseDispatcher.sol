@@ -22,6 +22,11 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      * @param installerModule_ Installer module address.
      */
     constructor(string memory name_, address owner_, address installerModule_) {
+        if (bytes(name_).length == 0 || bytes(name_).length > 32)
+            revert InvalidName();
+        if (owner_ == address(0)) revert InvalidOwner();
+        if (installerModule_ == address(0)) revert InvalidInstallerModule();
+
         _name = name_;
         _owner = owner_;
 
@@ -32,6 +37,8 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
             _MODULE_TYPE_SINGLE_PROXY
         );
         _trusts[installerProxy].moduleImplementation = installerModule_;
+
+        // TODO: emit events for setting name and owner, including tests
     }
 
     // ==============
@@ -42,6 +49,8 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      * @notice Returns the name of the protocol.
      */
     function name() external view virtual returns (string memory) {
+        // TODO: verify if we want to make it so that the owner can update the name
+
         return _name;
     }
 

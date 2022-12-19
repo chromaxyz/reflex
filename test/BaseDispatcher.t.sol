@@ -7,6 +7,9 @@ import {TBaseDispatcher} from "../src/interfaces/IBaseDispatcher.sol";
 // Fixtures
 import {BaseFixture} from "./fixtures/BaseFixture.sol";
 
+// Mocks
+import {MockBaseDispatcher} from "./mocks/MockBaseDispatcher.sol";
+
 /**
  * @title Base Dispatcher Test
  */
@@ -22,6 +25,30 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
     // =====
     // Tests
     // =====
+
+    function testRevertInvalidNameZeroLength() external {
+        vm.expectRevert(InvalidName.selector);
+        new MockBaseDispatcher("", address(this), address(installer));
+    }
+
+    function testRevertInvalidNameTooLong() external {
+        vm.expectRevert(InvalidName.selector);
+        new MockBaseDispatcher(
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            address(this),
+            address(installer)
+        );
+    }
+
+    function testRevertInvalidOwnerZeroAddress() external {
+        vm.expectRevert(InvalidOwner.selector);
+        new MockBaseDispatcher("Dispatchher", address(0), address(installer));
+    }
+
+    function testRevertInvalidInstallerZeroAddress() external {
+        vm.expectRevert(InvalidInstallerModule.selector);
+        new MockBaseDispatcher("Dispatcher", address(this), address(0));
+    }
 
     function testName() external {
         assertEq(dispatcher.name(), "Dispatcher");
