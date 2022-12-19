@@ -4,13 +4,37 @@ A first-generation Solidity framework for upgradeable modules.
 
 ## Traits
 
-- Upgradeable modules: single-proxy modules, multi-proxy modules and internal modules.
-- Avoids hitting the max contract size limitation of ~24kb.
-- Avoids function selector clashing, allowing to have multiple spec-compliant modules run side-by-side.
+- Provides a minimal, gas-optimized framework for building and maintaining upgradeable modularized applications.
+- Modularization prevents hitting the Spurious Dragon max contract size limitation of ~24.5kb.
+- Avoids function selector clashing alltogether, allowing you to have multiple spec-compliant modules run side-by-side.
+- Multiple module types: single-proxy modules, multi-proxy modules and internal modules.
 
-## Limitations
+## Diagram
 
-- Multiple application entrypoints via their proxies.
+```mermaid
+graph TD
+    subgraph Application [ ]
+    Dispatcher --> State
+    Installer --> State
+    Module --> State
+    end
+
+    subgraph Framework [ ]
+    Dispatcher --> BaseDispatcher
+    Installer --> BaseInstaller
+    Module --> BaseModule
+    BaseInstaller --> BaseModule
+    end
+
+    subgraph Internals [ ]
+    BaseDispatcher --> Base
+    BaseModule --> Base
+    Base --> Proxy
+    Base --> BaseState
+    BaseState --> BaseConstants
+    State --> BaseState
+    end
+```
 
 ## Contracts
 
@@ -31,6 +55,11 @@ A first-generation Solidity framework for upgradeable modules.
 └── modules
     └── BaseInstaller.sol "Upgradeable `Installer`, built-in installer for modules."
 ```
+
+## Known limitations
+
+- Multiple application entrypoints via their proxies.
+- The `Dispatcher` and the internal `Proxy` contracts are not upgradable.
 
 ## Acknowledgements
 

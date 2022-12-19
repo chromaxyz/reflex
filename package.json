@@ -9,7 +9,6 @@
     "lint:fix": "prettier --write 'src/**/*.sol' && solhint --config .solhint.json 'src/**/*.sol' --fix",
     "prepare": "husky install"
   },
-  "dependencies": {},
   "devDependencies": {
     "husky": "^8.0.2",
     "lint-staged": "^13.0.3",
