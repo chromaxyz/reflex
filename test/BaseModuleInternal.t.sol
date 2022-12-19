@@ -65,17 +65,5 @@ contract BaseModuleInternalTest is TBaseModule, BaseFixture {
         );
     }
 
-    function testModuleId() external {
-        assertEq(moduleInternal.moduleId(), _MOCK_MODULE_INTERNAL_ID);
-    }
-
-    function testModuleType() external {
-        assertEq(moduleInternal.moduleType(), _MOCK_MODULE_INTERNAL_TYPE);
-    }
-
-    function testModuleVersion() external {
-        assertEq(moduleInternal.moduleVersion(), _MOCK_MODULE_INTERNAL_VERSION);
-    }
-
     // TODO: add tests
 }

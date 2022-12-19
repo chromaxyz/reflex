@@ -68,17 +68,5 @@ contract BaseModuleMultiProxyTest is TBaseModule, BaseFixture {
         );
     }
 
-    function testModuleId() external {
-        assertEq(moduleMulti.moduleId(), _MOCK_MODULE_MULTI_ID);
-    }
-
-    function testModuleType() external {
-        assertEq(moduleMulti.moduleType(), _MOCK_MODULE_MULTI_TYPE);
-    }
-
-    function testModuleVersion() external {
-        assertEq(moduleMulti.moduleVersion(), _MOCK_MODULE_MULTI_VERSION);
-    }
-
     // TODO: add tests
 }

@@ -51,6 +51,36 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
     // Tests
     // =====
 
+    function testValidModuleId() external {
+        module = new MockBaseModule(
+            _MOCK_MODULE_VALID_ID,
+            _MOCK_MODULE_VALID_TYPE_SINGLE,
+            _MOCK_MODULE_VALID_VERSION
+        );
+
+        assertEq(module.moduleId(), _MOCK_MODULE_VALID_ID);
+    }
+
+    function testValidModuleType() external {
+        module = new MockBaseModule(
+            _MOCK_MODULE_VALID_ID,
+            _MOCK_MODULE_VALID_TYPE_SINGLE,
+            _MOCK_MODULE_VALID_VERSION
+        );
+
+        assertEq(module.moduleType(), _MOCK_MODULE_VALID_TYPE_SINGLE);
+    }
+
+    function testValidModuleVersion() external {
+        module = new MockBaseModule(
+            _MOCK_MODULE_VALID_ID,
+            _MOCK_MODULE_VALID_TYPE_SINGLE,
+            _MOCK_MODULE_VALID_VERSION
+        );
+
+        assertEq(module.moduleVersion(), _MOCK_MODULE_VALID_VERSION);
+    }
+
     function testRevertInvalidModuleIdZeroValue() external {
         vm.expectRevert(InvalidModuleId.selector);
         module = new MockBaseModule(
@@ -60,20 +90,20 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
         );
     }
 
-    function testRevertInvalidModuleType() external {
-        vm.expectRevert(InvalidModuleType.selector);
-        module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_INVALID_TYPE,
-            _MOCK_MODULE_VALID_VERSION
-        );
-    }
-
     function testRevertInvalidModuleTypeZeroValue() external {
         vm.expectRevert(InvalidModuleType.selector);
         module = new MockBaseModule(
             _MOCK_MODULE_VALID_ID,
             _MOCK_MODULE_INVALID_TYPE_ZERO,
+            _MOCK_MODULE_VALID_VERSION
+        );
+    }
+
+    function testRevertInvalidModuleTypeOverflowValue() external {
+        vm.expectRevert(InvalidModuleType.selector);
+        module = new MockBaseModule(
+            _MOCK_MODULE_VALID_ID,
+            _MOCK_MODULE_INVALID_TYPE,
             _MOCK_MODULE_VALID_VERSION
         );
     }
