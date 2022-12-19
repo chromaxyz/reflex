@@ -13,8 +13,14 @@ runs = 256
 [profile.via-ir]
 via_ir = true
 
+[profile.min-solc]
+solc = "0.8.13"
+
 [profile.via-ir.fuzz]
 runs = 10_000
 
 [profile.intense.fuzz]
+runs = 10_000
+
+[profile.min-solc.fuzz]
 runs = 10_000
