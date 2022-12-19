@@ -55,9 +55,6 @@ contract ImplementationStateTest is Test {
         address location_,
         bool flag_
     ) external {
-        vm.assume(number_ != 0);
-        vm.assume(location_ != address(0));
-
         state.setSlot1(message_);
         state.setSlot2(number_);
         state.setSlot3(location_);
@@ -133,7 +130,6 @@ contract ImplementationStateTest is Test {
          * |---------------|-----------------------------------------------------|------|--------|-------|
          * | _exampleSlot6 | mapping(address => uint256)                         | 54   | 0      | 32    |
          */
-
         vm.record();
         state.getSlot6(location_);
         (reads, ) = vm.accesses(address(state));
