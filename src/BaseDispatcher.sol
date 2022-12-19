@@ -55,6 +55,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
 
     /**
      * @notice Returns the name of the protocol.
+     * @return string Protocol name.
      */
     function name() external view virtual returns (string memory) {
         return _name;
