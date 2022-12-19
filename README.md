@@ -9,6 +9,7 @@ A first-generation Solidity framework for upgradeable modules.
 - Avoids function selector clashing alltogether, allowing you to have multiple spec-compliant modules run side-by-side.
 - Multiple module types: single-proxy modules, multi-proxy modules and internal modules.
 - Uses neutral language, avoids introducing new terminology.
+- A built-in upgradeable installer allowing you to add, upgrade and remove modules throughout the application lifetime.
 
 Noteably this is a so-called framework, a single well-tested implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
