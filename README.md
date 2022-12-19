@@ -2,13 +2,13 @@
 
 A first-generation Solidity framework for upgradeable modules.
 
-## Positives
+## Traits
 
 - Upgradeable modules: single-proxy modules, multi-proxy modules and internal modules.
 - Avoids hitting the max contract size limitation of ~24kb.
 - Avoids function selector clashing, allowing to have multiple spec-compliant modules run side-by-side.
 
-## Negatives
+## Limitations
 
 - Multiple application entrypoints via their proxies.
 
@@ -16,20 +16,20 @@ A first-generation Solidity framework for upgradeable modules.
 
 ```
 .
-├── BaseDispatcher.sol
-├── BaseModule.sol
-├── BaseState.sol
+├── BaseDispatcher.sol "Non-upgradeable `Dispatcher`, entry point of the framework."
+├── BaseModule.sol "Upgradeable `Module`, building block of the framework."
+├── BaseState.sol "Extendable `State`, state store of the framework."
 ├── interfaces
-│   ├── IBaseDispatcher.sol
-│   ├── IBaseInstaller.sol
-│   ├── IBaseModule.sol
-│   ├── IBase.sol
-│   └── IBaseState.sol
+│   ├── IBaseDispatcher.sol "Interface for the `Dispatcher`."
+│   ├── IBaseInstaller.sol "Interface for the `Installer`."
+│   ├── IBaseModule.sol "Interface for the `Module`."
+│   ├── IBase.sol "Interface for the `Base`, internal building block."
+│   └── IBaseState.sol "Interface for the `State`."
 ├── internals
-│   ├── Base.sol
-│   └── Proxy.sol
+│   ├── Base.sol "Extendable `Base`, internal abstraction for `Dispatcher` and `Module`.
+│   └── Proxy.sol "Non-upgradeable `Proxy`, internal building block.
 └── modules
-    └── BaseInstaller.sol
+    └── BaseInstaller.sol "Upgradeable `Installer`, built-in installer for modules."
 ```
 
 ## Acknowledgements
