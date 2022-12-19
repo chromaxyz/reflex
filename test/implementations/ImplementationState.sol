@@ -6,6 +6,7 @@ import {BaseState} from "../../src/BaseState.sol";
 
 /**
  * @title Implementation State
+ *
  * @dev Storage layout:
  * | Name          | Type                                                | Slot | Offset | Bytes |
  * |---------------|-----------------------------------------------------|------|--------|-------|
@@ -20,8 +21,14 @@ import {BaseState} from "../../src/BaseState.sol";
  * | _exampleSlot2 | uint256                                             | 52   | 0      | 32    |
  * | _exampleSlot3 | address                                             | 53   | 0      | 20    |
  * | getSlot4      | address                                             | 54   | 0      | 20    |
+ * | getSlot5      | bool                                                | 54   | 20     | 1     |
+ * | _exampleSlot6 | mapping(address => uint256)                         | 55   | 0      | 32    |
  */
 contract ImplementationState is BaseState {
+    // =======
+    // Storage
+    // =======
+
     /**
      * @notice Internal slot 1
      * @dev Slot 51 (32 bytes)
@@ -44,15 +51,19 @@ contract ImplementationState is BaseState {
      * @notice Public slot 4
      * @dev Slot 54 (20 bytes)
      */
-    address public getSlot4;
+    address public getSlot4 = address(0xAAAA);
 
-    // ===========
-    // Constructor
-    // ===========
+    /**
+     * @notice Public slot 5
+     * @dev Slot 54 (20 byte offset, 1 byte)
+     */
+    bool public getSlot5 = true;
 
-    constructor() {
-        getSlot4 = address(0xAAAA);
-    }
+    // /**
+    //  * @notice Internal slot 6
+    //  * @dev Slot 54 (21 byte offset, 1 bytes)
+    //  */
+    mapping(address => uint256) internal _exampleSlot6;
 
     // ==========
     // Test stubs
@@ -70,6 +81,10 @@ contract ImplementationState is BaseState {
         return _exampleSlot3;
     }
 
+    function getSlot6(address location_) public view returns (uint256) {
+        return _exampleSlot6[location_];
+    }
+
     function setSlot1(bytes32 message_) public {
         _exampleSlot1 = message_;
     }
@@ -84,5 +99,13 @@ contract ImplementationState is BaseState {
 
     function setSlot4(address location_) public {
         getSlot4 = location_;
+    }
+
+    function setSlot5(bool value_) public {
+        getSlot5 = value_;
+    }
+
+    function setSlot6(address location_, uint256 number_) public {
+        _exampleSlot6[location_] = number_;
     }
 }

@@ -20,4 +20,8 @@ contract ImplementationModule is BaseModule, ImplementationState {
         uint16 _moduleType,
         uint16 _moduleVersion
     ) BaseModule(_moduleId, _moduleType, _moduleVersion) {}
+
+    // ==========
+    // Test stubs
+    // ==========
 }

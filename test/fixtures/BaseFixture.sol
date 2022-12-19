@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Modules
-import {BaseInstaller} from "../../src/modules/BaseInstaller.sol";
-
 // Mocks
 import {MockBaseInstaller} from "../mocks/MockBaseInstaller.sol";
 import {MockBaseDispatcher} from "../mocks/MockBaseDispatcher.sol";
@@ -21,7 +18,7 @@ abstract contract BaseFixture is ConstantsFixture {
 
     MockBaseInstaller public installer;
     MockBaseDispatcher public dispatcher;
-    BaseInstaller public installerProxy;
+    MockBaseInstaller public installerProxy;
 
     // =====
     // Setup
@@ -36,7 +33,7 @@ abstract contract BaseFixture is ConstantsFixture {
             address(this),
             address(installer)
         );
-        installerProxy = BaseInstaller(
+        installerProxy = MockBaseInstaller(
             dispatcher.moduleIdToProxy(_BUILT_IN_MODULE_ID_INSTALLER)
         );
     }
