@@ -16,11 +16,18 @@ via_ir = true
 [profile.min-solc]
 solc = "0.8.13"
 
+[profile.min-solc-via-ir]
+via_ir = true
+solc = "0.8.13"
+
 [profile.via-ir.fuzz]
 runs = 10_000
 
-[profile.intense.fuzz]
+[profile.min-solc.fuzz]
 runs = 10_000
 
-[profile.min-solc.fuzz]
+[profile.min-solc-via-ir.fuzz]
+runs = 10_000
+
+[profile.intense.fuzz]
 runs = 10_000

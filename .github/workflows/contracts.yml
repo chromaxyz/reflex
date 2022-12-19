@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        profile: [via-ir, intense, min-solc]
+        profile: [via-ir, intense, min-solc, min-solc-via-ir]
         os:
           - ubuntu-latest
         node_version:
