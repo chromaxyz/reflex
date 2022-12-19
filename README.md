@@ -9,7 +9,39 @@ A first-generation Solidity framework for upgradeable modules.
 - Avoids function selector clashing alltogether, allowing you to have multiple spec-compliant modules run side-by-side.
 - Multiple module types: single-proxy modules, multi-proxy modules and internal modules.
 
-## Diagram
+## User flow
+
+```mermaid
+sequenceDiagram
+    User->>Module Proxy: Request
+    Module Proxy->>Dispatcher: call()
+    Dispatcher->>Module Implementation: delegatecall()
+    Module Implementation->>Dispatcher: Response
+    Dispatcher->>Module Proxy: Response
+    Module Proxy->>User: Response
+```
+
+## Contracts
+
+```
+.
+├── BaseDispatcher.sol "Non-upgradeable `Dispatcher`, entry point of the framework."
+├── BaseModule.sol "Upgradeable `Module`, building block of the framework."
+├── BaseState.sol "Extendable `State`, state store of the framework."
+├── interfaces
+│   ├── IBaseDispatcher.sol "Interface for the `Dispatcher`."
+│   ├── IBaseInstaller.sol "Interface for the `Installer`."
+│   ├── IBaseModule.sol "Interface for the `Module`."
+│   ├── IBase.sol "Interface for the `Base`, internal building block."
+│   └── IBaseState.sol "Interface for the `State`."
+├── internals
+│   ├── Base.sol "Extendable `Base`, internal abstraction for `Dispatcher` and `Module`.
+│   └── Proxy.sol "Non-upgradeable `Proxy`, internal building block.
+└── modules
+    └── BaseInstaller.sol "Upgradeable `Installer`, built-in installer for modules."
+```
+
+## Inheritance diagram
 
 ```mermaid
 graph TD
@@ -34,26 +66,6 @@ graph TD
     BaseState --> BaseConstants
     State --> BaseState
     end
-```
-
-## Contracts
-
-```
-.
-├── BaseDispatcher.sol "Non-upgradeable `Dispatcher`, entry point of the framework."
-├── BaseModule.sol "Upgradeable `Module`, building block of the framework."
-├── BaseState.sol "Extendable `State`, state store of the framework."
-├── interfaces
-│   ├── IBaseDispatcher.sol "Interface for the `Dispatcher`."
-│   ├── IBaseInstaller.sol "Interface for the `Installer`."
-│   ├── IBaseModule.sol "Interface for the `Module`."
-│   ├── IBase.sol "Interface for the `Base`, internal building block."
-│   └── IBaseState.sol "Interface for the `State`."
-├── internals
-│   ├── Base.sol "Extendable `Base`, internal abstraction for `Dispatcher` and `Module`.
-│   └── Proxy.sol "Non-upgradeable `Proxy`, internal building block.
-└── modules
-    └── BaseInstaller.sol "Upgradeable `Installer`, built-in installer for modules."
 ```
 
 ## Known limitations
