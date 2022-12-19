@@ -30,38 +30,38 @@ contract ImplementationState is BaseState {
     // =======
 
     /**
-     * @notice Internal slot 1
-     * @dev Slot 51 (32 bytes)
+     * @notice Internal slot 1.
+     * @dev Slot 51 (32 bytes).
      */
     bytes32 internal _exampleSlot1;
 
     /**
-     * @notice Internal slot 2
-     * @dev Slot 52 (32 bytes)
+     * @notice Internal slot 2.
+     * @dev Slot 52 (32 bytes).
      */
     uint256 internal _exampleSlot2;
 
     /**
-     * @notice Internal slot 3
-     * @dev Slot 53 (20 bytes)
+     * @notice Internal slot 3.
+     * @dev Slot 53 (20 bytes).
      */
     address internal _exampleSlot3;
 
     /**
-     * @notice Public slot 4
-     * @dev Slot 54 (20 bytes)
+     * @notice Public slot 4.
+     * @dev Slot 54 (20 bytes).
      */
     address public getSlot4 = address(0xAAAA);
 
     /**
-     * @notice Public slot 5
-     * @dev Slot 54 (20 byte offset, 1 byte)
+     * @notice Public slot 5.
+     * @dev Slot 54 (20 byte offset, 1 byte).
      */
     bool public getSlot5 = true;
 
     // /**
-    //  * @notice Internal slot 6
-    //  * @dev Slot 54 (21 byte offset, 1 bytes)
+    //  * @notice Internal slot 6.
+    //  * @dev Slot 54 (32 bytes).
     //  */
     mapping(address => uint256) internal _exampleSlot6;
 

@@ -9,7 +9,7 @@ import {Base} from "./internals/Base.sol";
 
 /**
  * @title Base Dispatcher
- * @dev Non-upgradeable
+ * @dev Non-upgradeable.
  */
 abstract contract BaseDispatcher is IBaseDispatcher, Base {
     // ===========

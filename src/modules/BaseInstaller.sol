@@ -9,7 +9,7 @@ import {BaseModule} from "../BaseModule.sol";
 
 /**
  * @title Base Installer
- * @dev Upgradeable
+ * @dev Upgradeable.
  */
 abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     // ===========

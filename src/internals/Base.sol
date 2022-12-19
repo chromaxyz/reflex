@@ -12,7 +12,7 @@ import {BaseState} from "../BaseState.sol";
 
 /**
  * @title Base
- * @dev Extendable
+ * @dev Extendable.
  */
 abstract contract Base is IBase, BaseState {
     // ==================

@@ -9,7 +9,7 @@ import {Base} from "./internals/Base.sol";
 
 /**
  * @title Base Module
- * @dev Upgradeable
+ * @dev Upgradeable.
  */
 abstract contract BaseModule is IBaseModule, Base {
     // =======

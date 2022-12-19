@@ -7,7 +7,7 @@ pragma solidity ^0.8.13;
  * - Forward method calls from external users to the dispatcher.
  * - Receive method calls from the dispatcher and log events as instructed
  * @dev Execution takes place within the dispatcher storage context, not the proxy's.
- * @dev Non-upgradeable
+ * @dev Non-upgradeable.
  */
 contract Proxy {
     // =======
