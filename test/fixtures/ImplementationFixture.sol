@@ -2,8 +2,8 @@
 pragma solidity ^0.8.13;
 
 // Implementations
-import {ImplementationInstaller} from "../implementations/modules/ImplementationInstaller.sol";
 import {ImplementationDispatcher} from "../implementations/ImplementationDispatcher.sol";
+import {ImplementationInstaller} from "../implementations/ImplementationInstaller.sol";
 
 // Fixtures
 import {ConstantsFixture} from "./ConstantsFixture.sol";
@@ -18,6 +18,7 @@ abstract contract ImplementationFixture is ConstantsFixture {
 
     ImplementationInstaller public installer;
     ImplementationDispatcher public dispatcher;
+
     ImplementationInstaller public installerProxy;
 
     // =====

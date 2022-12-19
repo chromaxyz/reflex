@@ -5,9 +5,9 @@ pragma solidity ^0.8.13;
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 /**
- * @title Implementation Dispatcher Test
+ * @title Implementation Installer Test
  */
-contract ImplementationDispatcherTest is ImplementationFixture {
+contract ImplementationInstallerTest is ImplementationFixture {
     // =====
     // Setup
     // =====
