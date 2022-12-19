@@ -71,6 +71,9 @@ xcuserdata/
 lcov.info
 /reports/coverage/
 
+# Visualizer
+*.dot
+
 # Snapshot
 .gas-snapshot
 
