@@ -99,6 +99,9 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         address[] memory moduleAddresses
     ) external virtual onlyOwner {
         for (uint256 i = 0; i < moduleAddresses.length; ) {
+            // TODO: evaluate if it makes sense to optimize the reads here
+            // SEE: https://github.com/Chroma-Org/Reflex/tree/feature/packed-module-id
+
             address moduleAddress = moduleAddresses[i];
             uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
             uint16 moduleType_ = BaseModule(moduleAddress).moduleType();
