@@ -25,6 +25,6 @@ test-intense:; FOUNDRY_PROFILE=intense forge test
 snapshot:; forge snapshot
 snapshot-ir:; FOUNDRY_PROFILE=via-ir forge snapshot
 
-# Node tasks
+# Linting
 lint-check:; npm run lint:check
 lint-fix:; npm run lint:fix
