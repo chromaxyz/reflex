@@ -1,6 +1,6 @@
 # Reflex
 
-A first-generation Solidity framework for upgradeable modules.
+A first-generation Solidity framework for upgradeable modularized applications.
 
 ## Traits
 
