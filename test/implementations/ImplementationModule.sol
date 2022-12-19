@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 // Sources
 import {BaseModule} from "../../src/BaseModule.sol";
 
-// Implementation
+// Implementations
 import {ImplementationState} from "./ImplementationState.sol";
 
 /**

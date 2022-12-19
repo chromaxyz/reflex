@@ -4,13 +4,13 @@ pragma solidity ^0.8.13;
 // Sources
 import {BaseDispatcher} from "../../src/BaseDispatcher.sol";
 
-// Implementation
+// Implementations
 import {ImplementationState} from "./ImplementationState.sol";
 
 /**
  * @title Implementation Dispatcher
  */
-contract Dispatcher is BaseDispatcher, ImplementationState {
+contract ImplementationDispatcher is BaseDispatcher, ImplementationState {
     // ===========
     // Constructor
     // ===========

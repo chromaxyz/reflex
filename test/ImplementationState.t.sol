@@ -6,13 +6,17 @@ import {Test} from "forge-std/Test.sol";
 import {stdStorage, StdStorage} from "forge-std/StdStorage.sol";
 
 // Tests
-import {ImplementationState} from "./implementation/ImplementationState.sol";
+import {ImplementationState} from "./implementations/ImplementationState.sol";
 
 /**
- * @title Base State Test
+ * @title Implementation State Test
  */
-contract BaseStateTest is Test {
+contract ImplementationStateTest is Test {
     using stdStorage for StdStorage;
+
+    // =======
+    // Storage
+    // =======
 
     ImplementationState public state;
 

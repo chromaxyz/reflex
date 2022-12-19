@@ -5,12 +5,12 @@ pragma solidity ^0.8.13;
 import {TBaseDispatcher} from "../src/interfaces/IBaseDispatcher.sol";
 
 // Fixtures
-import {Fixture} from "./fixtures/Fixture.sol";
+import {BaseFixture} from "./fixtures/BaseFixture.sol";
 
 /**
  * @title Base Dispatcher Test
  */
-contract BaseDispatcherTest is TBaseDispatcher, Fixture {
+contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
     // =====
     // Setup
     // =====

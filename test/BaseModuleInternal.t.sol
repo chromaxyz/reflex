@@ -5,7 +5,7 @@ pragma solidity ^0.8.13;
 import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
 
 // Fixtures
-import {Fixture} from "./fixtures/Fixture.sol";
+import {BaseFixture} from "./fixtures/BaseFixture.sol";
 
 // Mocks
 import {MockBaseModule} from "./mocks/MockBaseModule.sol";
@@ -13,7 +13,7 @@ import {MockBaseModule} from "./mocks/MockBaseModule.sol";
 /**
  * @title Base Module Internal Test
  */
-contract BaseModuleInternalTest is TBaseModule, Fixture {
+contract BaseModuleInternalTest is TBaseModule, BaseFixture {
     // =========
     // Constants
     // =========

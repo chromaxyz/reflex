@@ -5,7 +5,7 @@ pragma solidity ^0.8.13;
 import {TBase} from "../src/interfaces/IBase.sol";
 
 // Fixtures
-import {Fixture} from "./fixtures/Fixture.sol";
+import {BaseFixture} from "./fixtures/BaseFixture.sol";
 
 // Mocks
 import {MockBase} from "./mocks/MockBase.sol";
@@ -13,7 +13,7 @@ import {MockBase} from "./mocks/MockBase.sol";
 /**
  * @title Base Test
  */
-contract BaseTest is TBase, Fixture {
+contract BaseTest is TBase, BaseFixture {
     // =======
     // Storage
     // =======

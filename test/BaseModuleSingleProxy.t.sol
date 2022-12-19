@@ -8,7 +8,7 @@ import {Vm} from "forge-std/Vm.sol";
 import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
 
 // Fixtures
-import {Fixture} from "./fixtures/Fixture.sol";
+import {BaseFixture} from "./fixtures/BaseFixture.sol";
 
 // Mocks
 import {MockBaseModule, ICustomError} from "./mocks/MockBaseModule.sol";
@@ -16,7 +16,7 @@ import {MockBaseModule, ICustomError} from "./mocks/MockBaseModule.sol";
 /**
  * @title Base Module Single Proxy Test
  */
-contract BaseModuleSingleProxyTest is TBaseModule, Fixture {
+contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
     // =========
     // Constants
     // =========
