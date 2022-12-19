@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 // Vendors
-import {console2} from "forge-std/console2.sol";
 import {Test} from "forge-std/Test.sol";
 import {stdStorageSafe, StdStorage} from "forge-std/StdStorage.sol";
 
