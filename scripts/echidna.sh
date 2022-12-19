@@ -18,22 +18,16 @@ function log () {
     echo -e "\033[0m"
 }
 
-# Check for Slither dependency
-if ! [ -x "$(command -v slither)" ]; then
-  echo 'Error: slither is not installed.' >&2
+# Check for Echidna dependency
+if ! [ -x "$(command -v echidna-test)" ]; then
+  echo 'Error: echidna-test is not installed.' >&2
   exit 1
 fi
 
-log $GREEN "Running Slither script"
+log $GREEN "Running Echidna script"
 
-mkdir -p reports
+mkdir -p reports/echidna
 
-slither . \
-    --filter-path "node_modules|lib|test" \
-    --exclude "solc-version" \
-    --markdown-root "../" \
-    --checklist \
-    --solc-remaps '$(cat remappings.txt)' \
-    > reports/slither.md
+echidna-test echidna/*.sol --corpus-dir reports/echidna
 
 log $GREEN "Done"

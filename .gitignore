@@ -74,6 +74,10 @@ lcov.info
 # Visualizer
 *.dot
 
+# Echidna
+/crytic-export/
+/reports/echidna/
+
 # Snapshot
 .gas-snapshot
 
