@@ -11,7 +11,7 @@ A first-generation Solidity framework for upgradeable modules.
 - Uses neutral language, avoids introducing new terminology.
 
 Noteably this is a so-called framework, a single well-tested implementation rather than a specification.
-The framework serves the foundation of your modular application allowing you to focus on your business logic.
+The framework serves as the foundation of your modular application allowing you to focus on your business logic.
 
 ## User flow
 
