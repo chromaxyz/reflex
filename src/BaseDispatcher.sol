@@ -51,9 +51,6 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      * @notice Returns the name of the protocol.
      */
     function name() external view virtual returns (string memory) {
-        // TODO: verify if we want to make it so that the owner can update the name
-        // TODO: alternatively enforce immutability for gas savings (https://gist.github.com/Zer0dot/19428fcd5d80433166dcfe7e1050afc5)
-
         return _name;
     }
 
