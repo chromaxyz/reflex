@@ -9,17 +9,21 @@ install:;
 	forge install
 	npm install
 
-# Base Forge tasks
+# Clean
 clean:; forge clean
-build:; forge build --sizes
-test:; forge test
-trace:; forge test -vvvvv
-snapshot:; forge snapshot
 
-# Extended Forge tasks
-# build-ir:; FOUNDRY_PROFILE=via-ir make build
-# test-ir:; FOUNDRY_PROFILE=via-ir make test
-# test-intense:; FOUNDRY_PROFILE=intense make test
+# Build
+build:; forge build --sizes
+build-ir:; FOUNDRY_PROFILE=via-ir forge build --sizes
+
+# Test
+test:; forge test
+test-ir:; FOUNDRY_PROFILE=via-ir forge test
+test-intense:; FOUNDRY_PROFILE=intense forge test
+
+# Snapshot
+snapshot:; forge snapshot
+snapshot-ir:; FOUNDRY_PROFILE=via-ir forge snapshot
 
 # Node tasks
 lint-check:; npm run lint:check
