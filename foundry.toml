@@ -14,7 +14,7 @@ runs = 256
 via_ir = true
 
 [profile.via-ir.fuzz]
-runs = 1_000
+runs = 10_000
 
 [profile.intense.fuzz]
 runs = 10_000
