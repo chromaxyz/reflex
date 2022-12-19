@@ -14,10 +14,10 @@ A first-generation Solidity framework for upgradeable modules.
 ```mermaid
 sequenceDiagram
     User->>Module Proxy: Request
-    Module Proxy->>Dispatcher: call()
-    Dispatcher->>Module Implementation: delegatecall()
-    Module Implementation->>Dispatcher: Response
-    Dispatcher->>Module Proxy: Response
+    Module Proxy->>Dispatcher (Storage): call()
+    Dispatcher (Storage) ->>Module Implementation: delegatecall()
+    Module Implementation->>Dispatcher (Storage): Response
+    Dispatcher (Storage) ->>Module Proxy: Response
     Module Proxy->>User: Response
 ```
 
