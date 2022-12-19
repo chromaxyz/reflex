@@ -54,7 +54,15 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // Tests
     // =====
 
+    function testSetName(string memory name_) public {
+        vm.expectEmit(true, false, false, false);
+        emit NameChanged(address(this), name_);
+        installerProxy.setName(name_);
+    }
+
     function testTransferOwnership() public {
+        vm.expectEmit(true, false, false, false);
+        emit OwnershipTransferStarted(address(this), _ALICE);
         installerProxy.transferOwnership(_ALICE);
 
         assertEq(installerProxy.owner(), address(this));
@@ -64,6 +72,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testAcceptOwnership() external {
         assertEq(installerProxy.pendingOwner(), address(0));
 
+        vm.expectEmit(true, false, false, false);
+        emit OwnershipTransferStarted(address(this), _ALICE);
         installerProxy.transferOwnership(_ALICE);
 
         assertEq(installerProxy.owner(), address(this));
@@ -71,6 +81,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
 
         vm.startPrank(_ALICE);
 
+        vm.expectEmit(true, false, false, false);
+        emit OwnershipTransferred(address(this), _ALICE);
         installerProxy.acceptOwnership();
 
         vm.stopPrank();
@@ -82,6 +94,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testRevertTransferOwnershipNotPendingOwner() external {
         assertEq(installerProxy.pendingOwner(), address(0));
 
+        vm.expectEmit(true, false, false, false);
+        emit OwnershipTransferStarted(address(this), _ALICE);
         installerProxy.transferOwnership(_ALICE);
 
         assertEq(installerProxy.owner(), address(this));

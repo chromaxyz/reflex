@@ -26,8 +26,8 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         if (owner_ == address(0)) revert InvalidOwner();
         if (installerModule_ == address(0)) revert InvalidInstallerModule();
 
-        _name = name_;
         _owner = owner_;
+        _name = name_;
 
         // Register `Installer` module.
         _modules[_BUILT_IN_MODULE_ID_INSTALLER] = installerModule_;
@@ -37,7 +37,10 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         );
         _trusts[installerProxy].moduleImplementation = installerModule_;
 
-        // TODO: emit events for setting name and owner as well as installer registration, including tests
+        // TODO: add event emittance tests
+
+        emit OwnershipTransferred(address(0), owner_);
+        emit NameChanged(_owner, name_);
     }
 
     // ==============

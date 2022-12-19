@@ -38,6 +38,8 @@ interface TBaseInstaller is TBaseModule {
         uint16 indexed moduleVersion_
     );
 
+    event NameChanged(address indexed user_, string name_);
+
     event OwnershipTransferred(
         address indexed user_,
         address indexed newOwner_

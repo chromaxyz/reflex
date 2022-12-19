@@ -52,19 +52,33 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     // ======================
 
     /**
-     * @notice Transfer ownership in two steps.
-     * @param newOwner New pending owner.
+     * @notice Change name of protocol
+     * @param name_ New name.
      *
      * Requirements:
      *
      * - The caller must be the current owner.
      */
-    function transferOwnership(address newOwner) external virtual onlyOwner {
-        if (newOwner == address(0)) revert ZeroAddress();
+    function setName(string memory name_) external virtual onlyOwner {
+        _name = name_;
 
-        _pendingOwner = newOwner;
+        emit NameChanged(_owner, name_);
+    }
 
-        emit OwnershipTransferStarted(_owner, newOwner);
+    /**
+     * @notice Transfer ownership in two steps.
+     * @param newOwner_ New pending owner.
+     *
+     * Requirements:
+     *
+     * - The caller must be the current owner.
+     */
+    function transferOwnership(address newOwner_) external virtual onlyOwner {
+        if (newOwner_ == address(0)) revert ZeroAddress();
+
+        _pendingOwner = newOwner_;
+
+        emit OwnershipTransferStarted(_owner, newOwner_);
     }
 
     /**
@@ -89,20 +103,20 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
     /**
      * @notice Add modules.
-     * @param moduleAddresses List of modules to add.
+     * @param moduleAddresses_ List of modules to add.
      *
      * Requirements:
      *
      * - The caller must be the current owner.
      */
     function addModules(
-        address[] memory moduleAddresses
+        address[] memory moduleAddresses_
     ) external virtual onlyOwner {
-        for (uint256 i = 0; i < moduleAddresses.length; ) {
+        for (uint256 i = 0; i < moduleAddresses_.length; ) {
             // TODO: evaluate if it makes sense to optimize the reads here
             // SEE: https://github.com/Chroma-Org/Reflex/tree/feature/packed-module-id
 
-            address moduleAddress = moduleAddresses[i];
+            address moduleAddress = moduleAddresses_[i];
             uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
             uint16 moduleType_ = BaseModule(moduleAddress).moduleType();
             uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
@@ -124,17 +138,17 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
     /**
      * @notice Upgrade modules
-     * @param moduleAddresses List of modules to upgrade.
+     * @param moduleAddresses_ List of modules to upgrade.
      *
      * Requirements:
      *
      * - The caller must be the current owner.
      */
     function upgradeModules(
-        address[] memory moduleAddresses
+        address[] memory moduleAddresses_
     ) external virtual onlyOwner {
-        for (uint256 i = 0; i < moduleAddresses.length; ) {
-            address moduleAddress = moduleAddresses[i];
+        for (uint256 i = 0; i < moduleAddresses_.length; ) {
+            address moduleAddress = moduleAddresses_[i];
             uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
             uint16 moduleType_ = BaseModule(moduleAddress).moduleType();
             uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
@@ -158,20 +172,20 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
     /**
      * @notice Remove modules
-     * @param moduleAddresses List of modules to remove.
+     * @param moduleAddresses_ List of modules to remove.
      *
      * Requirements:
      *
      * - The caller must be the current owner.
      */
     function removeModules(
-        address[] memory moduleAddresses
+        address[] memory moduleAddresses_
     ) external virtual onlyOwner {
         // TODO: do not allow user to uninstall `Installer`
         // TODO: should the framework include a built-in whitelist?
 
-        for (uint256 i = 0; i < moduleAddresses.length; ) {
-            address moduleAddress = moduleAddresses[i];
+        for (uint256 i = 0; i < moduleAddresses_.length; ) {
+            address moduleAddress = moduleAddresses_[i];
             uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
             uint16 moduleType_ = BaseModule(moduleAddress).moduleType();
             uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
