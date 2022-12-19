@@ -86,7 +86,7 @@ abstract contract BaseState is IBaseState, BaseConstants {
      * variables without shifting down storage in the inheritance chain.
      * The size of the __gap array is calculated so that the amount of storage used by a
      * contract always adds up to the same number (in this case 50 storage slots, 0 to 49).
-     * @dev Slot 6 (1440 bytes).
+     * @dev Slot 6 (1408 bytes).
      */
     uint256[44] private __gap;
 }
