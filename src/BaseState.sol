@@ -38,7 +38,7 @@ abstract contract BaseConstants {
 
 /**
  * @title Base State
- * @dev Append-only, extendable after __gap.
+ * @dev Append-only, extendable after __gap: first 50 slots (0-49) are reserved.
  */
 abstract contract BaseState is IBaseState, BaseConstants {
     // =======
@@ -85,8 +85,8 @@ abstract contract BaseState is IBaseState, BaseConstants {
      * @notice This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.
      * The size of the __gap array is calculated so that the amount of storage used by a
-     * contract always adds up to the same number (in this case 50 storage slots).
+     * contract always adds up to the same number (in this case 50 storage slots, 0 to 49).
      * @dev Slot 6 (1440 bytes).
      */
-    uint256[45] private __gap;
+    uint256[44] private __gap;
 }

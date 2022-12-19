@@ -20,13 +20,13 @@ import {ImplementationState} from "./implementations/ImplementationState.sol";
  * | _modules      | mapping(uint32 => address)                          | 3    | 0      | 32    |
  * | _proxies      | mapping(uint32 => address)                          | 4    | 0      | 32    |
  * | _trusts       | mapping(address => struct TBaseState.TrustRelation) | 5    | 0      | 32    |
- * | __gap         | uint256[45]                                         | 6    | 0      | 1440  |
- * | _exampleSlot1 | bytes32                                             | 51   | 0      | 32    |
- * | _exampleSlot2 | uint256                                             | 52   | 0      | 32    |
- * | _exampleSlot3 | address                                             | 53   | 0      | 20    |
- * | getSlot4      | address                                             | 54   | 0      | 20    |
- * | getSlot5      | bool                                                | 54   | 20     | 1     |
- * | _exampleSlot6 | mapping(address => uint256)                         | 55   | 0      | 32    |
+ * | __gap         | uint256[44]                                         | 6    | 0      | 1408  |
+ * | _exampleSlot1 | bytes32                                             | 50   | 0      | 32    |
+ * | _exampleSlot2 | uint256                                             | 51   | 0      | 32    |
+ * | _exampleSlot3 | address                                             | 52   | 0      | 20    |
+ * | getSlot4      | address                                             | 53   | 0      | 20    |
+ * | getSlot5      | bool                                                | 53   | 20     | 1     |
+ * | _exampleSlot6 | mapping(address => uint256)                         | 54   | 0      | 32    |
  */
 contract ImplementationStateTest is Test {
     using stdStorageSafe for StdStorage;
@@ -68,9 +68,9 @@ contract ImplementationStateTest is Test {
         /**
          * | Name          | Type                                                | Slot | Offset | Bytes |
          * |---------------|-----------------------------------------------------|------|--------|-------|
-         * | _exampleSlot1 | bytes32                                             | 51   | 0      | 32    |
+         * | _exampleSlot1 | bytes32                                             | 50   | 0      | 32    |
          */
-        assertEq(stdstore.target(address(state)).sig("getSlot1()").find(), 51);
+        assertEq(stdstore.target(address(state)).sig("getSlot1()").find(), 50);
         assertEq(
             stdstore.target(address(state)).sig("getSlot1()").read_bytes32(),
             message_
@@ -79,9 +79,9 @@ contract ImplementationStateTest is Test {
         /**
          * | Name          | Type                                                | Slot | Offset | Bytes |
          * |---------------|-----------------------------------------------------|------|--------|-------|
-         * | _exampleSlot2 | uint256                                             | 52   | 0      | 32    |
+         * | _exampleSlot2 | uint256                                             | 51   | 0      | 32    |
          */
-        assertEq(stdstore.target(address(state)).sig("getSlot2()").find(), 52);
+        assertEq(stdstore.target(address(state)).sig("getSlot2()").find(), 51);
         assertEq(
             stdstore.target(address(state)).sig("getSlot2()").read_uint(),
             number_
@@ -90,9 +90,9 @@ contract ImplementationStateTest is Test {
         /**
          * | Name          | Type                                                | Slot | Offset | Bytes |
          * |---------------|-----------------------------------------------------|------|--------|-------|
-         * | _exampleSlot3 | address                                             | 53   | 0      | 20    |
+         * | _exampleSlot3 | address                                             | 52   | 0      | 20    |
          */
-        assertEq(stdstore.target(address(state)).sig("getSlot3()").find(), 53);
+        assertEq(stdstore.target(address(state)).sig("getSlot3()").find(), 52);
         assertEq(
             stdstore.target(address(state)).sig("getSlot3()").read_address(),
             location_
@@ -107,37 +107,37 @@ contract ImplementationStateTest is Test {
         /**
          * | Name          | Type                                                | Slot | Offset | Bytes |
          * |---------------|-----------------------------------------------------|------|--------|-------|
-         * | getSlot4      | address                                             | 54   | 0      | 20    |
+         * | getSlot4      | address                                             | 53   | 0      | 20    |
          */
         vm.record();
         state.getSlot4();
         (reads, ) = vm.accesses(address(state));
-        assertEq(uint256(reads[0]), 54);
+        assertEq(uint256(reads[0]), 53);
         current = vm.load(address(state), bytes32(reads[0]));
         assertEq(address(uint160(uint256(current))), location_);
 
         /**
          * | Name          | Type                                                | Slot | Offset | Bytes |
          * |---------------|-----------------------------------------------------|------|--------|-------|
-         * | getSlot5      | bool                                                | 54   | 20     | 1     |
+         * | getSlot5      | bool                                                | 53   | 20     | 1     |
          */
         vm.record();
         state.getSlot5();
         (reads, ) = vm.accesses(address(state));
-        assertEq(uint256(reads[0]), 54);
+        assertEq(uint256(reads[0]), 53);
         current = vm.load(address(state), bytes32(reads[0]));
         assertEq(uint8(uint256(current) >> (20 * 8)), _castBoolToUint8(flag_));
 
         /**
          * | Name          | Type                                                | Slot | Offset | Bytes |
          * |---------------|-----------------------------------------------------|------|--------|-------|
-         * | _exampleSlot6 | mapping(address => uint256)                         | 55   | 0      | 32    |
+         * | _exampleSlot6 | mapping(address => uint256)                         | 54   | 0      | 32    |
          */
 
         vm.record();
         state.getSlot6(location_);
         (reads, ) = vm.accesses(address(state));
-        assertEq((reads[0]), keccak256(abi.encode(location_, uint256(55))));
+        assertEq((reads[0]), keccak256(abi.encode(location_, uint256(54))));
         current = vm.load(address(state), bytes32(reads[0]));
         assertEq(uint256(current), number_);
     }

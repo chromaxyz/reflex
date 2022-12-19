@@ -16,13 +16,13 @@ import {BaseState} from "../../src/BaseState.sol";
  * | _modules      | mapping(uint32 => address)                          | 3    | 0      | 32    |
  * | _proxies      | mapping(uint32 => address)                          | 4    | 0      | 32    |
  * | _trusts       | mapping(address => struct TBaseState.TrustRelation) | 5    | 0      | 32    |
- * | __gap         | uint256[45]                                         | 6    | 0      | 1440  |
- * | _exampleSlot1 | bytes32                                             | 51   | 0      | 32    |
- * | _exampleSlot2 | uint256                                             | 52   | 0      | 32    |
- * | _exampleSlot3 | address                                             | 53   | 0      | 20    |
- * | getSlot4      | address                                             | 54   | 0      | 20    |
- * | getSlot5      | bool                                                | 54   | 20     | 1     |
- * | _exampleSlot6 | mapping(address => uint256)                         | 55   | 0      | 32    |
+ * | __gap         | uint256[44]                                         | 6    | 0      | 1408  |
+ * | _exampleSlot1 | bytes32                                             | 50   | 0      | 32    |
+ * | _exampleSlot2 | uint256                                             | 51   | 0      | 32    |
+ * | _exampleSlot3 | address                                             | 52   | 0      | 20    |
+ * | getSlot4      | address                                             | 53   | 0      | 20    |
+ * | getSlot5      | bool                                                | 53   | 20     | 1     |
+ * | _exampleSlot6 | mapping(address => uint256)                         | 54   | 0      | 32    |
  */
 contract ImplementationState is BaseState {
     // =======
