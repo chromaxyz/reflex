@@ -34,8 +34,6 @@ log $GREEN "Running Echidna script on $1 contract"
 
 mkdir -p reports/echidna
 
-# Test modes: 'property', 'assertion', 'dapptest', 'optimization', 'overflow' or 'exploration'
-
 echidna-test echidna/$1.sol \
     --test-mode assertion \
     --test-limit 50000 \
