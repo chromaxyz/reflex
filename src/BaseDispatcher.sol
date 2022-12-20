@@ -25,7 +25,12 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
     constructor(string memory name_, address owner_, address installerModule_) {
         if (bytes(name_).length == 0) revert InvalidName();
         if (owner_ == address(0)) revert InvalidOwner();
-        if (installerModule_ == address(0)) revert InvalidInstallerModule();
+        if (installerModule_ == address(0))
+            revert InvalidInstallerModuleAddress();
+        if (
+            IBaseInstaller(installerModule_).moduleId() !=
+            _BUILT_IN_MODULE_ID_INSTALLER
+        ) revert InvalidInstallerModuleId();
 
         // TODO: possibly replace with internal unprotected functions (setOwner, setName?)
         _owner = owner_;

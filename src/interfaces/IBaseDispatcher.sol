@@ -18,7 +18,9 @@ interface TBaseDispatcher is TBase {
 
     error InvalidOwner();
 
-    error InvalidInstallerModule();
+    error InvalidInstallerModuleAddress();
+
+    error InvalidInstallerModuleId();
 
     error MessageTooShort();
 

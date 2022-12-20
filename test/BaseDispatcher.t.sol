@@ -9,6 +9,7 @@ import {BaseFixture} from "./fixtures/BaseFixture.sol";
 
 // Mocks
 import {MockBaseDispatcher} from "./mocks/MockBaseDispatcher.sol";
+import {MockBaseModule} from "./mocks/MockBaseModule.sol";
 
 /**
  * @title Base Dispatcher Test
@@ -37,8 +38,27 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
     }
 
     function testRevertInvalidInstallerZeroAddress() external {
-        vm.expectRevert(InvalidInstallerModule.selector);
+        vm.expectRevert(InvalidInstallerModuleAddress.selector);
         new MockBaseDispatcher("Dispatcher", address(this), address(0));
+    }
+
+    function testRevertInvalidInstallerModuleIdSentinel() external {
+        vm.expectRevert();
+        new MockBaseDispatcher("Dispatcher", address(this), address(_ALICE));
+    }
+
+    function testRevertInvalidInstallerModuleId(uint32 moduleId_) external {
+        vm.assume(moduleId_ != 0);
+        vm.assume(moduleId_ != _BUILT_IN_MODULE_ID_INSTALLER);
+
+        MockBaseModule module = new MockBaseModule(
+            moduleId_,
+            _MODULE_TYPE_SINGLE_PROXY,
+            1
+        );
+
+        vm.expectRevert(InvalidInstallerModuleId.selector);
+        new MockBaseDispatcher("Dispatcher", address(this), address(module));
     }
 
     function testName() external {
