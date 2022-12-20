@@ -63,6 +63,10 @@ xcuserdata/
 # Node.js
 /node_modules/
 
+# Echidna
+/crytic-export/
+/reports/echidna/
+
 # Solidity
 /out/
 /cache/
