@@ -24,13 +24,19 @@ if ! [ -x "$(command -v echidna-test)" ]; then
   exit 1
 fi
 
-log $GREEN "Running Echidna script"
+# Check for arguments passed
+if [ $# -eq 0 ]
+  then
+    echo "Please supply contract name."
+fi
+
+log $GREEN "Running Echidna script on $1 contract"
 
 mkdir -p reports/echidna
 
 # Test modes: 'property', 'assertion', 'dapptest', 'optimization', 'overflow' or 'exploration'
 
-echidna-test echidna/*.e.sol \
+echidna-test echidna/$1.sol \
     --test-mode assertion \
     --test-limit 50000 \
     --corpus-dir reports/echidna
