@@ -58,6 +58,13 @@ contract SystemEchidnaTest is BaseConstants {
     //      - One must always be able to look up the `Installer` implementation by its `moduleId`
     //      - One must always be able to look up the `TrustRelation` by its `proxyAddress`
 
+    // =========
+    // Constants
+    // =========
+
+    address internal constant _ALICE = address(0xAAAA);
+    address internal constant _BOB = address(0xBBBB);
+
     // =======
     // Storage
     // =======
@@ -81,15 +88,22 @@ contract SystemEchidnaTest is BaseConstants {
         _moduleVersion = 1;
 
         _installer = new MockBaseInstaller(_moduleVersion);
+
         _dispatcher = new MockBaseDispatcher(
             "Dispatcher",
             address(this),
             address(_installer)
         );
+
         _installerProxy = MockBaseInstaller(
             _dispatcher.moduleIdToProxy(_BUILT_IN_MODULE_ID_INSTALLER)
         );
+
         _module = new MockBaseModule(_moduleId, _moduleType, _moduleVersion);
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(_module);
+        _installerProxy.addModules(moduleAddresses);
     }
 
     // =====
