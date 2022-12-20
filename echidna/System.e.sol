@@ -96,15 +96,15 @@ contract SystemEchidnaTest is BaseConstants {
     // Tests
     // =====
 
-    function echidna_ModuleIdImmutable() external view returns (bool) {
-        return _module.moduleId() == _moduleId;
+    function expectModuleIdImmutable() external view {
+        assert(_module.moduleId() == _moduleId);
     }
 
-    function echidna_ModuleVersionImmutable() external view returns (bool) {
-        return _module.moduleVersion() == _moduleVersion;
+    function expectModuleVersionImmutable() external view {
+        assert(_module.moduleVersion() == _moduleVersion);
     }
 
-    function echidna_ModuleTypeImmutable() external view returns (bool) {
-        return _module.moduleType() == _moduleType;
+    function expectModuleTypeImmutable() external view {
+        assert(_module.moduleType() == _moduleType);
     }
 }

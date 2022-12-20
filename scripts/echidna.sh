@@ -28,8 +28,10 @@ log $GREEN "Running Echidna script"
 
 mkdir -p reports/echidna
 
+# Test modes: 'property', 'assertion', 'dapptest', 'optimization', 'overflow' or 'exploration'
+
 echidna-test echidna/*.e.sol \
-    --test-mode property \
+    --test-mode assertion \
     --test-limit 50000 \
     --corpus-dir reports/echidna
 
