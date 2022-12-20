@@ -43,7 +43,7 @@ jobs:
 
       - name: Crytic Compile ${{ matrix.testName }}
         run: |
-          crytic-compile echidna/${{ matrix.testName }}.sol --solc-args "--optimize --optimize-runs 200" --export-format solc
+          crytic-compile echidna/${{ matrix.testName }}.e.sol --solc-args "--optimize --optimize-runs 200" --export-format solc
           jq --sort-keys . crytic-export/combined_solc.json > sorted_crytic_solc.json
 
       - name: Cache ${{ matrix.testName }} Corpus
