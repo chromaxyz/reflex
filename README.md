@@ -81,12 +81,17 @@ graph TD
 pragma solidity ^0.8.13;
 
 // Vendor
-import { BaseInstaller } from "reflex/BaseInstaller.sol";
+import { BaseInstaller } from "reflex/modules/BaseInstaller.sol";
+import { BaseConstants } from "reflex/BaseConstants.sol";
 import { BaseDispatcher } from "reflex/BaseDispatcher.sol";
 import { BaseModule } from "reflex/BaseModule.sol";
 import { BaseState } from "reflex/BaseState.sol";
 
-contract State is BaseState {
+abstract contract Constants is BaseConstants {
+  // ...
+}
+
+contract State is BaseState, Constants {
   // ...
 }
 
