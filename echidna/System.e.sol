@@ -79,6 +79,8 @@ contract SystemEchidnaTest is BaseConstants {
     uint16 private _exampleModuleType;
     uint16 private _exampleModuleVersion;
 
+    uint32 private _installerModuleId;
+    uint16 private _installerModuleType;
     uint16 private _installerModuleVersion;
 
     // =====
@@ -86,12 +88,11 @@ contract SystemEchidnaTest is BaseConstants {
     // =====
 
     constructor() {
-        _exampleModuleId = 2;
-        _exampleModuleType = _MODULE_TYPE_SINGLE_PROXY;
-        _exampleModuleVersion = 1;
-
+        _installerModuleId = _BUILT_IN_MODULE_ID_INSTALLER;
+        _installerModuleType = _MODULE_TYPE_SINGLE_PROXY;
         _installerModuleVersion = 1;
-        _installer = new MockBaseInstaller(_exampleModuleVersion);
+
+        _installer = new MockBaseInstaller(_installerModuleVersion);
 
         _dispatcher = new MockBaseDispatcher(
             "Dispatcher",
@@ -102,6 +103,10 @@ contract SystemEchidnaTest is BaseConstants {
         _installerProxy = MockBaseInstaller(
             _dispatcher.moduleIdToProxy(_BUILT_IN_MODULE_ID_INSTALLER)
         );
+
+        _exampleModuleId = 2;
+        _exampleModuleType = _MODULE_TYPE_SINGLE_PROXY;
+        _exampleModuleVersion = 1;
 
         _exampleModule = new MockBaseModule(
             _exampleModuleId,
