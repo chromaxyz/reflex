@@ -33,7 +33,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          make install
           pip3 install crytic-compile
           pip3 install solc-select
 
