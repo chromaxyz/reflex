@@ -141,4 +141,16 @@ contract SystemEchidnaTest is BaseConstants {
         assert(_installerProxy.moduleType() == _MODULE_TYPE_SINGLE_PROXY);
         assert(_exampleModuleProxy.moduleType() == _exampleModuleType);
     }
+
+    // TODO: this is expected to throw
+    // function expectModuleIdToProxyToAlwaysResolve() external view {
+    //     assert(
+    //         _dispatcher.moduleIdToProxy(_installerModuleId) ==
+    //             address(_installerProxy)
+    //     );
+    //     assert(
+    //         _dispatcher.moduleIdToProxy(_exampleModuleId) ==
+    //             address(_exampleModuleProxy)
+    //     );
+    // }
 }
