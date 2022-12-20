@@ -14,18 +14,6 @@ A first-generation Solidity framework for upgradeable modularized applications.
 Noteably this is a so-called framework, a single well-tested implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
 
-## User flow
-
-```mermaid
-sequenceDiagram
-    User->>Module Proxy: Request
-    Module Proxy->>Dispatcher (Storage): call()
-    Dispatcher (Storage) ->>Module Implementation: delegatecall()
-    Module Implementation->>Dispatcher (Storage): Response
-    Dispatcher (Storage) ->>Module Proxy: Response
-    Module Proxy->>User: Response
-```
-
 ## Contracts
 
 ```
@@ -45,32 +33,6 @@ sequenceDiagram
 │   └── Proxy.sol "Non-upgradeable `Proxy`, internal building block.
 └── modules
     └── BaseInstaller.sol "Upgradeable `Installer`, built-in installer for modules."
-```
-
-## Inheritance diagram
-
-```mermaid
-graph TD
-    subgraph Application [ ]
-    Dispatcher --> State
-    Installer --> State
-    Module --> State
-    State --> Constants
-    end
-
-    subgraph Framework [ ]
-    Dispatcher --> BaseDispatcher
-    Installer --> BaseInstaller
-    Module --> BaseModule
-    BaseInstaller --> BaseModule
-    BaseDispatcher --> Base
-    BaseModule --> Base
-    Base --> Proxy
-    Base --> BaseState
-    BaseState --> BaseConstants
-    State --> BaseState
-    Constants --> BaseConstants
-    end
 ```
 
 ## Inheritance snippet
@@ -121,6 +83,51 @@ contract ExampleModule is BaseModule, State {
 }
 
 ```
+
+## Inheritance diagram
+
+```mermaid
+graph TD
+    subgraph Application [ ]
+    Dispatcher --> State
+    Installer --> State
+    Module --> State
+    State --> Constants
+    end
+
+    subgraph Framework [ ]
+    Dispatcher --> BaseDispatcher
+    Installer --> BaseInstaller
+    Module --> BaseModule
+    BaseInstaller --> BaseModule
+    BaseDispatcher --> Base
+    BaseModule --> Base
+    Base --> Proxy
+    Base --> BaseState
+    BaseState --> BaseConstants
+    State --> BaseState
+    Constants --> BaseConstants
+    end
+```
+
+## User flow
+
+```mermaid
+sequenceDiagram
+    User->>Module Proxy: Request
+    Module Proxy->>Dispatcher (Storage): call()
+    Dispatcher (Storage) ->>Module Implementation: delegatecall()
+    Module Implementation->>Dispatcher (Storage): Response
+    Dispatcher (Storage) ->>Module Proxy: Response
+    Module Proxy->>User: Response
+```
+
+## Goals
+
+- The core framework should be as minimalistic and lean as possible, aim for a "zero-cost abstraction".
+- The core framework should have a highly optimized hot-path.
+- Priveledged administrative functions should optimize for legibility and safety, focus on preventing footguns.
+- Only the installer is required, all other modules are optional.
 
 ## Known limitations
 
