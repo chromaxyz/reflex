@@ -4,6 +4,9 @@ pragma solidity ^0.8.13;
 // Sources
 import {BaseConstants} from "../src/BaseState.sol";
 
+// Fixtures
+import {Addresses} from "../test/fixtures/Addresses.sol";
+
 // Mocks
 import {MockBaseInstaller} from "../test/mocks/MockBaseInstaller.sol";
 import {MockBaseDispatcher} from "../test/mocks/MockBaseDispatcher.sol";
@@ -13,7 +16,7 @@ import {MockBaseModule} from "../test/mocks/MockBaseModule.sol";
  * @title System Invariants Test
  * @dev System-level invariants test
  */
-contract SystemEchidnaTest is BaseConstants {
+contract SystemEchidnaTest is BaseConstants, Addresses {
     // ========
     // Workflow
     // ========
@@ -57,13 +60,6 @@ contract SystemEchidnaTest is BaseConstants {
     //      - One must always be able to look up the `Installer` proxy by its `moduleId`
     //      - One must always be able to look up the `Installer` implementation by its `moduleId`
     //      - One must always be able to look up the `TrustRelation` by its `proxyAddress`
-
-    // =========
-    // Constants
-    // =========
-
-    address internal constant _ALICE = address(0xAAAA);
-    address internal constant _BOB = address(0xBBBB);
 
     // =======
     // Storage

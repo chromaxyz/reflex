@@ -7,16 +7,16 @@ import {Test} from "forge-std/Test.sol";
 // Sources
 import {BaseConstants} from "../../src/BaseConstants.sol";
 
+// Test
+import {Addresses} from "./Addresses.sol";
+
 /**
  * @title Constants Fixture
  */
-abstract contract ConstantsFixture is Test, BaseConstants {
+abstract contract ConstantsFixture is Test, BaseConstants, Addresses {
     // =========
     // Constants
     // =========
-
-    address internal constant _ALICE = address(0xAAAA);
-    address internal constant _BOB = address(0xBBBB);
 
     uint16 internal constant _INSTALLER_MODULE_VERSION = 1;
 
