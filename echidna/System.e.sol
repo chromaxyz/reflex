@@ -72,22 +72,26 @@ contract SystemEchidnaTest is BaseConstants {
     MockBaseInstaller private _installer;
     MockBaseInstaller private _installerProxy;
     MockBaseDispatcher private _dispatcher;
-    MockBaseModule private _module;
+    MockBaseModule private _exampleModule;
+    MockBaseModule private _exampleModuleProxy;
 
-    uint32 private _moduleId;
-    uint16 private _moduleType;
-    uint16 private _moduleVersion;
+    uint32 private _exampleModuleId;
+    uint16 private _exampleModuleType;
+    uint16 private _exampleModuleVersion;
+
+    uint16 private _installerModuleVersion;
 
     // =====
     // Setup
     // =====
 
     constructor() {
-        _moduleId = 2;
-        _moduleType = _MODULE_TYPE_SINGLE_PROXY;
-        _moduleVersion = 1;
+        _exampleModuleId = 2;
+        _exampleModuleType = _MODULE_TYPE_SINGLE_PROXY;
+        _exampleModuleVersion = 1;
 
-        _installer = new MockBaseInstaller(_moduleVersion);
+        _installerModuleVersion = 1;
+        _installer = new MockBaseInstaller(_exampleModuleVersion);
 
         _dispatcher = new MockBaseDispatcher(
             "Dispatcher",
@@ -99,11 +103,19 @@ contract SystemEchidnaTest is BaseConstants {
             _dispatcher.moduleIdToProxy(_BUILT_IN_MODULE_ID_INSTALLER)
         );
 
-        _module = new MockBaseModule(_moduleId, _moduleType, _moduleVersion);
+        _exampleModule = new MockBaseModule(
+            _exampleModuleId,
+            _exampleModuleType,
+            _exampleModuleVersion
+        );
 
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(_module);
+        moduleAddresses[0] = address(_exampleModule);
         _installerProxy.addModules(moduleAddresses);
+
+        _exampleModuleProxy = MockBaseModule(
+            _dispatcher.moduleIdToProxy(_exampleModuleId)
+        );
     }
 
     // =====
@@ -111,14 +123,17 @@ contract SystemEchidnaTest is BaseConstants {
     // =====
 
     function expectModuleIdImmutable() external view {
-        assert(_module.moduleId() == _moduleId);
+        assert(_installerProxy.moduleId() == _BUILT_IN_MODULE_ID_INSTALLER);
+        assert(_exampleModuleProxy.moduleId() == _exampleModuleId);
     }
 
     function expectModuleVersionImmutable() external view {
-        assert(_module.moduleVersion() == _moduleVersion);
+        assert(_installerProxy.moduleVersion() == _installerModuleVersion);
+        assert(_exampleModuleProxy.moduleVersion() == _exampleModuleVersion);
     }
 
     function expectModuleTypeImmutable() external view {
-        assert(_module.moduleType() == _moduleType);
+        assert(_installerProxy.moduleType() == _MODULE_TYPE_SINGLE_PROXY);
+        assert(_exampleModuleProxy.moduleType() == _exampleModuleType);
     }
 }

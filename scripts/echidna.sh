@@ -32,7 +32,7 @@ mkdir -p reports/echidna
 
 echidna-test echidna/*.e.sol \
     --test-mode assertion \
-    --test-limit 50000 \
+    --test-limit 10000 \
     --corpus-dir reports/echidna
 
 log $GREEN "Done"
