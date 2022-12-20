@@ -5,6 +5,8 @@ pragma solidity ^0.8.13;
 import {BaseConstants} from "../src/BaseState.sol";
 
 // Mocks
+import {MockBaseInstaller} from "../test/mocks/MockBaseInstaller.sol";
+import {MockBaseDispatcher} from "../test/mocks/MockBaseDispatcher.sol";
 import {MockBaseModule} from "../test/mocks/MockBaseModule.sol";
 
 /**
@@ -60,6 +62,9 @@ contract SystemEchidnaTest is BaseConstants {
     // Storage
     // =======
 
+    MockBaseInstaller private _installer;
+    MockBaseInstaller private _installerProxy;
+    MockBaseDispatcher private _dispatcher;
     MockBaseModule private _module;
 
     uint32 private _moduleId;
@@ -75,6 +80,15 @@ contract SystemEchidnaTest is BaseConstants {
         _moduleType = _MODULE_TYPE_SINGLE_PROXY;
         _moduleVersion = 1;
 
+        _installer = new MockBaseInstaller(_moduleVersion);
+        _dispatcher = new MockBaseDispatcher(
+            "Dispatcher",
+            address(this),
+            address(_installer)
+        );
+        _installerProxy = MockBaseInstaller(
+            _dispatcher.moduleIdToProxy(_BUILT_IN_MODULE_ID_INSTALLER)
+        );
         _module = new MockBaseModule(_moduleId, _moduleType, _moduleVersion);
     }
 
