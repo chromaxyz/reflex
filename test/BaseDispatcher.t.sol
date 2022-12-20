@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+// Vendor
+import {Vm} from "forge-std/Vm.sol";
+import {console2} from "forge-std/console2.sol";
+
 // Interfaces
 import {TBaseDispatcher} from "../src/interfaces/IBaseDispatcher.sol";
 
@@ -9,6 +13,7 @@ import {BaseFixture} from "./fixtures/BaseFixture.sol";
 
 // Mocks
 import {MockBaseDispatcher} from "./mocks/MockBaseDispatcher.sol";
+import {MockBaseInstaller} from "./mocks/MockBaseInstaller.sol";
 import {MockBaseModule} from "./mocks/MockBaseModule.sol";
 
 /**
@@ -63,6 +68,71 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
 
     function testName() external {
         assertEq(dispatcher.name(), "Dispatcher");
+    }
+
+    function testLogEmittanceUponConstruction() external {
+        vm.recordLogs();
+
+        MockBaseDispatcher dispatcher = new MockBaseDispatcher(
+            "Dispatcher",
+            address(this),
+            address(installer)
+        );
+
+        Vm.Log[] memory entries = vm.getRecordedLogs();
+
+        // 3 logs are expected to be emitted.
+        assertEq(entries.length, 3);
+
+        // emit OwnershipTransferred(address(0), address(this));
+        assertEq(entries[0].topics.length, 3);
+        assertEq(
+            entries[0].topics[0],
+            keccak256("OwnershipTransferred(address,address)")
+        );
+        assertEq(entries[0].topics[1], bytes32(uint256(uint160(address(0)))));
+        assertEq(
+            entries[0].topics[2],
+            bytes32(uint256(uint160(address(this))))
+        );
+        assertEq(entries[0].emitter, address(dispatcher));
+
+        // emit NameChanged(address(0), "Dispatcher");
+        assertEq(entries[1].topics.length, 2);
+        assertEq(
+            entries[1].topics[0],
+            keccak256("NameChanged(address,string)")
+        );
+        assertEq(
+            entries[1].topics[1],
+            bytes32(uint256(uint160(address(this))))
+        );
+        assertEq(entries[1].data, abi.encode("Dispatcher"));
+        assertEq(entries[1].emitter, address(dispatcher));
+
+        // emit ModuleAdded(
+        //     _BUILT_IN_MODULE_ID_INSTALLER,
+        //     address(installer),
+        //     MockBaseInstaller(installer).moduleVersion()
+        // );
+        assertEq(entries[2].topics.length, 4);
+        assertEq(
+            entries[2].topics[0],
+            keccak256("ModuleAdded(uint32,address,uint16)")
+        );
+        assertEq(
+            entries[2].topics[1],
+            bytes32(uint256(_BUILT_IN_MODULE_ID_INSTALLER))
+        );
+        assertEq(
+            entries[2].topics[2],
+            bytes32(uint256(uint160(address(installer))))
+        );
+        assertEq(
+            entries[2].topics[3],
+            bytes32(uint256(_INSTALLER_MODULE_VERSION))
+        );
+        assertEq(entries[2].emitter, address(dispatcher));
     }
 
     function testInstallerConfiguration() external {

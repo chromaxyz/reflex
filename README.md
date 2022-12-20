@@ -73,6 +73,50 @@ graph TD
     end
 ```
 
+## Implementation
+
+```solidity
+// SPDX-License-Identifier: AGPL-3.0-only
+pragma solidity ^0.8.13;
+
+// Vendor
+import { BaseInstaller } from "reflex/BaseInstaller.sol";
+import { BaseDispatcher } from "reflex/BaseDispatcher.sol";
+import { BaseModule } from "reflex/BaseModule.sol";
+import { BaseState } from "reflex/BaseState.sol";
+
+contract State is BaseState {
+  // ...
+}
+
+contract Installer is BaseInstaller, State {
+  constructor(uint16 _moduleVersion) BaseInstaller(_moduleVersion) {}
+
+  // ...
+}
+
+contract Dispatcher is BaseDispatcher, State {
+  constructor(
+    string memory name_,
+    address owner_,
+    address installerModule_
+  ) BaseDispatcher(name_, owner_, installerModule_) {}
+
+  // ...
+}
+
+contract ExampleModule is BaseModule, State {
+  constructor(
+    uint32 _moduleId,
+    uint16 _moduleType,
+    uint16 _moduleVersion
+  ) BaseModule(_moduleId, _moduleType, _moduleVersion) {}
+
+  // ...
+}
+
+```
+
 ## Known limitations
 
 - Multiple application entrypoints via their proxies.
