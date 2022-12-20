@@ -3,7 +3,6 @@ pragma solidity ^0.8.13;
 
 // Vendor
 import {Vm} from "forge-std/Vm.sol";
-import {console2} from "forge-std/console2.sol";
 
 // Interfaces
 import {TBaseDispatcher} from "../src/interfaces/IBaseDispatcher.sol";

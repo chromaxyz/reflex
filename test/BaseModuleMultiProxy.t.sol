@@ -45,21 +45,11 @@ contract BaseModuleMultiProxyTest is TBaseModule, BaseFixture {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(moduleMulti);
         installerProxy.addModules(moduleAddresses);
-
-        moduleMultiProxy = MockBaseModule(
-            dispatcher.moduleIdToProxy(_MOCK_MODULE_MULTI_ID)
-        );
     }
 
     // =====
     // Tests
     // =====
-
-    function testProxyZeroAddress() external {
-        assertTrue(
-            dispatcher.moduleIdToProxy(_MOCK_MODULE_MULTI_ID) == address(0)
-        );
-    }
 
     function testModuleImplementation() external {
         assertTrue(

@@ -10,6 +10,9 @@ libs = ["node_modules", "lib"]
 [profile.default.fuzz]
 runs = 256
 
+[profile.default.invariant]
+runs = 1_000
+
 [profile.via-ir]
 via_ir = true
 
@@ -31,3 +34,6 @@ runs = 10_000
 
 [profile.intense.fuzz]
 runs = 10_000
+
+[profile.intense.invariant]
+runs = 5_000
