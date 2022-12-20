@@ -5,7 +5,7 @@ pragma solidity ^0.8.13;
 import {Test} from "forge-std/Test.sol";
 
 // Sources
-import {BaseConstants} from "../../src/BaseState.sol";
+import {BaseConstants} from "../../src/BaseConstants.sol";
 
 /**
  * @title Constants Fixture

@@ -1,35 +1,36 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// https://github.com/crytic/building-secure-contracts/tree/master/program-analysis/echidna#echidna-tutorial
+// Sources
+import {BaseConstants} from "../src/BaseConstants.sol";
 
-contract BaseModuleEchidnaTest {
-    event Flag(bool);
+// Mocks
+import {MockBaseModule} from "../test/mocks/MockBaseModule.sol";
 
-    bool private flag0 = true;
-    bool private flag1 = true;
+contract BaseModuleEchidnaTest is BaseConstants {
+    MockBaseModule private _module;
 
-    function set0(int256 val) public returns (bool) {
-        if (val % 100 == 0) flag0 = false;
-        return flag0;
+    uint32 private _moduleId;
+    uint16 private _moduleType;
+    uint16 private _moduleVersion;
+
+    constructor() {
+        _moduleId = 2;
+        _moduleType = _MODULE_TYPE_SINGLE_PROXY;
+        _moduleVersion = 1;
+
+        _module = new MockBaseModule(_moduleId, _moduleType, _moduleVersion);
     }
 
-    function set1(int256 val) public returns (bool) {
-        if (val % 10 == 0 && !flag0) flag1 = false;
-        return flag1;
+    function echidna_ModuleIdImmutable() external view returns (bool) {
+        return _module.moduleId() == _moduleId;
     }
 
-    function echidna_alwaystrue() public pure returns (bool) {
-        return (true);
+    function echidna_ModuleVersionImmutable() external view returns (bool) {
+        return _module.moduleVersion() == _moduleVersion;
     }
 
-    function echidna_revert_always() public pure returns (bool) {
-        revert();
-    }
-
-    function echidna_sometimesfalse() public returns (bool) {
-        emit Flag(flag0);
-        emit Flag(flag1);
-        return (flag1);
+    function echidna_ModuleTypeImmutable() external view returns (bool) {
+        return _module.moduleType() == _moduleType;
     }
 }

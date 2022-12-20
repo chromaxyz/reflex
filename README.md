@@ -30,6 +30,7 @@ sequenceDiagram
 
 ```
 .
+├── BaseConstants.sol "Extendable `Constants`, constants used in the framework."
 ├── BaseDispatcher.sol "Non-upgradeable `Dispatcher`, entry point of the framework."
 ├── BaseModule.sol "Upgradeable `Module`, building block of the framework."
 ├── BaseState.sol "Extendable `State`, state store of the framework."

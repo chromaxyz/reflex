@@ -28,6 +28,6 @@ log $GREEN "Running Echidna script"
 
 mkdir -p reports/echidna
 
-echidna-test echidna/*.sol --corpus-dir reports/echidna
+echidna-test echidna/*.sol --test-mode property --corpus-dir reports/echidna
 
 log $GREEN "Done"
