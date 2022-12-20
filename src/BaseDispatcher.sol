@@ -44,7 +44,6 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         );
         _trusts[installerProxy].moduleImplementation = installerModule_;
 
-        // TODO: add event emittance tests
         emit OwnershipTransferred(address(0), owner_);
         emit NameChanged(_owner, name_);
         emit ModuleAdded(

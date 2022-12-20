@@ -10,7 +10,7 @@ abstract contract BaseConstants {
     // Constants
     // =========
 
-    // TODO: replace with enum?
+    // TODO: replace with enum (offset 1)?
 
     /**
      * @dev These are modules that are only accessible by a single address.
