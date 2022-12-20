@@ -14,16 +14,22 @@ clean:; forge clean
 
 # Build
 build:; forge build --sizes
-build-ir:; FOUNDRY_PROFILE=via-ir forge build --sizes
+build-min-solc:; FOUNDRY_PROFILE=min-solc forge build --sizes
+build-via-ir:; FOUNDRY_PROFILE=via-ir forge build --sizes
+build-min-solc-via-ir:; FOUNDRY_PROFILE=min-solc-via-ir forge build --sizes
 
 # Test
 test:; forge test
-test-ir:; FOUNDRY_PROFILE=via-ir forge test
 test-intense:; FOUNDRY_PROFILE=intense forge test
+test-min-solc:; FOUNDRY_PROFILE=min-solc forge test
+test-via-ir:; FOUNDRY_PROFILE=via-ir forge test
+test-min-solc-via-ir:; FOUNDRY_PROFILE=min-solc-via-ir forge test
 
 # Snapshot
 snapshot:; forge snapshot
-snapshot-ir:; FOUNDRY_PROFILE=via-ir forge snapshot
+snapshot-min-solc:; FOUNDRY_PROFILE=min-solc forge snapshot
+snapshot-via-ir:; FOUNDRY_PROFILE=via-ir forge snapshot
+snapshot-min-solc-via-ir:; FOUNDRY_PROFILE=min-solc-via-ir forge snapshot
 
 # Linting
 lint-check:; npm run lint:check
