@@ -7,7 +7,7 @@ import {InvariantFixture} from "./fixtures/InvariantFixture.sol";
 
 /**
  * @title System Invariants Test
- * @dev System-level invariant test
+ * @dev System-level invariants test
  */
 contract SystemInvariantsTest is BaseFixture, InvariantFixture {
     // ========
@@ -61,11 +61,15 @@ contract SystemInvariantsTest is BaseFixture, InvariantFixture {
     function setUp() public virtual override {
         super.setUp();
 
+        // Register contracts
         _addTargetContract(address(installer));
         _addTargetContract(address(installerProxy));
         _addTargetContract(address(dispatcher));
 
+        // Register senders
         _addTargetSenders(address(this));
+        _addTargetSenders(_ALICE);
+        _addTargetSenders(_BOB);
     }
 
     // =====
@@ -92,6 +96,8 @@ contract SystemInvariantsTest is BaseFixture, InvariantFixture {
         // address[] memory moduleAddresses = new address[](1);
         // moduleAddresses[0] = address(installer);
         // installerProxy.removeModules(moduleAddresses);
+
+        // This should fail if module has been removed, address(0)
 
         assertEq(
             dispatcher.moduleIdToImplementation(_BUILT_IN_MODULE_ID_INSTALLER),
