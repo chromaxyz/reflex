@@ -74,7 +74,7 @@ graph TD
     end
 ```
 
-## Implementation
+## Inheritance snippet
 
 ```solidity
 // SPDX-License-Identifier: AGPL-3.0-only
