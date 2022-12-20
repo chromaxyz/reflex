@@ -55,6 +55,7 @@ graph TD
     Dispatcher --> State
     Installer --> State
     Module --> State
+    State --> Constants
     end
 
     subgraph Framework [ ]
@@ -62,15 +63,13 @@ graph TD
     Installer --> BaseInstaller
     Module --> BaseModule
     BaseInstaller --> BaseModule
-    end
-
-    subgraph Internals [ ]
     BaseDispatcher --> Base
     BaseModule --> Base
     Base --> Proxy
     Base --> BaseState
     BaseState --> BaseConstants
     State --> BaseState
+    Constants --> BaseConstants
     end
 ```
 
