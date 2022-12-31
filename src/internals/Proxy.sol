@@ -14,24 +14,6 @@ import {IProxy} from "../interfaces/IProxy.sol";
  * @dev Non-upgradeable.
  */
 contract Proxy is IProxy {
-    // =========
-    // Constants
-    // =========
-
-    /**
-     * @dev EIP-1967 compatible storage slot with the admin of the contract.
-     * This is the keccak-256 hash of "eip1967.proxy.admin" subtracted by 1.
-     */
-    bytes32 internal constant _ADMIN_SLOT =
-        0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103;
-
-    /**
-     * @dev EIP-1967 compatible storage slot with the address of the current implementation.
-     * This is the keccak-256 hash of "eip1967.proxy.implementation" subtracted by 1.
-     */
-    bytes32 internal constant _IMPLEMENTATION_SLOT =
-        0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
-
     // ==========
     // Immutables
     // ==========
@@ -41,62 +23,40 @@ contract Proxy is IProxy {
      */
     address internal immutable _deployer;
 
-    // =========
-    // Modifiers
-    // =========
-
-    modifier onlyDeployer() {
-        if (msg.sender == _deployer) {
-            _;
-        } else {
-            _fallback();
-        }
-    }
-
     // ===========
     // Constructor
     // ===========
 
-    /**
-     * @param implementation_ Implementation address.
-     */
-    constructor(address implementation_) payable {
+    constructor() payable {
         _deployer = msg.sender;
-
-        assembly {
-            sstore(_IMPLEMENTATION_SLOT, implementation_)
-        }
-
-        emit Upgraded(implementation_);
     }
 
-    // ======================
-    // Permissioned functions
-    // ======================
+    // ================
+    // Public functions
+    // ================
 
     /**
-     * @dev Allow `_deployer` to set the implementation.
-     * The implementation is not used, it exists to simplify integration.
-     *
-     * @param implementation_ Implementation address.
+     * @notice Returns implementation address by resolving through the `Dispatcher`.
+     * @return address Implementation address or zero address if unresolved.
      */
-    function setImplementation(
-        address implementation_
-    ) external override onlyDeployer {
-        // TODO: what are the security implications?
-
-        assembly {
-            sstore(_IMPLEMENTATION_SLOT, implementation_)
-        }
-
-        emit Upgraded(implementation_);
-    }
-
     function implementation() external view returns (address) {
-        return
-            IBaseDispatcher(_deployer)
-                .proxyAddressToTrustRelation(address(this))
-                .moduleImplementation;
+        (bool success, bytes memory response) = _deployer.staticcall(
+            abi.encodeWithSignature(
+                "proxyAddressToTrustRelation(address)",
+                address(this)
+            )
+        );
+
+        if (success) {
+            (, address moduleImplementation) = abi.decode(
+                response,
+                (uint32, address)
+            );
+
+            return moduleImplementation;
+        } else {
+            return address(0);
+        }
     }
 
     // ==================
@@ -106,19 +66,8 @@ contract Proxy is IProxy {
     /**
      * @dev Will run if no other function in the contract matches the call data.
      */
+    // solhint-disable-next-line no-complex-fallback
     fallback() external payable {
-        _fallback();
-    }
-
-    // ==================
-    // Internal functions
-    // ==================
-
-    /**
-     * @dev Fallback function that delegates calls to the address returned by `_IMPLEMENTATION_SLOT` through the `Dispatcher`.
-     * Note: Will run if no other function in the contract matches the call data.
-     */
-    function _fallback() internal {
         address deployer_ = _deployer;
 
         // If the caller is the deployer, instead of re-enter - issue a log message.

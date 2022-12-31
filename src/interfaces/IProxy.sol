@@ -5,16 +5,12 @@ pragma solidity ^0.8.13;
  * @title Proxy Test Interface
  */
 interface TProxy {
-    // ======
-    // Events
-    // ======
 
-    event Upgraded(address indexed implementation);
 }
 
 /**
  * @title Proxy Interface
  */
 interface IProxy is TProxy {
-    function setImplementation(address implementation_) external;
+    function implementation() external view returns (address);
 }

@@ -6,6 +6,7 @@ import {Vm} from "forge-std/Vm.sol";
 
 // Interfaces
 import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IProxy} from "../src/interfaces/IProxy.sol";
 
 // Fixtures
 import {BaseFixture} from "./fixtures/BaseFixture.sol";
@@ -87,6 +88,13 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         assertEq(
             moduleSingleProxy.moduleVersion(),
             _MOCK_MODULE_SINGLE_VERSION
+        );
+    }
+
+    function testGetModuleImplementationByProxy() external {
+        assertEq(
+            IProxy(address(moduleSingleProxy)).implementation(),
+            address(moduleSingle)
         );
     }
 
