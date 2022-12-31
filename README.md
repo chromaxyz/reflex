@@ -148,6 +148,7 @@ The contracts and tests were inspired by or directly modified from many sources,
 - [Euler](https://github.com/euler-xyz/euler-contracts)
 - [Balancer V2](https://github.com/balancer-labs/balancer-v2-monorepo/tree/master/pkg/vault/contracts)
 - [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
+- [Solmate](https://github.com/transmissions11/solmate)
 - [Solady](https://github.com/Vectorized/solady)
 
 ## License
