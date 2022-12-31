@@ -8,7 +8,7 @@ SCRIPT_PATH="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
 cd "$SCRIPT_PATH/.." || exit
 
 # Utilities
-GREEN='\033[00;32m'
+GREEN="\033[00;32m"
 
 function log () {
     echo -e "$1"
