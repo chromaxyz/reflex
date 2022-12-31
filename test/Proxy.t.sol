@@ -28,7 +28,11 @@ contract ProxyTest is TProxy, Test, Harness {
     // =====
 
     function setUp() public virtual {
+        _startGasCapture("Proxy");
+
         proxy = new Proxy();
+
+        _stopGasCapture();
     }
 
     // =====

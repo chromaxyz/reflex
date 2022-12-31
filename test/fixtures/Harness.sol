@@ -111,7 +111,10 @@ abstract contract Harness {
     function _stopGasCapture() internal {
         _gasUsed = _gasStart - gasleft();
 
-        console2.log(string(abi.encodePacked("[GAS] ", _gasLabel)), _gasUsed);
+        console2.log(
+            string(abi.encodePacked("[GAS] ", _gasLabel, "()")),
+            _gasUsed
+        );
     }
 
     function _brutalizedAddress(

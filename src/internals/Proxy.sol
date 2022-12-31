@@ -17,9 +17,9 @@ contract Proxy is IProxy {
     // Constants
     // =========
 
-    /// @dev `bytes4(keccak256(bytes("proxyAddressToTrustRelation(address)")))`.
-    bytes4 private constant _PROXY_ADDRESS_TO_TRUST_RELATION_SELECTOR =
-        0x4904a026;
+    /// @dev `bytes4(keccak256(bytes("proxyToModuleImplementation(address)")))`.
+    bytes4 private constant _PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR =
+        0xf2b124bd;
 
     // ==========
     // Immutables
@@ -53,18 +53,13 @@ contract Proxy is IProxy {
 
         (bool success, bytes memory response) = _deployer.staticcall(
             abi.encodeWithSelector(
-                _PROXY_ADDRESS_TO_TRUST_RELATION_SELECTOR,
+                _PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR,
                 address(this)
             )
         );
 
         if (success) {
-            (, address moduleImplementation) = abi.decode(
-                response,
-                (uint32, address)
-            );
-
-            return moduleImplementation;
+            return abi.decode(response, (address));
         } else {
             return address(0);
         }
