@@ -119,7 +119,7 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
 
     // TODO: add tests
 
-    function testCreateProxy() external GasCapture("createProxy()") {
+    function testCreateProxy() external {
         module = new MockBaseModule(
             _MOCK_MODULE_VALID_ID,
             _MOCK_MODULE_VALID_TYPE_MULTI,

@@ -81,6 +81,24 @@ abstract contract Harness {
         _checkMemory();
     }
 
+    // ===========
+    // Constructor
+    // ===========
+
+    constructor() {
+        address brutalizedAddress = _brutalizedAddress(address(0));
+        bool brutalizedAddressIsBrutalized;
+
+        /// @solidity memory-safe-assembly
+        assembly {
+            brutalizedAddressIsBrutalized := gt(shr(160, brutalizedAddress), 0)
+        }
+
+        if (!brutalizedAddressIsBrutalized) {
+            revert("Setup failed");
+        }
+    }
+
     // =========
     // Utilities
     // =========
@@ -94,6 +112,21 @@ abstract contract Harness {
         _gasUsed = _gasStart - gasleft();
 
         console2.log(string(abi.encodePacked("[GAS] ", _gasLabel)), _gasUsed);
+    }
+
+    function _brutalizedAddress(
+        address value
+    ) private view returns (address result) {
+        /// @solidity memory-safe-assembly
+        assembly {
+            // Some acrobatics to make the brutalized bits psuedorandomly
+            // different with every call.
+            mstore(0x00, or(calldataload(0), mload(0x40)))
+            mstore(0x20, or(caller(), mload(0x00)))
+            result := or(shl(160, keccak256(0x00, 0x40)), value)
+            mstore(0x40, add(0x20, mload(0x40)))
+            mstore(0x00, result)
+        }
     }
 
     function _checkMemory() internal pure {
