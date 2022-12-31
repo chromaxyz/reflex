@@ -2,8 +2,8 @@
 pragma solidity ^0.8.13;
 
 // Vendor
-import {Vm} from "forge-std/Vm.sol";
 import {stdError} from "forge-std/StdError.sol";
+import {Vm} from "forge-std/Vm.sol";
 
 // Interfaces
 import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
