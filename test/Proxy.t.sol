@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Vendors
-import {Test} from "forge-std/Test.sol";
-
 // Interfaces
 import {TProxy} from "../src/interfaces/IProxy.sol";
 
 // Internals
 import {Proxy} from "../src/internals/Proxy.sol";
 
+// Fixtures
+import {ConstantsFixture} from "./fixtures/ConstantsFixture.sol";
+
 /**
  * @title Proxy Test
  */
-contract ProxyTest is TProxy, Test {
+contract ProxyTest is TProxy, ConstantsFixture {
     // =======
     // Storage
     // =======
@@ -24,7 +24,9 @@ contract ProxyTest is TProxy, Test {
     // Setup
     // =====
 
-    function setUp() public virtual {
+    function setUp() public virtual override {
+        super.setUp();
+
         proxy = new Proxy();
     }
 

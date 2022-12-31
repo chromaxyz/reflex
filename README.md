@@ -148,7 +148,7 @@ The contracts were inspired by or directly modified from many sources, primarily
 - [Euler](https://github.com/euler-xyz/euler-contracts)
 - [Balancer V2](https://github.com/balancer-labs/balancer-v2-monorepo/tree/master/pkg/vault/contracts)
 - [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
-- [MakerDAO dss-vest](https://github.com/makerdao/dss-vest)
+- [Solady](https://github.com/Vectorized/solady)
 
 ## License
 
