@@ -5,6 +5,9 @@ pragma solidity ^0.8.13;
 import {Test} from "forge-std/Test.sol";
 import {stdStorageSafe, StdStorage} from "forge-std/StdStorage.sol";
 
+// Fixtures
+import {Harness} from "./fixtures/Harness.sol";
+
 // Tests
 import {ImplementationState} from "./implementations/ImplementationState.sol";
 
@@ -28,7 +31,7 @@ import {ImplementationState} from "./implementations/ImplementationState.sol";
  * | getSlot5      | bool                                                | 53   | 20     | 1     |
  * | _exampleSlot6 | mapping(address => uint256)                         | 54   | 0      | 32    |
  */
-contract ImplementationStateTest is Test {
+contract ImplementationStateTest is Test, Harness {
     using stdStorageSafe for StdStorage;
 
     // =======
@@ -54,7 +57,7 @@ contract ImplementationStateTest is Test {
         uint256 number_,
         address location_,
         bool flag_
-    ) external {
+    ) external BrutalizeMemory {
         state.setSlot1(message_);
         state.setSlot2(number_);
         state.setSlot3(location_);
