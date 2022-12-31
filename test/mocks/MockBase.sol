@@ -36,8 +36,8 @@ contract MockBase is Base {
         return _unpackMessageSender();
     }
 
-    function unpackParameters() public pure returns (address, address) {
-        return _unpackParameters();
+    function unpackProxyAddress() public pure returns (address) {
+        return _unpackProxyAddress();
     }
 
     function revertBytes(bytes memory errorMessage_) public pure {

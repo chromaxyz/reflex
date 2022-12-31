@@ -140,7 +140,7 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
     //         module.unpackMessageSender();
     //     }
 
-    //     function testUnpackMessageParameters() external {
-    //         module.unpackParameters();
+    //     function testUnpackProxyAddress() external {
+    //         module.unpackProxyAddress();
     //     }
 }

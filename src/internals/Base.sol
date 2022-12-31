@@ -69,32 +69,33 @@ abstract contract Base is IBase, BaseState {
 
     /**
      * @dev Unpack message sender from calldata.
+     * @return messageSender_ Message sender.
      */
     function _unpackMessageSender()
         internal
         pure
         virtual
-        returns (address messageSender)
+        returns (address messageSender_)
     {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
         assembly {
-            messageSender := shr(0x60, calldataload(sub(calldatasize(), 0x28)))
+            messageSender_ := shr(0x60, calldataload(sub(calldatasize(), 0x28)))
         }
     }
 
     /**
-     * @dev Unpack message sender and parameters from calldata.
+     * @dev Unpack proxy address from calldata.
+     * @return proxyAddress_ Proxy address.
      */
-    function _unpackParameters()
+    function _unpackProxyAddress()
         internal
         pure
         virtual
-        returns (address messageSender, address proxyAddress)
+        returns (address proxyAddress_)
     {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
         assembly {
-            messageSender := shr(0x60, calldataload(sub(calldatasize(), 0x28)))
-            proxyAddress := shr(0x60, calldataload(sub(calldatasize(), 0x14)))
+            proxyAddress_ := shr(0x60, calldataload(sub(calldatasize(), 0x14)))
         }
     }
 

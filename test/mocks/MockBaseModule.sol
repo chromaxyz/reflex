@@ -42,6 +42,46 @@ contract MockBaseModule is BaseModule, MockBase {
         _revertBytes(data);
     }
 
+    function testRevertPanicAssert() external {
+        PanicThrower thrower = new PanicThrower();
+
+        (, bytes memory data) = address(thrower).call(
+            abi.encodeWithSignature("throwPanicAssert()")
+        );
+
+        _revertBytes(data);
+    }
+
+    function testRevertPanicDivisionByZero() external {
+        PanicThrower thrower = new PanicThrower();
+
+        (, bytes memory data) = address(thrower).call(
+            abi.encodeWithSignature("throwPanicDivisionByZero()")
+        );
+
+        _revertBytes(data);
+    }
+
+    function testRevertPanicArithmeticOverflow() external {
+        PanicThrower thrower = new PanicThrower();
+
+        (, bytes memory data) = address(thrower).call(
+            abi.encodeWithSignature("throwPanicArithmeticOverflow()")
+        );
+
+        _revertBytes(data);
+    }
+
+    function testRevertPanicArithmeticUnderflow() external {
+        PanicThrower thrower = new PanicThrower();
+
+        (, bytes memory data) = address(thrower).call(
+            abi.encodeWithSignature("throwPanicArithmeticUnderflow()")
+        );
+
+        _revertBytes(data);
+    }
+
     function testProxyLog0Topic(bytes memory message_) external {
         _issueLogToProxy(abi.encodePacked(uint8(0), message_));
     }
@@ -103,7 +143,7 @@ contract MockBaseModule is BaseModule, MockBase {
     }
 
     function _issueLogToProxy(bytes memory payload) private {
-        (, address proxyAddress) = _unpackParameters();
+        address proxyAddress = _unpackProxyAddress();
 
         (bool success, ) = proxyAddress.call(payload);
 
@@ -132,5 +172,24 @@ contract CustomErrorThrower is ICustomError {
         string calldata message
     ) external pure {
         revert CustomError(CustomErrorPayload({code: code, message: message}));
+    }
+}
+
+contract PanicThrower {
+    function throwPanicAssert() external pure {
+        assert(false);
+    }
+
+    function throwPanicDivisionByZero() external pure returns (uint256) {
+        uint256 x = 0;
+        return type(uint256).max / x;
+    }
+
+    function throwPanicArithmeticOverflow() external pure returns (uint256) {
+        return type(uint256).max + 1;
+    }
+
+    function throwPanicArithmeticUnderflow() external pure returns (uint256) {
+        return type(uint256).min - 1;
     }
 }
