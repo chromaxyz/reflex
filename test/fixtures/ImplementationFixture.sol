@@ -18,7 +18,6 @@ abstract contract ImplementationFixture is ConstantsFixture {
 
     ImplementationInstaller public installer;
     ImplementationDispatcher public dispatcher;
-
     ImplementationInstaller public installerProxy;
 
     // =====

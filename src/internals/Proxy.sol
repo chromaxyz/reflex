@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+// Interfaces
+import {IBaseDispatcher} from "../interfaces/IBaseDispatcher.sol";
+import {IProxy} from "../interfaces/IProxy.sol";
+
 /**
  * @title Proxy
  * @dev Proxies are non-upgradeable stub contracts that have two jobs:
@@ -9,27 +13,112 @@ pragma solidity ^0.8.13;
  * @dev Execution takes place within the dispatcher storage context, not the proxy's.
  * @dev Non-upgradeable.
  */
-contract Proxy {
-    // =======
-    // Storage
-    // =======
+contract Proxy is IProxy {
+    // =========
+    // Constants
+    // =========
 
+    /**
+     * @dev EIP-1967 compatible storage slot with the admin of the contract.
+     * This is the keccak-256 hash of "eip1967.proxy.admin" subtracted by 1.
+     */
+    bytes32 internal constant _ADMIN_SLOT =
+        0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103;
+
+    /**
+     * @dev EIP-1967 compatible storage slot with the address of the current implementation.
+     * This is the keccak-256 hash of "eip1967.proxy.implementation" subtracted by 1.
+     */
+    bytes32 internal constant _IMPLEMENTATION_SLOT =
+        0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
+
+    // ==========
+    // Immutables
+    // ==========
+
+    /**
+     * @dev Deployer address.
+     */
     address internal immutable _deployer;
+
+    // =========
+    // Modifiers
+    // =========
+
+    modifier onlyDeployer() {
+        if (msg.sender == _deployer) {
+            _;
+        } else {
+            _fallback();
+        }
+    }
 
     // ===========
     // Constructor
     // ===========
 
-    constructor() payable {
+    /**
+     * @param implementation_ Implementation address.
+     */
+    constructor(address implementation_) payable {
         _deployer = msg.sender;
+
+        assembly {
+            sstore(_IMPLEMENTATION_SLOT, implementation_)
+        }
+
+        emit Upgraded(implementation_);
     }
 
-    // ================
-    // Public functions
-    // ================
+    // ======================
+    // Permissioned functions
+    // ======================
 
-    // solhint-disable-next-line no-complex-fallback
+    /**
+     * @dev Allow `_deployer` to set the implementation.
+     * The implementation is not used, it exists to simplify integration.
+     *
+     * @param implementation_ Implementation address.
+     */
+    function setImplementation(
+        address implementation_
+    ) external override onlyDeployer {
+        // TODO: what are the security implications?
+
+        assembly {
+            sstore(_IMPLEMENTATION_SLOT, implementation_)
+        }
+
+        emit Upgraded(implementation_);
+    }
+
+    function implementation() external view returns (address) {
+        return
+            IBaseDispatcher(_deployer)
+                .proxyAddressToTrustRelation(address(this))
+                .moduleImplementation;
+    }
+
+    // ==================
+    // Fallback functions
+    // ==================
+
+    /**
+     * @dev Will run if no other function in the contract matches the call data.
+     */
     fallback() external payable {
+        _fallback();
+    }
+
+    // ==================
+    // Internal functions
+    // ==================
+
+    /**
+     * @dev Fallback function that delegates calls to the address returned by `_IMPLEMENTATION_SLOT` through the `Dispatcher`.
+     * Note: Will run if no other function in the contract matches the call data.
+     */
+    function _fallback() internal {
         address deployer_ = _deployer;
 
         // If the caller is the deployer, instead of re-enter - issue a log message.
