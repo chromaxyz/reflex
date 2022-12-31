@@ -13,6 +13,14 @@ import {IProxy} from "../interfaces/IProxy.sol";
  * @dev Non-upgradeable.
  */
 contract Proxy is IProxy {
+    // =========
+    // Constants
+    // =========
+
+    /// @dev `bytes4(keccak256(bytes("proxyAddressToTrustRelation(address)")))`.
+    bytes4 private constant _PROXY_ADDRESS_TO_TRUST_RELATION_SELECTOR =
+        0x4904a026;
+
     // ==========
     // Immutables
     // ==========
@@ -36,12 +44,16 @@ contract Proxy is IProxy {
 
     /**
      * @notice Returns implementation address by resolving through the `Dispatcher`.
+     * @dev To prevent selector clashing avoid using the `implementation()` selector inside of modules.
      * @return address Implementation address or zero address if unresolved.
      */
     function implementation() external view returns (address) {
+        // TODO: optimize this for bytecode size
+        // TODO: how to handle possible selector clash?
+
         (bool success, bytes memory response) = _deployer.staticcall(
-            abi.encodeWithSignature(
-                "proxyAddressToTrustRelation(address)",
+            abi.encodeWithSelector(
+                _PROXY_ADDRESS_TO_TRUST_RELATION_SELECTOR,
                 address(this)
             )
         );
