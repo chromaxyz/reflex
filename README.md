@@ -143,7 +143,7 @@ The goal of the framework is to provide an alternative, and in some aspects supe
 
 The architecture is directly inspired by [Euler's Proxy Protocol](https://docs.euler.finance/developers/proxy-protocol) and we are thankful for their extensive documentation and novel modularization architecture.
 
-The contracts were inspired by or directly modified from many sources, primarily:
+The contracts and tests were inspired by or directly modified from many sources, primarily:
 
 - [Euler](https://github.com/euler-xyz/euler-contracts)
 - [Balancer V2](https://github.com/balancer-labs/balancer-v2-monorepo/tree/master/pkg/vault/contracts)
