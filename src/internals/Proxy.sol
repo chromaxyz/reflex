@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBaseDispatcher} from "../interfaces/IBaseDispatcher.sol";
 import {IProxy} from "../interfaces/IProxy.sol";
 
 /**
@@ -31,9 +30,9 @@ contract Proxy is IProxy {
         _deployer = msg.sender;
     }
 
-    // ================
-    // Public functions
-    // ================
+    // ==============
+    // View functions
+    // ==============
 
     /**
      * @notice Returns implementation address by resolving through the `Dispatcher`.
