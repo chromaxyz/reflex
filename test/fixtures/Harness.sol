@@ -6,7 +6,7 @@ import {console2} from "forge-std/console2.sol";
 
 /**
  * @title Harness
- * @dev `GasCapture` has been copied from: Solmate (https://github.com/transmissions11/solmate/blob/main/src/test/utils/DSTestPlus.sol)
+ * @dev `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/main/src/test/utils/DSTestPlus.sol)
  * @dev `BrualizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol)
  */
 abstract contract Harness {
