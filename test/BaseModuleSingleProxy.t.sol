@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 // Vendor
 import {Vm} from "forge-std/Vm.sol";
+import {stdError} from "forge-std/StdError.sol";
 
 // Interfaces
 import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
@@ -112,26 +113,22 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
     }
 
     function testRevertBytesPanicAssert() external {
-        // 0x01: If you call assert with an argument that evaluates to false.
-        vm.expectRevert(abi.encodeWithSignature("Panic(uint256)", 0x01));
+        vm.expectRevert(stdError.assertionError);
         moduleSingleProxy.testRevertPanicAssert();
     }
 
     function testRevertBytesPanicDivideByZero() external {
-        // 0x12: If you divide or divide modulo by zero (e.g. 5 / 0 or 23 % 0).
-        vm.expectRevert(abi.encodeWithSignature("Panic(uint256)", 0x12));
+        vm.expectRevert(stdError.divisionError);
         moduleSingleProxy.testRevertPanicDivisionByZero();
     }
 
     function testRevertBytesPanicArithmaticOverflow() external {
-        // 0x11: If an arithmetic operation results in underflow or overflow outside of an unchecked { ... } block.
-        vm.expectRevert(abi.encodeWithSignature("Panic(uint256)", 0x11));
+        vm.expectRevert(stdError.arithmeticError);
         moduleSingleProxy.testRevertPanicArithmeticOverflow();
     }
 
     function testRevertBytesPanicArithmaticUnderflow() external {
-        // 0x11: If an arithmetic operation results in underflow or overflow outside of an unchecked { ... } block.
-        vm.expectRevert(abi.encodeWithSignature("Panic(uint256)", 0x11));
+        vm.expectRevert(stdError.arithmeticError);
         moduleSingleProxy.testRevertPanicArithmeticUnderflow();
     }
 
