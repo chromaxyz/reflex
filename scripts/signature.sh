@@ -18,7 +18,7 @@ function log () {
     echo -e "\033[0m"
 }
 
-log $GREEN "Creating selector from signature"
+log $GREEN "Creating selector from \"$1\" signature"
 
 # Check for arguments passed
 if [ $# -eq 0 ]
