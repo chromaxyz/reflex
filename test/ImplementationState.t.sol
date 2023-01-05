@@ -44,7 +44,9 @@ contract ImplementationStateTest is Test, Harness {
     // Setup
     // =====
 
-    function setUp() public virtual {
+    function setUp() public virtual override {
+        super.setUp();
+
         state = new ImplementationState();
     }
 

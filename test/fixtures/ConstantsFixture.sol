@@ -8,13 +8,12 @@ import {Test} from "forge-std/Test.sol";
 import {BaseConstants} from "../../src/BaseConstants.sol";
 
 // Test
-import {Addresses} from "./Addresses.sol";
 import {Harness} from "./Harness.sol";
 
 /**
  * @title Constants Fixture
  */
-abstract contract ConstantsFixture is Test, BaseConstants, Addresses, Harness {
+abstract contract ConstantsFixture is Test, BaseConstants, Harness {
     // =========
     // Constants
     // =========
@@ -25,8 +24,7 @@ abstract contract ConstantsFixture is Test, BaseConstants, Addresses, Harness {
     // Setup
     // =====
 
-    function setUp() public virtual {
-        vm.label(_ALICE, "Alice");
-        vm.label(_BOB, "Bob");
+    function setUp() public virtual override {
+        super.setUp();
     }
 }

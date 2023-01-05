@@ -27,7 +27,9 @@ contract ProxyTest is TProxy, Test, Harness {
     // Setup
     // =====
 
-    function setUp() public virtual {
+    function setUp() public virtual override {
+        super.setUp();
+
         proxy = new Proxy();
     }
 

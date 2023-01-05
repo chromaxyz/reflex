@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Vendor
+import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
 
 /**
@@ -9,10 +10,27 @@ import {console2} from "forge-std/console2.sol";
  * @dev `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/main/src/test/utils/DSTestPlus.sol)
  * @dev `BrualizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol)
  */
-abstract contract Harness {
+abstract contract Harness is Test {
+    // =======
+    // Structs
+    // =======
+
+    struct Users {
+        // solhint-disable-next-line var-name-mixedcase
+        address payable Alice;
+        // solhint-disable-next-line var-name-mixedcase
+        address payable Bob;
+        // solhint-disable-next-line var-name-mixedcase
+        address payable Caroll;
+        // solhint-disable-next-line var-name-mixedcase
+        address payable Dave;
+    }
+
     // =======
     // Storage
     // =======
+
+    Users internal _users;
 
     string internal _gasLabel;
     uint256 internal _gasStart;
@@ -81,11 +99,11 @@ abstract contract Harness {
         _checkMemory();
     }
 
-    // ===========
-    // Constructor
-    // ===========
+    // =====
+    // Setup
+    // =====
 
-    constructor() {
+    function setUp() public virtual {
         address brutalizedAddress = _brutalizedAddress(address(0));
         bool brutalizedAddressIsBrutalized;
 
@@ -97,17 +115,43 @@ abstract contract Harness {
         if (!brutalizedAddressIsBrutalized) {
             revert("Setup failed");
         }
+
+        _users = Users({
+            Alice: _createUser("Alice"),
+            Bob: _createUser("Bob"),
+            Caroll: _createUser("Caroll"),
+            Dave: _createUser("Dave")
+        });
     }
 
     // =========
     // Utilities
     // =========
 
+    /**
+     * @dev Create user address from user label.
+     */
+    function _createUser(
+        string memory label_
+    ) internal returns (address payable user) {
+        user = payable(
+            address(uint160(uint256(keccak256(abi.encodePacked(label_)))))
+        );
+        vm.label(user, label_);
+        vm.deal(user, 100e18);
+    }
+
+    /**
+     * @dev Start a gas capture log.
+     */
     function _startGasCapture(string memory label_) internal {
         _gasLabel = label_;
         _gasStart = gasleft();
     }
 
+    /**
+     * @dev Finish a gas capture log and log the result.
+     */
     function _stopGasCapture() internal {
         _gasUsed = _gasStart - gasleft();
 

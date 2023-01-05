@@ -43,7 +43,7 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
 
     function testRevertInvalidInstallerModuleIdSentinel() external {
         vm.expectRevert();
-        new MockBaseDispatcher(address(this), address(_ALICE));
+        new MockBaseDispatcher(address(this), address(_users.Alice));
     }
 
     function testRevertInvalidInstallerModuleId(uint32 moduleId_) external {
@@ -132,16 +132,16 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
         assertEq(installerProxy.owner(), address(this));
         assertEq(installerProxy.pendingOwner(), address(0));
 
-        installerProxy.transferOwnership(_ALICE);
+        installerProxy.transferOwnership(_users.Alice);
 
         assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), address(_ALICE));
+        assertEq(installerProxy.pendingOwner(), address(_users.Alice));
 
-        vm.startPrank(_ALICE);
+        vm.startPrank(_users.Alice);
 
         installerProxy.acceptOwnership();
 
-        assertEq(installerProxy.owner(), address(_ALICE));
+        assertEq(installerProxy.owner(), address(_users.Alice));
         assertEq(installerProxy.pendingOwner(), address(0));
 
         vm.stopPrank();

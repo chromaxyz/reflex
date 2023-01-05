@@ -4,9 +4,6 @@ pragma solidity ^0.8.13;
 // Sources
 import {BaseConstants} from "../src/BaseState.sol";
 
-// Fixtures
-import {Addresses} from "../test/fixtures/Addresses.sol";
-
 // Mocks
 import {MockBaseInstaller} from "../test/mocks/MockBaseInstaller.sol";
 import {MockBaseDispatcher} from "../test/mocks/MockBaseDispatcher.sol";
@@ -16,7 +13,7 @@ import {MockBaseModule} from "../test/mocks/MockBaseModule.sol";
  * @title System Invariants Test
  * @dev System-level invariants test
  */
-contract SystemEchidnaTest is BaseConstants, Addresses {
+contract SystemEchidnaTest is BaseConstants {
     // ========
     // Workflow
     // ========
