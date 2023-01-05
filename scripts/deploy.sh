@@ -4,9 +4,7 @@
 set -euo pipefail
 
 # Set environment variables
-set -a;
-source .env;
-set +a
+set -a; source .env; set +a
 
 # Change directory to project root
 SCRIPT_PATH="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
