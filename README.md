@@ -133,9 +133,12 @@ sequenceDiagram
 
 - Multiple application entrypoints via their proxies.
 - The `Dispatcher` and the internal `Proxy` contracts are not upgradable.
-- Storage in the `Dispatcher` is extendable but implementers must remain vigilant to not cause storage clashes.
-- The first 50 storage slots are reserved for the framework allowing us to add new features over time.
+- Storage in the `Dispatcher` is extendable but implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
+- The first `50` storage slots are reserved allowing us to add new features over time.
 - It is possible to possibly cause function selector clashes though the surface area is very small.
+- Implementers MUST NOT implement an `implementation()` method in `Modules` as this causes a function selector clash in the `Proxy`.
+- Implementers MUST NOT implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
+- The registration of `Modules` MUST BE permissioned, malicious `Modules` can impact the behaviour of the entire application.
 
 ## Acknowledgements
 
