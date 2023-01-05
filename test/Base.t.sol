@@ -31,6 +31,7 @@ contract BaseTest is TBase, BaseFixture {
         base = new MockBase();
         reentrancyAttack = new ReentrancyAttack();
 
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
         assertEq(base.reentrancyCounter(), 0);
     }
 
@@ -38,19 +39,15 @@ contract BaseTest is TBase, BaseFixture {
     // Tests
     // =====
 
-    function testReentrancyLock() external {
-        assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
-
-        base.lockReentrancyLock();
-
-        assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_LOCKED);
-
-        base.unlockReentrancyLock();
-
-        assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
+    function testGuardedCheckLocked() external {
+        base.guardedCheckLocked();
     }
 
-    function testCallNonReentrantMethod() external {
+    function testUnguardedCheckUnlocked() external view {
+        base.unguardedCheckUnlocked();
+    }
+
+    function testNonReentrantMethodCanBeCalled() external {
         assertEq(base.reentrancyCounter(), 0);
 
         base.callback();
@@ -58,17 +55,9 @@ contract BaseTest is TBase, BaseFixture {
         assertEq(base.reentrancyCounter(), 1);
     }
 
-    function testRevertCallRemoteCallback() external {
+    function testRevertRemoteCallback() external {
         vm.expectRevert(ReentrancyAttack.ReentrancyAttackFailed.selector);
         base.countAndCall(reentrancyAttack);
-    }
-
-    function testGuardedCheckLocked() external {
-        base.guardedCheckLocked();
-    }
-
-    function testGuardedCheckUnlocked() external view {
-        base.unguardedCheckUnlocked();
     }
 
     function testRevertRecursiveDirectCall() external {
