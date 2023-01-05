@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 // Vendor
-import {console2} from "forge-std/console2.sol";
 import {Script} from "forge-std/Script.sol";
 
 // Sources
@@ -17,6 +16,9 @@ abstract contract DeployConstants is BaseConstants {
     uint32 internal constant _MODULE_ID_EXAMPLE = 2;
 }
 
+/**
+ * @title Deploy Script
+ */
 contract DeployScript is Script, DeployConstants {
     ImplementationInstaller public installerImplementation;
     ImplementationInstaller public installerProxy;
@@ -53,16 +55,5 @@ contract DeployScript is Script, DeployConstants {
         exampleModuleProxy = ImplementationModule(
             dispatcher.moduleIdToProxy(_MODULE_ID_EXAMPLE)
         );
-
-        console2.log(
-            "Installer Implementation",
-            address(installerImplementation)
-        );
-        console2.log("Dispatcher", address(dispatcher));
-        console2.log(
-            "Example Module Implementation",
-            address(exampleModuleImplementation)
-        );
-        console2.log("Example Module Proxy", address(exampleModuleProxy));
     }
 }
