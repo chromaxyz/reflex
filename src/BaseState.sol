@@ -10,6 +10,16 @@ import {BaseConstants} from "./BaseConstants.sol";
 /**
  * @title Base State
  * @dev Append-only, extendable after __gap: first 50 slots (0-49) are reserved.
+ *
+ * @dev Storage layout:
+ * | Name          | Type                                                | Slot | Offset | Bytes |
+ * |---------------|-----------------------------------------------------|------|--------|-------|
+ * | _owner        | address                                             | 0    | 0      | 20    |
+ * | _pendingOwner | address                                             | 1    | 0      | 20    |
+ * | _modules      | mapping(uint32 => address)                          | 2    | 0      | 32    |
+ * | _proxies      | mapping(uint32 => address)                          | 3    | 0      | 32    |
+ * | _trusts       | mapping(address => struct TBaseState.TrustRelation) | 4    | 0      | 32    |
+ * | __gap         | uint256[45]                                         | 5    | 0      | 1440  |
  */
 abstract contract BaseState is IBaseState, BaseConstants {
     // =======
