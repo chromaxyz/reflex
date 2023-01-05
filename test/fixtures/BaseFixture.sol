@@ -29,11 +29,7 @@ abstract contract BaseFixture is ConstantsFixture {
 
         installer = new MockBaseInstaller(_INSTALLER_MODULE_VERSION);
 
-        dispatcher = new MockBaseDispatcher(
-            "Dispatcher",
-            address(this),
-            address(installer)
-        );
+        dispatcher = new MockBaseDispatcher(address(this), address(installer));
 
         installerProxy = MockBaseInstaller(
             dispatcher.moduleIdToProxy(_BUILT_IN_MODULE_ID_INSTALLER)

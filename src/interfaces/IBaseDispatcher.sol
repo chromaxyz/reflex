@@ -14,8 +14,6 @@ interface TBaseDispatcher is TBase {
 
     error CallerNotTrusted();
 
-    error InvalidName();
-
     error InvalidOwner();
 
     error InvalidInstallerModuleAddress();
@@ -34,8 +32,6 @@ interface TBaseDispatcher is TBase {
         uint16 indexed moduleVersion_
     );
 
-    event NameChanged(address indexed user_, string name_);
-
     event OwnershipTransferred(
         address indexed user_,
         address indexed newOwner_
@@ -53,8 +49,6 @@ interface IBaseDispatcher is IBase, TBaseDispatcher {
     ) external view returns (address);
 
     function moduleIdToProxy(uint32 moduleId_) external view returns (address);
-
-    function name() external view returns (string memory);
 
     function proxyAddressToTrustRelation(
         address proxyAddress_

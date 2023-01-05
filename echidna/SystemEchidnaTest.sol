@@ -91,7 +91,6 @@ contract SystemEchidnaTest is BaseConstants, Addresses {
         _installer = new MockBaseInstaller(_installerModuleVersion);
 
         _dispatcher = new MockBaseDispatcher(
-            "Dispatcher",
             address(this),
             address(_installer)
         );

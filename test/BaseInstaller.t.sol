@@ -54,12 +54,6 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // Tests
     // =====
 
-    function testSetName(string memory name_) public {
-        vm.expectEmit(true, false, false, false);
-        emit NameChanged(address(this), name_);
-        installerProxy.setName(name_);
-    }
-
     function testTransferOwnership() public {
         vm.expectEmit(true, false, false, false);
         emit OwnershipTransferStarted(address(this), _ALICE);

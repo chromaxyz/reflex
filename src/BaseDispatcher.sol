@@ -18,12 +18,10 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
     // ===========
 
     /**
-     * @param name_ Protocol name.
      * @param owner_ Protocol owner.
      * @param installerModule_ Installer module address.
      */
-    constructor(string memory name_, address owner_, address installerModule_) {
-        if (bytes(name_).length == 0) revert InvalidName();
+    constructor(address owner_, address installerModule_) {
         if (owner_ == address(0)) revert InvalidOwner();
         if (installerModule_ == address(0))
             revert InvalidInstallerModuleAddress();
@@ -32,9 +30,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
             _BUILT_IN_MODULE_ID_INSTALLER
         ) revert InvalidInstallerModuleId();
 
-        // TODO: possibly replace with internal unprotected functions (setOwner, setName?)
         _owner = owner_;
-        _name = name_;
 
         // Register `Installer` module.
         _modules[_BUILT_IN_MODULE_ID_INSTALLER] = installerModule_;
@@ -45,7 +41,6 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         _trusts[installerProxy].moduleImplementation = installerModule_;
 
         emit OwnershipTransferred(address(0), owner_);
-        emit NameChanged(_owner, name_);
         emit ModuleAdded(
             _BUILT_IN_MODULE_ID_INSTALLER,
             installerModule_,
@@ -56,14 +51,6 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
     // ==============
     // View functions
     // ==============
-
-    /**
-     * @notice Returns the name of the protocol.
-     * @return string Protocol name.
-     */
-    function name() external view virtual returns (string memory) {
-        return _name;
-    }
 
     /**
      * @notice Returns the module implementation address by module id.
