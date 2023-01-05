@@ -23,12 +23,12 @@ import {ImplementationState} from "./implementations/ImplementationState.sol";
  * | _proxies      | mapping(uint32 => address)                          | 3    | 0      | 32    |
  * | _trusts       | mapping(address => struct TBaseState.TrustRelation) | 4    | 0      | 32    |
  * | __gap         | uint256[45]                                         | 5    | 0      | 1440  |
- * | _exampleSlot1 | bytes32                                             | 50   | 0      | 32    |
- * | _exampleSlot2 | uint256                                             | 51   | 0      | 32    |
- * | _exampleSlot3 | address                                             | 52   | 0      | 20    |
- * | getSlot4      | address                                             | 53   | 0      | 20    |
- * | getSlot5      | bool                                                | 53   | 20     | 1     |
- * | _exampleSlot6 | mapping(address => uint256)                         | 54   | 0      | 32    |
+ * | _exampleSlot0 | bytes32                                             | 50   | 0      | 32    |
+ * | _exampleSlot1 | uint256                                             | 51   | 0      | 32    |
+ * | _exampleSlot2 | address                                             | 52   | 0      | 20    |
+ * | getSlot3      | address                                             | 53   | 0      | 20    |
+ * | getSlot4      | bool                                                | 53   | 20     | 1     |
+ * | _exampleSlot5 | mapping(address => uint256)                         | 54   | 0      | 32    |
  */
 contract ImplementationStateTest is Test, Harness {
     using stdStorageSafe for StdStorage;
