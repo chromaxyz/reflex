@@ -11,12 +11,12 @@ abstract contract BaseConstants {
     // =========
 
     /**
-     * @dev Mutex unlocked state.
+     * @dev Reentrancy mutex unlocked state.
      */
     uint256 internal constant _REENTRANCY_LOCK_UNLOCKED = 1;
 
     /**
-     * @dev Mutex locked state.
+     * @dev Reentrancy mutex locked state.
      */
     uint256 internal constant _REENTRANCY_LOCK_LOCKED = 2;
 
