@@ -57,43 +57,43 @@ contract ImplementationStateTest is Test, Harness {
         address location_,
         bool flag_
     ) external BrutalizeMemory {
-        state.setSlot1(message_);
-        state.setSlot2(number_);
+        state.setSlot0(message_);
+        state.setSlot1(number_);
+        state.setSlot2(location_);
         state.setSlot3(location_);
-        state.setSlot4(location_);
-        state.setSlot5(flag_);
-        state.setSlot6(location_, number_);
+        state.setSlot4(flag_);
+        state.setSlot5(location_, number_);
 
         /**
          * | Name          | Type                                                | Slot | Offset | Bytes |
          * |---------------|-----------------------------------------------------|------|--------|-------|
-         * | _exampleSlot1 | bytes32                                             | 50   | 0      | 32    |
+         * | _exampleSlot0 | bytes32                                             | 50   | 0      | 32    |
          */
-        assertEq(stdstore.target(address(state)).sig("getSlot1()").find(), 50);
+        assertEq(stdstore.target(address(state)).sig("getSlot0()").find(), 50);
         assertEq(
-            stdstore.target(address(state)).sig("getSlot1()").read_bytes32(),
+            stdstore.target(address(state)).sig("getSlot0()").read_bytes32(),
             message_
         );
 
         /**
          * | Name          | Type                                                | Slot | Offset | Bytes |
          * |---------------|-----------------------------------------------------|------|--------|-------|
-         * | _exampleSlot2 | uint256                                             | 51   | 0      | 32    |
+         * | _exampleSlot1 | uint256                                             | 51   | 0      | 32    |
          */
-        assertEq(stdstore.target(address(state)).sig("getSlot2()").find(), 51);
+        assertEq(stdstore.target(address(state)).sig("getSlot1()").find(), 51);
         assertEq(
-            stdstore.target(address(state)).sig("getSlot2()").read_uint(),
+            stdstore.target(address(state)).sig("getSlot1()").read_uint(),
             number_
         );
 
         /**
          * | Name          | Type                                                | Slot | Offset | Bytes |
          * |---------------|-----------------------------------------------------|------|--------|-------|
-         * | _exampleSlot3 | address                                             | 52   | 0      | 20    |
+         * | _exampleSlot2 | address                                             | 52   | 0      | 20    |
          */
-        assertEq(stdstore.target(address(state)).sig("getSlot3()").find(), 52);
+        assertEq(stdstore.target(address(state)).sig("getSlot2()").find(), 52);
         assertEq(
-            stdstore.target(address(state)).sig("getSlot3()").read_address(),
+            stdstore.target(address(state)).sig("getSlot2()").read_address(),
             location_
         );
 
@@ -106,10 +106,10 @@ contract ImplementationStateTest is Test, Harness {
         /**
          * | Name          | Type                                                | Slot | Offset | Bytes |
          * |---------------|-----------------------------------------------------|------|--------|-------|
-         * | getSlot4      | address                                             | 53   | 0      | 20    |
+         * | getSlot3      | address                                             | 53   | 0      | 20    |
          */
         vm.record();
-        state.getSlot4();
+        state.getSlot3();
         (reads, ) = vm.accesses(address(state));
         assertEq(uint256(reads[0]), 53);
         current = vm.load(address(state), bytes32(reads[0]));
@@ -118,10 +118,10 @@ contract ImplementationStateTest is Test, Harness {
         /**
          * | Name          | Type                                                | Slot | Offset | Bytes |
          * |---------------|-----------------------------------------------------|------|--------|-------|
-         * | getSlot5      | bool                                                | 53   | 20     | 1     |
+         * | getSlot4      | bool                                                | 53   | 20     | 1     |
          */
         vm.record();
-        state.getSlot5();
+        state.getSlot4();
         (reads, ) = vm.accesses(address(state));
         assertEq(uint256(reads[0]), 53);
         current = vm.load(address(state), bytes32(reads[0]));
@@ -130,10 +130,10 @@ contract ImplementationStateTest is Test, Harness {
         /**
          * | Name          | Type                                                | Slot | Offset | Bytes |
          * |---------------|-----------------------------------------------------|------|--------|-------|
-         * | _exampleSlot6 | mapping(address => uint256)                         | 54   | 0      | 32    |
+         * | _exampleSlot5 | mapping(address => uint256)                         | 54   | 0      | 32    |
          */
         vm.record();
-        state.getSlot6(location_);
+        state.getSlot5(location_);
         (reads, ) = vm.accesses(address(state));
         assertEq((reads[0]), keccak256(abi.encode(location_, uint256(54))));
         current = vm.load(address(state), bytes32(reads[0]));
