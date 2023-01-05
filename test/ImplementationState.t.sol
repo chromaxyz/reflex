@@ -168,6 +168,8 @@ contract ImplementationStateTest is Test, Harness {
         assertEq(uint256(current), number_);
     }
 
+    // TODO: add test cases around storage clashes, what happens and can they be resolved?
+
     // =========
     // Utilities
     // =========
