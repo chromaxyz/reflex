@@ -11,6 +11,22 @@ import {console2} from "forge-std/console2.sol";
  * @dev `BrualizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol)
  */
 abstract contract Harness is Test {
+    // ======
+    // Errors
+    // ======
+
+    error FailedSetup();
+
+    error FreeMemoryPointerOverflowed();
+
+    error ZeroSlotNotZero();
+
+    error NotZeroRightPadded();
+
+    error Not32ByteWordAligned();
+
+    error InsufficientMemoryAllocation();
+
     // =======
     // Structs
     // =======
@@ -104,22 +120,15 @@ abstract contract Harness is Test {
     // =====
 
     function setUp() public virtual {
-        // TODO: re-enable
-        // NOTE: crashes forge
-        // NOTE: Message:  String error code, but data can't be decoded as bytes: DecodingError(InvalidData)
-        // Location: evm/src/executor/inspector/cheatcodes/expect.rs:109
+        address brutalizedAddress = _brutalizedAddress(address(0));
+        bool brutalizedAddressIsBrutalized;
 
-        // address brutalizedAddress = _brutalizedAddress(address(0));
-        // bool brutalizedAddressIsBrutalized;
+        /// @solidity memory-safe-assembly
+        assembly {
+            brutalizedAddressIsBrutalized := gt(shr(160, brutalizedAddress), 0)
+        }
 
-        // /// @solidity memory-safe-assembly
-        // assembly {
-        //     brutalizedAddressIsBrutalized := gt(shr(160, brutalizedAddress), 0)
-        // }
-
-        // if (!brutalizedAddressIsBrutalized) {
-        //     revert("Setup failed");
-        // }
+        if (!brutalizedAddressIsBrutalized) revert FailedSetup();
 
         _users = Users({
             Alice: _createUser("Alice"),
@@ -195,9 +204,8 @@ abstract contract Harness is Test {
             zeroSlotIsNotZero := mload(0x60)
         }
 
-        if (freeMemoryPointerOverflowed)
-            revert("Free memory pointer overflowed!");
-        if (zeroSlotIsNotZero) revert("Zero slot is not zero!");
+        if (freeMemoryPointerOverflowed) revert FreeMemoryPointerOverflowed();
+        if (zeroSlotIsNotZero) revert ZeroSlotNotZero();
     }
 
     function _checkMemory(bytes memory s) internal pure {
@@ -227,10 +235,9 @@ abstract contract Harness is Test {
             }
         }
 
-        if (notZeroRightPadded) revert("Not zero right padded!");
-        if (fmpNotWordAligned)
-            revert("Free memory pointer `0x40` not 32-byte word aligned!");
-        if (insufficientMalloc) revert("Insufficient memory allocation!");
+        if (notZeroRightPadded) revert NotZeroRightPadded();
+        if (fmpNotWordAligned) revert Not32ByteWordAligned();
+        if (insufficientMalloc) revert InsufficientMemoryAllocation();
 
         _checkMemory();
     }
