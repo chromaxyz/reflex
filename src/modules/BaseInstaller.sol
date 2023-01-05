@@ -23,7 +23,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         uint16 moduleVersion_
     )
         BaseModule(
-            _BUILT_IN_MODULE_ID_INSTALLER,
+            _MODULE_ID_INSTALLER,
             _MODULE_TYPE_SINGLE_PROXY,
             moduleVersion_
         )

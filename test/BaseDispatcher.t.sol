@@ -48,7 +48,7 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
 
     function testRevertInvalidInstallerModuleId(uint32 moduleId_) external {
         vm.assume(moduleId_ != 0);
-        vm.assume(moduleId_ != _BUILT_IN_MODULE_ID_INSTALLER);
+        vm.assume(moduleId_ != _MODULE_ID_INSTALLER);
 
         MockBaseModule module = new MockBaseModule(
             moduleId_,
@@ -87,7 +87,7 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
         assertEq(entries[0].emitter, address(dispatcher));
 
         // emit ModuleAdded(
-        //     _BUILT_IN_MODULE_ID_INSTALLER,
+        //     _MODULE_ID_INSTALLER,
         //     address(installer),
         //     MockBaseInstaller(installer).moduleVersion()
         // );
@@ -96,10 +96,7 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
             entries[1].topics[0],
             keccak256("ModuleAdded(uint32,address,uint16)")
         );
-        assertEq(
-            entries[1].topics[1],
-            bytes32(uint256(_BUILT_IN_MODULE_ID_INSTALLER))
-        );
+        assertEq(entries[1].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
         assertEq(
             entries[1].topics[2],
             bytes32(uint256(uint160(address(installer))))
@@ -113,14 +110,14 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
 
     function testInstallerConfiguration() external {
         assertEq(
-            dispatcher.moduleIdToImplementation(_BUILT_IN_MODULE_ID_INSTALLER),
+            dispatcher.moduleIdToImplementation(_MODULE_ID_INSTALLER),
             address(installer)
         );
 
         TBaseDispatcher.TrustRelation memory installerTrust = dispatcher
             .proxyAddressToTrustRelation(address(installerProxy));
 
-        assertEq(installerTrust.moduleId, _BUILT_IN_MODULE_ID_INSTALLER);
+        assertEq(installerTrust.moduleId, _MODULE_ID_INSTALLER);
         assertEq(address(installer), installerTrust.moduleImplementation);
     }
 
