@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Vendor
-import {console2} from "forge-std/console2.sol";
-
 // Internals
 import {Base} from "../../src/internals/Base.sol";
 import {BaseState} from "../../src/BaseState.sol";
