@@ -6,7 +6,7 @@ Summary
 - [calls-loop](#calls-loop) (9 results) (Low)
 - [assembly](#assembly) (5 results) (Informational)
 - [costly-loop](#costly-loop) (3 results) (Informational)
-- [low-level-calls](#low-level-calls) (1 results) (Informational)
+- [low-level-calls](#low-level-calls) (2 results) (Informational)
 - [naming-convention](#naming-convention) (8 results) (Informational)
 - [similar-names](#similar-names) (10 results) (Informational)
 - [too-many-digits](#too-many-digits) (1 results) (Informational)
@@ -17,9 +17,9 @@ Impact: High
 Confidence: Medium
 
 - [ ] ID-0
-      [Base.\_callInternalModule(uint32,bytes)](../src/internals/Base.sol#L57-L68) uses delegatecall to a input-controlled function id - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/internals/Base.sol#L61-L63)
+      [Base.\_callInternalModule(uint32,bytes)](../src/internals/Base.sol#L80-L91) uses delegatecall to a input-controlled function id - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/internals/Base.sol#L84-L86)
 
-../src/internals/Base.sol#L57-L68
+../src/internals/Base.sol#L80-L91
 
 ## uninitialized-state
 
@@ -27,14 +27,14 @@ Impact: High
 Confidence: High
 
 - [ ] ID-1
-      [BaseState.\_modules](../src/BaseState.sol#L70) is never initialized. It is used in: - [Base.\_callInternalModule(uint32,bytes)](../src/internals/Base.sol#L57-L68)
+      [BaseState.\_modules](../src/BaseState.sol#L63) is never initialized. It is used in: - [Base.\_callInternalModule(uint32,bytes)](../src/internals/Base.sol#L80-L91)
 
-../src/BaseState.sol#L70
+../src/BaseState.sol#L63
 
 - [ ] ID-2
-      [BaseState.\_owner](../src/BaseState.sol#L58) is never initialized. It is used in:
+      [BaseState.\_owner](../src/BaseState.sol#L51) is never initialized. It is used in:
 
-../src/BaseState.sol#L58
+../src/BaseState.sol#L51
 
 ## locked-ether
 
@@ -43,10 +43,10 @@ Confidence: High
 
 - [ ] ID-3
       Contract locking ether found:
-      Contract [Proxy](../src/internals/Proxy.sol#L12-L147) has payable functions: - [Proxy.constructor()](../src/internals/Proxy.sol#L23-L25) - [Proxy.fallback()](../src/internals/Proxy.sol#L32-L146)
+      Contract [Proxy](../src/internals/Proxy.sol#L15-L191) has payable functions: - [Proxy.constructor()](../src/internals/Proxy.sol#L37-L39) - [Proxy.fallback()](../src/internals/Proxy.sol#L76-L190)
       But does not have a function to withdraw the ether
 
-../src/internals/Proxy.sol#L12-L147
+../src/internals/Proxy.sol#L15-L191
 
 ## calls-loop
 
@@ -104,29 +104,29 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-13
-      [BaseDispatcher.dispatch()](../src/BaseDispatcher.sol#L88-L141) uses assembly - [INLINE ASM](../src/BaseDispatcher.sol#L110-L140)
+      [Base.\_unpackMessageSender()](../src/internals/Base.sol#L97-L107) uses assembly - [INLINE ASM](../src/internals/Base.sol#L104-L106)
 
-../src/BaseDispatcher.sol#L88-L141
+../src/internals/Base.sol#L97-L107
 
 - [ ] ID-14
-      [Base.\_revertBytes(bytes)](../src/internals/Base.sol#L105-L113) uses assembly - [INLINE ASM](../src/internals/Base.sol#L107-L109)
+      [Proxy.fallback()](../src/internals/Proxy.sol#L76-L190) uses assembly - [INLINE ASM](../src/internals/Proxy.sol#L82-L145) - [INLINE ASM](../src/internals/Proxy.sol#L148-L188)
 
-../src/internals/Base.sol#L105-L113
+../src/internals/Proxy.sol#L76-L190
 
 - [ ] ID-15
-      [Proxy.fallback()](../src/internals/Proxy.sol#L32-L146) uses assembly - [INLINE ASM](../src/internals/Proxy.sol#L38-L101) - [INLINE ASM](../src/internals/Proxy.sol#L104-L144)
+      [Base.\_unpackProxyAddress()](../src/internals/Base.sol#L113-L123) uses assembly - [INLINE ASM](../src/internals/Base.sol#L120-L122)
 
-../src/internals/Proxy.sol#L32-L146
+../src/internals/Base.sol#L113-L123
 
 - [ ] ID-16
-      [Base.\_unpackParameters()](../src/internals/Base.sol#L88-L99) uses assembly - [INLINE ASM](../src/internals/Base.sol#L95-L98)
+      [Base.\_revertBytes(bytes)](../src/internals/Base.sol#L129-L137) uses assembly - [INLINE ASM](../src/internals/Base.sol#L131-L133)
 
-../src/internals/Base.sol#L88-L99
+../src/internals/Base.sol#L129-L137
 
 - [ ] ID-17
-      [Base.\_unpackMessageSender()](../src/internals/Base.sol#L73-L83) uses assembly - [INLINE ASM](../src/internals/Base.sol#L80-L82)
+      [BaseDispatcher.dispatch()](../src/BaseDispatcher.sol#L119-L172) uses assembly - [INLINE ASM](../src/BaseDispatcher.sol#L141-L171)
 
-../src/internals/Base.sol#L73-L83
+../src/BaseDispatcher.sol#L119-L172
 
 ## costly-loop
 
@@ -154,107 +154,112 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-21
-      Low level call in [Base.\_callInternalModule(uint32,bytes)](../src/internals/Base.sol#L57-L68): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/internals/Base.sol#L61-L63)
+      Low level call in [Proxy.implementation()](../src/internals/Proxy.sol#L50-L66): - [(success,response) = \_deployer.staticcall(abi.encodeWithSelector(\_PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR,address(this)))](../src/internals/Proxy.sol#L54-L59)
 
-../src/internals/Base.sol#L57-L68
+../src/internals/Proxy.sol#L50-L66
+
+- [ ] ID-22
+      Low level call in [Base.\_callInternalModule(uint32,bytes)](../src/internals/Base.sol#L80-L91): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/internals/Base.sol#L84-L86)
+
+../src/internals/Base.sol#L80-L91
 
 ## naming-convention
 
 Impact: Informational
 Confidence: High
 
-- [ ] ID-22
-      Variable [BaseState.\_trusts](../src/BaseState.sol#L82) is not in mixedCase
-
-../src/BaseState.sol#L82
-
 - [ ] ID-23
-      Variable [BaseState.\_modules](../src/BaseState.sol#L70) is not in mixedCase
+      Variable [BaseState.\_trusts](../src/BaseState.sol#L75) is not in mixedCase
 
-../src/BaseState.sol#L70
+../src/BaseState.sol#L75
 
 - [ ] ID-24
-      Variable [BaseState.\_pendingOwner](../src/BaseState.sol#L64) is not in mixedCase
+      Variable [BaseState.\_modules](../src/BaseState.sol#L63) is not in mixedCase
 
-../src/BaseState.sol#L64
+../src/BaseState.sol#L63
 
 - [ ] ID-25
-      Variable [BaseState.\_proxies](../src/BaseState.sol#L76) is not in mixedCase
+      Variable [BaseState.\_pendingOwner](../src/BaseState.sol#L57) is not in mixedCase
 
-../src/BaseState.sol#L76
+../src/BaseState.sol#L57
 
 - [ ] ID-26
-      Variable [BaseState.\_owner](../src/BaseState.sol#L58) is not in mixedCase
+      Variable [BaseState.\_proxies](../src/BaseState.sol#L69) is not in mixedCase
 
-../src/BaseState.sol#L58
+../src/BaseState.sol#L69
 
 - [ ] ID-27
-      Variable [BaseState.\_name](../src/BaseState.sol#L52) is not in mixedCase
+      Variable [BaseState.\_owner](../src/BaseState.sol#L51) is not in mixedCase
 
-../src/BaseState.sol#L52
+../src/BaseState.sol#L51
 
 - [ ] ID-28
-      Variable [BaseState.\_\_gap](../src/BaseState.sol#L91) is not in mixedCase
+      Variable [BaseState.\_reentrancyLock](../src/BaseState.sol#L45) is not in mixedCase
 
-../src/BaseState.sol#L91
+../src/BaseState.sol#L45
 
 - [ ] ID-29
-      Variable [Proxy.\_deployer](../src/internals/Proxy.sol#L17) is not in mixedCase
+      Variable [BaseState.\_\_gap](../src/BaseState.sol#L84) is not in mixedCase
 
-../src/internals/Proxy.sol#L17
+../src/BaseState.sol#L84
+
+- [ ] ID-30
+      Variable [Proxy.\_deployer](../src/internals/Proxy.sol#L31) is not in mixedCase
+
+../src/internals/Proxy.sol#L31
 
 ## similar-names
 
 Impact: Informational
 Confidence: Medium
 
-- [ ] ID-30
+- [ ] ID-31
       Variable [BaseModule.\_moduleVersion](../src/BaseModule.sol#L32) is too similar to [BaseInstaller.constructor(uint16).moduleVersion\_](../src/modules/BaseInstaller.sol#L23)
 
 ../src/BaseModule.sol#L32
 
-- [ ] ID-31
+- [ ] ID-32
       Variable [BaseModule.\_moduleVersion](../src/BaseModule.sol#L32) is too similar to [BaseModule.constructor(uint32,uint16,uint16).moduleVersion\_](../src/BaseModule.sol#L58)
 
 ../src/BaseModule.sol#L32
 
-- [ ] ID-32
+- [ ] ID-33
       Variable [BaseModule.\_moduleVersion](../src/BaseModule.sol#L32) is too similar to [BaseInstaller.removeModules(address[]).moduleVersion\_](../src/modules/BaseInstaller.sol#L177)
 
 ../src/BaseModule.sol#L32
 
-- [ ] ID-33
+- [ ] ID-34
       Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L27) is too similar to [BaseModule.constructor(uint32,uint16,uint16).moduleType\_](../src/BaseModule.sol#L58)
 
 ../src/BaseModule.sol#L27
 
-- [ ] ID-34
+- [ ] ID-35
       Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L27) is too similar to [BaseInstaller.removeModules(address[]).moduleType\_](../src/modules/BaseInstaller.sol#L176)
 
 ../src/BaseModule.sol#L27
 
-- [ ] ID-35
+- [ ] ID-36
       Variable [BaseModule.\_moduleVersion](../src/BaseModule.sol#L32) is too similar to [BaseInstaller.addModules(address[]).moduleVersion\_](../src/modules/BaseInstaller.sol#L108)
 
 ../src/BaseModule.sol#L32
 
-- [ ] ID-36
+- [ ] ID-37
       Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L27) is too similar to [BaseInstaller.addModules(address[]).moduleType\_](../src/modules/BaseInstaller.sol#L107)
 
 ../src/BaseModule.sol#L27
 
-- [ ] ID-37
+- [ ] ID-38
       Variable [BaseModule.\_moduleVersion](../src/BaseModule.sol#L32) is too similar to [BaseInstaller.upgradeModules(address[]).moduleVersion\_](../src/modules/BaseInstaller.sol#L140)
 
 ../src/BaseModule.sol#L32
 
-- [ ] ID-38
+- [ ] ID-39
       Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L27) is too similar to [BaseInstaller.upgradeModules(address[]).moduleType\_](../src/modules/BaseInstaller.sol#L139)
 
 ../src/BaseModule.sol#L27
 
-- [ ] ID-39
-      Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L27) is too similar to [Base._createProxy(uint32,uint16).moduleType_](../src/internals/Base.sol#L28)
+- [ ] ID-40
+      Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L27) is too similar to [Base._createProxy(uint32,uint16).moduleType_](../src/internals/Base.sol#L51)
 
 ../src/BaseModule.sol#L27
 
@@ -263,7 +268,7 @@ Confidence: Medium
 Impact: Informational
 Confidence: Medium
 
-- [ ] ID-40
-      [Proxy.fallback()](../src/internals/Proxy.sol#L32-L146) uses literals with too many digits: - [mstore(uint256,uint256)(0x00,0xe9c4a3ac00000000000000000000000000000000000000000000000000000000)](../src/internals/Proxy.sol#L108-L111)
+- [ ] ID-41
+      [Proxy.fallback()](../src/internals/Proxy.sol#L76-L190) uses literals with too many digits: - [mstore(uint256,uint256)(0x00,0xe9c4a3ac00000000000000000000000000000000000000000000000000000000)](../src/internals/Proxy.sol#L152-L155)
 
-../src/internals/Proxy.sol#L32-L146
+../src/internals/Proxy.sol#L76-L190

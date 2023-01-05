@@ -12,14 +12,15 @@ import {BaseConstants} from "./BaseConstants.sol";
  * @dev Append-only, extendable after __gap: first 50 slots (0-49) are reserved.
  *
  * @dev Storage layout:
- * | Name          | Type                                                | Slot | Offset | Bytes |
- * |---------------|-----------------------------------------------------|------|--------|-------|
- * | _owner        | address                                             | 0    | 0      | 20    |
- * | _pendingOwner | address                                             | 1    | 0      | 20    |
- * | _modules      | mapping(uint32 => address)                          | 2    | 0      | 32    |
- * | _proxies      | mapping(uint32 => address)                          | 3    | 0      | 32    |
- * | _trusts       | mapping(address => struct TBaseState.TrustRelation) | 4    | 0      | 32    |
- * | __gap         | uint256[45]                                         | 5    | 0      | 1440  |
+ * | Name            | Type                                                | Slot | Offset | Bytes |
+ * |-----------------|-----------------------------------------------------|------|--------|-------|
+ * | _reentrancyLock | uint256                                             | 0    | 0      | 32    |
+ * | _owner          | address                                             | 1    | 0      | 20    |
+ * | _pendingOwner   | address                                             | 2    | 0      | 20    |
+ * | _modules        | mapping(uint32 => address)                          | 3    | 0      | 32    |
+ * | _proxies        | mapping(uint32 => address)                          | 4    | 0      | 32    |
+ * | _trusts         | mapping(address => struct TBaseState.TrustRelation) | 5    | 0      | 32    |
+ * | __gap           | uint256[44]                                         | 6    | 0      | 1408  |
  */
 abstract contract BaseState is IBaseState, BaseConstants {
     // =======
@@ -27,32 +28,49 @@ abstract contract BaseState is IBaseState, BaseConstants {
     // =======
 
     /**
+     * @notice Reentrancy lock.
+     * @dev Slot 0 (32 bytes).
+     * Booleans are more expensive than uint256 or any type that takes up a full
+     * word because each write operation emits an extra SLOAD to first read the
+     * slot's contents, replace the bits taken up by the boolean, and then write
+     * back. This is the compiler's defense against contract upgrades and
+     * pointer aliasing, and it cannot be disabled.
+     *
+     * The values being non-zero value makes deployment a bit more expensive,
+     * but in exchange the refund on every call to `nonReentrant` will be lower in
+     * amount. Since refunds are capped to a percentage of the total
+     * transaction's gas, it is best to keep them low in cases like this one, to
+     * increase the likelihood of the full refund coming into effect.
+     */
+    uint256 internal _reentrancyLock;
+
+    /**
      * @notice Protocol owner.
-     * @dev Slot 0 (20 bytes).
+     * @dev Slot 1 (20 bytes).
      */
     address internal _owner;
 
     /**
      * @notice Pending protocol owner.
-     * @dev Slot 1 (20 bytes).
+     * @dev Slot 2 (20 bytes).
      */
     address internal _pendingOwner;
 
     /**
      * @notice Module id => module implementation.
-     * @dev Slot 2 (32 bytes).
+     * @dev Slot 3 (32 bytes).
      */
     mapping(uint32 => address) internal _modules;
 
     /**
      * @notice Module id => proxy address (only for single-proxy modules).
-     * @dev Slot 3 (32 bytes).
+     * @dev Slot 4 (32 bytes).
      */
     mapping(uint32 => address) internal _proxies;
 
     /**
      * @notice Proxy address => TrustRelation { moduleId, moduleImplementation }.
-     * @dev Slot 4 (32 bytes).
+     * @dev Slot 5 (32 bytes).
      */
     mapping(address => TrustRelation) internal _trusts;
 
@@ -61,7 +79,7 @@ abstract contract BaseState is IBaseState, BaseConstants {
      * variables without shifting down storage in the inheritance chain.
      * The size of the __gap array is calculated so that the amount of storage used by a
      * contract always adds up to the same number (in this case 50 storage slots, 0 to 49).
-     * @dev Slot 5 (1440 bytes).
+     * @dev Slot 6 (1408 bytes).
      */
-    uint256[45] private __gap;
+    uint256[44] private __gap;
 }

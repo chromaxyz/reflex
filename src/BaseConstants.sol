@@ -10,7 +10,15 @@ abstract contract BaseConstants {
     // Constants
     // =========
 
-    // TODO: replace with enum (offset 1)?
+    /**
+     * @dev Reentrancy mutex unlocked state.
+     */
+    uint256 internal constant _REENTRANCY_LOCK_UNLOCKED = 1;
+
+    /**
+     * @dev Reentrancy mutex locked state.
+     */
+    uint256 internal constant _REENTRANCY_LOCK_LOCKED = 2;
 
     /**
      * @dev These are modules that are only accessible by a single address.
