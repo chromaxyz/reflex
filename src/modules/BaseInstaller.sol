@@ -52,20 +52,6 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     // ======================
 
     /**
-     * @notice Change name of protocol
-     * @param name_ New name.
-     *
-     * Requirements:
-     *
-     * - The caller must be the current owner.
-     */
-    function setName(string memory name_) external virtual onlyOwner {
-        _name = name_;
-
-        emit NameChanged(_owner, name_);
-    }
-
-    /**
      * @notice Transfer ownership in two steps.
      * @param newOwner_ New pending owner.
      *

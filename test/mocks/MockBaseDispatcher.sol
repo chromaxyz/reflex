@@ -9,8 +9,7 @@ import {BaseDispatcher} from "../../src/BaseDispatcher.sol";
  */
 contract MockBaseDispatcher is BaseDispatcher {
     constructor(
-        string memory name_,
         address owner_,
         address installerModule_
-    ) BaseDispatcher(name_, owner_, installerModule_) {}
+    ) BaseDispatcher(owner_, installerModule_) {}
 }

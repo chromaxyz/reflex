@@ -17,13 +17,12 @@ import {ImplementationState} from "./implementations/ImplementationState.sol";
  * @dev Storage layout:
  * | Name          | Type                                                | Slot | Offset | Bytes |
  * |---------------|-----------------------------------------------------|------|--------|-------|
- * | _name         | string                                              | 0    | 0      | 32    |
- * | _owner        | address                                             | 1    | 0      | 20    |
- * | _pendingOwner | address                                             | 2    | 0      | 20    |
- * | _modules      | mapping(uint32 => address)                          | 3    | 0      | 32    |
- * | _proxies      | mapping(uint32 => address)                          | 4    | 0      | 32    |
- * | _trusts       | mapping(address => struct TBaseState.TrustRelation) | 5    | 0      | 32    |
- * | __gap         | uint256[44]                                         | 6    | 0      | 1408  |
+ * | _owner        | address                                             | 0    | 0      | 20    |
+ * | _pendingOwner | address                                             | 1    | 0      | 20    |
+ * | _modules      | mapping(uint32 => address)                          | 2    | 0      | 32    |
+ * | _proxies      | mapping(uint32 => address)                          | 3    | 0      | 32    |
+ * | _trusts       | mapping(address => struct TBaseState.TrustRelation) | 4    | 0      | 32    |
+ * | __gap         | uint256[45]                                         | 5    | 0      | 1440  |
  * | _exampleSlot1 | bytes32                                             | 50   | 0      | 32    |
  * | _exampleSlot2 | uint256                                             | 51   | 0      | 32    |
  * | _exampleSlot3 | address                                             | 52   | 0      | 20    |

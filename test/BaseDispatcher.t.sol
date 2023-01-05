@@ -31,24 +31,19 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
     // Tests
     // =====
 
-    function testRevertInvalidNameZeroLength() external {
-        vm.expectRevert(InvalidName.selector);
-        new MockBaseDispatcher("", address(this), address(installer));
-    }
-
     function testRevertInvalidOwnerZeroAddress() external {
         vm.expectRevert(InvalidOwner.selector);
-        new MockBaseDispatcher("Dispatchher", address(0), address(installer));
+        new MockBaseDispatcher(address(0), address(installer));
     }
 
     function testRevertInvalidInstallerZeroAddress() external {
         vm.expectRevert(InvalidInstallerModuleAddress.selector);
-        new MockBaseDispatcher("Dispatcher", address(this), address(0));
+        new MockBaseDispatcher(address(this), address(0));
     }
 
     function testRevertInvalidInstallerModuleIdSentinel() external {
         vm.expectRevert();
-        new MockBaseDispatcher("Dispatcher", address(this), address(_ALICE));
+        new MockBaseDispatcher(address(this), address(_ALICE));
     }
 
     function testRevertInvalidInstallerModuleId(uint32 moduleId_) external {
@@ -62,26 +57,21 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
         );
 
         vm.expectRevert(InvalidInstallerModuleId.selector);
-        new MockBaseDispatcher("Dispatcher", address(this), address(module));
-    }
-
-    function testName() external {
-        assertEq(dispatcher.name(), "Dispatcher");
+        new MockBaseDispatcher(address(this), address(module));
     }
 
     function testLogEmittanceUponConstruction() external {
         vm.recordLogs();
 
         MockBaseDispatcher dispatcher = new MockBaseDispatcher(
-            "Dispatcher",
             address(this),
             address(installer)
         );
 
         Vm.Log[] memory entries = vm.getRecordedLogs();
 
-        // 3 logs are expected to be emitted.
-        assertEq(entries.length, 3);
+        // 2 logs are expected to be emitted.
+        assertEq(entries.length, 2);
 
         // emit OwnershipTransferred(address(0), address(this));
         assertEq(entries[0].topics.length, 3);
@@ -96,42 +86,29 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
         );
         assertEq(entries[0].emitter, address(dispatcher));
 
-        // emit NameChanged(address(0), "Dispatcher");
-        assertEq(entries[1].topics.length, 2);
-        assertEq(
-            entries[1].topics[0],
-            keccak256("NameChanged(address,string)")
-        );
-        assertEq(
-            entries[1].topics[1],
-            bytes32(uint256(uint160(address(this))))
-        );
-        assertEq(entries[1].data, abi.encode("Dispatcher"));
-        assertEq(entries[1].emitter, address(dispatcher));
-
         // emit ModuleAdded(
         //     _BUILT_IN_MODULE_ID_INSTALLER,
         //     address(installer),
         //     MockBaseInstaller(installer).moduleVersion()
         // );
-        assertEq(entries[2].topics.length, 4);
+        assertEq(entries[1].topics.length, 4);
         assertEq(
-            entries[2].topics[0],
+            entries[1].topics[0],
             keccak256("ModuleAdded(uint32,address,uint16)")
         );
         assertEq(
-            entries[2].topics[1],
+            entries[1].topics[1],
             bytes32(uint256(_BUILT_IN_MODULE_ID_INSTALLER))
         );
         assertEq(
-            entries[2].topics[2],
+            entries[1].topics[2],
             bytes32(uint256(uint160(address(installer))))
         );
         assertEq(
-            entries[2].topics[3],
+            entries[1].topics[3],
             bytes32(uint256(_INSTALLER_MODULE_VERSION))
         );
-        assertEq(entries[2].emitter, address(dispatcher));
+        assertEq(entries[1].emitter, address(dispatcher));
     }
 
     function testInstallerConfiguration() external {

@@ -16,10 +16,9 @@ contract ImplementationDispatcher is BaseDispatcher, ImplementationState {
     // ===========
 
     constructor(
-        string memory name_,
         address owner_,
         address installerModule_
-    ) BaseDispatcher(name_, owner_, installerModule_) {}
+    ) BaseDispatcher(owner_, installerModule_) {}
 
     // ==========
     // Test stubs

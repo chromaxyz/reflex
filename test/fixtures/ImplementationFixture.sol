@@ -29,7 +29,6 @@ abstract contract ImplementationFixture is ConstantsFixture {
 
         installer = new ImplementationInstaller(_INSTALLER_MODULE_VERSION);
         dispatcher = new ImplementationDispatcher(
-            "Dispatcher",
             address(this),
             address(installer)
         );
