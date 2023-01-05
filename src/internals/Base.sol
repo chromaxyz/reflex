@@ -15,6 +15,29 @@ import {BaseState} from "../BaseState.sol";
  * @dev Extendable.
  */
 abstract contract Base is IBase, BaseState {
+    // =========
+    // Modifiers
+    // =========
+
+    /**
+     * @dev Prevents a contract from calling itself, directly or indirectly.
+     * Calling a `nonReentrant` function from another `nonReentrant`
+     * function is not supported.
+     */
+    modifier nonReentrant() virtual {
+        // On the first call to `nonReentrant`, _status will be `_REENTRANCY_LOCK_UNLOCKED`.
+        if (_reentrancyLock != _REENTRANCY_LOCK_UNLOCKED) revert Reentrancy();
+
+        // Any calls to `nonReentrant` after this point will fail.
+        _reentrancyLock = _REENTRANCY_LOCK_LOCKED;
+
+        _;
+
+        // By storing the original value once again, a refund is triggered (see
+        // https://eips.ethereum.org/EIPS/eip-2200).
+        _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
+    }
+
     // ==================
     // Internal functions
     // ==================

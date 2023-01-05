@@ -22,6 +22,9 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      * @param installerModule_ Installer module address.
      */
     constructor(address owner_, address installerModule_) {
+        // Unlock the global reentrancy lock.
+        _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
+
         if (owner_ == address(0)) revert InvalidOwner();
         if (installerModule_ == address(0))
             revert InvalidInstallerModuleAddress();

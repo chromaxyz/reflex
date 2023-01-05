@@ -12,11 +12,25 @@ contract MockBase is Base {
     // Constructor
     // ===========
 
-    constructor() Base() {}
+    constructor() Base() {
+        unlockReentrancyLock();
+    }
 
     // ==========
     // Test stubs
     // ==========
+
+    function getReentrancyLock() public view returns (uint256) {
+        return _reentrancyLock;
+    }
+
+    function lockReentrancyLock() public {
+        _reentrancyLock = _REENTRANCY_LOCK_LOCKED;
+    }
+
+    function unlockReentrancyLock() public {
+        _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
+    }
 
     function createProxy(
         uint32 moduleId_,

@@ -34,6 +34,12 @@ contract BaseTest is TBase, BaseFixture {
     // Tests
     // =====
 
+    function testReentrancyLock() external {
+        assertEq(base.getReentrancyLock(), _REENTRANCY_LOCK_UNLOCKED);
+    }
+
+    // TODO: test reentrancy
+
     function testRevertCreateProxyInvalidModuleId() external {
         vm.expectRevert(InvalidModuleId.selector);
         base.createProxy(uint32(0), uint16(0));

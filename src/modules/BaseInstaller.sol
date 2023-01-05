@@ -97,7 +97,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      */
     function addModules(
         address[] memory moduleAddresses_
-    ) external virtual onlyOwner {
+    ) external virtual onlyOwner nonReentrant {
         for (uint256 i = 0; i < moduleAddresses_.length; ) {
             // TODO: evaluate if it makes sense to optimize the reads here
             // SEE: https://github.com/Chroma-Org/Reflex/tree/feature/packed-module-id
@@ -132,7 +132,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      */
     function upgradeModules(
         address[] memory moduleAddresses_
-    ) external virtual onlyOwner {
+    ) external virtual onlyOwner nonReentrant {
         for (uint256 i = 0; i < moduleAddresses_.length; ) {
             address moduleAddress = moduleAddresses_[i];
             uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
@@ -166,7 +166,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      */
     function removeModules(
         address[] memory moduleAddresses_
-    ) external virtual onlyOwner {
+    ) external virtual onlyOwner nonReentrant {
         // TODO: do not allow user to uninstall `Installer`
         // TODO: should the framework include a built-in whitelist?
 
