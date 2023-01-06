@@ -121,4 +121,25 @@ abstract contract BaseModule is IBaseModule, Base {
     function moduleRemoveable() external view virtual override returns (bool) {
         return _moduleUpgradeable;
     }
+
+    /**
+     * @notice Get the module settings.
+     * @return ModuleSettings Module settings.
+     */
+    function moduleSettings()
+        external
+        view
+        virtual
+        override
+        returns (ModuleSettings memory)
+    {
+        return
+            ModuleSettings({
+                moduleId: _moduleId,
+                moduleType: _moduleType,
+                moduleVersion: _moduleVersion,
+                moduleUpgradeable: _moduleUpgradeable,
+                moduleRemoveable: _moduleRemoveable
+            });
+    }
 }

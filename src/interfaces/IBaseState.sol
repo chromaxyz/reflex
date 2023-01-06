@@ -24,14 +24,6 @@ interface TBaseState {
          * @dev Only non-0 for external single-proxy modules.
          */
         address moduleImplementation;
-        /**
-         * @notice Whether the module is upgradeable.
-         */
-        bool moduleUpgradeable;
-        /**
-         * @notice Whether the module is removeable.
-         */
-        bool moduleRemoveable;
     }
 }
 

@@ -66,4 +66,6 @@ interface IBaseModule is IBase, TBaseModule {
     function moduleUpgradeable() external view returns (bool);
 
     function moduleRemoveable() external view returns (bool);
+
+    function moduleSettings() external view returns (ModuleSettings memory);
 }
