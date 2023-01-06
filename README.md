@@ -124,6 +124,7 @@ sequenceDiagram
 
 - The core framework should be as minimalistic and lean as possible, aim for a "zero-cost abstraction".
 - The core framework should have a highly optimized hot-path.
+- The core framework should have as little stack pressure as possible.
 - Priveledged administrative functions should optimize for legibility and safety, focus on preventing footguns.
 - Only the installer is required, all other modules are optional.
 
