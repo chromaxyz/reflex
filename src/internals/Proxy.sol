@@ -150,7 +150,7 @@ contract Proxy is IProxy {
 
             assembly {
                 // Ignore return value.
-                pop(delegatecall(gas(), 0, 0, 0, 0, 0))
+                pop(delegatecall(gas(), 0x00, 0, 0, 0, 0))
             }
         } else {
             // Calldata: [calldata (N bytes)]
