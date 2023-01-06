@@ -15,7 +15,9 @@ contract ImplementationInstaller is BaseInstaller, ImplementationState {
     // Constructor
     // ===========
 
-    constructor(uint16 _moduleVersion) BaseInstaller(_moduleVersion) {}
+    constructor(
+        ModuleSettings memory moduleSettings_
+    ) BaseInstaller(moduleSettings_) {}
 
     // ==========
     // Test stubs

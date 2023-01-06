@@ -73,7 +73,7 @@ contract Proxy is IProxy {
      * @dev Will run if no other function in the contract matches the call data.
      */
     // solhint-disable-next-line no-complex-fallback
-    fallback() external payable {
+    fallback() external {
         address deployer_ = _deployer;
 
         // If the caller is the deployer, instead of re-enter - issue a log message.
