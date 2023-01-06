@@ -149,8 +149,7 @@ contract Proxy is IProxy {
             // A `delegatecall` to a non-contract address yields `true` and is ignored.
 
             assembly {
-                // solhint-disable-next-line no-unused-vars
-                let x := delegatecall(gas(), 0, 0, 0, 0, 0)
+                pop(delegatecall(gas(), 0, 0, 0, 0, 0))
             }
         } else {
             // Calldata: [calldata (N bytes)]
