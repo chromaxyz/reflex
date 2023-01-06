@@ -48,9 +48,6 @@ contract Proxy is IProxy {
      * @return address Implementation address or zero address if unresolved.
      */
     function implementation() external view returns (address) {
-        // TODO: optimize this for bytecode size
-        // TODO: how to handle possible selector clash?
-
         (bool success, bytes memory response) = _deployer.staticcall(
             abi.encodeWithSelector(
                 _PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR,
@@ -73,7 +70,7 @@ contract Proxy is IProxy {
      * @dev Will run if no other function in the contract matches the call data.
      */
     // solhint-disable-next-line no-complex-fallback
-    fallback() external payable {
+    fallback() external {
         address deployer_ = _deployer;
 
         // If the caller is the deployer, instead of re-enter - issue a log message.
@@ -142,6 +139,18 @@ contract Proxy is IProxy {
 
                 // Return 0
                 return(0, 0)
+            }
+        } else if (msg.sender == address(0)) {
+            // TODO: replace with better solution, preferably permanent.
+
+            // Required to nudge Etherscan to recognize this as being a proxy.
+            // This branch is expected to never executed as `msg.sender` can never be 0.
+            // If this branch ever where to be executed it is expected to be harmless and have no side-effects.
+            // A `delegatecall` to a non-contract address yields `true` and is ignored.
+
+            assembly {
+                // solhint-disable-next-line no-unused-vars
+                let x := delegatecall(gas(), 0, 0, 0, 0, 0)
             }
         } else {
             // Calldata: [calldata (N bytes)]
