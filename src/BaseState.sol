@@ -63,6 +63,13 @@ abstract contract BaseState is IBaseState, BaseConstants {
      */
     mapping(address => TrustRelation) internal _trusts;
 
+    // // array or iterable mapping for allowlist?
+    // /**
+    //  * @notice
+    //  * @notice Slot 6 (64 bytes)
+    //  */
+    // EnumerableSet.AddressSet internal _moduleDenylist;
+
     /**
      * @notice This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.

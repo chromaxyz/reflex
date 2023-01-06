@@ -17,6 +17,36 @@ interface TBaseModule is TBase {
     error InvalidModuleVersion();
 
     error Unauthorized();
+
+    // =======
+    // Structs
+    // =======
+
+    /**
+     * @notice Module settings.
+     */
+    struct ModuleSettings {
+        /**
+         * @notice Module id.
+         */
+        uint32 moduleId;
+        /**
+         * @notice Module type.
+         */
+        uint16 moduleType;
+        /**
+         * @notice Module version.
+         */
+        uint16 moduleVersion;
+        /**
+         * @notice Whether the module is upgradeable.
+         */
+        bool moduleUpgradeable;
+        /**
+         * @notice Whether the module is removeable.
+         */
+        bool moduleRemoveable;
+    }
 }
 
 /**
@@ -28,4 +58,8 @@ interface IBaseModule is IBase, TBaseModule {
     function moduleType() external view returns (uint16);
 
     function moduleVersion() external view returns (uint16);
+
+    function moduleUpgradeable() external view returns (bool);
+
+    function moduleRemoveable() external view returns (bool);
 }

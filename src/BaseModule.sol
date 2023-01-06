@@ -31,6 +31,16 @@ abstract contract BaseModule is IBaseModule, Base {
      */
     uint16 private immutable _moduleVersion;
 
+    /**
+     * @notice Whether the module is upgradeable.
+     */
+    bool private immutable _moduleUpgradeable;
+
+    /**
+     * @notice Whether the module is removeable.
+     */
+    bool private immutable _moduleRemoveable;
+
     // =========
     // Modifiers
     // =========
@@ -51,19 +61,21 @@ abstract contract BaseModule is IBaseModule, Base {
     // ===========
 
     /**
-     * @param moduleId_ Module id.
-     * @param moduleType_ Module type.
-     * @param moduleVersion_ Module version.
+     * @param moduleSettings_ Module settings.
      */
-    constructor(uint32 moduleId_, uint16 moduleType_, uint16 moduleVersion_) {
-        if (moduleId_ == 0) revert InvalidModuleId();
-        if (moduleType_ == 0 || moduleType_ > _MODULE_TYPE_INTERNAL)
-            revert InvalidModuleType();
-        if (moduleVersion_ == 0) revert InvalidModuleVersion();
+    constructor(ModuleSettings memory moduleSettings_) {
+        if (moduleSettings_.moduleId == 0) revert InvalidModuleId();
+        if (
+            moduleSettings_.moduleType == 0 ||
+            moduleSettings_.moduleType > _MODULE_TYPE_INTERNAL
+        ) revert InvalidModuleType();
+        if (moduleSettings_.moduleVersion == 0) revert InvalidModuleVersion();
 
-        _moduleId = moduleId_;
-        _moduleType = moduleType_;
-        _moduleVersion = moduleVersion_;
+        _moduleId = moduleSettings_.moduleId;
+        _moduleType = moduleSettings_.moduleType;
+        _moduleVersion = moduleSettings_.moduleVersion;
+        _moduleUpgradeable = moduleSettings_.moduleUpgradeable;
+        _moduleRemoveable = moduleSettings_.moduleRemoveable;
     }
 
     // ==============
@@ -72,7 +84,7 @@ abstract contract BaseModule is IBaseModule, Base {
 
     /**
      * @notice Get module id.
-     * @return Module id.
+     * @return uint32 Module id.
      */
     function moduleId() external view virtual override returns (uint32) {
         return _moduleId;
@@ -80,7 +92,7 @@ abstract contract BaseModule is IBaseModule, Base {
 
     /**
      * @notice Get module type.
-     * @return Module type.
+     * @return uint16 Module type.
      */
     function moduleType() external view virtual override returns (uint16) {
         return _moduleType;
@@ -88,9 +100,25 @@ abstract contract BaseModule is IBaseModule, Base {
 
     /**
      * @notice Get module version.
-     * @return Module version.
+     * @return uint16 Module version.
      */
     function moduleVersion() external view virtual override returns (uint16) {
         return _moduleVersion;
+    }
+
+    /**
+     * @notice Get whether module is upgradeable.
+     * @return bool Whether module is upgradeable.
+     */
+    function moduleUpgradeable() external view virtual override returns (bool) {
+        return _moduleUpgradeable;
+    }
+
+    /**
+     * @notice Get whether module is removeable.
+     * @return bool Whether module is removeable.
+     */
+    function moduleRemoveable() external view virtual override returns (bool) {
+        return _moduleUpgradeable;
     }
 }

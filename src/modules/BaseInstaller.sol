@@ -7,6 +7,9 @@ import {IBaseInstaller} from "../interfaces/IBaseInstaller.sol";
 // Sources
 import {BaseModule} from "../BaseModule.sol";
 
+// Upon adding / upgrading / removing check
+// Optionally add a versioning system
+
 /**
  * @title Base Installer
  * @dev Upgradeable.
@@ -17,17 +20,11 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     // ===========
 
     /**
-     * @param moduleVersion_ Module version.
+     * @param moduleSettings_ Module settings.
      */
     constructor(
-        uint16 moduleVersion_
-    )
-        BaseModule(
-            _BUILT_IN_MODULE_ID_INSTALLER,
-            _MODULE_TYPE_SINGLE_PROXY,
-            moduleVersion_
-        )
-    {}
+        ModuleSettings memory moduleSettings_
+    ) BaseModule(moduleSettings_) {}
 
     // ==============
     // View functions
@@ -104,14 +101,24 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
             address moduleAddress = moduleAddresses_[i];
             uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
+
+            if (_modules[moduleId_] != address(0))
+                revert ModuleExistent(moduleId_);
+
             uint16 moduleType_ = BaseModule(moduleAddress).moduleType();
             uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
+            bool moduleUpgradeable_ = BaseModule(moduleAddress)
+                .moduleUpgradeable();
+            bool moduleRemoveable_ = BaseModule(moduleAddress)
+                .moduleRemoveable();
 
             _modules[moduleId_] = moduleAddress;
 
             if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) {
                 address proxyAddress = _createProxy(moduleId_, moduleType_);
                 _trusts[proxyAddress].moduleImplementation = moduleAddress;
+                _trusts[proxyAddress].moduleUpgradeable = moduleUpgradeable_;
+                _trusts[proxyAddress].moduleRemoveable = moduleRemoveable_;
             }
 
             emit ModuleAdded(moduleId_, moduleAddress, moduleVersion_);
@@ -138,8 +145,17 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
             uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
             uint16 moduleType_ = BaseModule(moduleAddress).moduleType();
             uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
+            bool moduleUpgradeable_ = BaseModule(moduleAddress)
+                .moduleUpgradeable();
 
-            if (_modules[moduleId_] == address(0)) revert ModuleNonexistent();
+            if (_modules[moduleId_] == address(0))
+                revert ModuleNonexistent(moduleId_);
+
+            if (!moduleUpgradeable_) revert ModuleNotUpgradeable(moduleId_);
+            if (
+                moduleVersion_ <=
+                BaseModule(_modules[moduleId_]).moduleVersion()
+            ) revert ModuleInvalidVersion(moduleId_);
 
             _modules[moduleId_] = moduleAddress;
 
@@ -175,8 +191,13 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
             uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
             uint16 moduleType_ = BaseModule(moduleAddress).moduleType();
             uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
+            bool moduleRemoveable_ = BaseModule(moduleAddress)
+                .moduleRemoveable();
 
-            if (_modules[moduleId_] == address(0)) revert ModuleNonexistent();
+            if (_modules[moduleId_] == address(0))
+                revert ModuleNonexistent(moduleId_);
+
+            if (!moduleRemoveable_) revert ModuleNotRemoveable(moduleId_);
 
             if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) {
                 address proxyAddress = _createProxy(moduleId_, moduleType_);

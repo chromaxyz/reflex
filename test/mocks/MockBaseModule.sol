@@ -16,10 +16,8 @@ contract MockBaseModule is BaseModule, MockBase {
     // ===========
 
     constructor(
-        uint32 _moduleId,
-        uint16 _moduleType,
-        uint16 _moduleVersion
-    ) BaseModule(_moduleId, _moduleType, _moduleVersion) {}
+        ModuleSettings memory moduleSettings_
+    ) BaseModule(moduleSettings_) {}
 
     // ==========
     // Test stubs

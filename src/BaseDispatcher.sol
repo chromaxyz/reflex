@@ -41,6 +41,8 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
             _MODULE_TYPE_SINGLE_PROXY
         );
         _trusts[installerProxy].moduleImplementation = installerModule_;
+        _trusts[installerProxy].moduleUpgradeable = true;
+        _trusts[installerProxy].moduleRemoveable = false;
 
         emit OwnershipTransferred(address(0), owner_);
         emit ModuleAdded(
