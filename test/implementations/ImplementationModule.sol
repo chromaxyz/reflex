@@ -16,10 +16,10 @@ contract ImplementationModule is BaseModule, ImplementationState {
     // ===========
 
     constructor(
-        uint32 _moduleId,
-        uint16 _moduleType,
-        uint16 _moduleVersion
-    ) BaseModule(_moduleId, _moduleType, _moduleVersion) {}
+        uint32 moduleId_,
+        uint16 moduleType_,
+        uint16 moduleVersion_
+    ) BaseModule(moduleId_, moduleType_, moduleVersion_) {}
 
     // ==========
     // Test stubs

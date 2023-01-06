@@ -57,7 +57,7 @@ contract State is BaseState, Constants {
 }
 
 contract Installer is BaseInstaller, State {
-  constructor(uint16 _moduleVersion) BaseInstaller(_moduleVersion) {}
+  constructor(uint16 moduleVersion_) BaseInstaller moduleVersion_) {}
 
   // ...
 }
@@ -74,10 +74,10 @@ contract Dispatcher is BaseDispatcher, State {
 
 contract ExampleModule is BaseModule, State {
   constructor(
-    uint32 _moduleId,
-    uint16 _moduleType,
-    uint16 _moduleVersion
-  ) BaseModule(_moduleId, _moduleType, _moduleVersion) {}
+    uint32 moduleId_,
+    uint16 moduleType_,
+    uint16 moduleVersion_
+  ) BaseModule(moduleId_, moduleType_, moduleVersion_) {}
 
   // ...
 }
