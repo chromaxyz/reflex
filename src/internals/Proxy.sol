@@ -151,6 +151,7 @@ contract Proxy is IProxy {
                 // occuping the first 4 bytes.
                 mstore(
                     0x00,
+                    // bytes4(keccak256("dispatch()")) padded to 32 bytes.
                     0xe9c4a3ac00000000000000000000000000000000000000000000000000000000
                 )
 
