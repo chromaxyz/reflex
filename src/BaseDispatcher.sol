@@ -27,17 +27,15 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         if (owner_ == address(0)) revert InvalidOwner();
         if (installerModule_ == address(0))
             revert InvalidInstallerModuleAddress();
-        if (
-            IBaseInstaller(installerModule_).moduleId() !=
-            _BUILT_IN_MODULE_ID_INSTALLER
-        ) revert InvalidInstallerModuleId();
+        if (IBaseInstaller(installerModule_).moduleId() != _MODULE_ID_INSTALLER)
+            revert InvalidInstallerModuleId();
 
         _owner = owner_;
 
         // Register `Installer` module.
-        _modules[_BUILT_IN_MODULE_ID_INSTALLER] = installerModule_;
+        _modules[_MODULE_ID_INSTALLER] = installerModule_;
         address installerProxy = _createProxy(
-            _BUILT_IN_MODULE_ID_INSTALLER,
+            _MODULE_ID_INSTALLER,
             _MODULE_TYPE_SINGLE_PROXY
         );
         _trusts[installerProxy].moduleImplementation = installerModule_;
@@ -46,7 +44,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
 
         emit OwnershipTransferred(address(0), owner_);
         emit ModuleAdded(
-            _BUILT_IN_MODULE_ID_INSTALLER,
+            _MODULE_ID_INSTALLER,
             installerModule_,
             IBaseInstaller(installerModule_).moduleVersion()
         );

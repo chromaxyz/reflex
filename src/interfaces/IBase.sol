@@ -27,5 +27,7 @@ interface TBase is TBaseState {
  * @title Base Interface
  */
 interface IBase is IBaseState, TBase {
-
+    // =======
+    // Methods
+    // =======
 }

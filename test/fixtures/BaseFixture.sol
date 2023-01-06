@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+// Interfaces
+import {IBaseModule} from "../../src/interfaces/IBaseModule.sol";
+
 // Mocks
 import {MockBaseInstaller} from "../mocks/MockBaseInstaller.sol";
 import {MockBaseDispatcher} from "../mocks/MockBaseDispatcher.sol";
@@ -27,12 +30,20 @@ abstract contract BaseFixture is ConstantsFixture {
     function setUp() public virtual override {
         super.setUp();
 
-        installer = new MockBaseInstaller(_INSTALLER_MODULE_VERSION);
+        installer = new MockBaseInstaller(
+            IBaseModule.ModuleSettings({
+                moduleId: _MODULE_ID_INSTALLER,
+                moduleType: _MODULE_TYPE_SINGLE_PROXY,
+                moduleVersion: _INSTALLER_MODULE_VERSION,
+                moduleUpgradeable: true,
+                moduleRemoveable: false
+            })
+        );
 
         dispatcher = new MockBaseDispatcher(address(this), address(installer));
 
         installerProxy = MockBaseInstaller(
-            dispatcher.moduleIdToProxy(_BUILT_IN_MODULE_ID_INSTALLER)
+            dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER)
         );
     }
 }

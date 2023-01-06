@@ -70,8 +70,10 @@ interface TBaseInstaller is TBaseModule {
 }
 
 /**
- * @title BaseInstaller Interface
+ * @title Base Installer Interface
  */
 interface IBaseInstaller is IBaseModule, TBaseInstaller {
-
+    // =======
+    // Methods
+    // =======
 }

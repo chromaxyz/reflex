@@ -17,7 +17,12 @@ interface TBaseModule is TBase {
     error InvalidModuleVersion();
 
     error Unauthorized();
+}
 
+/**
+ * @title Base Module Interface
+ */
+interface IBaseModule is IBase, TBaseModule {
     // =======
     // Structs
     // =======
@@ -47,12 +52,11 @@ interface TBaseModule is TBase {
          */
         bool moduleRemoveable;
     }
-}
 
-/**
- * @title Base Module Interface
- */
-interface IBaseModule is IBase, TBaseModule {
+    // =======
+    // Methods
+    // =======
+
     function moduleId() external view returns (uint32);
 
     function moduleType() external view returns (uint16);

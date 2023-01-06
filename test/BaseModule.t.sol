@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IBaseModule, TBaseModule} from "../src/interfaces/IBaseModule.sol";
 
 // Fixtures
 import {BaseFixture} from "./fixtures/BaseFixture.sol";
@@ -51,69 +51,73 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
     // Tests
     // =====
 
-    function testValidModuleId() external {
+    function testValidModuleSettings() external {
         module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_VALID_TYPE_SINGLE,
-            _MOCK_MODULE_VALID_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MOCK_MODULE_VALID_ID,
+                moduleType: _MOCK_MODULE_VALID_TYPE_SINGLE,
+                moduleVersion: _MOCK_MODULE_VALID_VERSION,
+                moduleUpgradeable: true,
+                moduleRemoveable: true
+            })
         );
 
         assertEq(module.moduleId(), _MOCK_MODULE_VALID_ID);
-    }
-
-    function testValidModuleType() external {
-        module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_VALID_TYPE_SINGLE,
-            _MOCK_MODULE_VALID_VERSION
-        );
-
         assertEq(module.moduleType(), _MOCK_MODULE_VALID_TYPE_SINGLE);
-    }
-
-    function testValidModuleVersion() external {
-        module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_VALID_TYPE_SINGLE,
-            _MOCK_MODULE_VALID_VERSION
-        );
-
         assertEq(module.moduleVersion(), _MOCK_MODULE_VALID_VERSION);
+        assertEq(module.moduleUpgradeable(), true);
+        assertEq(module.moduleRemoveable(), true);
     }
 
     function testRevertInvalidModuleIdZeroValue() external {
         vm.expectRevert(InvalidModuleId.selector);
         module = new MockBaseModule(
-            _MOCK_MODULE_INVALID_ID,
-            _MOCK_MODULE_VALID_TYPE_SINGLE,
-            _MOCK_MODULE_VALID_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MOCK_MODULE_INVALID_ID,
+                moduleType: _MOCK_MODULE_VALID_TYPE_SINGLE,
+                moduleVersion: _MOCK_MODULE_VALID_VERSION,
+                moduleUpgradeable: true,
+                moduleRemoveable: true
+            })
         );
     }
 
     function testRevertInvalidModuleTypeZeroValue() external {
         vm.expectRevert(InvalidModuleType.selector);
         module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_INVALID_TYPE_ZERO,
-            _MOCK_MODULE_VALID_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MOCK_MODULE_VALID_ID,
+                moduleType: _MOCK_MODULE_INVALID_TYPE_ZERO,
+                moduleVersion: _MOCK_MODULE_VALID_VERSION,
+                moduleUpgradeable: true,
+                moduleRemoveable: true
+            })
         );
     }
 
     function testRevertInvalidModuleTypeOverflowValue() external {
         vm.expectRevert(InvalidModuleType.selector);
         module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_INVALID_TYPE,
-            _MOCK_MODULE_VALID_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MOCK_MODULE_VALID_ID,
+                moduleType: _MOCK_MODULE_INVALID_TYPE,
+                moduleVersion: _MOCK_MODULE_VALID_VERSION,
+                moduleUpgradeable: true,
+                moduleRemoveable: true
+            })
         );
     }
 
     function testRevertInvalidModuleVersionZeroValue() external {
         vm.expectRevert(InvalidModuleVersion.selector);
         module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_VALID_TYPE_SINGLE,
-            _MOCK_MODULE_INVALID_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MOCK_MODULE_VALID_ID,
+                moduleType: _MOCK_MODULE_VALID_TYPE_SINGLE,
+                moduleVersion: _MOCK_MODULE_INVALID_VERSION,
+                moduleUpgradeable: true,
+                moduleRemoveable: true
+            })
         );
     }
 
@@ -121,9 +125,13 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
 
     function testCreateProxy() external {
         module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_VALID_TYPE_MULTI,
-            _MOCK_MODULE_VALID_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MOCK_MODULE_VALID_ID,
+                moduleType: _MOCK_MODULE_VALID_TYPE_MULTI,
+                moduleVersion: _MOCK_MODULE_VALID_VERSION,
+                moduleUpgradeable: true,
+                moduleRemoveable: true
+            })
         );
 
         module.createProxy(

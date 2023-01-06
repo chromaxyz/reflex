@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 // Interfaces
 import {TBaseInstaller} from "../src/interfaces/IBaseInstaller.sol";
+import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
 
 // Fixtures
 import {BaseFixture} from "./fixtures/BaseFixture.sol";
@@ -38,15 +39,23 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         super.setUp();
 
         moduleV1 = new MockBaseModule(
-            _MOCK_MODULE_ID,
-            _MOCK_MODULE_TYPE,
-            _MOCK_MODULE_VERSION_V1
+            IBaseModule.ModuleSettings({
+                moduleId: _MOCK_MODULE_ID,
+                moduleType: _MOCK_MODULE_TYPE,
+                moduleVersion: _MOCK_MODULE_VERSION_V1,
+                moduleUpgradeable: true,
+                moduleRemoveable: true
+            })
         );
 
         moduleV2 = new MockBaseModule(
-            _MOCK_MODULE_ID,
-            _MOCK_MODULE_TYPE,
-            _MOCK_MODULE_VERSION_V2
+            IBaseModule.ModuleSettings({
+                moduleId: _MOCK_MODULE_ID,
+                moduleType: _MOCK_MODULE_TYPE,
+                moduleVersion: _MOCK_MODULE_VERSION_V2,
+                moduleUpgradeable: true,
+                moduleRemoveable: true
+            })
         );
     }
 
@@ -144,10 +153,26 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testAddModulesMultiProxy() external {
         address[] memory moduleAddresses = new address[](2);
         moduleAddresses[0] = address(
-            new MockBaseModule(2, _MODULE_TYPE_MULTI_PROXY, 1)
+            new MockBaseModule(
+                IBaseModule.ModuleSettings({
+                    moduleId: 2,
+                    moduleType: _MODULE_TYPE_MULTI_PROXY,
+                    moduleVersion: 1,
+                    moduleUpgradeable: true,
+                    moduleRemoveable: true
+                })
+            )
         );
         moduleAddresses[1] = address(
-            new MockBaseModule(3, _MODULE_TYPE_MULTI_PROXY, 1)
+            new MockBaseModule(
+                IBaseModule.ModuleSettings({
+                    moduleId: 3,
+                    moduleType: _MODULE_TYPE_MULTI_PROXY,
+                    moduleVersion: 1,
+                    moduleUpgradeable: true,
+                    moduleRemoveable: true
+                })
+            )
         );
         installerProxy.addModules(moduleAddresses);
 
@@ -214,10 +239,20 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testRevertUpgradeModulesModuleNonexistent() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(
-            new MockBaseModule(777, _MOCK_MODULE_TYPE, 777)
+            new MockBaseModule(
+                IBaseModule.ModuleSettings({
+                    moduleId: 777,
+                    moduleType: _MOCK_MODULE_TYPE,
+                    moduleVersion: 777,
+                    moduleUpgradeable: true,
+                    moduleRemoveable: true
+                })
+            )
         );
 
-        vm.expectRevert(ModuleNonexistent.selector);
+        vm.expectRevert(
+            abi.encodeWithSelector(ModuleNonexistent.selector, 777)
+        );
         installerProxy.upgradeModules(moduleAddresses);
     }
 
@@ -273,10 +308,20 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testRevertRemoveModulesModuleNonexistent() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(
-            new MockBaseModule(777, _MOCK_MODULE_TYPE, 777)
+            new MockBaseModule(
+                IBaseModule.ModuleSettings({
+                    moduleId: 777,
+                    moduleType: _MOCK_MODULE_TYPE,
+                    moduleVersion: 777,
+                    moduleUpgradeable: true,
+                    moduleRemoveable: true
+                })
+            )
         );
 
-        vm.expectRevert(ModuleNonexistent.selector);
+        vm.expectRevert(
+            abi.encodeWithSelector(ModuleNonexistent.selector, 777)
+        );
         installerProxy.removeModules(moduleAddresses);
     }
 

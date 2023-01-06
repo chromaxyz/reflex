@@ -6,7 +6,7 @@ import {stdError} from "forge-std/StdError.sol";
 import {Vm} from "forge-std/Vm.sol";
 
 // Interfaces
-import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IBaseModule, TBaseModule} from "../src/interfaces/IBaseModule.sol";
 import {IProxy} from "../src/interfaces/IProxy.sol";
 
 // Fixtures
@@ -43,9 +43,13 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         super.setUp();
 
         moduleSingle = new MockBaseModule(
-            _MOCK_MODULE_SINGLE_ID,
-            _MOCK_MODULE_SINGLE_TYPE,
-            _MOCK_MODULE_SINGLE_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MOCK_MODULE_SINGLE_ID,
+                moduleType: _MOCK_MODULE_SINGLE_TYPE,
+                moduleVersion: _MOCK_MODULE_SINGLE_VERSION,
+                moduleUpgradeable: true,
+                moduleRemoveable: true
+            })
         );
 
         address[] memory moduleAddresses = new address[](1);

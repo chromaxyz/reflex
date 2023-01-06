@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+// Interfaces
+import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
+
 // Sources
 import {BaseConstants} from "../src/BaseState.sol";
 
@@ -81,11 +84,15 @@ contract SystemEchidnaTest is BaseConstants {
     // =====
 
     constructor() {
-        _installerModuleId = _BUILT_IN_MODULE_ID_INSTALLER;
-        _installerModuleType = _MODULE_TYPE_SINGLE_PROXY;
-        _installerModuleVersion = 1;
-
-        _installer = new MockBaseInstaller(_installerModuleVersion);
+        _installer = new MockBaseInstaller(
+            IBaseModule.ModuleSettings({
+                moduleId: _MODULE_ID_INSTALLER,
+                moduleType: _MODULE_TYPE_SINGLE_PROXY,
+                moduleVersion: 1,
+                moduleUpgradeable: true,
+                moduleRemoveable: false
+            })
+        );
 
         _dispatcher = new MockBaseDispatcher(
             address(this),
@@ -93,17 +100,21 @@ contract SystemEchidnaTest is BaseConstants {
         );
 
         _installerProxy = MockBaseInstaller(
-            _dispatcher.moduleIdToProxy(_BUILT_IN_MODULE_ID_INSTALLER)
+            _dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER)
         );
 
         _exampleModuleId = 2;
         _exampleModuleType = _MODULE_TYPE_SINGLE_PROXY;
-        _exampleModuleVersion = 1;
+        _exampleModuleType = 1;
 
         _exampleModule = new MockBaseModule(
-            _exampleModuleId,
-            _exampleModuleType,
-            _exampleModuleVersion
+            IBaseModule.ModuleSettings({
+                moduleId: _exampleModuleId,
+                moduleType: _exampleModuleType,
+                moduleVersion: _exampleModuleType,
+                moduleUpgradeable: true,
+                moduleRemoveable: true
+            })
         );
 
         address[] memory moduleAddresses = new address[](1);
@@ -120,7 +131,7 @@ contract SystemEchidnaTest is BaseConstants {
     // =====
 
     function expectModuleIdImmutable() external view {
-        assert(_installerProxy.moduleId() == _BUILT_IN_MODULE_ID_INSTALLER);
+        assert(_installerProxy.moduleId() == _MODULE_ID_INSTALLER);
         assert(_exampleModuleProxy.moduleId() == _exampleModuleId);
     }
 

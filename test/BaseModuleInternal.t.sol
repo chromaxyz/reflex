@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IBaseModule, TBaseModule} from "../src/interfaces/IBaseModule.sol";
 
 // Fixtures
 import {BaseFixture} from "./fixtures/BaseFixture.sol";
@@ -37,9 +37,13 @@ contract BaseModuleInternalTest is TBaseModule, BaseFixture {
         super.setUp();
 
         moduleInternal = new MockBaseModule(
-            _MOCK_MODULE_INTERNAL_ID,
-            _MOCK_MODULE_INTERNAL_TYPE,
-            _MOCK_MODULE_INTERNAL_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MOCK_MODULE_INTERNAL_ID,
+                moduleType: _MOCK_MODULE_INTERNAL_TYPE,
+                moduleVersion: _MOCK_MODULE_INTERNAL_VERSION,
+                moduleUpgradeable: true,
+                moduleRemoveable: true
+            })
         );
 
         address[] memory moduleAddresses = new address[](1);

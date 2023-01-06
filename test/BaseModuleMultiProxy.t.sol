@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IBaseModule, TBaseModule} from "../src/interfaces/IBaseModule.sol";
 
 // Fixtures
 import {BaseFixture} from "./fixtures/BaseFixture.sol";
@@ -37,9 +37,13 @@ contract BaseModuleMultiProxyTest is TBaseModule, BaseFixture {
         super.setUp();
 
         moduleMulti = new MockBaseModule(
-            _MOCK_MODULE_MULTI_ID,
-            _MOCK_MODULE_MULTI_TYPE,
-            _MOCK_MODULE_MULTI_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MOCK_MODULE_MULTI_ID,
+                moduleType: _MOCK_MODULE_MULTI_TYPE,
+                moduleVersion: _MOCK_MODULE_MULTI_VERSION,
+                moduleUpgradeable: true,
+                moduleRemoveable: true
+            })
         );
 
         address[] memory moduleAddresses = new address[](1);
