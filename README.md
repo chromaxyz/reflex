@@ -138,6 +138,14 @@ sequenceDiagram
 - Implementers MUST NOT implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
 - The registration of `Modules` MUST BE permissioned, malicious `Modules` can impact the behaviour of the entire application.
 
+## Implementers
+
+In-depth documentation for implementers can be found [here](docs/IMPLEMENTERS.md).
+
+## Contributors
+
+Documentation for (future) contributors can be found [here](docs/CONTRIBUTORS.md).
+
 ## Acknowledgements
 
 The goal of the framework is to provide an alternative, and in some aspects superior, solution to the fundamental problem EIP-2535: [Diamond, Multi-Facet Proxy](https://eips.ethereum.org/EIPS/eip-2535) aims to solve namely to enable the creation of modular smart contract systems that can be extended after deployment.

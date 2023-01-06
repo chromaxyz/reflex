@@ -183,9 +183,6 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     function removeModules(
         address[] memory moduleAddresses_
     ) external virtual onlyOwner nonReentrant {
-        // TODO: do not allow user to uninstall `Installer`
-        // TODO: should the framework include a built-in whitelist?
-
         for (uint256 i = 0; i < moduleAddresses_.length; ) {
             address moduleAddress = moduleAddresses_[i];
             uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
