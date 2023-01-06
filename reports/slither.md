@@ -27,14 +27,14 @@ Impact: High
 Confidence: High
 
 - [ ] ID-1
-      [BaseState.\_modules](../src/BaseState.sol#L63) is never initialized. It is used in: - [Base.\_callInternalModule(uint32,bytes)](../src/internals/Base.sol#L80-L91)
+      [BaseState.\_modules](../src/BaseState.sol#L52) is never initialized. It is used in: - [Base.\_callInternalModule(uint32,bytes)](../src/internals/Base.sol#L80-L91)
 
-../src/BaseState.sol#L63
+../src/BaseState.sol#L52
 
 - [ ] ID-2
-      [BaseState.\_owner](../src/BaseState.sol#L51) is never initialized. It is used in:
+      [BaseState.\_owner](../src/BaseState.sol#L40) is never initialized. It is used in:
 
-../src/BaseState.sol#L51
+../src/BaseState.sol#L40
 
 ## locked-ether
 
@@ -43,7 +43,7 @@ Confidence: High
 
 - [ ] ID-3
       Contract locking ether found:
-      Contract [Proxy](../src/internals/Proxy.sol#L15-L191) has payable functions: - [Proxy.constructor()](../src/internals/Proxy.sol#L37-L39) - [Proxy.fallback()](../src/internals/Proxy.sol#L76-L190)
+      Contract [Proxy](../src/internals/Proxy.sol#L15-L191) has payable functions: - [Proxy.constructor()](../src/internals/Proxy.sol#L37-L39)
       But does not have a function to withdraw the ether
 
 ../src/internals/Proxy.sol#L15-L191
@@ -169,39 +169,39 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-23
-      Variable [BaseState.\_trusts](../src/BaseState.sol#L75) is not in mixedCase
+      Variable [BaseState.\_trusts](../src/BaseState.sol#L64) is not in mixedCase
 
-../src/BaseState.sol#L75
+../src/BaseState.sol#L64
 
 - [ ] ID-24
-      Variable [BaseState.\_modules](../src/BaseState.sol#L63) is not in mixedCase
+      Variable [BaseState.\_modules](../src/BaseState.sol#L52) is not in mixedCase
 
-../src/BaseState.sol#L63
+../src/BaseState.sol#L52
 
 - [ ] ID-25
-      Variable [BaseState.\_pendingOwner](../src/BaseState.sol#L57) is not in mixedCase
+      Variable [BaseState.\_pendingOwner](../src/BaseState.sol#L46) is not in mixedCase
 
-../src/BaseState.sol#L57
+../src/BaseState.sol#L46
 
 - [ ] ID-26
-      Variable [BaseState.\_proxies](../src/BaseState.sol#L69) is not in mixedCase
+      Variable [BaseState.\_proxies](../src/BaseState.sol#L58) is not in mixedCase
 
-../src/BaseState.sol#L69
+../src/BaseState.sol#L58
 
 - [ ] ID-27
-      Variable [BaseState.\_owner](../src/BaseState.sol#L51) is not in mixedCase
+      Variable [BaseState.\_owner](../src/BaseState.sol#L40) is not in mixedCase
 
-../src/BaseState.sol#L51
+../src/BaseState.sol#L40
 
 - [ ] ID-28
-      Variable [BaseState.\_reentrancyLock](../src/BaseState.sol#L45) is not in mixedCase
+      Variable [BaseState.\_reentrancyLock](../src/BaseState.sol#L34) is not in mixedCase
 
-../src/BaseState.sol#L45
+../src/BaseState.sol#L34
 
 - [ ] ID-29
-      Variable [BaseState.\_\_gap](../src/BaseState.sol#L84) is not in mixedCase
+      Variable [BaseState.\_\_gap](../src/BaseState.sol#L73) is not in mixedCase
 
-../src/BaseState.sol#L84
+../src/BaseState.sol#L73
 
 - [ ] ID-30
       Variable [Proxy.\_deployer](../src/internals/Proxy.sol#L31) is not in mixedCase
