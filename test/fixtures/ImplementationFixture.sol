@@ -33,7 +33,7 @@ abstract contract ImplementationFixture is ConstantsFixture {
             address(installer)
         );
         installerProxy = ImplementationInstaller(
-            dispatcher.moduleIdToProxy(_BUILT_IN_MODULE_ID_INSTALLER)
+            dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER)
         );
     }
 }

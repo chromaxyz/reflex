@@ -81,7 +81,7 @@ contract SystemEchidnaTest is BaseConstants {
     // =====
 
     constructor() {
-        _installerModuleId = _BUILT_IN_MODULE_ID_INSTALLER;
+        _installerModuleId = _MODULE_ID_INSTALLER;
         _installerModuleType = _MODULE_TYPE_SINGLE_PROXY;
         _installerModuleVersion = 1;
 
@@ -93,7 +93,7 @@ contract SystemEchidnaTest is BaseConstants {
         );
 
         _installerProxy = MockBaseInstaller(
-            _dispatcher.moduleIdToProxy(_BUILT_IN_MODULE_ID_INSTALLER)
+            _dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER)
         );
 
         _exampleModuleId = 2;
@@ -120,7 +120,7 @@ contract SystemEchidnaTest is BaseConstants {
     // =====
 
     function expectModuleIdImmutable() external view {
-        assert(_installerProxy.moduleId() == _BUILT_IN_MODULE_ID_INSTALLER);
+        assert(_installerProxy.moduleId() == _MODULE_ID_INSTALLER);
         assert(_exampleModuleProxy.moduleId() == _exampleModuleId);
     }
 
