@@ -149,6 +149,7 @@ contract Proxy is IProxy {
             // A `delegatecall` to a non-contract address yields `true` and is ignored.
 
             assembly {
+                // Ignore return value.
                 pop(delegatecall(gas(), 0, 0, 0, 0, 0))
             }
         } else {

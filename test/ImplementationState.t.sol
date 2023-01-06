@@ -153,7 +153,7 @@ contract ImplementationStateTest is Test, Harness {
         (reads, ) = vm.accesses(address(state));
         assertEq(uint256(reads[0]), 53);
         current = vm.load(address(state), bytes32(reads[0]));
-        assertEq(uint8(uint256(current) >> (20 * 8)), _castBoolToUint8(flag_));
+        assertEq(uint8(uint256(current) >> (20 * 8)), _castBoolToUInt8(flag_));
 
         /**
          * | Name                    | Type                                                | Slot | Offset | Bytes |
@@ -174,7 +174,7 @@ contract ImplementationStateTest is Test, Harness {
     // Utilities
     // =========
 
-    function _castBoolToUint8(bool x) internal pure returns (uint8 r) {
+    function _castBoolToUInt8(bool x) internal pure returns (uint8 r) {
         assembly {
             r := x
         }
