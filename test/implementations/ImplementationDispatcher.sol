@@ -19,26 +19,4 @@ contract ImplementationDispatcher is BaseDispatcher, ImplementationState {
         address owner_,
         address installerModule_
     ) BaseDispatcher(owner_, installerModule_) {}
-
-    // ==========
-    // Test stubs
-    // ==========
-
-    function addToken(
-        uint32 moduleId_,
-        uint16 moduleType_,
-        string memory name_,
-        string memory symbol_,
-        uint8 decimals_
-    ) external returns (address tokenProxy_) {
-        tokenProxy_ = _createProxy(moduleId_, moduleType_);
-
-        Token storage token = _tokens[tokenProxy_];
-
-        token.name = name_;
-        token.symbol = symbol_;
-        token.decimals = decimals_;
-
-        return tokenProxy_;
-    }
 }

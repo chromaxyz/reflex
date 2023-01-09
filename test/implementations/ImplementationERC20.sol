@@ -9,9 +9,9 @@ import {BaseState} from "../../src/BaseState.sol";
 import {ImplementationState} from "./ImplementationState.sol";
 
 /**
- * @title Implementation Token
+ * @title Implementation ERC20
  */
-contract ImplementationToken is BaseModule, ImplementationState {
+contract ImplementationERC20 is BaseModule, ImplementationState {
     // ======
     // Errors
     // ======
@@ -335,13 +335,29 @@ contract ImplementationToken is BaseModule, ImplementationState {
     // Test stubs
     // ==========
 
-    function mint(address to, uint256 value) external virtual {
+    function emitTransferEvent(
+        address proxyAddress_,
+        address from_,
+        address to_,
+        uint256 amount_
+    ) external {
+        _emitTransferEvent(proxyAddress_, from_, to_, amount_);
+    }
+
+    function emitApprovalEvent(
+        address proxyAddress_,
+        address owner_,
+        address spender_,
+        uint256 amount_
+    ) external {
+        _emitApprovalEvent(proxyAddress_, owner_, spender_, amount_);
+    }
+
+    function mint(address to, uint256 value) external {
         _mint(to, value);
     }
 
-    function burn(address from, uint256 value) external virtual {
+    function burn(address from, uint256 value) external {
         _burn(from, value);
     }
 }
-
-// TODO: how do we actually set the token?
