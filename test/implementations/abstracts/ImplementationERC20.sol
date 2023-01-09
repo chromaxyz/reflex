@@ -8,6 +8,9 @@ import {BaseState} from "../../../src/BaseState.sol";
 // Implementations
 import {ImplementationState} from "../ImplementationState.sol";
 
+// TODO: add permit
+// TODO: add invariant test (https://github.com/transmissions11/solmate/blob/main/src/test/ERC20.t.sol)
+
 /**
  * @title Implementation ERC20
  */

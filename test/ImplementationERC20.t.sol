@@ -12,9 +12,9 @@ import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
 import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
 
 /**
- * @title Implementation Module Multi Proxy Test
+ * @title Implementation ERC20 Test
  */
-contract ImplementationModuleMultiProxyTest is ImplementationFixture {
+contract ImplementationERC20Test is ImplementationFixture {
     // =========
     // Constants
     // =========
@@ -31,29 +31,17 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     string internal constant _TOKEN_A_MODULE_SYMBOL = "TKNA";
     uint8 internal constant _TOKEN_A_MODULE_DECIMALS = 18;
 
-    string internal constant _TOKEN_B_MODULE_NAME = "TOKEN B";
-    string internal constant _TOKEN_B_MODULE_SYMBOL = "TKNB";
-    uint8 internal constant _TOKEN_B_MODULE_DECIMALS = 6;
-
-    string internal constant _TOKEN_C_MODULE_NAME = "TOKEN C";
-    string internal constant _TOKEN_C_MODULE_SYMBOL = "TKNC";
-    uint8 internal constant _TOKEN_C_MODULE_DECIMALS = 8;
-
     // =======
     // Storage
     // =======
 
     MockImplementationERC20Hub public tokenHub;
-
     MockImplementationERC20Hub public tokenHubProxy;
 
     MockImplementationERC20 public tokenA;
-    MockImplementationERC20 public tokenB;
-    MockImplementationERC20 public tokenC;
-
     MockImplementationERC20 public tokenAProxy;
-    MockImplementationERC20 public tokenBProxy;
-    MockImplementationERC20 public tokenCProxy;
+
+    BalanceSum public tokenABalanceSum;
 
     // =====
     // Setup
@@ -73,22 +61,10 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _TOKEN_MODULE_TYPE,
             _TOKEN_MODULE_VERSION
         );
-        tokenB = new MockImplementationERC20(
-            _TOKEN_MODULE_ID,
-            _TOKEN_MODULE_TYPE,
-            _TOKEN_MODULE_VERSION
-        );
-        tokenC = new MockImplementationERC20(
-            _TOKEN_MODULE_ID,
-            _TOKEN_MODULE_TYPE,
-            _TOKEN_MODULE_VERSION
-        );
 
-        address[] memory moduleAddresses = new address[](4);
+        address[] memory moduleAddresses = new address[](2);
         moduleAddresses[0] = address(tokenHub);
         moduleAddresses[1] = address(tokenA);
-        moduleAddresses[2] = address(tokenB);
-        moduleAddresses[3] = address(tokenC);
         installerProxy.addModules(moduleAddresses);
 
         tokenHubProxy = MockImplementationERC20Hub(
@@ -104,48 +80,36 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
                 _TOKEN_A_MODULE_DECIMALS
             )
         );
-        tokenBProxy = MockImplementationERC20(
-            tokenHubProxy.addERC20(
-                _TOKEN_MODULE_ID,
-                _TOKEN_MODULE_TYPE,
-                _TOKEN_B_MODULE_NAME,
-                _TOKEN_B_MODULE_SYMBOL,
-                _TOKEN_B_MODULE_DECIMALS
-            )
-        );
-        tokenCProxy = MockImplementationERC20(
-            tokenHubProxy.addERC20(
-                _TOKEN_MODULE_ID,
-                _TOKEN_MODULE_TYPE,
-                _TOKEN_C_MODULE_NAME,
-                _TOKEN_C_MODULE_SYMBOL,
-                _TOKEN_C_MODULE_DECIMALS
-            )
-        );
+
+        tokenABalanceSum = new BalanceSum(tokenAProxy);
+
+        _addTargetContract(address(tokenABalanceSum));
+    }
+
+    // ==========
+    // Invariants
+    // ==========
+
+    function invariantBalanceSum() public {
+        assertEq(tokenAProxy.totalSupply(), tokenABalanceSum.sum());
     }
 
     // =====
     // Tests
     // =====
 
-    // TODO: emphasis on multi-proxy aspect
+    // TODO: emphasis on ERC20 implementation
 
     function testName() external {
         assertEq(tokenAProxy.name(), _TOKEN_A_MODULE_NAME);
-        assertEq(tokenBProxy.name(), _TOKEN_B_MODULE_NAME);
-        assertEq(tokenCProxy.name(), _TOKEN_C_MODULE_NAME);
     }
 
     function testSymbol() external {
         assertEq(tokenAProxy.symbol(), _TOKEN_A_MODULE_SYMBOL);
-        assertEq(tokenBProxy.symbol(), _TOKEN_B_MODULE_SYMBOL);
-        assertEq(tokenCProxy.symbol(), _TOKEN_C_MODULE_SYMBOL);
     }
 
     function testDecimals() external {
         assertEq(tokenAProxy.decimals(), _TOKEN_A_MODULE_DECIMALS);
-        assertEq(tokenBProxy.decimals(), _TOKEN_B_MODULE_DECIMALS);
-        assertEq(tokenCProxy.decimals(), _TOKEN_C_MODULE_DECIMALS);
     }
 
     function testRevertFailedProxyLog() external {
@@ -275,5 +239,48 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             mstore(ptr, message)
             log3(ptr, messageLength, topic1, topic2, topic3)
         }
+    }
+}
+
+contract BalanceSum {
+    // =======
+    // Storage
+    // =======
+
+    MockImplementationERC20 public token;
+    uint256 public sum;
+
+    // ===========
+    // Constructor
+    // ===========
+
+    constructor(MockImplementationERC20 _token) {
+        token = _token;
+    }
+
+    // ==========
+    // Test stubs
+    // ==========
+
+    function mint(address from, uint256 amount) public {
+        token.mint(from, amount);
+        sum += amount;
+    }
+
+    function burn(address from, uint256 amount) public {
+        token.burn(from, amount);
+        sum -= amount;
+    }
+
+    function approve(address to, uint256 amount) public {
+        token.approve(to, amount);
+    }
+
+    function transferFrom(address from, address to, uint256 amount) public {
+        token.transferFrom(from, to, amount);
+    }
+
+    function transfer(address to, uint256 amount) public {
+        token.transfer(to, amount);
     }
 }
