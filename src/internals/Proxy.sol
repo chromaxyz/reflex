@@ -140,14 +140,14 @@ contract Proxy is IProxy {
                 // Return 0
                 return(0, 0)
             }
+            // Sentinel DELEGATECALL opcode to nudge Etherscan to recognize this as being a proxy.
         } else if (msg.sender == address(0)) {
+            // TODO: move this out of the hot path, evaluate gas cost.
             // TODO: replace with better solution, preferably permanent.
 
-            // Required to nudge Etherscan to recognize this as being a proxy.
             // This branch is expected to never executed as `msg.sender` can never be 0.
             // If this branch ever where to be executed it is expected to be harmless and have no side-effects.
             // A `delegatecall` to a non-contract address yields `true` and is ignored.
-
             assembly {
                 // Ignore return value.
                 pop(delegatecall(gas(), 0x00, 0, 0, 0, 0))

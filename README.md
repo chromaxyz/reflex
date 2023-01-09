@@ -81,7 +81,6 @@ contract ExampleModule is BaseModule, State {
 
   // ...
 }
-
 ```
 
 ## Inheritance diagram
@@ -108,6 +107,44 @@ graph TD
     State --> BaseState
     Constants --> BaseConstants
     end
+```
+
+### Single-proxy modules
+
+Modules only accessible by a single `proxy` address and have a single `implementation` address.
+
+```mermaid
+graph TD
+  subgraph SingleProxy [ ]
+  Proxy --> Dispatcher
+  Dispatcher --> Module["Module Implementation"]
+  end
+```
+
+### Multi-proxy modules
+
+Modules that have many `proxy` addrresses and have a single `implementation` address.
+
+```mermaid
+graph TD
+  subgraph MultiProxy [ ]
+  Proxy1["Proxy"] --> Dispatcher
+  Proxy2["Proxy"] --> Dispatcher
+  Proxy3["Proxy"] --> Dispatcher
+  Dispatcher --> Module["Module Implementation"]
+  end
+```
+
+### Internal-proxy modules
+
+Modules that are called internally by the `Dispatcher` and don't have a `proxy` address.
+Internal modules have the benefit that they are upgradeable whilst the `Dispatcher` itself is not.
+
+```mermaid
+graph TD
+  subgraph InternalProxy [ ]
+  Dispatcher --> Module["Module Implementation"]
+  end
 ```
 
 ## User flow
