@@ -11,28 +11,6 @@ import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
  * @title Implementation Module Test
  */
 contract ImplementationModuleTest is ImplementationFixture {
-    // ======
-    // Events
-    // ======
-
-    /**
-     * @notice Emitted when `value` tokens are moved from one account (`from`) to
-     * another (`to`).
-     *
-     * Note that `value` may be zero.
-     */
-    event Transfer(address indexed from, address indexed to, uint256 amount);
-
-    /**
-     * @notice Emitted when the allowance of a `spender` for an `owner` is set by
-     * a call to {approve}. `value` is the new allowance.
-     */
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 amount
-    );
-
     // =========
     // Constants
     // =========
@@ -150,13 +128,23 @@ contract ImplementationModuleTest is ImplementationFixture {
     }
 
     function testMintBurn() external {
-        _expectEmitTransfer(address(0), _users.Alice, 100e18);
+        _expectEmitTransfer(
+            address(tokenAProxy),
+            address(0),
+            _users.Alice,
+            100e18
+        );
         tokenAProxy.mint(_users.Alice, 100e18);
 
         assertEq(tokenAProxy.balanceOf(_users.Alice), 100e18);
         assertEq(tokenAProxy.totalSupply(), 100e18);
 
-        _expectEmitTransfer(_users.Alice, address(0), 100e18);
+        _expectEmitTransfer(
+            address(tokenAProxy),
+            _users.Alice,
+            address(0),
+            100e18
+        );
         tokenAProxy.burn(_users.Alice, 100e18);
 
         assertEq(tokenAProxy.balanceOf(_users.Alice), 0);
@@ -168,6 +156,7 @@ contract ImplementationModuleTest is ImplementationFixture {
     // =========
 
     function _expectEmitTransfer(
+        address emitter_,
         address from_,
         address to_,
         uint256 amount_
@@ -181,7 +170,30 @@ contract ImplementationModuleTest is ImplementationFixture {
         bytes32 topic2 = bytes32(uint256(uint160(from_)));
         bytes32 topic3 = bytes32(uint256(uint160(to_)));
 
-        vm.expectEmit(true, true, true, true, address(tokenAProxy));
+        vm.expectEmit(true, true, true, true, emitter_);
+        assembly {
+            let ptr := mload(0x40)
+            mstore(ptr, message)
+            log3(ptr, messageLength, topic1, topic2, topic3)
+        }
+    }
+
+    function _expectEmitApproval(
+        address emitter_,
+        address owner_,
+        address spender_,
+        uint256 amount_
+    ) internal BrutalizeMemory {
+        bytes32 message = bytes32(amount_);
+        uint256 messageLength = message.length;
+
+        bytes32 topic1 = bytes32(
+            keccak256(bytes("Approval(address,address,uint256)"))
+        );
+        bytes32 topic2 = bytes32(uint256(uint160(owner_)));
+        bytes32 topic3 = bytes32(uint256(uint160(spender_)));
+
+        vm.expectEmit(true, true, true, true, emitter_);
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
