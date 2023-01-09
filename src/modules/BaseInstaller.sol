@@ -8,9 +8,6 @@ import {IBaseModule} from "../interfaces/IBaseModule.sol";
 // Sources
 import {BaseModule} from "../BaseModule.sol";
 
-// Upon adding / upgrading / removing check
-// Optionally add a versioning system
-
 /**
  * @title Base Installer
  * @dev Upgradeable.
