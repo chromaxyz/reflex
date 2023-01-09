@@ -104,6 +104,71 @@ contract ImplementationERC20Test is ImplementationFixture {
     // Tests
     // =====
 
+    function testMint(uint256 amount_) external {
+        tokenAProxy.mint(_users.Alice, amount_);
+
+        assertEq(tokenAProxy.totalSupply(), amount_);
+        assertEq(tokenAProxy.balanceOf(_users.Alice), amount_);
+    }
+
+    function testBurn(uint256 amountA_, uint256 amountB_) public {
+        vm.assume(amountA_ > amountB_);
+
+        tokenAProxy.mint(_users.Alice, amountA_);
+        tokenAProxy.burn(_users.Alice, amountB_);
+
+        assertEq(tokenAProxy.totalSupply(), amountA_ - amountB_);
+        assertEq(tokenAProxy.balanceOf(_users.Alice), amountA_ - amountB_);
+    }
+
+    function testApprove(uint256 amount_) public {
+        assertTrue(tokenAProxy.approve(_users.Alice, amount_));
+        assertEq(tokenAProxy.allowance(address(this), _users.Alice), amount_);
+    }
+
+    function testTransfer(uint256 amount_) public {
+        tokenAProxy.mint(address(this), amount_);
+
+        assertTrue(tokenAProxy.transfer(_users.Alice, amount_));
+        assertEq(tokenAProxy.totalSupply(), amount_);
+
+        assertEq(tokenAProxy.balanceOf(address(this)), 0);
+        assertEq(tokenAProxy.balanceOf(_users.Alice), amount_);
+    }
+
+    // function testTransferFrom(address from_, uint256 amount_) public {
+    //     vm.assume(from_ != address(0));
+
+    //     tokenAProxy.mint(from_, amount_);
+
+    //     vm.prank(from_);
+    //     tokenAProxy.approve(address(this), amount_);
+
+    //     assertTrue(tokenAProxy.transferFrom(from_, _users.Alice, amount_));
+    //     assertEq(tokenAProxy.totalSupply(), amount_);
+    //     assertEq(tokenAProxy.allowance(from_, address(this)), 0);
+    //     assertEq(tokenAProxy.balanceOf(from_), 0);
+    //     assertEq(tokenAProxy.balanceOf(_users.Alice), amount_);
+    // }
+
+    // function testInfiniteApproveTransferFrom(address from_, address to_)
+    //     public
+    // {
+    //     vm.assume(from_ != address(0));
+    //     vm.assume(to_ != address(0));
+
+    //     tokenAProxy.mint(from_, 1e18);
+
+    //     vm.prank(from_);
+    //     tokenAProxy.approve(address(to_), type(uint256).max);
+
+    //     assertTrue(tokenAProxy.transferFrom(from_, to_, 1e18));
+    //     assertEq(tokenAProxy.totalSupply(), 1e18);
+    //     assertEq(tokenAProxy.allowance(from_, address(to_)), type(uint256).max);
+    //     assertEq(tokenAProxy.balanceOf(from_), 0);
+    //     assertEq(tokenAProxy.balanceOf(to_), 1e18);
+    // }
+
     // TODO: emphasis on ERC20 implementation
 
     function testMintBurn() external {
