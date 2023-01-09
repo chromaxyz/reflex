@@ -41,7 +41,7 @@ contract ImplementationERC20Test is ImplementationFixture {
     MockImplementationERC20 public tokenA;
     MockImplementationERC20 public tokenAProxy;
 
-    BalanceSum public tokenABalanceSum;
+    VerifyBalanceSum public tokenABalanceSum;
 
     // =====
     // Setup
@@ -81,7 +81,7 @@ contract ImplementationERC20Test is ImplementationFixture {
             )
         );
 
-        tokenABalanceSum = new BalanceSum(tokenAProxy);
+        tokenABalanceSum = new VerifyBalanceSum(tokenAProxy);
 
         _addTargetContract(address(tokenABalanceSum));
     }
@@ -89,6 +89,12 @@ contract ImplementationERC20Test is ImplementationFixture {
     // ==========
     // Invariants
     // ==========
+
+    function invariantMetadata() public {
+        assertEq(tokenAProxy.name(), _TOKEN_A_MODULE_NAME);
+        assertEq(tokenAProxy.symbol(), _TOKEN_A_MODULE_SYMBOL);
+        assertEq(tokenAProxy.decimals(), _TOKEN_A_MODULE_DECIMALS);
+    }
 
     function invariantBalanceSum() public {
         assertEq(tokenAProxy.totalSupply(), tokenABalanceSum.sum());
@@ -99,36 +105,6 @@ contract ImplementationERC20Test is ImplementationFixture {
     // =====
 
     // TODO: emphasis on ERC20 implementation
-
-    function testName() external {
-        assertEq(tokenAProxy.name(), _TOKEN_A_MODULE_NAME);
-    }
-
-    function testSymbol() external {
-        assertEq(tokenAProxy.symbol(), _TOKEN_A_MODULE_SYMBOL);
-    }
-
-    function testDecimals() external {
-        assertEq(tokenAProxy.decimals(), _TOKEN_A_MODULE_DECIMALS);
-    }
-
-    function testRevertFailedProxyLog() external {
-        vm.expectRevert(ImplementationERC20.ProxyEventEmittanceFailed.selector);
-        tokenAProxy.emitTransferEvent(
-            address(dispatcher),
-            address(0),
-            address(0),
-            100e18
-        );
-
-        vm.expectRevert(ImplementationERC20.ProxyEventEmittanceFailed.selector);
-        tokenAProxy.emitApprovalEvent(
-            address(dispatcher),
-            address(0),
-            address(0),
-            100e18
-        );
-    }
 
     function testMintBurn() external {
         _expectEmitTransfer(
@@ -191,6 +167,24 @@ contract ImplementationERC20Test is ImplementationFixture {
         vm.stopPrank();
     }
 
+    function testRevertFailedProxyLog() external {
+        vm.expectRevert(ImplementationERC20.ProxyEventEmittanceFailed.selector);
+        tokenAProxy.emitTransferEvent(
+            address(dispatcher),
+            address(0),
+            address(0),
+            100e18
+        );
+
+        vm.expectRevert(ImplementationERC20.ProxyEventEmittanceFailed.selector);
+        tokenAProxy.emitApprovalEvent(
+            address(dispatcher),
+            address(0),
+            address(0),
+            100e18
+        );
+    }
+
     // =========
     // Utilities
     // =========
@@ -242,7 +236,7 @@ contract ImplementationERC20Test is ImplementationFixture {
     }
 }
 
-contract BalanceSum {
+contract VerifyBalanceSum {
     // =======
     // Storage
     // =======
