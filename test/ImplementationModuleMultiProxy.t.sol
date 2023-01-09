@@ -8,32 +8,28 @@ import {ImplementationToken} from "./implementations/ImplementationToken.sol";
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 /**
- * @title Implementation Module Test
+ * @title Implementation Module Multi Proxy Test
  */
-contract ImplementationModuleTest is ImplementationFixture {
+contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     // =========
     // Constants
     // =========
 
     uint32 internal constant _TOKEN_MODULE_ID = 101;
+    uint16 internal constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_PROXY;
+    uint16 internal constant _TOKEN_MODULE_VERSION = 1;
 
-    uint16 internal constant _TOKEN_A_MODULE_TYPE = _MODULE_TYPE_MULTI_PROXY;
-    uint16 internal constant _TOKEN_A_MODULE_VERSION = 1;
     string internal constant _TOKEN_A_MODULE_NAME = "TOKEN A";
     string internal constant _TOKEN_A_MODULE_SYMBOL = "TKNA";
     uint8 internal constant _TOKEN_A_MODULE_DECIMALS = 18;
 
-    uint16 internal constant _TOKEN_B_MODULE_TYPE = _MODULE_TYPE_MULTI_PROXY;
-    uint16 internal constant _TOKEN_B_MODULE_VERSION = 1;
     string internal constant _TOKEN_B_MODULE_NAME = "TOKEN B";
     string internal constant _TOKEN_B_MODULE_SYMBOL = "TKNB";
-    uint8 internal constant _TOKEN_B_MODULE_DECIMALS = 18;
+    uint8 internal constant _TOKEN_B_MODULE_DECIMALS = 6;
 
-    uint16 internal constant _TOKEN_C_MODULE_TYPE = _MODULE_TYPE_MULTI_PROXY;
-    uint16 internal constant _TOKEN_C_MODULE_VERSION = 1;
     string internal constant _TOKEN_C_MODULE_NAME = "TOKEN C";
     string internal constant _TOKEN_C_MODULE_SYMBOL = "TKNC";
-    uint8 internal constant _TOKEN_C_MODULE_DECIMALS = 18;
+    uint8 internal constant _TOKEN_C_MODULE_DECIMALS = 8;
 
     // =======
     // Storage
@@ -56,18 +52,18 @@ contract ImplementationModuleTest is ImplementationFixture {
 
         tokenA = new ImplementationToken(
             _TOKEN_MODULE_ID,
-            _TOKEN_A_MODULE_TYPE,
-            _TOKEN_A_MODULE_VERSION
+            _TOKEN_MODULE_TYPE,
+            _TOKEN_MODULE_VERSION
         );
         tokenB = new ImplementationToken(
             _TOKEN_MODULE_ID,
-            _TOKEN_B_MODULE_TYPE,
-            _TOKEN_B_MODULE_VERSION
+            _TOKEN_MODULE_TYPE,
+            _TOKEN_MODULE_VERSION
         );
         tokenC = new ImplementationToken(
             _TOKEN_MODULE_ID,
-            _TOKEN_C_MODULE_TYPE,
-            _TOKEN_C_MODULE_VERSION
+            _TOKEN_MODULE_TYPE,
+            _TOKEN_MODULE_VERSION
         );
 
         address[] memory moduleAddresses = new address[](3);
@@ -79,7 +75,7 @@ contract ImplementationModuleTest is ImplementationFixture {
         tokenAProxy = ImplementationToken(
             dispatcher.addToken(
                 _TOKEN_MODULE_ID,
-                _TOKEN_A_MODULE_TYPE,
+                _TOKEN_MODULE_TYPE,
                 _TOKEN_A_MODULE_NAME,
                 _TOKEN_A_MODULE_SYMBOL,
                 _TOKEN_A_MODULE_DECIMALS
@@ -88,7 +84,7 @@ contract ImplementationModuleTest is ImplementationFixture {
         tokenBProxy = ImplementationToken(
             dispatcher.addToken(
                 _TOKEN_MODULE_ID,
-                _TOKEN_B_MODULE_TYPE,
+                _TOKEN_MODULE_TYPE,
                 _TOKEN_B_MODULE_NAME,
                 _TOKEN_B_MODULE_SYMBOL,
                 _TOKEN_B_MODULE_DECIMALS
@@ -97,7 +93,7 @@ contract ImplementationModuleTest is ImplementationFixture {
         tokenCProxy = ImplementationToken(
             dispatcher.addToken(
                 _TOKEN_MODULE_ID,
-                _TOKEN_C_MODULE_TYPE,
+                _TOKEN_MODULE_TYPE,
                 _TOKEN_C_MODULE_NAME,
                 _TOKEN_C_MODULE_SYMBOL,
                 _TOKEN_C_MODULE_DECIMALS
