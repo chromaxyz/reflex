@@ -2,11 +2,14 @@
 pragma solidity ^0.8.13;
 
 // Implementations
-import {ImplementationERC20Hub} from "./implementations/ImplementationERC20Hub.sol";
-import {ImplementationERC20} from "./implementations/ImplementationERC20.sol";
+import {ImplementationERC20} from "./implementations/abstracts/ImplementationERC20.sol";
 
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
+
+// Mocks
+import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
+import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
 
 /**
  * @title Implementation Module Multi Proxy Test
@@ -40,17 +43,17 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     // Storage
     // =======
 
-    ImplementationERC20Hub public tokenHub;
+    MockImplementationERC20Hub public tokenHub;
 
-    ImplementationERC20Hub public tokenHubProxy;
+    MockImplementationERC20Hub public tokenHubProxy;
 
-    ImplementationERC20 public tokenA;
-    ImplementationERC20 public tokenB;
-    ImplementationERC20 public tokenC;
+    MockImplementationERC20 public tokenA;
+    MockImplementationERC20 public tokenB;
+    MockImplementationERC20 public tokenC;
 
-    ImplementationERC20 public tokenAProxy;
-    ImplementationERC20 public tokenBProxy;
-    ImplementationERC20 public tokenCProxy;
+    MockImplementationERC20 public tokenAProxy;
+    MockImplementationERC20 public tokenBProxy;
+    MockImplementationERC20 public tokenCProxy;
 
     // =====
     // Setup
@@ -59,23 +62,23 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     function setUp() public virtual override {
         super.setUp();
 
-        tokenHub = new ImplementationERC20Hub(
+        tokenHub = new MockImplementationERC20Hub(
             _TOKEN_HUB_MODULE_ID,
             _TOKEN_HUB_MODULE_TYPE,
             _TOKEN_HUB_MODULE_VERSION
         );
 
-        tokenA = new ImplementationERC20(
+        tokenA = new MockImplementationERC20(
             _TOKEN_MODULE_ID,
             _TOKEN_MODULE_TYPE,
             _TOKEN_MODULE_VERSION
         );
-        tokenB = new ImplementationERC20(
+        tokenB = new MockImplementationERC20(
             _TOKEN_MODULE_ID,
             _TOKEN_MODULE_TYPE,
             _TOKEN_MODULE_VERSION
         );
-        tokenC = new ImplementationERC20(
+        tokenC = new MockImplementationERC20(
             _TOKEN_MODULE_ID,
             _TOKEN_MODULE_TYPE,
             _TOKEN_MODULE_VERSION
@@ -88,11 +91,11 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         moduleAddresses[3] = address(tokenC);
         installerProxy.addModules(moduleAddresses);
 
-        tokenHubProxy = ImplementationERC20Hub(
+        tokenHubProxy = MockImplementationERC20Hub(
             dispatcher.moduleIdToProxy(_TOKEN_HUB_MODULE_ID)
         );
 
-        tokenAProxy = ImplementationERC20(
+        tokenAProxy = MockImplementationERC20(
             tokenHubProxy.addERC20(
                 _TOKEN_MODULE_ID,
                 _TOKEN_MODULE_TYPE,
@@ -101,7 +104,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
                 _TOKEN_A_MODULE_DECIMALS
             )
         );
-        tokenBProxy = ImplementationERC20(
+        tokenBProxy = MockImplementationERC20(
             tokenHubProxy.addERC20(
                 _TOKEN_MODULE_ID,
                 _TOKEN_MODULE_TYPE,
@@ -110,7 +113,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
                 _TOKEN_B_MODULE_DECIMALS
             )
         );
-        tokenCProxy = ImplementationERC20(
+        tokenCProxy = MockImplementationERC20(
             tokenHubProxy.addERC20(
                 _TOKEN_MODULE_ID,
                 _TOKEN_MODULE_TYPE,

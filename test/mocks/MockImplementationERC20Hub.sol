@@ -5,13 +5,13 @@ pragma solidity ^0.8.13;
 import {BaseModule} from "../../src/BaseModule.sol";
 
 // Implementations
-import {ImplementationState} from "./ImplementationState.sol";
-import {ImplementationERC20} from "./ImplementationERC20.sol";
+import {ImplementationState} from "../implementations/ImplementationState.sol";
+import {ImplementationERC20} from "../implementations/abstracts/ImplementationERC20.sol";
 
 /**
- * @title Implementation ERC20 Hub
+ * @title Mock Implementation ERC20 Hub
  */
-contract ImplementationERC20Hub is BaseModule, ImplementationState {
+contract MockImplementationERC20Hub is BaseModule, ImplementationState {
     // ===========
     // Constructor
     // ===========

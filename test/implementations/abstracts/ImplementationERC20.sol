@@ -2,16 +2,16 @@
 pragma solidity ^0.8.13;
 
 // Sources
-import {BaseModule} from "../../src/BaseModule.sol";
-import {BaseState} from "../../src/BaseState.sol";
+import {BaseModule} from "../../../src/BaseModule.sol";
+import {BaseState} from "../../../src/BaseState.sol";
 
 // Implementations
-import {ImplementationState} from "./ImplementationState.sol";
+import {ImplementationState} from "../ImplementationState.sol";
 
 /**
  * @title Implementation ERC20
  */
-contract ImplementationERC20 is BaseModule, ImplementationState {
+abstract contract ImplementationERC20 is BaseModule, ImplementationState {
     // ======
     // Errors
     // ======
@@ -57,7 +57,7 @@ contract ImplementationERC20 is BaseModule, ImplementationState {
     /**
      * @notice Returns the name of the token.
      */
-    function name() external view returns (string memory) {
+    function name() external view virtual returns (string memory) {
         (Token storage token, , ) = _unpackCalldata();
 
         return token.name;
@@ -66,7 +66,7 @@ contract ImplementationERC20 is BaseModule, ImplementationState {
     /**
      * @notice Returns the symbol of the token.
      */
-    function symbol() external view returns (string memory) {
+    function symbol() external view virtual returns (string memory) {
         (Token storage token, , ) = _unpackCalldata();
 
         return token.symbol;
@@ -75,7 +75,7 @@ contract ImplementationERC20 is BaseModule, ImplementationState {
     /**
      * @notice Returns the decimals places of the token.
      */
-    function decimals() external view returns (uint8) {
+    function decimals() external view virtual returns (uint8) {
         (Token storage token, , ) = _unpackCalldata();
 
         return token.decimals;
@@ -84,7 +84,7 @@ contract ImplementationERC20 is BaseModule, ImplementationState {
     /**
      * @notice Returns the amount of tokens in existence.
      */
-    function totalSupply() external view returns (uint256) {
+    function totalSupply() external view virtual returns (uint256) {
         (Token storage token, , ) = _unpackCalldata();
 
         return token.totalSupply;
@@ -93,7 +93,7 @@ contract ImplementationERC20 is BaseModule, ImplementationState {
     /**
      * @notice Returns the amount of tokens owned by `account`.
      */
-    function balanceOf(address user_) external view returns (uint256) {
+    function balanceOf(address user_) external view virtual returns (uint256) {
         (Token storage token, , ) = _unpackCalldata();
 
         return token.balanceOf[user_];
@@ -109,7 +109,7 @@ contract ImplementationERC20 is BaseModule, ImplementationState {
     function allowance(
         address owner_,
         address spender_
-    ) external view returns (uint256) {
+    ) external view virtual returns (uint256) {
         (Token storage token, , ) = _unpackCalldata();
 
         return token.allowance[owner_][spender_];
@@ -278,7 +278,7 @@ contract ImplementationERC20 is BaseModule, ImplementationState {
         address from_,
         address to_,
         uint256 amount_
-    ) private {
+    ) internal virtual {
         (bool success, ) = proxyAddress_.call(
             abi.encodePacked(
                 uint8(3),
@@ -300,7 +300,7 @@ contract ImplementationERC20 is BaseModule, ImplementationState {
         address owner_,
         address spender_,
         uint256 amount_
-    ) private {
+    ) internal virtual {
         (bool success, ) = proxyAddress_.call(
             abi.encodePacked(
                 uint8(3),
@@ -318,8 +318,9 @@ contract ImplementationERC20 is BaseModule, ImplementationState {
      * @dev Unpack the caller calldata.
      */
     function _unpackCalldata()
-        private
+        internal
         view
+        virtual
         returns (
             Token storage token_,
             address proxyAddress_,
@@ -329,35 +330,5 @@ contract ImplementationERC20 is BaseModule, ImplementationState {
         messageSender_ = _unpackMessageSender();
         proxyAddress_ = _unpackProxyAddress();
         token_ = _tokens[proxyAddress_];
-    }
-
-    // ==========
-    // Test stubs
-    // ==========
-
-    function emitTransferEvent(
-        address proxyAddress_,
-        address from_,
-        address to_,
-        uint256 amount_
-    ) external {
-        _emitTransferEvent(proxyAddress_, from_, to_, amount_);
-    }
-
-    function emitApprovalEvent(
-        address proxyAddress_,
-        address owner_,
-        address spender_,
-        uint256 amount_
-    ) external {
-        _emitApprovalEvent(proxyAddress_, owner_, spender_, amount_);
-    }
-
-    function mint(address to, uint256 value) external {
-        _mint(to, value);
-    }
-
-    function burn(address from, uint256 value) external {
-        _burn(from, value);
     }
 }
