@@ -5,26 +5,45 @@ pragma solidity ^0.8.13;
 import {BaseState} from "../../src/BaseState.sol";
 
 /**
+ * @title Implementation State Interface
+ */
+interface IImplementationState {
+    // =======
+    // Structs
+    // =======
+
+    struct Token {
+        string name;
+        string symbol;
+        uint8 decimals;
+        uint256 totalSupply;
+        mapping(address => uint256) balanceOf;
+        mapping(address => mapping(address => uint256)) allowance;
+    }
+}
+
+/**
  * @title Implementation State
  *
  * @dev Storage layout:
- * | Name                    | Type                                                | Slot | Offset | Bytes |
- * |-------------------------|-----------------------------------------------------|------|--------|-------|
- * | _reentrancyLock         | uint256                                             | 0    | 0      | 32    |
- * | _owner                  | address                                             | 1    | 0      | 20    |
- * | _pendingOwner           | address                                             | 2    | 0      | 20    |
- * | _modules                | mapping(uint32 => address)                          | 3    | 0      | 32    |
- * | _proxies                | mapping(uint32 => address)                          | 4    | 0      | 32    |
- * | _trusts                 | mapping(address => struct TBaseState.TrustRelation) | 5    | 0      | 32    |
- * | __gap                   | uint256[44]                                         | 6    | 0      | 1408  |
- * | _implementationState0   | bytes32                                             | 50   | 0      | 32    |
- * | _implementationState1   | uint256                                             | 51   | 0      | 32    |
- * | _implementationState2   | address                                             | 52   | 0      | 20    |
- * | getImplementationState3 | address                                             | 53   | 0      | 20    |
- * | getImplementationState4 | bool                                                | 53   | 20     | 1     |
- * | _implementationState5   | mapping(address => uint256)                         | 54   | 0      | 32    |
+ * | Name                    | Type                                                 | Slot | Offset | Bytes |
+ * |-------------------------|------------------------------------------------------|------|--------|-------|
+ * | _reentrancyLock         | uint256                                              | 0    | 0      | 32    |
+ * | _owner                  | address                                              | 1    | 0      | 20    |
+ * | _pendingOwner           | address                                              | 2    | 0      | 20    |
+ * | _modules                | mapping(uint32 => address)                           | 3    | 0      | 32    |
+ * | _proxies                | mapping(uint32 => address)                           | 4    | 0      | 32    |
+ * | _trusts                 | mapping(address => struct TBaseState.TrustRelation)  | 5    | 0      | 32    |
+ * | __gap                   | uint256[44]                                          | 6    | 0      | 1408  |
+ * | _implementationState0   | bytes32                                              | 50   | 0      | 32    |
+ * | _implementationState1   | uint256                                              | 51   | 0      | 32    |
+ * | _implementationState2   | address                                              | 52   | 0      | 20    |
+ * | getImplementationState3 | address                                              | 53   | 0      | 20    |
+ * | getImplementationState4 | bool                                                 | 53   | 20     | 1     |
+ * | _implementationState5   | mapping(address => uint256)                          | 54   | 0      | 32    |
+ * | tokens                  | mapping(address => struct ImplementationState.Token) | 55   | 0      | 32    |
  */
-contract ImplementationState is BaseState {
+contract ImplementationState is IImplementationState, BaseState {
     // =======
     // Storage
     // =======
@@ -60,10 +79,16 @@ contract ImplementationState is BaseState {
     bool public getImplementationState4 = true;
 
     /**
-     * @notice Implementation state 4.
+     * @notice Implementation state 5.
      * @dev Slot 54 (32 bytes).
      */
     mapping(address => uint256) internal _implementationState5;
+
+    /**
+     * @notice Token mapping.
+     * @dev Slot 55 (32 bytes)
+     */
+    mapping(address => Token) internal _tokens;
 
     // ==========
     // Test stubs
@@ -85,6 +110,18 @@ contract ImplementationState is BaseState {
         address location_
     ) public view returns (uint256) {
         return _implementationState5[location_];
+    }
+
+    function getToken(
+        address token_
+    )
+        public
+        view
+        returns (string memory name_, string memory symbol_, uint8 decimals_)
+    {
+        name_ = _tokens[token_].name;
+        symbol_ = _tokens[token_].symbol;
+        decimals_ = _tokens[token_].decimals;
     }
 
     function setImplementationState0(bytes32 message_) public {
@@ -112,5 +149,16 @@ contract ImplementationState is BaseState {
         uint256 number_
     ) public {
         _implementationState5[location_] = number_;
+    }
+
+    function setToken(
+        address token_,
+        string memory name_,
+        string memory symbol_,
+        uint8 decimals_
+    ) public {
+        _tokens[token_].name = name_;
+        _tokens[token_].symbol = symbol_;
+        _tokens[token_].decimals = decimals_;
     }
 }

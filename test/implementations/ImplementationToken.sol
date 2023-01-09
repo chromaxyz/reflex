@@ -5,26 +5,13 @@ pragma solidity ^0.8.13;
 import {BaseModule} from "../../src/BaseModule.sol";
 import {BaseState} from "../../src/BaseState.sol";
 
-/**
- * @title Base ERC20 State
- */
-abstract contract BaseERC20State is BaseState {
-    struct Token {
-        string name;
-        string symbol;
-        uint8 decimals;
-        uint256 totalSupply;
-        mapping(address => uint256) balanceOf;
-        mapping(address => mapping(address => uint256)) allowance;
-    }
-
-    mapping(address => Token) public tokens;
-}
+// Implementations
+import {ImplementationState} from "./ImplementationState.sol";
 
 /**
- * @title Base ERC20 Module
+ * @title Implementation Token
  */
-abstract contract BaseERC20Module is BaseModule, BaseERC20State {
+contract ImplementationToken is BaseModule, ImplementationState {
     // ======
     // Errors
     // ======
@@ -36,7 +23,7 @@ abstract contract BaseERC20Module is BaseModule, BaseERC20State {
     // ======
 
     /**
-     * @dev Emitted when `value` tokens are moved from one account (`from`) to
+     * @notice Emitted when `value` tokens are moved from one account (`from`) to
      * another (`to`).
      *
      * Note that `value` may be zero.
@@ -44,7 +31,7 @@ abstract contract BaseERC20Module is BaseModule, BaseERC20State {
     event Transfer(address indexed from, address indexed to, uint256 amount);
 
     /**
-     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+     * @notice Emitted when the allowance of a `spender` for an `owner` is set by
      * a call to {approve}. `value` is the new allowance.
      */
     event Approval(
@@ -68,7 +55,7 @@ abstract contract BaseERC20Module is BaseModule, BaseERC20State {
     // ==============
 
     /**
-     * @dev Returns the name of the token.
+     * @notice Returns the name of the token.
      */
     function name() external view returns (string memory) {
         (Token storage token, , ) = _caller();
@@ -77,7 +64,7 @@ abstract contract BaseERC20Module is BaseModule, BaseERC20State {
     }
 
     /**
-     * @dev Returns the symbol of the token.
+     * @notice Returns the symbol of the token.
      */
     function symbol() external view returns (string memory) {
         (Token storage token, , ) = _caller();
@@ -86,7 +73,7 @@ abstract contract BaseERC20Module is BaseModule, BaseERC20State {
     }
 
     /**
-     * @dev Returns the decimals places of the token.
+     * @notice Returns the decimals places of the token.
      */
     function decimals() external view returns (uint8) {
         (Token storage token, , ) = _caller();
@@ -95,7 +82,7 @@ abstract contract BaseERC20Module is BaseModule, BaseERC20State {
     }
 
     /**
-     * @dev Returns the amount of tokens in existence.
+     * @notice Returns the amount of tokens in existence.
      */
     function totalSupply() external view returns (uint256) {
         (Token storage token, , ) = _caller();
@@ -104,7 +91,7 @@ abstract contract BaseERC20Module is BaseModule, BaseERC20State {
     }
 
     /**
-     * @dev Returns the amount of tokens owned by `account`.
+     * @notice Returns the amount of tokens owned by `account`.
      */
     function balanceOf(address user_) external view returns (uint256) {
         (Token storage token, , ) = _caller();
@@ -113,7 +100,7 @@ abstract contract BaseERC20Module is BaseModule, BaseERC20State {
     }
 
     /**
-     * @dev Returns the remaining number of tokens that `spender` will be
+     * @notice Returns the remaining number of tokens that `spender` will be
      * allowed to spend on behalf of `owner` through {transferFrom}. This is
      * zero by default.
      *
@@ -133,7 +120,7 @@ abstract contract BaseERC20Module is BaseModule, BaseERC20State {
     // ================
 
     /**
-     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
+     * @notice Sets `amount` as the allowance of `spender` over the caller's tokens.
      *
      * Returns a boolean value indicating whether the operation succeeded.
      *
@@ -164,7 +151,7 @@ abstract contract BaseERC20Module is BaseModule, BaseERC20State {
     }
 
     /**
-     * @dev Moves `amount` tokens from the caller's account to `to`.
+     * @notice Moves `amount` tokens from the caller's account to `to`.
      *
      * Returns a boolean value indicating whether the operation succeeded.
      *
@@ -194,7 +181,7 @@ abstract contract BaseERC20Module is BaseModule, BaseERC20State {
     }
 
     /**
-     * @dev Moves `amount` tokens from `from` to `to` using the
+     * @notice Moves `amount` tokens from `from` to `to` using the
      * allowance mechanism. `amount` is then deducted from the caller's
      * allowance.
      *
@@ -256,7 +243,7 @@ abstract contract BaseERC20Module is BaseModule, BaseERC20State {
     }
 
     /**
-     * @dev Destroys `amount` tokens from `account`, reducing the
+     * @notice Destroys `amount` tokens from `account`, reducing the
      * total supply.
      *
      * Emits a {Transfer} event with `to` set to the zero address.
@@ -341,6 +328,8 @@ abstract contract BaseERC20Module is BaseModule, BaseERC20State {
     {
         messageSender_ = _unpackMessageSender();
         proxyAddress_ = _unpackProxyAddress();
-        token_ = tokens[proxyAddress_];
+        token_ = _tokens[proxyAddress_];
     }
 }
+
+// TODO: how do we actually set the token?
