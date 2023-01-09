@@ -151,6 +151,43 @@ contract ImplementationModuleTest is ImplementationFixture {
         assertEq(tokenAProxy.totalSupply(), 0);
     }
 
+    function testApproveTransfer() external {
+        _expectEmitTransfer(
+            address(tokenAProxy),
+            address(0),
+            _users.Alice,
+            100e18
+        );
+        tokenAProxy.mint(_users.Alice, 100e18);
+
+        assertEq(tokenAProxy.balanceOf(_users.Alice), 100e18);
+        assertEq(tokenAProxy.balanceOf(_users.Bob), 0);
+        assertEq(tokenAProxy.totalSupply(), 100e18);
+
+        vm.startPrank(_users.Alice);
+        _expectEmitApproval(
+            address(tokenAProxy),
+            _users.Alice,
+            _users.Bob,
+            100e18
+        );
+        tokenAProxy.approve(_users.Bob, 100e18);
+        vm.stopPrank();
+
+        vm.startPrank(_users.Bob);
+        _expectEmitTransfer(
+            address(tokenAProxy),
+            _users.Alice,
+            _users.Bob,
+            100e18
+        );
+        tokenAProxy.transferFrom(_users.Alice, _users.Bob, 100e18);
+        assertEq(tokenAProxy.balanceOf(_users.Alice), 0);
+        assertEq(tokenAProxy.balanceOf(_users.Bob), 100e18);
+        assertEq(tokenAProxy.totalSupply(), 100e18);
+        vm.stopPrank();
+    }
+
     // =========
     // Utilities
     // =========
