@@ -132,7 +132,9 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         moduleSingleProxy.testRevertPanicArithmeticUnderflow();
     }
 
-    function testProxyLog0Topic(bytes memory message_) external {
+    function testProxyLog0Topic(
+        bytes memory message_
+    ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         uint256 messageLength = message_.length;
@@ -158,7 +160,9 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         assertEq(entries[0].emitter, address(moduleSingleProxy));
     }
 
-    function testProxyLog1Topic(bytes memory message_) external {
+    function testProxyLog1Topic(
+        bytes memory message_
+    ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -175,7 +179,9 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         moduleSingleProxy.testProxyLog1Topic(message_);
     }
 
-    function testProxyLog2Topic(bytes memory message_) external {
+    function testProxyLog2Topic(
+        bytes memory message_
+    ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -193,7 +199,9 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         moduleSingleProxy.testProxyLog2Topic(message_);
     }
 
-    function testProxyLog3Topic(bytes memory message_) external {
+    function testProxyLog3Topic(
+        bytes memory message_
+    ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -212,7 +220,9 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         moduleSingleProxy.testProxyLog3Topic(message_);
     }
 
-    function testProxyLog4Topic(bytes memory message_) external {
+    function testProxyLog4Topic(
+        bytes memory message_
+    ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));

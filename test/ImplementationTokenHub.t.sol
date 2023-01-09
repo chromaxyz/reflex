@@ -150,18 +150,42 @@ contract ImplementationModuleTest is ImplementationFixture {
     }
 
     function testMintBurn() external {
-        // vm.expectEmit(true, true, false, false, address(tokenA));
-        // emit Transfer(address(0), _users.Alice, 100e18);
+        _expectEmitTransfer(address(0), _users.Alice, 100e18);
         tokenAProxy.mint(_users.Alice, 100e18);
 
         assertEq(tokenAProxy.balanceOf(_users.Alice), 100e18);
         assertEq(tokenAProxy.totalSupply(), 100e18);
 
+        _expectEmitTransfer(_users.Alice, address(0), 100e18);
         tokenAProxy.burn(_users.Alice, 100e18);
 
         assertEq(tokenAProxy.balanceOf(_users.Alice), 0);
         assertEq(tokenAProxy.totalSupply(), 0);
     }
 
-    // TODO: add tests
+    // =========
+    // Utilities
+    // =========
+
+    function _expectEmitTransfer(
+        address from_,
+        address to_,
+        uint256 amount_
+    ) internal {
+        bytes32 message = bytes32(amount_);
+        uint256 messageLength = message.length;
+
+        bytes32 topic1 = bytes32(
+            keccak256(bytes("Transfer(address,address,uint256"))
+        );
+        bytes32 topic2 = bytes32(uint256(uint160(from_)));
+        bytes32 topic3 = bytes32(uint256(uint160(to_)));
+
+        vm.expectEmit(true, true, true, true, address(tokenAProxy));
+        assembly {
+            let ptr := mload(0x40)
+            mstore(ptr, message)
+            log3(ptr, messageLength, topic1, topic2, topic3)
+        }
+    }
 }
