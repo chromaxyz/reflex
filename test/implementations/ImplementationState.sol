@@ -26,22 +26,22 @@ interface IImplementationState {
  * @title Implementation State
  *
  * @dev Storage layout:
- * | Name                    | Type                                                 | Slot | Offset | Bytes |
- * |-------------------------|------------------------------------------------------|------|--------|-------|
- * | _reentrancyLock         | uint256                                              | 0    | 0      | 32    |
- * | _owner                  | address                                              | 1    | 0      | 20    |
- * | _pendingOwner           | address                                              | 2    | 0      | 20    |
- * | _modules                | mapping(uint32 => address)                           | 3    | 0      | 32    |
- * | _proxies                | mapping(uint32 => address)                           | 4    | 0      | 32    |
- * | _trusts                 | mapping(address => struct TBaseState.TrustRelation)  | 5    | 0      | 32    |
- * | __gap                   | uint256[44]                                          | 6    | 0      | 1408  |
- * | _implementationState0   | bytes32                                              | 50   | 0      | 32    |
- * | _implementationState1   | uint256                                              | 51   | 0      | 32    |
- * | _implementationState2   | address                                              | 52   | 0      | 20    |
- * | getImplementationState3 | address                                              | 53   | 0      | 20    |
- * | getImplementationState4 | bool                                                 | 53   | 20     | 1     |
- * | _implementationState5   | mapping(address => uint256)                          | 54   | 0      | 32    |
- * | tokens                  | mapping(address => struct ImplementationState.Token) | 55   | 0      | 32    |
+ * | Name                    | Type                                                  | Slot | Offset | Bytes |
+ * |-------------------------|-------------------------------------------------------|------|--------|-------|
+ * | _reentrancyLock         | uint256                                               | 0    | 0      | 32    |
+ * | _owner                  | address                                               | 1    | 0      | 20    |
+ * | _pendingOwner           | address                                               | 2    | 0      | 20    |
+ * | _modules                | mapping(uint32 => address)                            | 3    | 0      | 32    |
+ * | _proxies                | mapping(uint32 => address)                            | 4    | 0      | 32    |
+ * | _trusts                 | mapping(address => struct TBaseState.TrustRelation)   | 5    | 0      | 32    |
+ * | __gap                   | uint256[44]                                           | 6    | 0      | 1408  |
+ * | _implementationState0   | bytes32                                               | 50   | 0      | 32    |
+ * | _implementationState1   | uint256                                               | 51   | 0      | 32    |
+ * | _implementationState2   | address                                               | 52   | 0      | 20    |
+ * | getImplementationState3 | address                                               | 53   | 0      | 20    |
+ * | getImplementationState4 | bool                                                  | 53   | 20     | 1     |
+ * | _implementationState5   | mapping(address => uint256)                           | 54   | 0      | 32    |
+ * | _tokens                 | mapping(address => struct IImplementationState.Token) | 55   | 0      | 32    |
  */
 contract ImplementationState is IImplementationState, BaseState {
     // =======
@@ -50,31 +50,31 @@ contract ImplementationState is IImplementationState, BaseState {
 
     /**
      * @notice Implementation state 0.
-     * @dev Slot 51 (32 bytes).
+     * @dev Slot 50 (32 bytes).
      */
     bytes32 internal _implementationState0;
 
     /**
      * @notice Implementation state 1.
-     * @dev Slot 52 (32 bytes).
+     * @dev Slot 51 (32 bytes).
      */
     uint256 internal _implementationState1;
 
     /**
      * @notice Implementation state 2.
-     * @dev Slot 53 (20 bytes).
+     * @dev Slot 52 (20 bytes).
      */
     address internal _implementationState2;
 
     /**
      * @notice Implementation state 3.
-     * @dev Slot 54 (20 bytes).
+     * @dev Slot 53 (20 bytes).
      */
     address public getImplementationState3 = address(0xAAAA);
 
     /**
      * @notice Implementation state 4.
-     * @dev Slot 54 (20 byte offset, 1 byte).
+     * @dev Slot 53 (20 byte offset, 1 byte).
      */
     bool public getImplementationState4 = true;
 
@@ -83,6 +83,10 @@ contract ImplementationState is IImplementationState, BaseState {
      * @dev Slot 54 (32 bytes).
      */
     mapping(address => uint256) internal _implementationState5;
+
+    // =============
+    // Token Storage
+    // =============
 
     /**
      * @notice Token mapping.
@@ -112,18 +116,6 @@ contract ImplementationState is IImplementationState, BaseState {
         return _implementationState5[location_];
     }
 
-    function getToken(
-        address token_
-    )
-        public
-        view
-        returns (string memory name_, string memory symbol_, uint8 decimals_)
-    {
-        name_ = _tokens[token_].name;
-        symbol_ = _tokens[token_].symbol;
-        decimals_ = _tokens[token_].decimals;
-    }
-
     function setImplementationState0(bytes32 message_) public {
         _implementationState0 = message_;
     }
@@ -149,6 +141,22 @@ contract ImplementationState is IImplementationState, BaseState {
         uint256 number_
     ) public {
         _implementationState5[location_] = number_;
+    }
+
+    // ================
+    // Token test stubs
+    // ================
+
+    function getToken(
+        address token_
+    )
+        public
+        view
+        returns (string memory name_, string memory symbol_, uint8 decimals_)
+    {
+        name_ = _tokens[token_].name;
+        symbol_ = _tokens[token_].symbol;
+        decimals_ = _tokens[token_].decimals;
     }
 
     function setToken(

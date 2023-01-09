@@ -19,17 +19,17 @@ abstract contract BaseModule is IBaseModule, Base {
     /**
      * @notice Module id.
      */
-    uint32 private immutable _moduleId;
+    uint32 internal immutable _moduleId;
 
     /**
      * @notice Module type.
      */
-    uint16 private immutable _moduleType;
+    uint16 internal immutable _moduleType;
 
     /**
      * @notice Module version.
      */
-    uint16 private immutable _moduleVersion;
+    uint16 internal immutable _moduleVersion;
 
     // =========
     // Modifiers

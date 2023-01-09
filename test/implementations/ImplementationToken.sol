@@ -58,7 +58,7 @@ contract ImplementationToken is BaseModule, ImplementationState {
      * @notice Returns the name of the token.
      */
     function name() external view returns (string memory) {
-        (Token storage token, , ) = _caller();
+        (Token storage token, , ) = _unpackCalldata();
 
         return token.name;
     }
@@ -67,7 +67,7 @@ contract ImplementationToken is BaseModule, ImplementationState {
      * @notice Returns the symbol of the token.
      */
     function symbol() external view returns (string memory) {
-        (Token storage token, , ) = _caller();
+        (Token storage token, , ) = _unpackCalldata();
 
         return token.symbol;
     }
@@ -76,7 +76,7 @@ contract ImplementationToken is BaseModule, ImplementationState {
      * @notice Returns the decimals places of the token.
      */
     function decimals() external view returns (uint8) {
-        (Token storage token, , ) = _caller();
+        (Token storage token, , ) = _unpackCalldata();
 
         return token.decimals;
     }
@@ -85,7 +85,7 @@ contract ImplementationToken is BaseModule, ImplementationState {
      * @notice Returns the amount of tokens in existence.
      */
     function totalSupply() external view returns (uint256) {
-        (Token storage token, , ) = _caller();
+        (Token storage token, , ) = _unpackCalldata();
 
         return token.totalSupply;
     }
@@ -94,7 +94,7 @@ contract ImplementationToken is BaseModule, ImplementationState {
      * @notice Returns the amount of tokens owned by `account`.
      */
     function balanceOf(address user_) external view returns (uint256) {
-        (Token storage token, , ) = _caller();
+        (Token storage token, , ) = _unpackCalldata();
 
         return token.balanceOf[user_];
     }
@@ -110,7 +110,7 @@ contract ImplementationToken is BaseModule, ImplementationState {
         address owner_,
         address spender_
     ) external view returns (uint256) {
-        (Token storage token, , ) = _caller();
+        (Token storage token, , ) = _unpackCalldata();
 
         return token.allowance[owner_][spender_];
     }
@@ -141,7 +141,7 @@ contract ImplementationToken is BaseModule, ImplementationState {
             Token storage token,
             address proxyAddress,
             address messageSender
-        ) = _caller();
+        ) = _unpackCalldata();
 
         token.allowance[messageSender][spender_] = amount_;
 
@@ -165,7 +165,7 @@ contract ImplementationToken is BaseModule, ImplementationState {
             Token storage token,
             address proxyAddress,
             address messageSender
-        ) = _caller();
+        ) = _unpackCalldata();
 
         token.balanceOf[messageSender] -= amount_;
 
@@ -198,7 +198,7 @@ contract ImplementationToken is BaseModule, ImplementationState {
             Token storage token,
             address proxyAddress,
             address messageSender
-        ) = _caller();
+        ) = _unpackCalldata();
 
         uint256 allowed = token.allowance[from_][messageSender];
 
@@ -229,7 +229,7 @@ contract ImplementationToken is BaseModule, ImplementationState {
      * Emits a {Transfer} event with `from` set to the zero address.
      */
     function _mint(address to_, uint256 amount_) internal virtual {
-        (Token storage token, address proxyAddress, ) = _caller();
+        (Token storage token, address proxyAddress, ) = _unpackCalldata();
 
         token.totalSupply += amount_;
 
@@ -253,7 +253,7 @@ contract ImplementationToken is BaseModule, ImplementationState {
      * - `account` must have at least `amount` tokens.
      */
     function _burn(address from_, uint256 amount_) internal virtual {
-        (Token storage token, address proxyAddress, ) = _caller();
+        (Token storage token, address proxyAddress, ) = _unpackCalldata();
 
         token.balanceOf[from_] -= amount_;
 
@@ -317,7 +317,7 @@ contract ImplementationToken is BaseModule, ImplementationState {
     /**
      * @dev Unpack the caller calldata.
      */
-    function _caller()
+    function _unpackCalldata()
         private
         view
         returns (
@@ -329,6 +329,18 @@ contract ImplementationToken is BaseModule, ImplementationState {
         messageSender_ = _unpackMessageSender();
         proxyAddress_ = _unpackProxyAddress();
         token_ = _tokens[proxyAddress_];
+    }
+
+    // ==========
+    // Test stubs
+    // ==========
+
+    function mint(address to, uint256 value) external virtual {
+        _mint(to, value);
+    }
+
+    function burn(address from, uint256 value) external virtual {
+        _burn(from, value);
     }
 }
 

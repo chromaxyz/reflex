@@ -15,22 +15,22 @@ import {IImplementationState, ImplementationState} from "./implementations/Imple
  * @title Implementation State Test
  *
  * @dev Storage layout:
- * | Name                    | Type                                                 | Slot | Offset | Bytes |
- * |-------------------------|------------------------------------------------------|------|--------|-------|
- * | _reentrancyLock         | uint256                                              | 0    | 0      | 32    |
- * | _owner                  | address                                              | 1    | 0      | 20    |
- * | _pendingOwner           | address                                              | 2    | 0      | 20    |
- * | _modules                | mapping(uint32 => address)                           | 3    | 0      | 32    |
- * | _proxies                | mapping(uint32 => address)                           | 4    | 0      | 32    |
- * | _trusts                 | mapping(address => struct TBaseState.TrustRelation)  | 5    | 0      | 32    |
- * | __gap                   | uint256[44]                                          | 6    | 0      | 1408  |
- * | _implementationState0   | bytes32                                              | 50   | 0      | 32    |
- * | _implementationState1   | uint256                                              | 51   | 0      | 32    |
- * | _implementationState2   | address                                              | 52   | 0      | 20    |
- * | getImplementationState3 | address                                              | 53   | 0      | 20    |
- * | getImplementationState4 | bool                                                 | 53   | 20     | 1     |
- * | _implementationState5   | mapping(address => uint256)                          | 54   | 0      | 32    |
- * | tokens                  | mapping(address => struct ImplementationState.Token) | 55   | 0      | 32    |
+ * | Name                    | Type                                                  | Slot | Offset | Bytes |
+ * |-------------------------|-------------------------------------------------------|------|--------|-------|
+ * | _reentrancyLock         | uint256                                               | 0    | 0      | 32    |
+ * | _owner                  | address                                               | 1    | 0      | 20    |
+ * | _pendingOwner           | address                                               | 2    | 0      | 20    |
+ * | _modules                | mapping(uint32 => address)                            | 3    | 0      | 32    |
+ * | _proxies                | mapping(uint32 => address)                            | 4    | 0      | 32    |
+ * | _trusts                 | mapping(address => struct TBaseState.TrustRelation)   | 5    | 0      | 32    |
+ * | __gap                   | uint256[44]                                           | 6    | 0      | 1408  |
+ * | _implementationState0   | bytes32                                               | 50   | 0      | 32    |
+ * | _implementationState1   | uint256                                               | 51   | 0      | 32    |
+ * | _implementationState2   | address                                               | 52   | 0      | 20    |
+ * | getImplementationState3 | address                                               | 53   | 0      | 20    |
+ * | getImplementationState4 | bool                                                  | 53   | 20     | 1     |
+ * | getImplementationState4 | bool                                                  | 53   | 20     | 1     |
+ * | _tokens                 | mapping(address => struct IImplementationState.Token) | 55   | 0      | 32    |
  */
 contract ImplementationStateTest is IImplementationState, Test, Harness {
     using stdStorageSafe for StdStorage;
@@ -74,9 +74,9 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
         state.setToken(tokenB_, "Token B", "TKNB", 18);
 
         /**
-         * | Name                    | Type                                                 | Slot | Offset | Bytes |
-         * |-------------------------|------------------------------------------------------|------|--------|-------|
-         * | _implementationState0   | bytes32                                              | 50   | 0      | 32    |
+         * | Name                    | Type                                                  | Slot | Offset | Bytes |
+         * |-------------------------|-------------------------------------------------------|------|--------|-------|
+         * | _implementationState0   | bytes32                                               | 50   | 0      | 32    |
          */
         assertEq(
             stdstore
@@ -94,9 +94,9 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
         );
 
         /**
-         * | Name                    | Type                                                 | Slot | Offset | Bytes |
-         * |-------------------------|------------------------------------------------------|------|--------|-------|
-         * | _implementationState1   | uint256                                              | 51   | 0      | 32    |
+         * | Name                    | Type                                                  | Slot | Offset | Bytes |
+         * |-------------------------|-------------------------------------------------------|------|--------|-------|
+         * | _implementationState1   | uint256                                               | 51   | 0      | 32    |
          */
         assertEq(
             stdstore
@@ -114,9 +114,9 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
         );
 
         /**
-         * | Name                    | Type                                                 | Slot | Offset | Bytes |
-         * |-------------------------|------------------------------------------------------|------|--------|-------|
-         * | _implementationState2   | address                                              | 52   | 0      | 20    |
+         * | Name                    | Type                                                  | Slot | Offset | Bytes |
+         * |-------------------------|-------------------------------------------------------|------|--------|-------|
+         * | _implementationState2   | address                                               | 52   | 0      | 20    |
          */
         assertEq(
             stdstore
@@ -140,9 +140,9 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
         bytes32 current;
 
         /**
-         * | Name                    | Type                                                 | Slot | Offset | Bytes |
-         * |-------------------------|------------------------------------------------------|------|--------|-------|
-         * | getImplementationState3 | address                                              | 53   | 0      | 20    |
+         * | Name                    | Type                                                  | Slot | Offset | Bytes |
+         * |-------------------------|-------------------------------------------------------|------|--------|-------|
+         * | getImplementationState3 | address                                               | 53   | 0      | 20    |
          */
         vm.record();
         state.getImplementationState3();
@@ -152,9 +152,9 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
         assertEq(address(uint160(uint256(current))), location_);
 
         /**
-         * | Name                    | Type                                                 | Slot | Offset | Bytes |
-         * |-------------------------|------------------------------------------------------|------|--------|-------|
-         * | getImplementationState4 | bool                                                 | 53   | 20     | 1     |
+         * | Name                    | Type                                                  | Slot | Offset | Bytes |
+         * |-------------------------|-------------------------------------------------------|------|--------|-------|
+         * | getImplementationState4 | bool                                                  | 53   | 20     | 1     |
          */
         vm.record();
         state.getImplementationState4();
@@ -164,9 +164,9 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
         assertEq(uint8(uint256(current) >> (20 * 8)), _castBoolToUInt8(flag_));
 
         /**
-         * | Name                    | Type                                                 | Slot | Offset | Bytes |
-         * |-------------------------|------------------------------------------------------|------|--------|-------|
-         * | _implementationState5   | mapping(address => uint256)                          | 54   | 0      | 32    |
+         * | Name                    | Type                                                  | Slot | Offset | Bytes |
+         * |-------------------------|-------------------------------------------------------|------|--------|-------|
+         * | getImplementationState4 | bool                                                  | 53   | 20     | 1     |
          */
         vm.record();
         state.getImplementationState5(location_);
@@ -176,9 +176,9 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
         assertEq(uint256(current), number_);
 
         /**
-         * | Name                    | Type                                                 | Slot | Offset | Bytes |
-         * |-------------------------|------------------------------------------------------|------|--------|-------|
-         * | tokens                  | mapping(address => struct ImplementationState.Token) | 55   | 0      | 32    |
+         * | Name                    | Type                                                  | Slot | Offset | Bytes |
+         * |-------------------------|-------------------------------------------------------|------|--------|-------|
+         * | _tokens                 | mapping(address => struct IImplementationState.Token) | 55   | 0      | 32    |
          */
         vm.record();
         state.getToken(tokenA_);
@@ -186,15 +186,12 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
         assertEq((reads[0]), keccak256(abi.encode(tokenA_, uint256(55))));
         current = vm.load(address(state), bytes32(reads[0]));
 
-        (string memory name_, string memory symbol_, uint8 decimals_) = abi
-            .decode(abi.encodePacked(current), (string, string, uint8));
+        vm.record();
+        state.getToken(tokenB_);
+        (reads, ) = vm.accesses(address(state));
+        assertEq((reads[0]), keccak256(abi.encode(tokenB_, uint256(55))));
 
-        // assertEq(name_, "Token A");
-
-        // vm.record();
-        // state.getToken(tokenB_);
-        // (reads, ) = vm.accesses(address(state));
-        // assertEq((reads[0]), keccak256(abi.encode(tokenB_, uint256(55))));
+        // TODO: add extended tests for verifying layout of struct data
     }
 
     // TODO: add test cases around storage clashes, what happens and can they be resolved?
