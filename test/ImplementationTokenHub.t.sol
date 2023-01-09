@@ -171,7 +171,7 @@ contract ImplementationModuleTest is ImplementationFixture {
         address from_,
         address to_,
         uint256 amount_
-    ) internal {
+    ) internal BrutalizeMemory {
         bytes32 message = bytes32(amount_);
         uint256 messageLength = message.length;
 
