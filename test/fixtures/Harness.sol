@@ -147,7 +147,7 @@ abstract contract Harness is Test {
     // Public functions
     // ================
 
-    function targetContracts() public view virtual returns (address[] memory) {
+    function targetContracts() public view returns (address[] memory) {
         if (_targets.length == 0) revert NoTargetContracts();
 
         return _targets;
@@ -157,7 +157,7 @@ abstract contract Harness is Test {
     // Internal functions
     // ==================
 
-    function _addTargetContract(address newTargetContract) internal virtual {
+    function _addTargetContract(address newTargetContract) internal {
         _targets.push(newTargetContract);
     }
 
