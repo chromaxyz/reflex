@@ -47,7 +47,9 @@ contract Proxy is IProxy {
      * @dev To prevent selector clashing avoid using the `implementation()` selector inside of modules.
      * @return address Implementation address or zero address if unresolved.
      */
-    function implementation() external view returns (address) {
+    function implementation() external view virtual returns (address) {
+        // TODO: resolve multi-proxy, somehow map proxy to implementation
+
         (bool success, bytes memory response) = _deployer.staticcall(
             abi.encodeWithSelector(
                 _PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR,
@@ -62,15 +64,37 @@ contract Proxy is IProxy {
         }
     }
 
+    /**
+     * @dev Sentinel DELEGATECALL opcode to nudge Etherscan to recognize this as being a proxy.
+     * @dev Function selector clashing is mitigated by falling through to the fallback.
+     */
+    function sentinel() external virtual {
+        // TODO: replace with better solution, preferably permanent.
+
+        if (msg.sender == address(0)) {
+            // This branch is expected to never be executed as `msg.sender` can never be 0.
+            // If this branch ever were to be executed it is expected to be harmless and have no side-effects.
+            // A `delegatecall` to non-contract address 0 yields `true` and is ignored.
+            assembly {
+                // Ignore return value.
+                pop(delegatecall(gas(), 0x00, 0, 0, 0, 0))
+            }
+        } else {
+            // If the function selector clashes fall through to the fallback.
+
+            // TODO: add test for this line
+            _fallback();
+        }
+    }
+
     // ==================
-    // Fallback functions
+    // Internal functions
     // ==================
 
     /**
      * @dev Will run if no other function in the contract matches the call data.
      */
-    // solhint-disable-next-line no-complex-fallback
-    fallback() external {
+    function _fallback() internal virtual {
         address deployer_ = _deployer;
 
         // If the caller is the deployer, instead of re-enter - issue a log message.
@@ -140,18 +164,6 @@ contract Proxy is IProxy {
                 // Return 0
                 return(0, 0)
             }
-        } else if (msg.sender == address(0)) {
-            // TODO: replace with better solution, preferably permanent.
-
-            // Required to nudge Etherscan to recognize this as being a proxy.
-            // This branch is expected to never executed as `msg.sender` can never be 0.
-            // If this branch ever where to be executed it is expected to be harmless and have no side-effects.
-            // A `delegatecall` to a non-contract address yields `true` and is ignored.
-
-            assembly {
-                // Ignore return value.
-                pop(delegatecall(gas(), 0x00, 0, 0, 0, 0))
-            }
         } else {
             // Calldata: [calldata (N bytes)]
             assembly {
@@ -197,5 +209,16 @@ contract Proxy is IProxy {
                 }
             }
         }
+    }
+
+    // ==================
+    // Fallback functions
+    // ==================
+
+    /**
+     * @dev Will run if no other function in the contract matches the call data.
+     */
+    fallback() external virtual {
+        _fallback();
     }
 }

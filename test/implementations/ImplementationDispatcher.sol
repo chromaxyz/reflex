@@ -19,8 +19,4 @@ contract ImplementationDispatcher is BaseDispatcher, ImplementationState {
         address owner_,
         address installerModule_
     ) BaseDispatcher(owner_, installerModule_) {}
-
-    // ==========
-    // Test stubs
-    // ==========
 }

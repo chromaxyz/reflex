@@ -21,6 +21,12 @@ interface TBase is TBaseState {
     error InvalidModuleId();
 
     error InvalidModuleType();
+
+    // ======
+    // Events
+    // ======
+
+    event ProxyCreated(address indexed proxyAddress_);
 }
 
 /**

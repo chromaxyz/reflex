@@ -25,6 +25,10 @@ contract MockBaseModule is BaseModule, MockBase {
     // Test stubs
     // ==========
 
+    function sentinel() external pure returns (bool) {
+        return true;
+    }
+
     function testRevertBytesCustomError(
         uint256 code,
         string calldata message

@@ -60,12 +60,13 @@ abstract contract Base is IBase, BaseState {
 
         address proxyAddress = address(new Proxy());
 
-        if (
-            moduleType_ == _MODULE_TYPE_SINGLE_PROXY ||
-            moduleType_ == _MODULE_TYPE_MULTI_PROXY
-        ) _proxies[moduleId_] = proxyAddress;
+        if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY)
+            _proxies[moduleId_] = proxyAddress;
 
         _trusts[proxyAddress].moduleId = moduleId_;
+        _trusts[proxyAddress].moduleImplementation = address(0);
+
+        emit ProxyCreated(proxyAddress);
 
         return proxyAddress;
     }
