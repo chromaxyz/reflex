@@ -114,14 +114,17 @@ contract ImplementationERC20Test is ImplementationFixture {
         assertEq(tokenAProxy.balanceOf(_users.Alice), amount_);
     }
 
-    function testBurn(uint256 amountA_, uint256 amountB_) public {
-        vm.assume(amountA_ > amountB_);
+    function testBurn(uint256 mintAmount_, uint256 burnAmount_) public {
+        vm.assume(mintAmount_ > burnAmount_);
 
-        tokenAProxy.mint(_users.Alice, amountA_);
-        tokenAProxy.burn(_users.Alice, amountB_);
+        tokenAProxy.mint(_users.Alice, mintAmount_);
+        tokenAProxy.burn(_users.Alice, burnAmount_);
 
-        assertEq(tokenAProxy.totalSupply(), amountA_ - amountB_);
-        assertEq(tokenAProxy.balanceOf(_users.Alice), amountA_ - amountB_);
+        assertEq(tokenAProxy.totalSupply(), mintAmount_ - burnAmount_);
+        assertEq(
+            tokenAProxy.balanceOf(_users.Alice),
+            mintAmount_ - burnAmount_
+        );
     }
 
     function testApprove(uint256 amount_) public {
@@ -204,6 +207,19 @@ contract ImplementationERC20Test is ImplementationFixture {
 
         vm.expectRevert(stdError.arithmeticError);
         tokenAProxy.transferFrom(_users.Alice, _users.Bob, amount_);
+    }
+
+    function testRevertBurnInsufficientBalance(
+        address to_,
+        uint256 mintAmount_,
+        uint256 burnAmount_
+    ) external {
+        vm.assume(burnAmount_ > mintAmount_);
+
+        tokenAProxy.mint(to_, mintAmount_);
+
+        vm.expectRevert(stdError.arithmeticError);
+        tokenAProxy.burn(to_, burnAmount_);
     }
 
     function testMintBurn(uint256 amount_) external {
