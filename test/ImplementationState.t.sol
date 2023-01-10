@@ -8,8 +8,11 @@ import {stdStorageSafe, StdStorage} from "forge-std/StdStorage.sol";
 // Fixtures
 import {Harness} from "./fixtures/Harness.sol";
 
+// Mocks
+import {MockImplementationState} from "./mocks/MockImplementationState.sol";
+
 // Tests
-import {IImplementationState, ImplementationState} from "./implementations/ImplementationState.sol";
+import {IImplementationState} from "./implementations/ImplementationState.sol";
 
 /**
  * @title Implementation State Test
@@ -39,7 +42,7 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
     // Storage
     // =======
 
-    ImplementationState public state;
+    MockImplementationState public state;
 
     // =====
     // Setup
@@ -48,7 +51,7 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
     function setUp() public virtual override {
         super.setUp();
 
-        state = new ImplementationState();
+        state = new MockImplementationState();
     }
 
     // =====
