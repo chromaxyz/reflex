@@ -66,7 +66,7 @@ abstract contract Base is IBase, BaseState {
         _trusts[proxyAddress].moduleId = moduleId_;
         _trusts[proxyAddress].moduleImplementation = address(0);
 
-        // TODO: emit event
+        emit ProxyCreated(proxyAddress);
 
         return proxyAddress;
     }
