@@ -1,187 +1,190 @@
 Summary
 
-- [controlled-delegatecall](#controlled-delegatecall) (1 results) (High)
 - [uninitialized-state](#uninitialized-state) (2 results) (High)
-- [locked-ether](#locked-ether) (1 results) (Medium)
-- [calls-loop](#calls-loop) (9 results) (Low)
-- [assembly](#assembly) (5 results) (Informational)
+- [shadowing-local](#shadowing-local) (3 results) (Low)
+- [calls-loop](#calls-loop) (4 results) (Low)
+- [reentrancy-benign](#reentrancy-benign) (2 results) (Low)
+- [assembly](#assembly) (6 results) (Informational)
 - [costly-loop](#costly-loop) (3 results) (Informational)
 - [low-level-calls](#low-level-calls) (2 results) (Informational)
-- [naming-convention](#naming-convention) (8 results) (Informational)
-- [similar-names](#similar-names) (10 results) (Informational)
+- [naming-convention](#naming-convention) (11 results) (Informational)
+- [similar-names](#similar-names) (1 results) (Informational)
 - [too-many-digits](#too-many-digits) (1 results) (Informational)
-
-## controlled-delegatecall
-
-Impact: High
-Confidence: Medium
-
-- [ ] ID-0
-      [Base.\_callInternalModule(uint32,bytes)](../src/internals/Base.sol#L80-L91) uses delegatecall to a input-controlled function id - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/internals/Base.sol#L84-L86)
-
-../src/internals/Base.sol#L80-L91
+- [unused-state](#unused-state) (4 results) (Informational)
 
 ## uninitialized-state
 
 Impact: High
 Confidence: High
 
-- [ ] ID-1
-      [BaseState.\_modules](../src/BaseState.sol#L52) is never initialized. It is used in: - [Base.\_callInternalModule(uint32,bytes)](../src/internals/Base.sol#L80-L91)
+- [ ] ID-0
+      [BaseState.\_modules](../src/BaseState.sol#L52) is never initialized. It is used in: - [Base.\_callInternalModule(uint32,bytes)](../src/internals/Base.sol#L81-L92)
 
 ../src/BaseState.sol#L52
 
-- [ ] ID-2
+- [ ] ID-1
       [BaseState.\_owner](../src/BaseState.sol#L40) is never initialized. It is used in:
 
 ../src/BaseState.sol#L40
 
-## locked-ether
+## shadowing-local
 
-Impact: Medium
+Impact: Low
 Confidence: High
 
-- [ ] ID-3
-      Contract locking ether found:
-      Contract [Proxy](../src/internals/Proxy.sol#L15-L191) has payable functions: - [Proxy.constructor()](../src/internals/Proxy.sol#L37-L39)
-      But does not have a function to withdraw the ether
+- [ ] ID-2
+      [BaseInstaller.addModules(address[]).moduleSettings](../src/modules/BaseInstaller.sol#L99-L101) shadows: - [BaseModule.moduleSettings()](../src/BaseModule.sol#L129-L144) (function) - [IBaseModule.moduleSettings()](../src/interfaces/IBaseModule.sol#L70) (function)
 
-../src/internals/Proxy.sol#L15-L191
+../src/modules/BaseInstaller.sol#L99-L101
+
+- [ ] ID-3
+      [BaseInstaller.upgradeModules(address[]).moduleSettings](../src/modules/BaseInstaller.sol#L142-L144) shadows: - [BaseModule.moduleSettings()](../src/BaseModule.sol#L129-L144) (function) - [IBaseModule.moduleSettings()](../src/interfaces/IBaseModule.sol#L70) (function)
+
+../src/modules/BaseInstaller.sol#L142-L144
+
+- [ ] ID-4
+      [BaseInstaller.removeModules(address[]).moduleSettings](../src/modules/BaseInstaller.sol#L193-L195) shadows: - [BaseModule.moduleSettings()](../src/BaseModule.sol#L129-L144) (function) - [IBaseModule.moduleSettings()](../src/interfaces/IBaseModule.sol#L70) (function)
+
+../src/modules/BaseInstaller.sol#L193-L195
 
 ## calls-loop
 
 Impact: Low
 Confidence: Medium
 
-- [ ] ID-4
-      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L167-L199) has external calls inside a loop: [moduleType\_ = BaseModule(moduleAddress).moduleType()](../src/modules/BaseInstaller.sol#L176)
-
-../src/modules/BaseInstaller.sol#L167-L199
-
 - [ ] ID-5
-      [BaseInstaller.upgradeModules(address[])](../src/modules/BaseInstaller.sol#L133-L157) has external calls inside a loop: [moduleId\_ = BaseModule(moduleAddress).moduleId()](../src/modules/BaseInstaller.sol#L138)
+      [BaseInstaller.upgradeModules(address[])](../src/modules/BaseInstaller.sol#L136-L177) has external calls inside a loop: [moduleSettings.moduleVersion <= BaseModule(\_modules[moduleSettings.moduleId]).moduleVersion()](../src/modules/BaseInstaller.sol#L153-L154)
 
-../src/modules/BaseInstaller.sol#L133-L157
+../src/modules/BaseInstaller.sol#L136-L177
 
 - [ ] ID-6
-      [BaseInstaller.addModules(address[])](../src/modules/BaseInstaller.sol#L98-L123) has external calls inside a loop: [moduleType\_ = BaseModule(moduleAddress).moduleType()](../src/modules/BaseInstaller.sol#L107)
+      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L187-L228) has external calls inside a loop: [moduleSettings = BaseModule(moduleAddress).moduleSettings()](../src/modules/BaseInstaller.sol#L193-L195)
 
-../src/modules/BaseInstaller.sol#L98-L123
+../src/modules/BaseInstaller.sol#L187-L228
 
 - [ ] ID-7
-      [BaseInstaller.upgradeModules(address[])](../src/modules/BaseInstaller.sol#L133-L157) has external calls inside a loop: [moduleType\_ = BaseModule(moduleAddress).moduleType()](../src/modules/BaseInstaller.sol#L139)
+      [BaseInstaller.addModules(address[])](../src/modules/BaseInstaller.sol#L93-L126) has external calls inside a loop: [moduleSettings = BaseModule(moduleAddress).moduleSettings()](../src/modules/BaseInstaller.sol#L99-L101)
 
-../src/modules/BaseInstaller.sol#L133-L157
+../src/modules/BaseInstaller.sol#L93-L126
 
 - [ ] ID-8
-      [BaseInstaller.upgradeModules(address[])](../src/modules/BaseInstaller.sol#L133-L157) has external calls inside a loop: [moduleVersion\_ = BaseModule(moduleAddress).moduleVersion()](../src/modules/BaseInstaller.sol#L140)
+      [BaseInstaller.upgradeModules(address[])](../src/modules/BaseInstaller.sol#L136-L177) has external calls inside a loop: [moduleSettings = BaseModule(moduleAddress).moduleSettings()](../src/modules/BaseInstaller.sol#L142-L144)
 
-../src/modules/BaseInstaller.sol#L133-L157
+../src/modules/BaseInstaller.sol#L136-L177
+
+## reentrancy-benign
+
+Impact: Low
+Confidence: Medium
 
 - [ ] ID-9
-      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L167-L199) has external calls inside a loop: [moduleVersion\_ = BaseModule(moduleAddress).moduleVersion()](../src/modules/BaseInstaller.sol#L177)
+      Reentrancy in [DeployScript.run()](../script/Deploy.s.sol#L32-L73):
+      External calls: - [vm.startBroadcast()](../script/Deploy.s.sol#L33)
+      State variables written after the call(s): - [dispatcher = new ImplementationDispatcher(msg.sender,address(installerImplementation))](../script/Deploy.s.sol#L45-L48) - [exampleModuleImplementation = new ImplementationModule(IBaseModule.ModuleSettings(\_MODULE_ID_EXAMPLE,\_MODULE_TYPE_SINGLE_PROXY,1,true,true))](../script/Deploy.s.sol#L54-L62) - [installerImplementation = new ImplementationInstaller(IBaseModule.ModuleSettings(\_MODULE_ID_INSTALLER,\_MODULE_TYPE_SINGLE_PROXY,1,true,false))](../script/Deploy.s.sol#L35-L43) - [installerProxy = ImplementationInstaller(dispatcher.moduleIdToProxy(\_MODULE_ID_INSTALLER))](../script/Deploy.s.sol#L50-L52)
 
-../src/modules/BaseInstaller.sol#L167-L199
+../script/Deploy.s.sol#L32-L73
 
 - [ ] ID-10
-      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L167-L199) has external calls inside a loop: [moduleId\_ = BaseModule(moduleAddress).moduleId()](../src/modules/BaseInstaller.sol#L175)
+      Reentrancy in [DeployScript.run()](../script/Deploy.s.sol#L32-L73):
+      External calls: - [vm.startBroadcast()](../script/Deploy.s.sol#L33) - [installerProxy.addModules(moduleAddresses)](../script/Deploy.s.sol#L66) - [vm.stopBroadcast()](../script/Deploy.s.sol#L68)
+      State variables written after the call(s): - [exampleModuleProxy = ImplementationModule(dispatcher.moduleIdToProxy(\_MODULE_ID_EXAMPLE))](../script/Deploy.s.sol#L70-L72)
 
-../src/modules/BaseInstaller.sol#L167-L199
-
-- [ ] ID-11
-      [BaseInstaller.addModules(address[])](../src/modules/BaseInstaller.sol#L98-L123) has external calls inside a loop: [moduleVersion\_ = BaseModule(moduleAddress).moduleVersion()](../src/modules/BaseInstaller.sol#L108)
-
-../src/modules/BaseInstaller.sol#L98-L123
-
-- [ ] ID-12
-      [BaseInstaller.addModules(address[])](../src/modules/BaseInstaller.sol#L98-L123) has external calls inside a loop: [moduleId\_ = BaseModule(moduleAddress).moduleId()](../src/modules/BaseInstaller.sol#L106)
-
-../src/modules/BaseInstaller.sol#L98-L123
+../script/Deploy.s.sol#L32-L73
 
 ## assembly
 
 Impact: Informational
 Confidence: High
 
-- [ ] ID-13
-      [Base.\_unpackMessageSender()](../src/internals/Base.sol#L97-L107) uses assembly - [INLINE ASM](../src/internals/Base.sol#L104-L106)
+- [ ] ID-11
+      [Proxy.sentinel()](../src/internals/Proxy.sol#L71-L88) uses assembly - [INLINE ASM](../src/internals/Proxy.sol#L78-L81)
 
-../src/internals/Base.sol#L97-L107
+../src/internals/Proxy.sol#L71-L88
+
+- [ ] ID-12
+      [BaseDispatcher.dispatch()](../src/BaseDispatcher.sol#L117-L170) uses assembly - [INLINE ASM](../src/BaseDispatcher.sol#L139-L169)
+
+../src/BaseDispatcher.sol#L117-L170
+
+- [ ] ID-13
+      [Base.\_unpackMessageSender()](../src/internals/Base.sol#L98-L108) uses assembly - [INLINE ASM](../src/internals/Base.sol#L105-L107)
+
+../src/internals/Base.sol#L98-L108
 
 - [ ] ID-14
-      [Proxy.fallback()](../src/internals/Proxy.sol#L76-L190) uses assembly - [INLINE ASM](../src/internals/Proxy.sol#L82-L145) - [INLINE ASM](../src/internals/Proxy.sol#L148-L188)
+      [Base.\_unpackProxyAddress()](../src/internals/Base.sol#L114-L124) uses assembly - [INLINE ASM](../src/internals/Base.sol#L121-L123)
 
-../src/internals/Proxy.sol#L76-L190
+../src/internals/Base.sol#L114-L124
 
 - [ ] ID-15
-      [Base.\_unpackProxyAddress()](../src/internals/Base.sol#L113-L123) uses assembly - [INLINE ASM](../src/internals/Base.sol#L120-L122)
+      [Base.\_revertBytes(bytes)](../src/internals/Base.sol#L130-L138) uses assembly - [INLINE ASM](../src/internals/Base.sol#L132-L134)
 
-../src/internals/Base.sol#L113-L123
+../src/internals/Base.sol#L130-L138
 
 - [ ] ID-16
-      [Base.\_revertBytes(bytes)](../src/internals/Base.sol#L129-L137) uses assembly - [INLINE ASM](../src/internals/Base.sol#L131-L133)
+      [Proxy.\_fallback()](../src/internals/Proxy.sol#L97-L212) uses assembly - [INLINE ASM](../src/internals/Proxy.sol#L103-L166) - [INLINE ASM](../src/internals/Proxy.sol#L169-L210)
 
-../src/internals/Base.sol#L129-L137
-
-- [ ] ID-17
-      [BaseDispatcher.dispatch()](../src/BaseDispatcher.sol#L119-L172) uses assembly - [INLINE ASM](../src/BaseDispatcher.sol#L141-L171)
-
-../src/BaseDispatcher.sol#L119-L172
+../src/internals/Proxy.sol#L97-L212
 
 ## costly-loop
 
 Impact: Informational
 Confidence: Medium
 
-- [ ] ID-18
-      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L167-L199) has costly operations inside a loop: - [delete \_trusts[proxyAddress]](../src/modules/BaseInstaller.sol#L183)
+- [ ] ID-17
+      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L187-L228) has costly operations inside a loop: - [delete \_trusts[proxyAddress]](../src/modules/BaseInstaller.sol#L208)
 
-../src/modules/BaseInstaller.sol#L167-L199
+../src/modules/BaseInstaller.sol#L187-L228
+
+- [ ] ID-18
+      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L187-L228) has costly operations inside a loop: - [delete \_proxies[moduleSettings.moduleId]](../src/modules/BaseInstaller.sol#L214)
+
+../src/modules/BaseInstaller.sol#L187-L228
 
 - [ ] ID-19
-      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L167-L199) has costly operations inside a loop: - [delete _modules[moduleId_]](../src/modules/BaseInstaller.sol#L191)
+      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L187-L228) has costly operations inside a loop: - [delete \_modules[moduleSettings.moduleId]](../src/modules/BaseInstaller.sol#L216)
 
-../src/modules/BaseInstaller.sol#L167-L199
-
-- [ ] ID-20
-      [BaseInstaller.removeModules(address[])](../src/modules/BaseInstaller.sol#L167-L199) has costly operations inside a loop: - [delete _proxies[moduleId_]](../src/modules/BaseInstaller.sol#L189)
-
-../src/modules/BaseInstaller.sol#L167-L199
+../src/modules/BaseInstaller.sol#L187-L228
 
 ## low-level-calls
 
 Impact: Informational
 Confidence: High
 
+- [ ] ID-20
+      Low level call in [Base.\_callInternalModule(uint32,bytes)](../src/internals/Base.sol#L81-L92): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/internals/Base.sol#L85-L87)
+
+../src/internals/Base.sol#L81-L92
+
 - [ ] ID-21
-      Low level call in [Proxy.implementation()](../src/internals/Proxy.sol#L50-L66): - [(success,response) = \_deployer.staticcall(abi.encodeWithSelector(\_PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR,address(this)))](../src/internals/Proxy.sol#L54-L59)
+      Low level call in [Proxy.implementation()](../src/internals/Proxy.sol#L50-L65): - [(success,response) = \_deployer.staticcall(abi.encodeWithSelector(\_PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR,address(this)))](../src/internals/Proxy.sol#L53-L58)
 
-../src/internals/Proxy.sol#L50-L66
-
-- [ ] ID-22
-      Low level call in [Base.\_callInternalModule(uint32,bytes)](../src/internals/Base.sol#L80-L91): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/internals/Base.sol#L84-L86)
-
-../src/internals/Base.sol#L80-L91
+../src/internals/Proxy.sol#L50-L65
 
 ## naming-convention
 
 Impact: Informational
 Confidence: High
 
-- [ ] ID-23
+- [ ] ID-22
       Variable [BaseState.\_trusts](../src/BaseState.sol#L64) is not in mixedCase
 
 ../src/BaseState.sol#L64
 
-- [ ] ID-24
+- [ ] ID-23
       Variable [BaseState.\_modules](../src/BaseState.sol#L52) is not in mixedCase
 
 ../src/BaseState.sol#L52
 
-- [ ] ID-25
+- [ ] ID-24
       Variable [BaseState.\_pendingOwner](../src/BaseState.sol#L46) is not in mixedCase
 
 ../src/BaseState.sol#L46
+
+- [ ] ID-25
+      Variable [BaseModule.\_moduleId](../src/BaseModule.sol#L22) is not in mixedCase
+
+../src/BaseModule.sol#L22
 
 - [ ] ID-26
       Variable [BaseState.\_proxies](../src/BaseState.sol#L58) is not in mixedCase
@@ -199,66 +202,31 @@ Confidence: High
 ../src/BaseState.sol#L34
 
 - [ ] ID-29
-      Variable [BaseState.\_\_gap](../src/BaseState.sol#L73) is not in mixedCase
+      Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L27) is not in mixedCase
 
-../src/BaseState.sol#L73
+../src/BaseModule.sol#L27
 
 - [ ] ID-30
+      Variable [BaseState.\_\_gap](../src/BaseState.sol#L80) is not in mixedCase
+
+../src/BaseState.sol#L80
+
+- [ ] ID-31
       Variable [Proxy.\_deployer](../src/internals/Proxy.sol#L31) is not in mixedCase
 
 ../src/internals/Proxy.sol#L31
+
+- [ ] ID-32
+      Variable [BaseModule.\_moduleVersion](../src/BaseModule.sol#L32) is not in mixedCase
+
+../src/BaseModule.sol#L32
 
 ## similar-names
 
 Impact: Informational
 Confidence: Medium
 
-- [ ] ID-31
-      Variable [BaseModule.\_moduleVersion](../src/BaseModule.sol#L32) is too similar to [BaseInstaller.constructor(uint16).moduleVersion\_](../src/modules/BaseInstaller.sol#L23)
-
-../src/BaseModule.sol#L32
-
-- [ ] ID-32
-      Variable [BaseModule.\_moduleVersion](../src/BaseModule.sol#L32) is too similar to [BaseModule.constructor(uint32,uint16,uint16).moduleVersion\_](../src/BaseModule.sol#L58)
-
-../src/BaseModule.sol#L32
-
 - [ ] ID-33
-      Variable [BaseModule.\_moduleVersion](../src/BaseModule.sol#L32) is too similar to [BaseInstaller.removeModules(address[]).moduleVersion\_](../src/modules/BaseInstaller.sol#L177)
-
-../src/BaseModule.sol#L32
-
-- [ ] ID-34
-      Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L27) is too similar to [BaseModule.constructor(uint32,uint16,uint16).moduleType\_](../src/BaseModule.sol#L58)
-
-../src/BaseModule.sol#L27
-
-- [ ] ID-35
-      Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L27) is too similar to [BaseInstaller.removeModules(address[]).moduleType\_](../src/modules/BaseInstaller.sol#L176)
-
-../src/BaseModule.sol#L27
-
-- [ ] ID-36
-      Variable [BaseModule.\_moduleVersion](../src/BaseModule.sol#L32) is too similar to [BaseInstaller.addModules(address[]).moduleVersion\_](../src/modules/BaseInstaller.sol#L108)
-
-../src/BaseModule.sol#L32
-
-- [ ] ID-37
-      Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L27) is too similar to [BaseInstaller.addModules(address[]).moduleType\_](../src/modules/BaseInstaller.sol#L107)
-
-../src/BaseModule.sol#L27
-
-- [ ] ID-38
-      Variable [BaseModule.\_moduleVersion](../src/BaseModule.sol#L32) is too similar to [BaseInstaller.upgradeModules(address[]).moduleVersion\_](../src/modules/BaseInstaller.sol#L140)
-
-../src/BaseModule.sol#L32
-
-- [ ] ID-39
-      Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L27) is too similar to [BaseInstaller.upgradeModules(address[]).moduleType\_](../src/modules/BaseInstaller.sol#L139)
-
-../src/BaseModule.sol#L27
-
-- [ ] ID-40
       Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L27) is too similar to [Base._createProxy(uint32,uint16).moduleType_](../src/internals/Base.sol#L51)
 
 ../src/BaseModule.sol#L27
@@ -268,7 +236,32 @@ Confidence: Medium
 Impact: Informational
 Confidence: Medium
 
-- [ ] ID-41
-      [Proxy.fallback()](../src/internals/Proxy.sol#L76-L190) uses literals with too many digits: - [mstore(uint256,uint256)(0x00,0xe9c4a3ac00000000000000000000000000000000000000000000000000000000)](../src/internals/Proxy.sol#L152-L155)
+- [ ] ID-34
+      [Proxy.\_fallback()](../src/internals/Proxy.sol#L97-L212) uses literals with too many digits: - [mstore(uint256,uint256)(0x00,0xe9c4a3ac00000000000000000000000000000000000000000000000000000000)](../src/internals/Proxy.sol#L173-L177)
 
-../src/internals/Proxy.sol#L76-L190
+../src/internals/Proxy.sol#L97-L212
+
+## unused-state
+
+Impact: Informational
+Confidence: High
+
+- [ ] ID-35
+      [BaseConstants.\_REENTRANCY_LOCK_UNLOCKED](../src/BaseConstants.sol#L16) is never used in [DeployScript](../script/Deploy.s.sol#L25-L74)
+
+../src/BaseConstants.sol#L16
+
+- [ ] ID-36
+      [BaseConstants.\_MODULE_TYPE_MULTI_PROXY](../src/BaseConstants.sol#L31) is never used in [DeployScript](../script/Deploy.s.sol#L25-L74)
+
+../src/BaseConstants.sol#L31
+
+- [ ] ID-37
+      [BaseConstants.\_REENTRANCY_LOCK_LOCKED](../src/BaseConstants.sol#L21) is never used in [DeployScript](../script/Deploy.s.sol#L25-L74)
+
+../src/BaseConstants.sol#L21
+
+- [ ] ID-38
+      [BaseConstants.\_MODULE_TYPE_INTERNAL](../src/BaseConstants.sol#L36) is never used in [DeployScript](../script/Deploy.s.sol#L25-L74)
+
+../src/BaseConstants.sol#L36
