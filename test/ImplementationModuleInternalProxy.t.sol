@@ -94,6 +94,14 @@ contract ImplementationModuleInternalProxyTest is ImplementationFixture {
         assertEq(value, number_);
     }
 
+    function testRevertInvalidCallInternalModule() external {
+        vm.expectRevert();
+        singleModuleProxy.callInternalModule(
+            _MODULE_INTERNAL_ID,
+            abi.encodeWithSignature("getImplementationState777()")
+        );
+    }
+
     function testUpgradeInternalProxy() external {
         assertEq(internalModule.moduleVersion(), _MODULE_INTERNAL_VERSION_V1);
 
