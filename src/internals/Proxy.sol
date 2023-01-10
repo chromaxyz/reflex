@@ -81,8 +81,6 @@ contract Proxy is IProxy {
             }
         } else {
             // If the function selector clashes fall through to the fallback.
-
-            // TODO: add test for this line
             _fallback();
         }
     }

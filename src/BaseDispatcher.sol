@@ -123,7 +123,6 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
 
         if (moduleId == 0) revert CallerNotTrusted();
 
-        // TODO: implement test case for this line
         if (moduleImplementation == address(0))
             moduleImplementation = _modules[moduleId];
 
