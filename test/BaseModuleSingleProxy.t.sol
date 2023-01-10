@@ -61,10 +61,22 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
     // Tests
     // =====
 
+    function testProxyImplementation() external {
+        assertEq(
+            IProxy(address(moduleSingleProxy)).implementation(),
+            address(moduleSingle)
+        );
+    }
+
+    function testRevertProxySentinel() external {
+        vm.expectRevert();
+        moduleSingleProxy.testSentinelFallbackProxy();
+    }
+
     function testModuleIdToImplementation() external {
-        assertTrue(
-            dispatcher.moduleIdToImplementation(_MOCK_MODULE_SINGLE_ID) ==
-                address(moduleSingle)
+        assertEq(
+            dispatcher.moduleIdToImplementation(_MOCK_MODULE_SINGLE_ID),
+            address(moduleSingle)
         );
     }
 
