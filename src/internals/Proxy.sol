@@ -218,14 +218,7 @@ contract Proxy is IProxy {
     /**
      * @dev Will run if no other function in the contract matches the call data.
      */
-    receive() external payable virtual {
-        _fallback();
-    }
-
-    /**
-     * @dev Will run if no other function in the contract matches the call data.
-     */
-    fallback() external payable virtual {
+    fallback() external virtual {
         _fallback();
     }
 }

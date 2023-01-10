@@ -39,8 +39,6 @@ contract ProxyTest is TProxy, Test, Harness {
     // Tests
     // =====
 
-    // TODO: test payable
-
     function testResolveInvalidImplementationToZeroAddress() public {
         assertEq(proxy.implementation(), address(0));
     }
