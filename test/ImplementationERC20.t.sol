@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+// Vendor
+import {stdError} from "forge-std/StdError.sol";
+
 // Implementations
 import {ImplementationERC20} from "./implementations/abstracts/ImplementationERC20.sol";
 
@@ -136,40 +139,90 @@ contract ImplementationERC20Test is ImplementationFixture {
         assertEq(tokenAProxy.balanceOf(_users.Alice), amount_);
     }
 
-    // function testTransferFrom(address from_, uint256 amount_) public {
-    //     vm.assume(from_ != address(0));
+    function testTransferFrom(address from_, uint256 amount_) public {
+        vm.assume(from_ != address(0));
+        vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
-    //     tokenAProxy.mint(from_, amount_);
+        tokenAProxy.mint(from_, amount_);
 
-    //     vm.prank(from_);
-    //     tokenAProxy.approve(address(this), amount_);
+        vm.prank(from_);
+        tokenAProxy.approve(address(this), amount_);
 
-    //     assertTrue(tokenAProxy.transferFrom(from_, _users.Alice, amount_));
-    //     assertEq(tokenAProxy.totalSupply(), amount_);
-    //     assertEq(tokenAProxy.allowance(from_, address(this)), 0);
-    //     assertEq(tokenAProxy.balanceOf(from_), 0);
-    //     assertEq(tokenAProxy.balanceOf(_users.Alice), amount_);
-    // }
+        assertTrue(tokenAProxy.transferFrom(from_, _users.Alice, amount_));
+        assertEq(tokenAProxy.totalSupply(), amount_);
+        assertEq(tokenAProxy.allowance(from_, address(this)), 0);
+        assertEq(tokenAProxy.balanceOf(from_), 0);
+        assertEq(tokenAProxy.balanceOf(_users.Alice), amount_);
+    }
 
-    // function testInfiniteApproveTransferFrom(address from_, address to_)
-    //     public
-    // {
-    //     vm.assume(from_ != address(0));
-    //     vm.assume(to_ != address(0));
+    function testInfiniteApproveTransferFrom(
+        address from_,
+        uint256 amount_
+    ) public {
+        vm.assume(from_ != address(0));
+        vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
-    //     tokenAProxy.mint(from_, 1e18);
+        tokenAProxy.mint(from_, amount_);
 
-    //     vm.prank(from_);
-    //     tokenAProxy.approve(address(to_), type(uint256).max);
+        vm.prank(from_);
+        tokenAProxy.approve(address(this), type(uint256).max);
 
-    //     assertTrue(tokenAProxy.transferFrom(from_, to_, 1e18));
-    //     assertEq(tokenAProxy.totalSupply(), 1e18);
-    //     assertEq(tokenAProxy.allowance(from_, address(to_)), type(uint256).max);
-    //     assertEq(tokenAProxy.balanceOf(from_), 0);
-    //     assertEq(tokenAProxy.balanceOf(to_), 1e18);
-    // }
+        assertTrue(tokenAProxy.transferFrom(from_, _users.Alice, amount_));
+        assertEq(tokenAProxy.totalSupply(), amount_);
 
-    // TODO: emphasis on ERC20 implementation
+        assertEq(
+            tokenAProxy.allowance(from_, address(this)),
+            type(uint256).max
+        );
+
+        assertEq(tokenAProxy.balanceOf(from_), 0);
+        assertEq(tokenAProxy.balanceOf(_users.Alice), amount_);
+    }
+
+    function testRevertTransferInsufficientBalance(
+        address to_,
+        uint256 amount_
+    ) public {
+        vm.assume(to_ != address(0));
+        vm.assume(amount_ > 0 && amount_ < type(uint256).max);
+
+        tokenAProxy.mint(address(this), amount_ - 1);
+
+        vm.expectRevert(stdError.arithmeticError);
+        tokenAProxy.transfer(to_, amount_);
+    }
+
+    function testRevertTransferFromInsufficientAllowance(
+        address from_,
+        uint256 amount_
+    ) public {
+        vm.assume(from_ != address(0));
+        vm.assume(amount_ > 0 && amount_ < type(uint256).max);
+
+        tokenAProxy.mint(from_, amount_);
+
+        vm.prank(from_);
+        tokenAProxy.approve(address(this), amount_ - 1);
+
+        vm.expectRevert(stdError.arithmeticError);
+        tokenAProxy.transferFrom(from_, _users.Alice, amount_);
+    }
+
+    function testRevertTransferFromInsufficientBalance(
+        address from_,
+        uint256 amount_
+    ) public {
+        vm.assume(from_ != address(0));
+        vm.assume(amount_ > 0 && amount_ < type(uint256).max);
+
+        tokenAProxy.mint(from_, amount_ - 1);
+
+        vm.prank(from_);
+        tokenAProxy.approve(address(this), amount_);
+
+        vm.expectRevert(stdError.arithmeticError);
+        tokenAProxy.transferFrom(from_, address(this), amount_);
+    }
 
     function testMintBurn() external {
         _expectEmitTransfer(
@@ -195,27 +248,64 @@ contract ImplementationERC20Test is ImplementationFixture {
         assertEq(tokenAProxy.totalSupply(), 0);
     }
 
-    function testApproveTransfer() external {
+    function testApproveTransfer(uint256 amount_) external {
         _expectEmitTransfer(
             address(tokenAProxy),
             address(0),
             _users.Alice,
-            100e18
+            amount_
         );
-        tokenAProxy.mint(_users.Alice, 100e18);
+        tokenAProxy.mint(_users.Alice, amount_);
 
-        assertEq(tokenAProxy.balanceOf(_users.Alice), 100e18);
+        assertEq(tokenAProxy.balanceOf(_users.Alice), amount_);
         assertEq(tokenAProxy.balanceOf(_users.Bob), 0);
-        assertEq(tokenAProxy.totalSupply(), 100e18);
+        assertEq(tokenAProxy.totalSupply(), amount_);
 
         vm.startPrank(_users.Alice);
         _expectEmitApproval(
             address(tokenAProxy),
             _users.Alice,
             _users.Bob,
-            100e18
+            amount_
         );
-        tokenAProxy.approve(_users.Bob, 100e18);
+        tokenAProxy.approve(_users.Bob, amount_);
+        vm.stopPrank();
+
+        vm.startPrank(_users.Alice);
+        _expectEmitTransfer(
+            address(tokenAProxy),
+            _users.Alice,
+            _users.Bob,
+            amount_
+        );
+        tokenAProxy.transfer(_users.Bob, amount_);
+        assertEq(tokenAProxy.balanceOf(_users.Alice), 0);
+        assertEq(tokenAProxy.balanceOf(_users.Bob), amount_);
+        assertEq(tokenAProxy.totalSupply(), amount_);
+        vm.stopPrank();
+    }
+
+    function testApproveTransferFrom(uint256 amount_) external {
+        _expectEmitTransfer(
+            address(tokenAProxy),
+            address(0),
+            _users.Alice,
+            amount_
+        );
+        tokenAProxy.mint(_users.Alice, amount_);
+
+        assertEq(tokenAProxy.balanceOf(_users.Alice), amount_);
+        assertEq(tokenAProxy.balanceOf(_users.Bob), 0);
+        assertEq(tokenAProxy.totalSupply(), amount_);
+
+        vm.startPrank(_users.Alice);
+        _expectEmitApproval(
+            address(tokenAProxy),
+            _users.Alice,
+            _users.Bob,
+            amount_
+        );
+        tokenAProxy.approve(_users.Bob, amount_);
         vm.stopPrank();
 
         vm.startPrank(_users.Bob);
@@ -223,12 +313,12 @@ contract ImplementationERC20Test is ImplementationFixture {
             address(tokenAProxy),
             _users.Alice,
             _users.Bob,
-            100e18
+            amount_
         );
-        tokenAProxy.transferFrom(_users.Alice, _users.Bob, 100e18);
+        tokenAProxy.transferFrom(_users.Alice, _users.Bob, amount_);
         assertEq(tokenAProxy.balanceOf(_users.Alice), 0);
-        assertEq(tokenAProxy.balanceOf(_users.Bob), 100e18);
-        assertEq(tokenAProxy.totalSupply(), 100e18);
+        assertEq(tokenAProxy.balanceOf(_users.Bob), amount_);
+        assertEq(tokenAProxy.totalSupply(), amount_);
         vm.stopPrank();
     }
 
