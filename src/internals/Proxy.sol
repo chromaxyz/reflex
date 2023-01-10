@@ -70,9 +70,9 @@ contract Proxy is IProxy {
         // TODO: replace with better solution, preferably permanent.
 
         if (msg.sender == address(0)) {
-            // This branch is expected to never executed as `msg.sender` can never be 0.
-            // If this branch ever where to be executed it is expected to be harmless and have no side-effects.
-            // A `delegatecall` to a non-contract address yields `true` and is ignored.
+            // This branch is expected to never be executed as `msg.sender` can never be 0.
+            // If this branch ever were to be executed it is expected to be harmless and have no side-effects.
+            // A `delegatecall` to non-contract address 0 yields `true` and is ignored.
             assembly {
                 // Ignore return value.
                 pop(delegatecall(gas(), 0x00, 0, 0, 0, 0))
