@@ -8,8 +8,6 @@ import {BaseState} from "../../../src/BaseState.sol";
 // Implementations
 import {ImplementationState} from "../ImplementationState.sol";
 
-// TODO: port to BaseERC20?
-
 /**
  * @title Implementation ERC20
  */
