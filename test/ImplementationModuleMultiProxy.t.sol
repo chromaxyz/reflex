@@ -25,7 +25,8 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
 
     uint32 internal constant _TOKEN_MODULE_ID = 101;
     uint16 internal constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_PROXY;
-    uint16 internal constant _TOKEN_MODULE_VERSION = 1;
+    uint16 internal constant _TOKEN_MODULE_VERSION_V1 = 1;
+    uint16 internal constant _TOKEN_MODULE_VERSION_V2 = 2;
 
     string internal constant _TOKEN_A_MODULE_NAME = "TOKEN A";
     string internal constant _TOKEN_A_MODULE_SYMBOL = "TKNA";
@@ -71,17 +72,17 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         tokenA = new MockImplementationERC20(
             _TOKEN_MODULE_ID,
             _TOKEN_MODULE_TYPE,
-            _TOKEN_MODULE_VERSION
+            _TOKEN_MODULE_VERSION_V1
         );
         tokenB = new MockImplementationERC20(
             _TOKEN_MODULE_ID,
             _TOKEN_MODULE_TYPE,
-            _TOKEN_MODULE_VERSION
+            _TOKEN_MODULE_VERSION_V1
         );
         tokenC = new MockImplementationERC20(
             _TOKEN_MODULE_ID,
             _TOKEN_MODULE_TYPE,
-            _TOKEN_MODULE_VERSION
+            _TOKEN_MODULE_VERSION_V1
         );
 
         address[] memory moduleAddresses = new address[](4);
@@ -145,6 +146,26 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     // =====
     // Tests
     // =====
+
+    function testUpgradeMultiProxySingleImplementation() external {
+        assertEq(tokenAProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V1);
+        assertEq(tokenBProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V1);
+        assertEq(tokenCProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V1);
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(
+            new MockImplementationERC20(
+                _TOKEN_MODULE_ID,
+                _TOKEN_MODULE_TYPE,
+                _TOKEN_MODULE_VERSION_V2
+            )
+        );
+        installerProxy.upgradeModules(moduleAddresses);
+
+        assertEq(tokenAProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V2);
+        assertEq(tokenBProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V2);
+        assertEq(tokenCProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V2);
+    }
 
     // TODO: focus on upgrading, focus on testing how the multi-proxy works
 }
