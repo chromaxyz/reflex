@@ -53,67 +53,67 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
 
     function testValidModuleId() external {
         module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_VALID_TYPE_SINGLE,
-            _MOCK_MODULE_VALID_VERSION
+            _MODULE_VALID_ID,
+            _MODULE_VALID_TYPE_SINGLE,
+            _MODULE_VALID_VERSION
         );
 
-        assertEq(module.moduleId(), _MOCK_MODULE_VALID_ID);
+        assertEq(module.moduleId(), _MODULE_VALID_ID);
     }
 
     function testValidModuleType() external {
         module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_VALID_TYPE_SINGLE,
-            _MOCK_MODULE_VALID_VERSION
+            _MODULE_VALID_ID,
+            _MODULE_VALID_TYPE_SINGLE,
+            _MODULE_VALID_VERSION
         );
 
-        assertEq(module.moduleType(), _MOCK_MODULE_VALID_TYPE_SINGLE);
+        assertEq(module.moduleType(), _MODULE_VALID_TYPE_SINGLE);
     }
 
     function testValidModuleVersion() external {
         module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_VALID_TYPE_SINGLE,
-            _MOCK_MODULE_VALID_VERSION
+            _MODULE_VALID_ID,
+            _MODULE_VALID_TYPE_SINGLE,
+            _MODULE_VALID_VERSION
         );
 
-        assertEq(module.moduleVersion(), _MOCK_MODULE_VALID_VERSION);
+        assertEq(module.moduleVersion(), _MODULE_VALID_VERSION);
     }
 
     function testRevertInvalidModuleIdZeroValue() external {
         vm.expectRevert(InvalidModuleId.selector);
         module = new MockBaseModule(
-            _MOCK_MODULE_INVALID_ID,
-            _MOCK_MODULE_VALID_TYPE_SINGLE,
-            _MOCK_MODULE_VALID_VERSION
+            _MODULE_INVALID_ID,
+            _MODULE_VALID_TYPE_SINGLE,
+            _MODULE_VALID_VERSION
         );
     }
 
     function testRevertInvalidModuleTypeZeroValue() external {
         vm.expectRevert(InvalidModuleType.selector);
         module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_INVALID_TYPE_ZERO,
-            _MOCK_MODULE_VALID_VERSION
+            _MODULE_VALID_ID,
+            _MODULE_INVALID_TYPE_ZERO,
+            _MODULE_VALID_VERSION
         );
     }
 
     function testRevertInvalidModuleTypeOverflowValue() external {
         vm.expectRevert(InvalidModuleType.selector);
         module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_INVALID_TYPE,
-            _MOCK_MODULE_VALID_VERSION
+            _MODULE_VALID_ID,
+            _MODULE_INVALID_TYPE,
+            _MODULE_VALID_VERSION
         );
     }
 
     function testRevertInvalidModuleVersionZeroValue() external {
         vm.expectRevert(InvalidModuleVersion.selector);
         module = new MockBaseModule(
-            _MOCK_MODULE_VALID_ID,
-            _MOCK_MODULE_VALID_TYPE_SINGLE,
-            _MOCK_MODULE_INVALID_VERSION
+            _MODULE_VALID_ID,
+            _MODULE_VALID_TYPE_SINGLE,
+            _MODULE_INVALID_VERSION
         );
     }
 }
