@@ -46,7 +46,7 @@ interface IBaseDispatcher is IBase, TBaseDispatcher {
     // Methods
     // =======
 
-    function dispatch() external payable;
+    function dispatch() external;
 
     function moduleIdToImplementation(
         uint32 moduleId_
