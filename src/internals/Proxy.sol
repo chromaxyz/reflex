@@ -48,6 +48,8 @@ contract Proxy is IProxy {
      * @return address Implementation address or zero address if unresolved.
      */
     function implementation() external view returns (address) {
+        // TODO: resolve multi-proxy, somehow map proxy to implementation
+
         (bool success, bytes memory response) = _deployer.staticcall(
             abi.encodeWithSelector(
                 _PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR,
