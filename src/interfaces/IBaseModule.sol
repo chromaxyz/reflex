@@ -14,8 +14,6 @@ interface TBaseModule is TBase {
 
     error FailedToLog();
 
-    error FailedToFallback();
-
     error InvalidModuleVersion();
 
     error Unauthorized();

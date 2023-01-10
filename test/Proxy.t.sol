@@ -6,6 +6,7 @@ import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
 
 // Interfaces
+import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
 import {TProxy} from "../src/interfaces/IProxy.sol";
 
 // Internals
@@ -38,6 +39,8 @@ contract ProxyTest is TProxy, Test, Harness {
     // Tests
     // =====
 
+    // TODO: test payable
+
     function testResolveInvalidImplementationToZeroAddress() public {
         assertEq(proxy.implementation(), address(0));
     }
@@ -50,7 +53,7 @@ contract ProxyTest is TProxy, Test, Harness {
 
         (bool success, bytes memory data) = address(proxy).call(
             // Prepend random data input with `sentinel()` selector.
-            bytes.concat(bytes4(keccak256("sentinel()")), data_)
+            abi.encodePacked(bytes4(keccak256("sentinel()")), data_)
         );
 
         // Expect `delegatecall` to return `true` on call to non-contract address.

@@ -68,9 +68,15 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         );
     }
 
-    function testRevertProxySentinel() external {
-        vm.expectRevert();
-        moduleSingleProxy.testSentinelFallbackProxy();
+    function testProxySentinelFallback() external {
+        IProxy(address(moduleSingleProxy)).sentinel();
+
+        (bool success, bytes memory data) = address(moduleSingleProxy).call(
+            abi.encodeWithSignature("sentinel()")
+        );
+
+        assertTrue(success);
+        assertTrue(abi.decode(data, (bool)));
     }
 
     function testModuleIdToImplementation() external {
@@ -287,5 +293,14 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
             log4(ptr, messageLength, topic1, topic2, topic3, topic4)
         }
         moduleSingleProxy.testProxyLog4Topic(message_);
+    }
+
+    function testRevertProxyLogOutOfBounds(
+        bytes memory message_
+    ) external BrutalizeMemory {
+        vm.assume(message_.length > 0 && message_.length <= 32);
+
+        vm.expectRevert(FailedToLog.selector);
+        moduleSingleProxy.testRevertProxyLogOutOfBounds(message_);
     }
 }

@@ -25,6 +25,10 @@ contract MockBaseModule is BaseModule, MockBase {
     // Test stubs
     // ==========
 
+    function sentinel() external pure returns (bool) {
+        return true;
+    }
+
     function testRevertBytesCustomError(
         uint256 code,
         string calldata message
@@ -140,21 +144,6 @@ contract MockBaseModule is BaseModule, MockBase {
                 message_
             )
         );
-    }
-
-    function testSentinelFallbackProxy() external {
-        address proxyAddress = _unpackProxyAddress();
-
-        (bool success, ) = proxyAddress.call(
-            abi.encodePacked(
-                bytes4(keccak256("sentinel()")),
-                bytes4(keccak256("moduleId()"))
-            )
-        );
-
-        if (!success) {
-            revert FailedToFallback();
-        }
     }
 
     function _issueLogToProxy(bytes memory payload) private {
