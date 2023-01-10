@@ -44,8 +44,8 @@ contract ProxyTest is TProxy, Test, Harness {
     function testSideEffectsDelegateCall(
         bytes memory data_
     ) public BrutalizeMemory {
-        // Specifically filter out function selector clash of `implementation()` as it is beyond the scope of this test.
-        vm.assume(bytes4(data_) != bytes4(keccak256("implementation()")));
+        // Prepend random data input with `sentinel()` selector.
+        data_ = bytes.concat(bytes4(keccak256("sentinel()")), data_);
 
         // This should never happen in any actual deployments.
         vm.startPrank(address(0));

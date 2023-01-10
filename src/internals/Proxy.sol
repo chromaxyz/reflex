@@ -62,15 +62,35 @@ contract Proxy is IProxy {
         }
     }
 
+    /**
+     * @dev Sentinel DELEGATECALL opcode to nudge Etherscan to recognize this as being a proxy.
+     * @dev Function selector clashing is mitigated by falling through to the fallback.
+     */
+    function sentinel() external {
+        // TODO: replace with better solution, preferably permanent.
+
+        if (msg.sender == address(0)) {
+            // This branch is expected to never executed as `msg.sender` can never be 0.
+            // If this branch ever where to be executed it is expected to be harmless and have no side-effects.
+            // A `delegatecall` to a non-contract address yields `true` and is ignored.
+            assembly {
+                // Ignore return value.
+                pop(delegatecall(gas(), 0x00, 0, 0, 0, 0))
+            }
+        } else {
+            // If the function selector clashes fall through to the fallback.
+            _fallback();
+        }
+    }
+
     // ==================
-    // Fallback functions
+    // Internal functions
     // ==================
 
     /**
      * @dev Will run if no other function in the contract matches the call data.
      */
-    // solhint-disable-next-line no-complex-fallback
-    fallback() external {
+    function _fallback() internal {
         address deployer_ = _deployer;
 
         // If the caller is the deployer, instead of re-enter - issue a log message.
@@ -140,18 +160,6 @@ contract Proxy is IProxy {
                 // Return 0
                 return(0, 0)
             }
-            // Sentinel DELEGATECALL opcode to nudge Etherscan to recognize this as being a proxy.
-        } else if (msg.sender == address(0)) {
-            // TODO: move this out of the hot path, evaluate gas cost.
-            // TODO: replace with better solution, preferably permanent.
-
-            // This branch is expected to never executed as `msg.sender` can never be 0.
-            // If this branch ever where to be executed it is expected to be harmless and have no side-effects.
-            // A `delegatecall` to a non-contract address yields `true` and is ignored.
-            assembly {
-                // Ignore return value.
-                pop(delegatecall(gas(), 0x00, 0, 0, 0, 0))
-            }
         } else {
             // Calldata: [calldata (N bytes)]
             assembly {
@@ -197,5 +205,16 @@ contract Proxy is IProxy {
                 }
             }
         }
+    }
+
+    // ==================
+    // Fallback functions
+    // ==================
+
+    /**
+     * @dev Will run if no other function in the contract matches the call data.
+     */
+    fallback() external {
+        _fallback();
     }
 }
