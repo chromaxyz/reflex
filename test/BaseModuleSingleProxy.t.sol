@@ -32,8 +32,8 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
     // Storage
     // =======
 
-    MockBaseModule public moduleSingle;
-    MockBaseModule public moduleSingleProxy;
+    MockBaseModule public singleModule;
+    MockBaseModule public singleModuleProxy;
 
     // =====
     // Setup
@@ -42,17 +42,17 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
     function setUp() public virtual override {
         super.setUp();
 
-        moduleSingle = new MockBaseModule(
+        singleModule = new MockBaseModule(
             _MOCK_MODULE_SINGLE_ID,
             _MOCK_MODULE_SINGLE_TYPE,
             _MOCK_MODULE_SINGLE_VERSION
         );
 
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(moduleSingle);
+        moduleAddresses[0] = address(singleModule);
         installerProxy.addModules(moduleAddresses);
 
-        moduleSingleProxy = MockBaseModule(
+        singleModuleProxy = MockBaseModule(
             dispatcher.moduleIdToProxy(_MOCK_MODULE_SINGLE_ID)
         );
     }
@@ -63,13 +63,13 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
 
     function testProxyImplementation() external {
         assertEq(
-            IProxy(address(moduleSingleProxy)).implementation(),
-            address(moduleSingle)
+            IProxy(address(singleModuleProxy)).implementation(),
+            address(singleModule)
         );
     }
 
     function testProxySentinelFallback() external {
-        (bool success, bytes memory data) = address(moduleSingleProxy).call(
+        (bool success, bytes memory data) = address(singleModuleProxy).call(
             abi.encodeWithSignature("sentinel()")
         );
 
@@ -80,7 +80,7 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
     function testModuleIdToImplementation() external {
         assertEq(
             dispatcher.moduleIdToImplementation(_MOCK_MODULE_SINGLE_ID),
-            address(moduleSingle)
+            address(singleModule)
         );
     }
 
@@ -108,7 +108,7 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
 
         assertEq(
             dispatcher.proxyToModuleImplementation(proxyAddress),
-            address(moduleSingle)
+            address(singleModule)
         );
     }
 
@@ -122,31 +122,31 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         );
 
         assertEq(relation.moduleId, _MOCK_MODULE_SINGLE_ID);
-        assertEq(relation.moduleImplementation, address(moduleSingle));
+        assertEq(relation.moduleImplementation, address(singleModule));
     }
 
     function testModuleId() external {
-        assertEq(moduleSingle.moduleId(), _MOCK_MODULE_SINGLE_ID);
-        assertEq(moduleSingleProxy.moduleId(), _MOCK_MODULE_SINGLE_ID);
+        assertEq(singleModule.moduleId(), _MOCK_MODULE_SINGLE_ID);
+        assertEq(singleModuleProxy.moduleId(), _MOCK_MODULE_SINGLE_ID);
     }
 
     function testModuleType() external {
-        assertEq(moduleSingle.moduleType(), _MOCK_MODULE_SINGLE_TYPE);
-        assertEq(moduleSingleProxy.moduleType(), _MOCK_MODULE_SINGLE_TYPE);
+        assertEq(singleModule.moduleType(), _MOCK_MODULE_SINGLE_TYPE);
+        assertEq(singleModuleProxy.moduleType(), _MOCK_MODULE_SINGLE_TYPE);
     }
 
     function testModuleVersion() external {
-        assertEq(moduleSingle.moduleVersion(), _MOCK_MODULE_SINGLE_VERSION);
+        assertEq(singleModule.moduleVersion(), _MOCK_MODULE_SINGLE_VERSION);
         assertEq(
-            moduleSingleProxy.moduleVersion(),
+            singleModuleProxy.moduleVersion(),
             _MOCK_MODULE_SINGLE_VERSION
         );
     }
 
     function testGetModuleImplementationByProxy() external {
         assertEq(
-            IProxy(address(moduleSingleProxy)).implementation(),
-            address(moduleSingle)
+            IProxy(address(singleModuleProxy)).implementation(),
+            address(singleModule)
         );
     }
 
@@ -160,27 +160,27 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
                 ICustomError.CustomErrorPayload({code: code, message: message})
             )
         );
-        moduleSingleProxy.testRevertBytesCustomError(code, message);
+        singleModuleProxy.testRevertBytesCustomError(code, message);
     }
 
     function testRevertBytesPanicAssert() external {
         vm.expectRevert(stdError.assertionError);
-        moduleSingleProxy.testRevertPanicAssert();
+        singleModuleProxy.testRevertPanicAssert();
     }
 
     function testRevertBytesPanicDivideByZero() external {
         vm.expectRevert(stdError.divisionError);
-        moduleSingleProxy.testRevertPanicDivisionByZero();
+        singleModuleProxy.testRevertPanicDivisionByZero();
     }
 
     function testRevertBytesPanicArithmaticOverflow() external {
         vm.expectRevert(stdError.arithmeticError);
-        moduleSingleProxy.testRevertPanicArithmeticOverflow();
+        singleModuleProxy.testRevertPanicArithmeticOverflow();
     }
 
     function testRevertBytesPanicArithmaticUnderflow() external {
         vm.expectRevert(stdError.arithmeticError);
-        moduleSingleProxy.testRevertPanicArithmeticUnderflow();
+        singleModuleProxy.testRevertPanicArithmeticUnderflow();
     }
 
     function testProxyLog0Topic(
@@ -201,14 +201,14 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
 
         vm.recordLogs();
 
-        moduleSingleProxy.testProxyLog0Topic(message_);
+        singleModuleProxy.testProxyLog0Topic(message_);
 
         Vm.Log[] memory entries = vm.getRecordedLogs();
 
         assertEq(entries.length, 1);
         assertEq(entries[0].topics.length, 0);
         assertEq(entries[0].data, message_);
-        assertEq(entries[0].emitter, address(moduleSingleProxy));
+        assertEq(entries[0].emitter, address(singleModuleProxy));
     }
 
     function testProxyLog1Topic(
@@ -221,13 +221,13 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
 
         bytes32 topic1 = bytes32(uint256(1));
 
-        vm.expectEmit(false, false, false, true, address(moduleSingleProxy));
+        vm.expectEmit(false, false, false, true, address(singleModuleProxy));
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
             log1(ptr, messageLength, topic1)
         }
-        moduleSingleProxy.testProxyLog1Topic(message_);
+        singleModuleProxy.testProxyLog1Topic(message_);
     }
 
     function testProxyLog2Topic(
@@ -241,13 +241,13 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         bytes32 topic1 = bytes32(uint256(1));
         bytes32 topic2 = bytes32(uint256(2));
 
-        vm.expectEmit(true, false, false, true, address(moduleSingleProxy));
+        vm.expectEmit(true, false, false, true, address(singleModuleProxy));
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
             log2(ptr, messageLength, topic1, topic2)
         }
-        moduleSingleProxy.testProxyLog2Topic(message_);
+        singleModuleProxy.testProxyLog2Topic(message_);
     }
 
     function testProxyLog3Topic(
@@ -262,13 +262,13 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         bytes32 topic2 = bytes32(uint256(2));
         bytes32 topic3 = bytes32(uint256(3));
 
-        vm.expectEmit(true, true, false, true, address(moduleSingleProxy));
+        vm.expectEmit(true, true, false, true, address(singleModuleProxy));
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
             log3(ptr, messageLength, topic1, topic2, topic3)
         }
-        moduleSingleProxy.testProxyLog3Topic(message_);
+        singleModuleProxy.testProxyLog3Topic(message_);
     }
 
     function testProxyLog4Topic(
@@ -284,13 +284,13 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         bytes32 topic3 = bytes32(uint256(3));
         bytes32 topic4 = bytes32(uint256(4));
 
-        vm.expectEmit(true, true, true, true, address(moduleSingleProxy));
+        vm.expectEmit(true, true, true, true, address(singleModuleProxy));
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
             log4(ptr, messageLength, topic1, topic2, topic3, topic4)
         }
-        moduleSingleProxy.testProxyLog4Topic(message_);
+        singleModuleProxy.testProxyLog4Topic(message_);
     }
 
     function testRevertProxyLogOutOfBounds(
@@ -299,6 +299,6 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         vm.expectRevert(FailedToLog.selector);
-        moduleSingleProxy.testRevertProxyLogOutOfBounds(message_);
+        singleModuleProxy.testRevertProxyLogOutOfBounds(message_);
     }
 }
