@@ -44,13 +44,13 @@ contract ProxyTest is TProxy, Test, Harness {
     function testSideEffectsDelegateCall(
         bytes memory data_
     ) public BrutalizeMemory {
-        // Prepend random data input with `sentinel()` selector.
-        data_ = bytes.concat(bytes4(keccak256("sentinel()")), data_);
-
         // This should never happen in any actual deployments.
         vm.startPrank(address(0));
 
-        (bool success, bytes memory data) = address(proxy).call(data_);
+        (bool success, bytes memory data) = address(proxy).call(
+            // Prepend random data input with `sentinel()` selector.
+            bytes.concat(bytes4(keccak256("sentinel()")), data_)
+        );
 
         // Expect `delegatecall` to return `true` on call to non-contract address.
         assertTrue(success);
