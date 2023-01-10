@@ -167,6 +167,4 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         assertEq(tokenBProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V2);
         assertEq(tokenCProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V2);
     }
-
-    // TODO: focus on upgrading, focus on testing how the multi-proxy works
 }
