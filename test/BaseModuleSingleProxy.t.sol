@@ -69,8 +69,6 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
     }
 
     function testProxySentinelFallback() external {
-        IProxy(address(moduleSingleProxy)).sentinel();
-
         (bool success, bytes memory data) = address(moduleSingleProxy).call(
             abi.encodeWithSignature("sentinel()")
         );
