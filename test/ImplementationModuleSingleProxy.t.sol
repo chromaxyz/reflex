@@ -10,23 +10,22 @@ import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
 import {IProxy} from "../src/interfaces/IProxy.sol";
 
 // Fixtures
-import {BaseFixture} from "./fixtures/BaseFixture.sol";
+import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
 import {MockBaseModule, ICustomError} from "./mocks/MockBaseModule.sol";
 
 /**
- * @title Base Module Single Proxy Test
+ * @title Implementation Module Single Proxy Test
  */
-contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
+contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     // =========
     // Constants
     // =========
 
-    uint32 internal constant _MOCK_MODULE_SINGLE_ID = 100;
-    uint16 internal constant _MOCK_MODULE_SINGLE_TYPE =
-        _MODULE_TYPE_SINGLE_PROXY;
-    uint16 internal constant _MOCK_MODULE_SINGLE_VERSION = 1;
+    uint32 internal constant _MODULE_SINGLE_ID = 100;
+    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
+    uint16 internal constant _MODULE_SINGLE_VERSION = 1;
 
     // =======
     // Storage
@@ -43,9 +42,9 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         super.setUp();
 
         singleModule = new MockBaseModule(
-            _MOCK_MODULE_SINGLE_ID,
-            _MOCK_MODULE_SINGLE_TYPE,
-            _MOCK_MODULE_SINGLE_VERSION
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION
         );
 
         address[] memory moduleAddresses = new address[](1);
@@ -53,7 +52,7 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         installerProxy.addModules(moduleAddresses);
 
         singleModuleProxy = MockBaseModule(
-            dispatcher.moduleIdToProxy(_MOCK_MODULE_SINGLE_ID)
+            dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID)
         );
     }
 
@@ -79,32 +78,23 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
 
     function testModuleIdToImplementation() external {
         assertEq(
-            dispatcher.moduleIdToImplementation(_MOCK_MODULE_SINGLE_ID),
+            dispatcher.moduleIdToImplementation(_MODULE_SINGLE_ID),
             address(singleModule)
         );
     }
 
     function testModuleIdToProxy() external {
-        assertTrue(
-            dispatcher.moduleIdToProxy(_MOCK_MODULE_SINGLE_ID) != address(0)
-        );
+        assertTrue(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID) != address(0));
     }
 
     function testProxyToModuleId() external {
-        address proxyAddress = dispatcher.moduleIdToProxy(
-            _MOCK_MODULE_SINGLE_ID
-        );
+        address proxyAddress = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
 
-        assertEq(
-            dispatcher.proxyToModuleId(proxyAddress),
-            _MOCK_MODULE_SINGLE_ID
-        );
+        assertEq(dispatcher.proxyToModuleId(proxyAddress), _MODULE_SINGLE_ID);
     }
 
     function testProxyToModuleImplementation() external {
-        address proxyAddress = dispatcher.moduleIdToProxy(
-            _MOCK_MODULE_SINGLE_ID
-        );
+        address proxyAddress = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
 
         assertEq(
             dispatcher.proxyToModuleImplementation(proxyAddress),
@@ -113,34 +103,28 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
     }
 
     function testProxyAddressToTrustRelation() external {
-        address proxyAddress = dispatcher.moduleIdToProxy(
-            _MOCK_MODULE_SINGLE_ID
-        );
+        address proxyAddress = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
 
-        TrustRelation memory relation = dispatcher.proxyAddressToTrustRelation(
-            proxyAddress
-        );
+        TBaseModule.TrustRelation memory relation = dispatcher
+            .proxyAddressToTrustRelation(proxyAddress);
 
-        assertEq(relation.moduleId, _MOCK_MODULE_SINGLE_ID);
+        assertEq(relation.moduleId, _MODULE_SINGLE_ID);
         assertEq(relation.moduleImplementation, address(singleModule));
     }
 
     function testModuleId() external {
-        assertEq(singleModule.moduleId(), _MOCK_MODULE_SINGLE_ID);
-        assertEq(singleModuleProxy.moduleId(), _MOCK_MODULE_SINGLE_ID);
+        assertEq(singleModule.moduleId(), _MODULE_SINGLE_ID);
+        assertEq(singleModuleProxy.moduleId(), _MODULE_SINGLE_ID);
     }
 
     function testModuleType() external {
-        assertEq(singleModule.moduleType(), _MOCK_MODULE_SINGLE_TYPE);
-        assertEq(singleModuleProxy.moduleType(), _MOCK_MODULE_SINGLE_TYPE);
+        assertEq(singleModule.moduleType(), _MODULE_SINGLE_TYPE);
+        assertEq(singleModuleProxy.moduleType(), _MODULE_SINGLE_TYPE);
     }
 
     function testModuleVersion() external {
-        assertEq(singleModule.moduleVersion(), _MOCK_MODULE_SINGLE_VERSION);
-        assertEq(
-            singleModuleProxy.moduleVersion(),
-            _MOCK_MODULE_SINGLE_VERSION
-        );
+        assertEq(singleModule.moduleVersion(), _MODULE_SINGLE_VERSION);
+        assertEq(singleModuleProxy.moduleVersion(), _MODULE_SINGLE_VERSION);
     }
 
     function testGetModuleImplementationByProxy() external {
@@ -298,7 +282,7 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
     ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
-        vm.expectRevert(FailedToLog.selector);
+        vm.expectRevert(TBaseModule.FailedToLog.selector);
         singleModuleProxy.testRevertProxyLogOutOfBounds(message_);
     }
 }
