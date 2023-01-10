@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 // Vendors
 import {Test} from "forge-std/Test.sol";
+import {console2} from "forge-std/console2.sol";
 
 // Interfaces
 import {TProxy} from "../src/interfaces/IProxy.sol";
@@ -41,7 +42,7 @@ contract ProxyTest is TProxy, Test, Harness {
         assertEq(proxy.implementation(), address(0));
     }
 
-    function testSideEffectsDelegateCall(
+    function testSentinelSideEffectsDelegateCall(
         bytes memory data_
     ) public BrutalizeMemory {
         // This should never happen in any actual deployments.

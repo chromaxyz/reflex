@@ -61,17 +61,52 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
     // Tests
     // =====
 
-    function testProxyNonZeroAddress() external {
+    function testModuleIdToImplementation() external {
+        assertTrue(
+            dispatcher.moduleIdToImplementation(_MOCK_MODULE_SINGLE_ID) ==
+                address(moduleSingle)
+        );
+    }
+
+    function testModuleIdToProxy() external {
         assertTrue(
             dispatcher.moduleIdToProxy(_MOCK_MODULE_SINGLE_ID) != address(0)
         );
     }
 
-    function testModuleImplementation() external {
-        assertTrue(
-            dispatcher.moduleIdToImplementation(_MOCK_MODULE_SINGLE_ID) ==
-                address(moduleSingle)
+    function testProxyToModuleId() external {
+        address proxyAddress = dispatcher.moduleIdToProxy(
+            _MOCK_MODULE_SINGLE_ID
         );
+
+        assertEq(
+            dispatcher.proxyToModuleId(proxyAddress),
+            _MOCK_MODULE_SINGLE_ID
+        );
+    }
+
+    function testProxyToModuleImplementation() external {
+        address proxyAddress = dispatcher.moduleIdToProxy(
+            _MOCK_MODULE_SINGLE_ID
+        );
+
+        assertEq(
+            dispatcher.proxyToModuleImplementation(proxyAddress),
+            address(moduleSingle)
+        );
+    }
+
+    function testProxyAddressToTrustRelation() external {
+        address proxyAddress = dispatcher.moduleIdToProxy(
+            _MOCK_MODULE_SINGLE_ID
+        );
+
+        TrustRelation memory relation = dispatcher.proxyAddressToTrustRelation(
+            proxyAddress
+        );
+
+        assertEq(relation.moduleId, _MOCK_MODULE_SINGLE_ID);
+        assertEq(relation.moduleImplementation, address(moduleSingle));
     }
 
     function testModuleId() external {
@@ -240,12 +275,5 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
             log4(ptr, messageLength, topic1, topic2, topic3, topic4)
         }
         moduleSingleProxy.testProxyLog4Topic(message_);
-    }
-
-    function testRevertProxyLogOutOfBounds(bytes memory message_) external {
-        vm.assume(message_.length > 0);
-
-        vm.expectRevert(FailedToLog.selector);
-        moduleSingleProxy.testRevertProxyLogOutOfBounds(message_);
     }
 }

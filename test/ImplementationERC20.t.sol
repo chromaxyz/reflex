@@ -106,6 +106,12 @@ contract ImplementationERC20Test is ImplementationFixture {
     // Tests
     // =====
 
+    function testMetadata() external {
+        assertEq(tokenProxy.name(), _TOKEN_MODULE_NAME);
+        assertEq(tokenProxy.symbol(), _TOKEN_MODULE_SYMBOL);
+        assertEq(tokenProxy.decimals(), _TOKEN_MODULE_DECIMALS);
+    }
+
     function testMint(uint256 amount_) external {
         tokenProxy.mint(_users.Alice, amount_);
 
