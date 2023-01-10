@@ -8,6 +8,10 @@ import {BaseDispatcher} from "../../src/BaseDispatcher.sol";
  * @title Mock Base Dispatcher
  */
 contract MockBaseDispatcher is BaseDispatcher {
+    // ===========
+    // Constructor
+    // ===========
+
     constructor(
         address owner_,
         address installerModule_

@@ -100,8 +100,12 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
                 moduleAddress
             ).moduleSettings();
 
-            if (_modules[moduleSettings.moduleId] != address(0))
+            if (
+                moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY &&
+                _modules[moduleSettings.moduleId] != address(0)
+            ) {
                 revert ModuleExistent(moduleSettings.moduleId);
+            }
 
             _modules[moduleSettings.moduleId] = moduleAddress;
 

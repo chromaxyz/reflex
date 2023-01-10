@@ -3,8 +3,10 @@ pragma solidity ^0.8.13;
 
 // Vendors
 import {Test} from "forge-std/Test.sol";
+import {console2} from "forge-std/console2.sol";
 
 // Interfaces
+import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
 import {TProxy} from "../src/interfaces/IProxy.sol";
 
 // Internals
@@ -41,16 +43,16 @@ contract ProxyTest is TProxy, Test, Harness {
         assertEq(proxy.implementation(), address(0));
     }
 
-    function testSideEffectsDelegateCall(
+    function testSentinelSideEffectsDelegateCall(
         bytes memory data_
     ) public BrutalizeMemory {
-        // Specifically filter out function selector clash of `implementation()` as it is beyond the scope of this test.
-        vm.assume(bytes4(data_) != bytes4(keccak256("implementation()")));
-
         // This should never happen in any actual deployments.
         vm.startPrank(address(0));
 
-        (bool success, bytes memory data) = address(proxy).call(data_);
+        (bool success, bytes memory data) = address(proxy).call(
+            // Prepend random data input with `sentinel()` selector.
+            abi.encodePacked(bytes4(keccak256("sentinel()")), data_)
+        );
 
         // Expect `delegatecall` to return `true` on call to non-contract address.
         assertTrue(success);

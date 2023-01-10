@@ -73,44 +73,57 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
             address(installer)
         );
 
+        address installerProxy = dispatcher.moduleIdToProxy(
+            _MODULE_ID_INSTALLER
+        );
+
         Vm.Log[] memory entries = vm.getRecordedLogs();
 
-        // 2 logs are expected to be emitted.
-        assertEq(entries.length, 2);
+        // 3 logs are expected to be emitted.
+        assertEq(entries.length, 3);
 
-        // emit OwnershipTransferred(address(0), address(this));
-        assertEq(entries[0].topics.length, 3);
+        // emit ProxyCreated(address(installer))
+        assertEq(entries[0].topics.length, 2);
+        assertEq(entries[0].topics[0], keccak256("ProxyCreated(address)"));
         assertEq(
-            entries[0].topics[0],
-            keccak256("OwnershipTransferred(address,address)")
-        );
-        assertEq(entries[0].topics[1], bytes32(uint256(uint160(address(0)))));
-        assertEq(
-            entries[0].topics[2],
-            bytes32(uint256(uint160(address(this))))
+            entries[0].topics[1],
+            bytes32(uint256(uint160(address(installerProxy))))
         );
         assertEq(entries[0].emitter, address(dispatcher));
+
+        // emit OwnershipTransferred(address(0), address(this));
+        assertEq(entries[1].topics.length, 3);
+        assertEq(
+            entries[1].topics[0],
+            keccak256("OwnershipTransferred(address,address)")
+        );
+        assertEq(entries[1].topics[1], bytes32(uint256(uint160(address(0)))));
+        assertEq(
+            entries[1].topics[2],
+            bytes32(uint256(uint160(address(this))))
+        );
+        assertEq(entries[1].emitter, address(dispatcher));
 
         // emit ModuleAdded(
         //     _MODULE_ID_INSTALLER,
         //     address(installer),
         //     MockBaseInstaller(installer).moduleVersion()
         // );
-        assertEq(entries[1].topics.length, 4);
+        assertEq(entries[2].topics.length, 4);
         assertEq(
-            entries[1].topics[0],
+            entries[2].topics[0],
             keccak256("ModuleAdded(uint32,address,uint16)")
         );
-        assertEq(entries[1].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
+        assertEq(entries[2].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
         assertEq(
-            entries[1].topics[2],
+            entries[2].topics[2],
             bytes32(uint256(uint160(address(installer))))
         );
         assertEq(
-            entries[1].topics[3],
+            entries[2].topics[3],
             bytes32(uint256(_INSTALLER_MODULE_VERSION))
         );
-        assertEq(entries[1].emitter, address(dispatcher));
+        assertEq(entries[2].emitter, address(dispatcher));
     }
 
     function testInstallerConfiguration() external {

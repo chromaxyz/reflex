@@ -65,17 +65,68 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
     // Tests
     // =====
 
-    function testProxyNonZeroAddress() external {
+    function testProxyImplementation() external {
+        assertEq(
+            IProxy(address(moduleSingleProxy)).implementation(),
+            address(moduleSingle)
+        );
+    }
+
+    function testProxySentinelFallback() external {
+        (bool success, bytes memory data) = address(moduleSingleProxy).call(
+            abi.encodeWithSignature("sentinel()")
+        );
+
+        assertTrue(success);
+        assertTrue(abi.decode(data, (bool)));
+    }
+
+    function testModuleIdToImplementation() external {
+        assertEq(
+            dispatcher.moduleIdToImplementation(_MOCK_MODULE_SINGLE_ID),
+            address(moduleSingle)
+        );
+    }
+
+    function testModuleIdToProxy() external {
         assertTrue(
             dispatcher.moduleIdToProxy(_MOCK_MODULE_SINGLE_ID) != address(0)
         );
     }
 
-    function testModuleImplementation() external {
-        assertTrue(
-            dispatcher.moduleIdToImplementation(_MOCK_MODULE_SINGLE_ID) ==
-                address(moduleSingle)
+    function testProxyToModuleId() external {
+        address proxyAddress = dispatcher.moduleIdToProxy(
+            _MOCK_MODULE_SINGLE_ID
         );
+
+        assertEq(
+            dispatcher.proxyToModuleId(proxyAddress),
+            _MOCK_MODULE_SINGLE_ID
+        );
+    }
+
+    function testProxyToModuleImplementation() external {
+        address proxyAddress = dispatcher.moduleIdToProxy(
+            _MOCK_MODULE_SINGLE_ID
+        );
+
+        assertEq(
+            dispatcher.proxyToModuleImplementation(proxyAddress),
+            address(moduleSingle)
+        );
+    }
+
+    function testProxyAddressToTrustRelation() external {
+        address proxyAddress = dispatcher.moduleIdToProxy(
+            _MOCK_MODULE_SINGLE_ID
+        );
+
+        TrustRelation memory relation = dispatcher.proxyAddressToTrustRelation(
+            proxyAddress
+        );
+
+        assertEq(relation.moduleId, _MOCK_MODULE_SINGLE_ID);
+        assertEq(relation.moduleImplementation, address(moduleSingle));
     }
 
     function testModuleId() external {
@@ -136,7 +187,9 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         moduleSingleProxy.testRevertPanicArithmeticUnderflow();
     }
 
-    function testProxyLog0Topic(bytes memory message_) external {
+    function testProxyLog0Topic(
+        bytes memory message_
+    ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         uint256 messageLength = message_.length;
@@ -162,7 +215,9 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         assertEq(entries[0].emitter, address(moduleSingleProxy));
     }
 
-    function testProxyLog1Topic(bytes memory message_) external {
+    function testProxyLog1Topic(
+        bytes memory message_
+    ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -179,7 +234,9 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         moduleSingleProxy.testProxyLog1Topic(message_);
     }
 
-    function testProxyLog2Topic(bytes memory message_) external {
+    function testProxyLog2Topic(
+        bytes memory message_
+    ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -197,7 +254,9 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         moduleSingleProxy.testProxyLog2Topic(message_);
     }
 
-    function testProxyLog3Topic(bytes memory message_) external {
+    function testProxyLog3Topic(
+        bytes memory message_
+    ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -216,7 +275,9 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         moduleSingleProxy.testProxyLog3Topic(message_);
     }
 
-    function testProxyLog4Topic(bytes memory message_) external {
+    function testProxyLog4Topic(
+        bytes memory message_
+    ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -236,8 +297,10 @@ contract BaseModuleSingleProxyTest is TBaseModule, BaseFixture {
         moduleSingleProxy.testProxyLog4Topic(message_);
     }
 
-    function testRevertProxyLogOutOfBounds(bytes memory message_) external {
-        vm.assume(message_.length > 0);
+    function testRevertProxyLogOutOfBounds(
+        bytes memory message_
+    ) external BrutalizeMemory {
+        vm.assume(message_.length > 0 && message_.length <= 32);
 
         vm.expectRevert(FailedToLog.selector);
         moduleSingleProxy.testRevertProxyLogOutOfBounds(message_);

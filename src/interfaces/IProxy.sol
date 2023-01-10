@@ -17,4 +17,6 @@ interface IProxy is TProxy {
     // =======
 
     function implementation() external view returns (address);
+
+    function sentinel() external;
 }

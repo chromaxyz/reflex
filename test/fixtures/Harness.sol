@@ -7,8 +7,9 @@ import {console2} from "forge-std/console2.sol";
 
 /**
  * @title Harness
- * @dev `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/main/src/test/utils/DSTestPlus.sol)
- * @dev `BrualizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol)
+ * @dev A rigorous testing and invariant harness.
+ * @author `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/main/src/test/utils/DSTestPlus.sol)
+ * @author `BrualizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol)
  */
 abstract contract Harness is Test {
     // ======
@@ -26,6 +27,8 @@ abstract contract Harness is Test {
     error Not32ByteWordAligned();
 
     error InsufficientMemoryAllocation();
+
+    error NoTargetContracts();
 
     // =======
     // Structs
@@ -45,6 +48,8 @@ abstract contract Harness is Test {
     // =======
     // Storage
     // =======
+
+    address[] private _targets;
 
     Users internal _users;
 
@@ -136,6 +141,24 @@ abstract contract Harness is Test {
             Caroll: _createUser("Caroll"),
             Dave: _createUser("Dave")
         });
+    }
+
+    // ================
+    // Public functions
+    // ================
+
+    function targetContracts() public view returns (address[] memory) {
+        if (_targets.length == 0) revert NoTargetContracts();
+
+        return _targets;
+    }
+
+    // ==================
+    // Internal functions
+    // ==================
+
+    function _addTargetContract(address newTargetContract) internal {
+        _targets.push(newTargetContract);
     }
 
     // =========
