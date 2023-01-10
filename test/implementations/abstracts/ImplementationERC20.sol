@@ -8,7 +8,7 @@ import {BaseState} from "../../../src/BaseState.sol";
 // Implementations
 import {ImplementationState} from "../ImplementationState.sol";
 
-// TODO: add permit
+// TODO: port to BaseERC20?
 
 /**
  * @title Implementation ERC20
@@ -268,9 +268,9 @@ abstract contract ImplementationERC20 is BaseModule, ImplementationState {
         _emitTransferEvent(proxyAddress, from_, address(0), amount_);
     }
 
-    // =================
-    // Private functions
-    // =================
+    // ==================
+    // Internal functions
+    // ==================
 
     /**
      * @dev Emit `Transfer` event from the `Proxy` rather than the `Dispatcher`.

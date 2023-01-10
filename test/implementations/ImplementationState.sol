@@ -19,6 +19,7 @@ interface IImplementationState {
         uint256 totalSupply;
         mapping(address => uint256) balanceOf;
         mapping(address => mapping(address => uint256)) allowance;
+        mapping(address => uint256) nonces;
     }
 }
 
