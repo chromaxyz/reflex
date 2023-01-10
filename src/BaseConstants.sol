@@ -21,12 +21,12 @@ abstract contract BaseConstants {
     uint256 internal constant _REENTRANCY_LOCK_LOCKED = 2;
 
     /**
-     * @dev These are modules that are only accessible by a single address.
+     * @dev These are modules that have a single proxy to a single implementation.
      */
     uint16 internal constant _MODULE_TYPE_SINGLE_PROXY = 1;
 
     /**
-     * @dev These are modules that have many addresses.
+     * @dev These are modules that have multiple proxies to a single implementation.
      */
     uint16 internal constant _MODULE_TYPE_MULTI_PROXY = 2;
 

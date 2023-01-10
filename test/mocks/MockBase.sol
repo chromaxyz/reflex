@@ -21,7 +21,7 @@ contract MockBase is Base, MockBaseState {
     // Constructor
     // ===========
 
-    constructor() Base() {
+    constructor() {
         unlockReentrancyLock();
     }
 
