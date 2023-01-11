@@ -430,23 +430,26 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // Single-proxy module tests
     // =========================
 
-    function testAddModulesSingleProxy() external {
+    function testAddModulesSingleProxy() public {
         _addModule(singleModuleV1, _VALID);
 
-        address singleModuleV1Implementation = dispatcher
+        address singleModuleImplementationV1 = dispatcher
             .moduleIdToImplementation(_MODULE_SINGLE_ID);
-        address moduleProxy = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
+        address singleModuleProxyV1 = dispatcher.moduleIdToProxy(
+            _MODULE_SINGLE_ID
+        );
 
-        assertEq(singleModuleV1Implementation, address(singleModuleV1));
-        assertTrue(moduleProxy != address(0));
+        assertEq(singleModuleImplementationV1, address(singleModuleV1));
+        assertTrue(singleModuleProxyV1 != address(0));
         assertTrue(
-            dispatcher.proxyAddressToTrustRelation(moduleProxy).moduleId ==
-                _MODULE_SINGLE_ID
+            dispatcher
+                .proxyAddressToTrustRelation(singleModuleProxyV1)
+                .moduleId == _MODULE_SINGLE_ID
         );
         assertTrue(
             dispatcher
-                .proxyAddressToTrustRelation(moduleProxy)
-                .moduleImplementation == singleModuleV1Implementation
+                .proxyAddressToTrustRelation(singleModuleProxyV1)
+                .moduleImplementation == singleModuleImplementationV1
         );
     }
 
@@ -457,37 +460,46 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     }
 
     function testUpgradeModulesSingleProxy() external {
-        _addModule(singleModuleV1, _VALID);
+        testAddModulesSingleProxy();
 
-        address singleModuleV1Implementation = dispatcher
+        address singleModuleImplementationV1 = dispatcher
             .moduleIdToImplementation(_MODULE_SINGLE_ID);
-        address moduleProxy = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
+        address singleModuleProxyV1 = dispatcher.moduleIdToProxy(
+            _MODULE_SINGLE_ID
+        );
 
         _upgradeModule(singleModuleV2, _VALID);
 
-        address singleModuleV2Implementation = dispatcher
+        address singleModuleImplementationV2 = dispatcher
             .moduleIdToImplementation(_MODULE_SINGLE_ID);
+        address singleModuleProxyV2 = dispatcher.moduleIdToProxy(
+            _MODULE_SINGLE_ID
+        );
 
-        assertEq(moduleProxy, dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID));
+        assertEq(singleModuleProxyV1, singleModuleProxyV2);
         assertTrue(
-            singleModuleV1Implementation != singleModuleV2Implementation
+            singleModuleImplementationV1 != singleModuleImplementationV2
         );
-        assertEq(singleModuleV2Implementation, address(singleModuleV2));
-        assertTrue(
-            dispatcher.proxyAddressToTrustRelation(moduleProxy).moduleId ==
-                _MODULE_SINGLE_ID
-        );
+        assertEq(singleModuleImplementationV2, address(singleModuleV2));
         assertTrue(
             dispatcher
-                .proxyAddressToTrustRelation(moduleProxy)
-                .moduleImplementation == singleModuleV2Implementation
+                .proxyAddressToTrustRelation(singleModuleProxyV2)
+                .moduleId == _MODULE_SINGLE_ID
+        );
+        assertEq(
+            dispatcher
+                .proxyAddressToTrustRelation(singleModuleProxyV2)
+                .moduleImplementation,
+            singleModuleImplementationV2
         );
     }
 
     function testRemoveModulesSingleProxy() external {
-        _addModule(singleModuleV1, _VALID);
+        testAddModulesSingleProxy();
 
-        address moduleProxy = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
+        address singleModuleProxyV1 = dispatcher.moduleIdToProxy(
+            _MODULE_SINGLE_ID
+        );
 
         _removeModule(singleModuleV1, _VALID);
 
@@ -497,15 +509,19 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
             address(0)
         );
         assertEq(
-            dispatcher.proxyAddressToTrustRelation(moduleProxy).moduleId,
+            dispatcher
+                .proxyAddressToTrustRelation(singleModuleProxyV1)
+                .moduleId,
             uint32(0)
         );
         assertEq(
             dispatcher
-                .proxyAddressToTrustRelation(moduleProxy)
+                .proxyAddressToTrustRelation(singleModuleProxyV1)
                 .moduleImplementation,
             address(0)
         );
+
+        testAddModulesSingleProxy();
     }
 
     function testRevertUpgradeInvalidVersionSingleProxy() external {
@@ -562,7 +578,6 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
 
     function testAddModulesMultiProxy() external {
         _addModule(multiModuleV1, _VALID);
-        _upgradeModule(multiModuleV2, _VALID);
 
         // TODO: add tests
     }
