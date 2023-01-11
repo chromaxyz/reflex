@@ -16,11 +16,12 @@ contract MockImplementationERC20Hub is BaseModule, ImplementationState {
     // Constructor
     // ===========
 
+    /**
+     * @param moduleSettings_ Module moduleSettings.
+     */
     constructor(
-        uint32 moduleId_,
-        uint16 moduleType_,
-        uint16 moduleVersion_
-    ) BaseModule(moduleId_, moduleType_, moduleVersion_) {}
+        ModuleSettings memory moduleSettings_
+    ) BaseModule(moduleSettings_) {}
 
     // ==========
     // Test stubs

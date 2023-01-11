@@ -12,11 +12,12 @@ contract MockImplementationERC20 is ImplementationERC20 {
     // Constructor
     // ===========
 
+    /**
+     * @param moduleSettings_ Module moduleSettings.
+     */
     constructor(
-        uint32 moduleId_,
-        uint16 moduleType_,
-        uint16 moduleVersion_
-    ) ImplementationERC20(moduleId_, moduleType_, moduleVersion_) {}
+        ModuleSettings memory moduleSettings_
+    ) ImplementationERC20(moduleSettings_) {}
 
     // ==========
     // Test stubs

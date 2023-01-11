@@ -33,7 +33,7 @@ contract MockBase is Base, MockBaseState {
         return _reentrancyLock;
     }
 
-    function lockReentrancyLock() public {
+    function lockReentrancyLock() external {
         _reentrancyLock = _REENTRANCY_LOCK_LOCKED;
     }
 
@@ -131,7 +131,7 @@ contract ReentrancyAttack {
     // Test stubs
     // ==========
 
-    function callSender(bytes4 data) public {
+    function callSender(bytes4 data) external {
         (bool success, ) = msg.sender.call(abi.encodeWithSelector(data));
 
         if (!success) revert ReentrancyAttackFailed();

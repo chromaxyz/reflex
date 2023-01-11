@@ -34,7 +34,7 @@ contract Proxy is IProxy {
     // Constructor
     // ===========
 
-    constructor() payable {
+    constructor() {
         _deployer = msg.sender;
     }
 

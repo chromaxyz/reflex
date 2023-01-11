@@ -9,10 +9,21 @@ interface TBaseState {
     // Types
     // =====
 
+    /**
+     * @notice Trust relationship between `Proxy` and `Dispatcher`.
+     * @dev Packed slot: 4 + 20 = 24 bytes out of 32 bytes.
+     */
     struct TrustRelation {
-        // Packed slot: 4 + 20 = 24
-        uint32 moduleId; // 0 is untrusted.
-        address moduleImplementation; // only non-0 for external single-proxy modules.
+        /**
+         * @notice Module id.
+         * @dev 0 is untrusted.
+         */
+        uint32 moduleId;
+        /**
+         * @notice Module implementation.
+         * @dev Only non-0 for external single-proxy modules.
+         */
+        address moduleImplementation;
     }
 }
 
@@ -20,5 +31,7 @@ interface TBaseState {
  * @title BaseState Interface
  */
 interface IBaseState is TBaseState {
-
+    // =======
+    // Methods
+    // =======
 }

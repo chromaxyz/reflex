@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IBaseModule, TBaseModule} from "../src/interfaces/IBaseModule.sol";
 
 // Fixtures
 import {BaseFixture} from "./fixtures/BaseFixture.sol";
@@ -26,6 +26,8 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
     uint16 internal constant _MODULE_VALID_TYPE_INTERNAL =
         _MODULE_TYPE_INTERNAL;
     uint16 internal constant _MODULE_VALID_VERSION = 1;
+    bool internal constant _MODULE_VALID_UPGRADEABLE = true;
+    bool internal constant _MODULE_VALID_REMOVEABLE = true;
 
     uint32 internal constant _MODULE_INVALID_ID = 0;
     uint16 internal constant _MODULE_INVALID_TYPE = 777;
@@ -51,69 +53,76 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
     // Tests
     // =====
 
-    function testValidModuleId() external {
+    function testValidModuleSettings() external {
         module = new MockBaseModule(
-            _MODULE_VALID_ID,
-            _MODULE_VALID_TYPE_SINGLE,
-            _MODULE_VALID_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MODULE_VALID_ID,
+                moduleType: _MODULE_VALID_TYPE_SINGLE,
+                moduleVersion: _MODULE_VALID_VERSION,
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
+                moduleRemoveable: _MODULE_VALID_REMOVEABLE
+            })
         );
 
-        assertEq(module.moduleId(), _MODULE_VALID_ID);
-    }
-
-    function testValidModuleType() external {
-        module = new MockBaseModule(
+        _testModuleConfiguration(
+            module,
             _MODULE_VALID_ID,
             _MODULE_VALID_TYPE_SINGLE,
-            _MODULE_VALID_VERSION
+            _MODULE_VALID_VERSION,
+            _MODULE_VALID_UPGRADEABLE,
+            _MODULE_VALID_REMOVEABLE
         );
-
-        assertEq(module.moduleType(), _MODULE_VALID_TYPE_SINGLE);
-    }
-
-    function testValidModuleVersion() external {
-        module = new MockBaseModule(
-            _MODULE_VALID_ID,
-            _MODULE_VALID_TYPE_SINGLE,
-            _MODULE_VALID_VERSION
-        );
-
-        assertEq(module.moduleVersion(), _MODULE_VALID_VERSION);
     }
 
     function testRevertInvalidModuleIdZeroValue() external {
         vm.expectRevert(InvalidModuleId.selector);
         module = new MockBaseModule(
-            _MODULE_INVALID_ID,
-            _MODULE_VALID_TYPE_SINGLE,
-            _MODULE_VALID_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MODULE_INVALID_ID,
+                moduleType: _MODULE_VALID_TYPE_SINGLE,
+                moduleVersion: _MODULE_VALID_VERSION,
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
+                moduleRemoveable: _MODULE_VALID_REMOVEABLE
+            })
         );
     }
 
     function testRevertInvalidModuleTypeZeroValue() external {
         vm.expectRevert(InvalidModuleType.selector);
         module = new MockBaseModule(
-            _MODULE_VALID_ID,
-            _MODULE_INVALID_TYPE_ZERO,
-            _MODULE_VALID_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MODULE_VALID_ID,
+                moduleType: _MODULE_INVALID_TYPE_ZERO,
+                moduleVersion: _MODULE_VALID_VERSION,
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
+                moduleRemoveable: _MODULE_VALID_REMOVEABLE
+            })
         );
     }
 
     function testRevertInvalidModuleTypeOverflowValue() external {
         vm.expectRevert(InvalidModuleType.selector);
         module = new MockBaseModule(
-            _MODULE_VALID_ID,
-            _MODULE_INVALID_TYPE,
-            _MODULE_VALID_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MODULE_VALID_ID,
+                moduleType: _MODULE_INVALID_TYPE,
+                moduleVersion: _MODULE_VALID_VERSION,
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
+                moduleRemoveable: _MODULE_VALID_REMOVEABLE
+            })
         );
     }
 
     function testRevertInvalidModuleVersionZeroValue() external {
         vm.expectRevert(InvalidModuleVersion.selector);
         module = new MockBaseModule(
-            _MODULE_VALID_ID,
-            _MODULE_VALID_TYPE_SINGLE,
-            _MODULE_INVALID_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MODULE_VALID_ID,
+                moduleType: _MODULE_VALID_TYPE_SINGLE,
+                moduleVersion: _MODULE_INVALID_VERSION,
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
+                moduleRemoveable: _MODULE_VALID_REMOVEABLE
+            })
         );
     }
 }

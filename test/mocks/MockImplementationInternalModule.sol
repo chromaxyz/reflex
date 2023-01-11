@@ -15,11 +15,12 @@ contract MockImplementationInternalModule is BaseModule, ImplementationState {
     // Constructor
     // ===========
 
+    /**
+     * @param moduleSettings_ Module moduleSettings.
+     */
     constructor(
-        uint32 moduleId_,
-        uint16 moduleType_,
-        uint16 moduleVersion_
-    ) BaseModule(moduleId_, moduleType_, moduleVersion_) {}
+        ModuleSettings memory moduleSettings_
+    ) BaseModule(moduleSettings_) {}
 
     // ==========
     // Test stubs
@@ -29,7 +30,7 @@ contract MockImplementationInternalModule is BaseModule, ImplementationState {
         return _implementationState1;
     }
 
-    function setImplementationState1(uint256 number_) public {
+    function setImplementationState1(uint256 number_) external {
         _implementationState1 = number_;
     }
 }

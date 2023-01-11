@@ -12,13 +12,33 @@ interface TBaseInstaller is TBaseModule {
     // Errors
     // ======
 
-    error ModuleNonexistent();
-
     error ZeroAddress();
+
+    error ModuleInvalidVersion(uint32 moduleId_);
+
+    error ModuleExistent(uint32 moduleId_);
+
+    error ModuleNonexistent(uint32 moduleId_);
+
+    error ModuleNotUpgradeable(uint32 moduleId_);
+
+    error ModuleNotRemoveable(uint32 moduleId_);
 
     // ======
     // Events
     // ======
+
+    event ModuleAllowlisted(
+        uint32 indexed moduleId_,
+        address indexed moduleImplementation_,
+        uint16 indexed moduleVersion_
+    );
+
+    event ModuleDenylisted(
+        uint32 indexed moduleId_,
+        address indexed moduleImplementation_,
+        uint16 indexed moduleVersion_
+    );
 
     event ModuleAdded(
         uint32 indexed moduleId_,
@@ -50,8 +70,10 @@ interface TBaseInstaller is TBaseModule {
 }
 
 /**
- * @title BaseInstaller Interface
+ * @title Base Installer Interface
  */
 interface IBaseInstaller is IBaseModule, TBaseInstaller {
-
+    // =======
+    // Methods
+    // =======
 }

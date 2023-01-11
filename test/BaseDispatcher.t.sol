@@ -6,6 +6,7 @@ import {Vm} from "forge-std/Vm.sol";
 
 // Interfaces
 import {TBaseDispatcher} from "../src/interfaces/IBaseDispatcher.sol";
+import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
 
 // Fixtures
 import {BaseFixture} from "./fixtures/BaseFixture.sol";
@@ -51,9 +52,13 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
         vm.assume(moduleId_ != _MODULE_ID_INSTALLER);
 
         MockBaseModule module = new MockBaseModule(
-            moduleId_,
-            _MODULE_TYPE_SINGLE_PROXY,
-            1
+            IBaseModule.ModuleSettings({
+                moduleId: moduleId_,
+                moduleType: _MODULE_TYPE_SINGLE_PROXY,
+                moduleVersion: _MODULE_VERSION_INSTALLER,
+                moduleUpgradeable: true,
+                moduleRemoveable: true
+            })
         );
 
         vm.expectRevert(InvalidInstallerModuleId.selector);
@@ -116,7 +121,7 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
         );
         assertEq(
             entries[2].topics[3],
-            bytes32(uint256(_INSTALLER_MODULE_VERSION))
+            bytes32(uint256(_MODULE_VERSION_INSTALLER))
         );
         assertEq(entries[2].emitter, address(dispatcher));
     }

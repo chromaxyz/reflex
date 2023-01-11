@@ -114,7 +114,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
     /**
      * @notice Dispatch function to module.
      */
-    function dispatch() external payable virtual {
+    function dispatch() external virtual {
         // TODO: evaluate if we can pack moduleId and moduleImplementation into a single bytes32, preventing multiple 2100 reads
         // SEE: https://github.com/Chroma-Org/Reflex/tree/feature/packed-module-id
 

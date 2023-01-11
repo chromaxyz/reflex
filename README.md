@@ -74,10 +74,8 @@ contract Dispatcher is BaseDispatcher, State {
 
 contract ExampleModule is BaseModule, State {
   constructor(
-    uint32 moduleId_,
-    uint16 moduleType_,
-    uint16 moduleVersion_
-  ) BaseModule(moduleId_, moduleType_, moduleVersion_) {}
+    ModuleSettings memory moduleSettings_
+  ) BaseModule(moduleSettings_) {}
 
   // ...
 }
@@ -163,6 +161,7 @@ sequenceDiagram
 
 - The core framework should be as minimalistic and lean as possible, aim for a "zero-cost abstraction".
 - The core framework should have a highly optimized hot-path.
+- The core framework should have as little stack pressure as possible.
 - Priveledged administrative functions should optimize for legibility and safety, focus on preventing footguns.
 - Only the installer is required, all other modules are optional.
 
@@ -176,6 +175,14 @@ sequenceDiagram
 - Implementers MUST NOT implement an `implementation()` method in `Modules` as this causes a function selector clash in the `Proxy`.
 - Implementers MUST NOT implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
 - The registration of `Modules` MUST BE permissioned, malicious `Modules` can impact the behaviour of the entire application.
+
+## Implementers
+
+In-depth documentation for implementers can be found [here](docs/IMPLEMENTERS.md).
+
+## Contributors
+
+Documentation for (future) contributors can be found [here](docs/CONTRIBUTORS.md).
 
 ## Acknowledgements
 

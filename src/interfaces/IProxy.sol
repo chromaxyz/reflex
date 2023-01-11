@@ -12,6 +12,10 @@ interface TProxy {
  * @title Proxy Interface
  */
 interface IProxy is TProxy {
+    // =======
+    // Methods
+    // =======
+
     function implementation() external view returns (address);
 
     function sentinel() external;

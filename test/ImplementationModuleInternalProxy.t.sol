@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+// Interfaces
+import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
+
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
@@ -19,11 +22,17 @@ contract ImplementationModuleInternalProxyTest is ImplementationFixture {
     uint32 internal constant _MODULE_SINGLE_ID = 100;
     uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
     uint16 internal constant _MODULE_SINGLE_VERSION = 1;
+    bool internal constant _MODULE_SINGLE_UPGRADEABLE = true;
+    bool internal constant _MODULE_SINGLE_REMOVEABLE = true;
 
     uint32 internal constant _MODULE_INTERNAL_ID = 101;
     uint16 internal constant _MODULE_INTERNAL_TYPE = _MODULE_TYPE_INTERNAL;
     uint16 internal constant _MODULE_INTERNAL_VERSION_V1 = 1;
     uint16 internal constant _MODULE_INTERNAL_VERSION_V2 = 2;
+    bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V1 = true;
+    bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V2 = false;
+    bool internal constant _MODULE_INTERNAL_REMOVEABLE_V1 = true;
+    bool internal constant _MODULE_INTERNAL_REMOVEABLE_V2 = false;
 
     // =======
     // Storage
@@ -42,15 +51,23 @@ contract ImplementationModuleInternalProxyTest is ImplementationFixture {
         super.setUp();
 
         singleModule = new MockBaseModule(
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION
+            IBaseModule.ModuleSettings({
+                moduleId: _MODULE_SINGLE_ID,
+                moduleType: _MODULE_SINGLE_TYPE,
+                moduleVersion: _MODULE_SINGLE_VERSION,
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE,
+                moduleRemoveable: _MODULE_SINGLE_REMOVEABLE
+            })
         );
 
         internalModule = new MockImplementationInternalModule(
-            _MODULE_INTERNAL_ID,
-            _MODULE_INTERNAL_TYPE,
-            _MODULE_INTERNAL_VERSION_V1
+            IBaseModule.ModuleSettings({
+                moduleId: _MODULE_INTERNAL_ID,
+                moduleType: _MODULE_INTERNAL_TYPE,
+                moduleVersion: _MODULE_INTERNAL_VERSION_V1,
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V1,
+                moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V1
+            })
         );
 
         address[] memory moduleAddresses = new address[](2);
@@ -66,6 +83,26 @@ contract ImplementationModuleInternalProxyTest is ImplementationFixture {
     // =====
     // Tests
     // =====
+
+    function testValidModuleSettings() external {
+        _testModuleConfiguration(
+            singleModule,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION,
+            _MODULE_SINGLE_UPGRADEABLE,
+            _MODULE_SINGLE_REMOVEABLE
+        );
+
+        _testModuleConfiguration(
+            internalModule,
+            _MODULE_INTERNAL_ID,
+            _MODULE_INTERNAL_TYPE,
+            _MODULE_INTERNAL_VERSION_V1,
+            _MODULE_INTERNAL_UPGRADEABLE_V1,
+            _MODULE_INTERNAL_REMOVEABLE_V1
+        );
+    }
 
     function testCallInternalModule(uint256 number_) external {
         uint256 value = abi.decode(
@@ -103,22 +140,57 @@ contract ImplementationModuleInternalProxyTest is ImplementationFixture {
     }
 
     function testUpgradeInternalProxy() external {
-        assertEq(internalModule.moduleVersion(), _MODULE_INTERNAL_VERSION_V1);
+        _testModuleConfiguration(
+            internalModule,
+            _MODULE_INTERNAL_ID,
+            _MODULE_INTERNAL_TYPE,
+            _MODULE_INTERNAL_VERSION_V1,
+            _MODULE_INTERNAL_UPGRADEABLE_V1,
+            _MODULE_INTERNAL_REMOVEABLE_V1
+        );
+
+        internalModule = new MockImplementationInternalModule(
+            IBaseModule.ModuleSettings({
+                moduleId: _MODULE_INTERNAL_ID,
+                moduleType: _MODULE_INTERNAL_TYPE,
+                moduleVersion: _MODULE_INTERNAL_VERSION_V2,
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V2,
+                moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V2
+            })
+        );
 
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(
-            new MockImplementationInternalModule(
-                _MODULE_INTERNAL_ID,
-                _MODULE_INTERNAL_TYPE,
-                _MODULE_INTERNAL_VERSION_V2
-            )
-        );
+        moduleAddresses[0] = address(internalModule);
         installerProxy.upgradeModules(moduleAddresses);
+
+        _testModuleConfiguration(
+            internalModule,
+            _MODULE_INTERNAL_ID,
+            _MODULE_INTERNAL_TYPE,
+            _MODULE_INTERNAL_VERSION_V2,
+            _MODULE_INTERNAL_UPGRADEABLE_V2,
+            _MODULE_INTERNAL_REMOVEABLE_V2
+        );
+    }
+
+    function testRemoveInternalProxy() external {
+        _testModuleConfiguration(
+            internalModule,
+            _MODULE_INTERNAL_ID,
+            _MODULE_INTERNAL_TYPE,
+            _MODULE_INTERNAL_VERSION_V1,
+            _MODULE_INTERNAL_UPGRADEABLE_V1,
+            _MODULE_INTERNAL_REMOVEABLE_V1
+        );
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(internalModule);
+        installerProxy.removeModules(moduleAddresses);
 
         internalModule = MockImplementationInternalModule(
             dispatcher.moduleIdToImplementation(_MODULE_INTERNAL_ID)
         );
 
-        assertEq(internalModule.moduleVersion(), _MODULE_INTERNAL_VERSION_V2);
+        assertEq(address(internalModule), address(0));
     }
 }

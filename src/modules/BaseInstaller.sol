@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 // Interfaces
 import {IBaseInstaller} from "../interfaces/IBaseInstaller.sol";
+import {IBaseModule} from "../interfaces/IBaseModule.sol";
 
 // Sources
 import {BaseModule} from "../BaseModule.sol";
@@ -17,17 +18,11 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     // ===========
 
     /**
-     * @param moduleVersion_ Module version.
+     * @param moduleSettings_ Module moduleSettings.
      */
     constructor(
-        uint16 moduleVersion_
-    )
-        BaseModule(
-            _MODULE_ID_INSTALLER,
-            _MODULE_TYPE_SINGLE_PROXY,
-            moduleVersion_
-        )
-    {}
+        ModuleSettings memory moduleSettings_
+    ) BaseModule(moduleSettings_) {}
 
     // ==============
     // View functions
@@ -99,22 +94,30 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         address[] memory moduleAddresses_
     ) external virtual onlyOwner nonReentrant {
         for (uint256 i = 0; i < moduleAddresses_.length; ) {
-            // TODO: evaluate if it makes sense to optimize the reads here
-            // SEE: https://github.com/Chroma-Org/Reflex/tree/feature/packed-module-id
-
             address moduleAddress = moduleAddresses_[i];
-            uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
-            uint16 moduleType_ = BaseModule(moduleAddress).moduleType();
-            uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
 
-            _modules[moduleId_] = moduleAddress;
+            IBaseModule.ModuleSettings memory moduleSettings = BaseModule(
+                moduleAddress
+            ).moduleSettings();
 
-            if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) {
-                address proxyAddress = _createProxy(moduleId_, moduleType_);
+            if (_modules[moduleSettings.moduleId] != address(0))
+                revert ModuleExistent(moduleSettings.moduleId);
+
+            _modules[moduleSettings.moduleId] = moduleAddress;
+
+            if (moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
+                address proxyAddress = _createProxy(
+                    moduleSettings.moduleId,
+                    moduleSettings.moduleType
+                );
                 _trusts[proxyAddress].moduleImplementation = moduleAddress;
             }
 
-            emit ModuleAdded(moduleId_, moduleAddress, moduleVersion_);
+            emit ModuleAdded(
+                moduleSettings.moduleId,
+                moduleAddress,
+                moduleSettings.moduleVersion
+            );
 
             unchecked {
                 ++i;
@@ -135,20 +138,44 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     ) external virtual onlyOwner nonReentrant {
         for (uint256 i = 0; i < moduleAddresses_.length; ) {
             address moduleAddress = moduleAddresses_[i];
-            uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
-            uint16 moduleType_ = BaseModule(moduleAddress).moduleType();
-            uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
 
-            if (_modules[moduleId_] == address(0)) revert ModuleNonexistent();
+            // Check against existing module
 
-            _modules[moduleId_] = moduleAddress;
+            IBaseModule.ModuleSettings memory moduleSettings = BaseModule(
+                moduleAddress
+            ).moduleSettings();
 
-            if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) {
-                address proxyAddress = _createProxy(moduleId_, moduleType_);
+            // Verify that the module currently exists.
+            if (_modules[moduleSettings.moduleId] == address(0))
+                revert ModuleNonexistent(moduleSettings.moduleId);
+
+            // Verify that current module allows for upgrades.
+            if (
+                !IBaseModule(_modules[moduleSettings.moduleId])
+                    .moduleUpgradeable()
+            ) revert ModuleNotUpgradeable(moduleSettings.moduleId);
+
+            // Verify that the next module version is greater than the current module version.
+            if (
+                moduleSettings.moduleVersion <=
+                IBaseModule(_modules[moduleSettings.moduleId]).moduleVersion()
+            ) revert ModuleInvalidVersion(moduleSettings.moduleId);
+
+            _modules[moduleSettings.moduleId] = moduleAddress;
+
+            if (moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
+                address proxyAddress = _createProxy(
+                    moduleSettings.moduleId,
+                    moduleSettings.moduleType
+                );
                 _trusts[proxyAddress].moduleImplementation = moduleAddress;
             }
 
-            emit ModuleUpgraded(moduleId_, moduleAddress, moduleVersion_);
+            emit ModuleUpgraded(
+                moduleSettings.moduleId,
+                moduleAddress,
+                moduleSettings.moduleVersion
+            );
 
             unchecked {
                 ++i;
@@ -167,30 +194,39 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     function removeModules(
         address[] memory moduleAddresses_
     ) external virtual onlyOwner nonReentrant {
-        // TODO: do not allow user to uninstall `Installer`
-        // TODO: should the framework include a built-in whitelist?
-
         for (uint256 i = 0; i < moduleAddresses_.length; ) {
             address moduleAddress = moduleAddresses_[i];
-            uint32 moduleId_ = BaseModule(moduleAddress).moduleId();
-            uint16 moduleType_ = BaseModule(moduleAddress).moduleType();
-            uint16 moduleVersion_ = BaseModule(moduleAddress).moduleVersion();
 
-            if (_modules[moduleId_] == address(0)) revert ModuleNonexistent();
+            IBaseModule.ModuleSettings memory moduleSettings = BaseModule(
+                moduleAddress
+            ).moduleSettings();
 
-            if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) {
-                address proxyAddress = _createProxy(moduleId_, moduleType_);
+            if (_modules[moduleSettings.moduleId] == address(0))
+                revert ModuleNonexistent(moduleSettings.moduleId);
+
+            if (!moduleSettings.moduleRemoveable)
+                revert ModuleNotRemoveable(moduleSettings.moduleId);
+
+            if (moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
+                address proxyAddress = _createProxy(
+                    moduleSettings.moduleId,
+                    moduleSettings.moduleType
+                );
                 delete _trusts[proxyAddress];
             }
 
             if (
-                moduleType_ == _MODULE_TYPE_SINGLE_PROXY ||
-                moduleType_ == _MODULE_TYPE_MULTI_PROXY
-            ) delete _proxies[moduleId_];
+                moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY ||
+                moduleSettings.moduleType == _MODULE_TYPE_MULTI_PROXY
+            ) delete _proxies[moduleSettings.moduleId];
 
-            delete _modules[moduleId_];
+            delete _modules[moduleSettings.moduleId];
 
-            emit ModuleRemoved(moduleId_, moduleAddress, moduleVersion_);
+            emit ModuleRemoved(
+                moduleSettings.moduleId,
+                moduleAddress,
+                moduleSettings.moduleVersion
+            );
 
             unchecked {
                 ++i;

@@ -39,7 +39,7 @@ contract ProxyTest is TProxy, Test, Harness {
     // Tests
     // =====
 
-    function testResolveInvalidImplementationToZeroAddress() public {
+    function testResolveInvalidImplementationToZeroAddress() external {
         assertEq(proxy.implementation(), address(0));
     }
 

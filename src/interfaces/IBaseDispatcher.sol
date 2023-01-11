@@ -42,7 +42,11 @@ interface TBaseDispatcher is TBase {
  * @title BaseDispatcher Interface
  */
 interface IBaseDispatcher is IBase, TBaseDispatcher {
-    function dispatch() external payable;
+    // =======
+    // Methods
+    // =======
+
+    function dispatch() external;
 
     function moduleIdToImplementation(
         uint32 moduleId_

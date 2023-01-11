@@ -23,9 +23,50 @@ interface TBaseModule is TBase {
  * @title Base Module Interface
  */
 interface IBaseModule is IBase, TBaseModule {
+    // =======
+    // Structs
+    // =======
+
+    /**
+     * @notice Module settings.
+     * @dev Packed slot: 4 + 2 + 2 + 1 + 1 = 10 bytes out of 32 bytes.
+     */
+    struct ModuleSettings {
+        /**
+         * @notice Module id.
+         */
+        uint32 moduleId;
+        /**
+         * @notice Module type.
+         */
+        uint16 moduleType;
+        /**
+         * @notice Module version.
+         */
+        uint16 moduleVersion;
+        /**
+         * @notice Whether the module is upgradeable.
+         */
+        bool moduleUpgradeable;
+        /**
+         * @notice Whether the module is removeable.
+         */
+        bool moduleRemoveable;
+    }
+
+    // =======
+    // Methods
+    // =======
+
     function moduleId() external view returns (uint32);
 
     function moduleType() external view returns (uint16);
 
     function moduleVersion() external view returns (uint16);
+
+    function moduleUpgradeable() external view returns (bool);
+
+    function moduleRemoveable() external view returns (bool);
+
+    function moduleSettings() external view returns (ModuleSettings memory);
 }
