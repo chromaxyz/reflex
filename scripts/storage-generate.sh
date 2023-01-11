@@ -20,24 +20,20 @@ function log () {
 
 # Variables
 CONTRACTS="BaseDispatcher ImplementationDispatcher"
-FILENAME=.storage-layout
+FILENAME=STORAGE_LAYOUT.md
 
 # Remove previous storage layout
 rm -f $FILENAME
 
-log $GREEN "Creating storage overview"
+log $GREEN "Creating storage overview from contracts"
 
 for CONTRACT in ${CONTRACTS[@]}
 do
-  {
-    echo -e "\n**";
-    echo "$CONTRACT";
-    echo -e "**\n";
-  } >> "$FILENAME"
+	echo "Generating storage layout for $CONTRACT..."
+
+  echo -e "\n**$CONTRACT**\n" >> "$FILENAME"
 
   forge inspect --pretty "$CONTRACT" storage-layout >> "$FILENAME"
-
-  echo "Generated storage layout for $CONTRACT."
 done
 
 log $GREEN "Done"

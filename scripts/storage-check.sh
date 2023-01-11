@@ -28,12 +28,12 @@ function notify () {
 	echo -e "\033[0m"
 }
 
-log $GREEN "Creating storage overview from contracts"
+log $GREEN "Verifying storage overview compatibility"
 
 # Variables
 CONTRACTS="BaseDispatcher ImplementationDispatcher"
-FILENAME=.storage-layout
-TEMP_FILENAME=.storage-layout.temp
+FILENAME=STORAGE_LAYOUT.md
+TEMP_FILENAME=STORAGE_LAYOUT.md.temp
 
 # Remove previous temporary storage layout
 rm -f $TEMP_FILENAME
@@ -41,15 +41,11 @@ rm -f $TEMP_FILENAME
 # Generate new temporary storage layout for diff
 for CONTRACT in ${CONTRACTS[@]}
 do
-	{
-		echo -e "\n**";
-		echo "$CONTRACT";
-		echo -e "**\n";
-	} >> "$TEMP_FILENAME"
+	echo "Verifying storage layout for $CONTRACT..."
+
+  echo -e "\n**$CONTRACT**\n" >> "$TEMP_FILENAME"
 
 	forge inspect --pretty "$CONTRACT" storage-layout >> "$TEMP_FILENAME"
-
-	echo "Verifying storage layout for $CONTRACT."
 done
 
 if ! cmp -s $FILENAME $TEMP_FILENAME; then
