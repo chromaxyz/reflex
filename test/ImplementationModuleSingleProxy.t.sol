@@ -103,56 +103,21 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     }
 
     function testModuleSettings() external {
-        IBaseModule.ModuleSettings memory singleModuleSettings = singleModule
-            .moduleSettings();
-
-        IBaseModule.ModuleSettings
-            memory singleModuleProxySettings = singleModuleProxy
-                .moduleSettings();
-
-        assertEq(singleModuleSettings.moduleId, _MODULE_SINGLE_ID);
-        assertEq(singleModuleProxySettings.moduleId, _MODULE_SINGLE_ID);
-        assertEq(singleModule.moduleId(), _MODULE_SINGLE_ID);
-        assertEq(singleModuleProxy.moduleId(), _MODULE_SINGLE_ID);
-
-        assertEq(singleModuleSettings.moduleType, _MODULE_SINGLE_TYPE);
-        assertEq(singleModuleProxySettings.moduleType, _MODULE_SINGLE_TYPE);
-        assertEq(singleModule.moduleType(), _MODULE_SINGLE_TYPE);
-        assertEq(singleModuleProxy.moduleType(), _MODULE_SINGLE_TYPE);
-
-        assertEq(singleModuleSettings.moduleVersion, _MODULE_SINGLE_VERSION);
-        assertEq(
-            singleModuleProxySettings.moduleVersion,
-            _MODULE_SINGLE_VERSION
-        );
-        assertEq(singleModule.moduleVersion(), _MODULE_SINGLE_VERSION);
-        assertEq(singleModuleProxy.moduleVersion(), _MODULE_SINGLE_VERSION);
-
-        assertEq(
-            singleModuleSettings.moduleUpgradeable,
-            _MODULE_SINGLE_UPGRADEABLE
-        );
-        assertEq(
-            singleModuleProxySettings.moduleUpgradeable,
-            _MODULE_SINGLE_UPGRADEABLE
-        );
-        assertEq(singleModule.moduleUpgradeable(), _MODULE_SINGLE_UPGRADEABLE);
-        assertEq(
-            singleModuleProxy.moduleUpgradeable(),
-            _MODULE_SINGLE_UPGRADEABLE
-        );
-
-        assertEq(
-            singleModuleSettings.moduleRemoveable,
+        _testModuleConfiguration(
+            singleModule,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION,
+            _MODULE_SINGLE_UPGRADEABLE,
             _MODULE_SINGLE_REMOVEABLE
         );
-        assertEq(
-            singleModuleProxySettings.moduleRemoveable,
-            _MODULE_SINGLE_REMOVEABLE
-        );
-        assertEq(singleModule.moduleRemoveable(), _MODULE_SINGLE_REMOVEABLE);
-        assertEq(
-            singleModuleProxy.moduleRemoveable(),
+
+        _testModuleConfiguration(
+            singleModuleProxy,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION,
+            _MODULE_SINGLE_UPGRADEABLE,
             _MODULE_SINGLE_REMOVEABLE
         );
     }
@@ -330,5 +295,32 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
 
         vm.expectRevert(TBaseModule.FailedToLog.selector);
         singleModuleProxy.testRevertProxyLogOutOfBounds(message_);
+    }
+
+    // =========
+    // Utilities
+    // =========
+
+    function _testModuleConfiguration(
+        IBaseModule module_,
+        uint32 moduleId_,
+        uint16 moduleType_,
+        uint16 moduleVersion_,
+        bool moduleUpgradeable_,
+        bool moduleRemoveable_
+    ) internal {
+        IBaseModule.ModuleSettings memory moduleSettings = module_
+            .moduleSettings();
+
+        assertEq(moduleSettings.moduleId, moduleId_);
+        assertEq(module_.moduleId(), moduleId_);
+        assertEq(moduleSettings.moduleType, moduleType_);
+        assertEq(module_.moduleType(), moduleType_);
+        assertEq(moduleSettings.moduleVersion, moduleVersion_);
+        assertEq(module_.moduleVersion(), moduleVersion_);
+        assertEq(moduleSettings.moduleUpgradeable, moduleUpgradeable_);
+        assertEq(module_.moduleUpgradeable(), moduleUpgradeable_);
+        assertEq(moduleSettings.moduleRemoveable, moduleRemoveable_);
+        assertEq(module_.moduleRemoveable(), moduleRemoveable_);
     }
 }

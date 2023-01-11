@@ -174,7 +174,14 @@ contract ImplementationModuleInternalProxyTest is ImplementationFixture {
     }
 
     function testRemoveInternalProxy() external {
-        assertEq(internalModule.moduleVersion(), _MODULE_INTERNAL_VERSION_V1);
+        _testModuleConfiguration(
+            internalModule,
+            _MODULE_INTERNAL_ID,
+            _MODULE_INTERNAL_TYPE,
+            _MODULE_INTERNAL_VERSION_V1,
+            _MODULE_INTERNAL_UPGRADEABLE_V1,
+            _MODULE_INTERNAL_REMOVEABLE_V1
+        );
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(internalModule);
