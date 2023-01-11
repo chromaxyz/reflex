@@ -6,9 +6,9 @@ pragma solidity ^0.8.13;
  * @dev Append-only extendable, only use internal constants!
  */
 abstract contract BaseConstants {
-    // =========
-    // Constants
-    // =========
+    // =======
+    // Globals
+    // =======
 
     /**
      * @dev Reentrancy mutex unlocked state.
@@ -20,20 +20,28 @@ abstract contract BaseConstants {
      */
     uint256 internal constant _REENTRANCY_LOCK_LOCKED = 2;
 
+    // =============
+    // Configuration
+    // =============
+
     /**
-     * @dev These are modules that have a single proxy to a single implementation.
+     * @dev Modules that have a single proxy to a single implementation relation.
      */
     uint16 internal constant _MODULE_TYPE_SINGLE_PROXY = 1;
 
     /**
-     * @dev These are modules that have multiple proxies to a single implementation.
+     * @dev Modules that have a multiple proxies to a single implementation relation.
      */
     uint16 internal constant _MODULE_TYPE_MULTI_PROXY = 2;
 
     /**
-     * @dev These are modules that are called internally by the system and don't have any public proxies.
+     * @dev Modules that are called internally by the system and don't have any public proxies.
      */
     uint16 internal constant _MODULE_TYPE_INTERNAL = 3;
+
+    // =======
+    // Modules
+    // =======
 
     /**
      * @dev Module id of built-in upgradeable installer module.
@@ -46,12 +54,12 @@ abstract contract BaseConstants {
     uint16 internal constant _MODULE_VERSION_INSTALLER = 1;
 
     /**
-     * @dev Module upgradeability of built-in upgradeable installer module.
+     * @dev Module upgradeability setting of built-in upgradeable installer module.
      */
     bool internal constant _MODULE_UPGRADEABLE_INSTALLER = true;
 
     /**
-     * @dev Module removeability of built-in upgradeable installer module.
+     * @dev Module removeability setting of built-in upgradeable installer module.
      */
     bool internal constant _MODULE_REMOVEABLE_INSTALLER = false;
 }
