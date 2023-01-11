@@ -39,6 +39,41 @@ contract BaseTest is TBase, BaseFixture {
     // Tests
     // =====
 
+    // =============
+    // General tests
+    // =============
+
+    function testRevertCreateProxyInvalidModuleId() external {
+        vm.expectRevert(InvalidModuleId.selector);
+        base.createProxy(uint32(0), uint16(0));
+    }
+
+    function testRevertCreateProxyInvalidModuleType() external {
+        vm.expectRevert(InvalidModuleType.selector);
+        base.createProxy(uint32(1), uint16(0));
+    }
+
+    function testRevertCreateProxyInternalModule() external {
+        vm.expectRevert(InternalModule.selector);
+        base.createProxy(102, _MODULE_TYPE_INTERNAL);
+    }
+
+    function testRevertBytes(bytes memory errorMessage_) external {
+        vm.assume(errorMessage_.length > 0);
+
+        vm.expectRevert(errorMessage_);
+        base.revertBytes(errorMessage_);
+    }
+
+    function testRevertBytesEmptyError() external {
+        vm.expectRevert(EmptyError.selector);
+        base.revertBytes("");
+    }
+
+    // ======================
+    // Reentrancy guard tests
+    // ======================
+
     function testGuardedCheckLocked() external {
         base.guardedCheckLocked();
     }
@@ -68,32 +103,5 @@ contract BaseTest is TBase, BaseFixture {
     function testRevertRecursiveIndirectCall() external {
         vm.expectRevert(Reentrancy.selector);
         base.countIndirectRecursive(10);
-    }
-
-    function testRevertCreateProxyInvalidModuleId() external {
-        vm.expectRevert(InvalidModuleId.selector);
-        base.createProxy(uint32(0), uint16(0));
-    }
-
-    function testRevertCreateProxyInvalidModuleType() external {
-        vm.expectRevert(InvalidModuleType.selector);
-        base.createProxy(uint32(1), uint16(0));
-    }
-
-    function testRevertCreateProxyInternalModule() external {
-        vm.expectRevert(InternalModule.selector);
-        base.createProxy(102, _MODULE_TYPE_INTERNAL);
-    }
-
-    function testRevertBytes(bytes memory errorMessage_) external {
-        vm.assume(errorMessage_.length > 0);
-
-        vm.expectRevert(errorMessage_);
-        base.revertBytes(errorMessage_);
-    }
-
-    function testRevertBytesEmptyError() external {
-        vm.expectRevert(EmptyError.selector);
-        base.revertBytes("");
     }
 }

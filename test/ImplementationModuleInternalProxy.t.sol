@@ -136,4 +136,18 @@ contract ImplementationModuleInternalProxyTest is ImplementationFixture {
 
         assertEq(internalModule.moduleVersion(), _MODULE_INTERNAL_VERSION_V2);
     }
+
+    function testRemoveInternalProxy() external {
+        assertEq(internalModule.moduleVersion(), _MODULE_INTERNAL_VERSION_V1);
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(internalModule);
+        installerProxy.removeModules(moduleAddresses);
+
+        internalModule = MockImplementationInternalModule(
+            dispatcher.moduleIdToImplementation(_MODULE_INTERNAL_ID)
+        );
+
+        assertEq(address(internalModule), address(0));
+    }
 }

@@ -26,6 +26,8 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     uint32 internal constant _MODULE_SINGLE_ID = 100;
     uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
     uint16 internal constant _MODULE_SINGLE_VERSION = 1;
+    bool internal constant _MODULE_SINGLE_UPGRADEABLE = true;
+    bool internal constant _MODULE_SINGLE_REMOVEABLE = true;
 
     // =======
     // Storage
@@ -64,22 +66,6 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     // Tests
     // =====
 
-    function testProxyImplementation() external {
-        assertEq(
-            IProxy(address(singleModuleProxy)).implementation(),
-            address(singleModule)
-        );
-    }
-
-    function testProxySentinelFallback() external {
-        (bool success, bytes memory data) = address(singleModuleProxy).call(
-            abi.encodeWithSignature("sentinel()")
-        );
-
-        assertTrue(success);
-        assertTrue(abi.decode(data, (bool)));
-    }
-
     function testModuleIdToImplementation() external {
         assertEq(
             dispatcher.moduleIdToImplementation(_MODULE_SINGLE_ID),
@@ -116,19 +102,59 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         assertEq(relation.moduleImplementation, address(singleModule));
     }
 
-    function testModuleId() external {
+    function testModuleSettings() external {
+        IBaseModule.ModuleSettings memory singleModuleSettings = singleModule
+            .moduleSettings();
+
+        IBaseModule.ModuleSettings
+            memory singleModuleProxySettings = singleModuleProxy
+                .moduleSettings();
+
+        assertEq(singleModuleSettings.moduleId, _MODULE_SINGLE_ID);
+        assertEq(singleModuleProxySettings.moduleId, _MODULE_SINGLE_ID);
         assertEq(singleModule.moduleId(), _MODULE_SINGLE_ID);
         assertEq(singleModuleProxy.moduleId(), _MODULE_SINGLE_ID);
-    }
 
-    function testModuleType() external {
+        assertEq(singleModuleSettings.moduleType, _MODULE_SINGLE_TYPE);
+        assertEq(singleModuleProxySettings.moduleType, _MODULE_SINGLE_TYPE);
         assertEq(singleModule.moduleType(), _MODULE_SINGLE_TYPE);
         assertEq(singleModuleProxy.moduleType(), _MODULE_SINGLE_TYPE);
-    }
 
-    function testModuleVersion() external {
+        assertEq(singleModuleSettings.moduleVersion, _MODULE_SINGLE_VERSION);
+        assertEq(
+            singleModuleProxySettings.moduleVersion,
+            _MODULE_SINGLE_VERSION
+        );
         assertEq(singleModule.moduleVersion(), _MODULE_SINGLE_VERSION);
         assertEq(singleModuleProxy.moduleVersion(), _MODULE_SINGLE_VERSION);
+
+        assertEq(
+            singleModuleSettings.moduleUpgradeable,
+            _MODULE_SINGLE_UPGRADEABLE
+        );
+        assertEq(
+            singleModuleProxySettings.moduleUpgradeable,
+            _MODULE_SINGLE_UPGRADEABLE
+        );
+        assertEq(singleModule.moduleUpgradeable(), _MODULE_SINGLE_UPGRADEABLE);
+        assertEq(
+            singleModuleProxy.moduleUpgradeable(),
+            _MODULE_SINGLE_UPGRADEABLE
+        );
+
+        assertEq(
+            singleModuleSettings.moduleRemoveable,
+            _MODULE_SINGLE_REMOVEABLE
+        );
+        assertEq(
+            singleModuleProxySettings.moduleRemoveable,
+            _MODULE_SINGLE_REMOVEABLE
+        );
+        assertEq(singleModule.moduleRemoveable(), _MODULE_SINGLE_REMOVEABLE);
+        assertEq(
+            singleModuleProxy.moduleRemoveable(),
+            _MODULE_SINGLE_REMOVEABLE
+        );
     }
 
     function testGetModuleImplementationByProxy() external {
@@ -136,6 +162,22 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             IProxy(address(singleModuleProxy)).implementation(),
             address(singleModule)
         );
+    }
+
+    function testProxyImplementation() external {
+        assertEq(
+            IProxy(address(singleModuleProxy)).implementation(),
+            address(singleModule)
+        );
+    }
+
+    function testProxySentinelFallback() external {
+        (bool success, bytes memory data) = address(singleModuleProxy).call(
+            abi.encodeWithSignature("sentinel()")
+        );
+
+        assertTrue(success);
+        assertTrue(abi.decode(data, (bool)));
     }
 
     function testRevertBytesCustomError(

@@ -19,17 +19,17 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // Constants
     // =========
 
-    uint32 internal constant _MOCK_MODULE_ID = 100;
-    uint16 internal constant _MOCK_MODULE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
-    uint16 internal constant _MOCK_MODULE_VERSION_V1 = 1;
-    uint16 internal constant _MOCK_MODULE_VERSION_V2 = 2;
+    uint32 internal constant _SINGLE_MODULE_ID = 100;
+    uint16 internal constant _SINGLE_MODULE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
+    uint16 internal constant _SINGLE_MODULE_VERSION_V1 = 1;
+    uint16 internal constant _SINGLE_MODULE_VERSION_V2 = 2;
 
     // =======
     // Storage
     // =======
 
-    MockBaseModule public moduleV1;
-    MockBaseModule public moduleV2;
+    MockBaseModule public singleModuleV1;
+    MockBaseModule public singleModuleV2;
 
     // =====
     // Setup
@@ -38,21 +38,21 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function setUp() public virtual override {
         super.setUp();
 
-        moduleV1 = new MockBaseModule(
+        singleModuleV1 = new MockBaseModule(
             IBaseModule.ModuleSettings({
-                moduleId: _MOCK_MODULE_ID,
-                moduleType: _MOCK_MODULE_TYPE,
-                moduleVersion: _MOCK_MODULE_VERSION_V1,
+                moduleId: _SINGLE_MODULE_ID,
+                moduleType: _SINGLE_MODULE_TYPE,
+                moduleVersion: _SINGLE_MODULE_VERSION_V1,
                 moduleUpgradeable: true,
                 moduleRemoveable: true
             })
         );
 
-        moduleV2 = new MockBaseModule(
+        singleModuleV2 = new MockBaseModule(
             IBaseModule.ModuleSettings({
-                moduleId: _MOCK_MODULE_ID,
-                moduleType: _MOCK_MODULE_TYPE,
-                moduleVersion: _MOCK_MODULE_VERSION_V2,
+                moduleId: _SINGLE_MODULE_ID,
+                moduleType: _SINGLE_MODULE_TYPE,
+                moduleVersion: _SINGLE_MODULE_VERSION_V2,
                 moduleUpgradeable: true,
                 moduleRemoveable: true
             })
@@ -62,6 +62,10 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // =====
     // Tests
     // =====
+
+    // ===============
+    // Ownership tests
+    // ===============
 
     function testTransferOwnership() public {
         vm.expectEmit(true, false, false, false);
@@ -120,35 +124,204 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         installerProxy.transferOwnership(address(0));
     }
 
-    function testAddModules() public {
+    // ====================
+    // General module tests
+    // ====================
+
+    function testRevertAddNonContract() external {
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(moduleV1);
+        moduleAddresses[0] = address(1);
+
+        vm.expectRevert();
+        installerProxy.addModules(moduleAddresses);
+    }
+
+    function testRevertNonModuleIdContract() external {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(dispatcher);
+
+        vm.expectRevert();
+        installerProxy.addModules(moduleAddresses);
+    }
+
+    function testRevertUpgradeModulesModuleNonexistent() external {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(
+            new MockBaseModule(
+                IBaseModule.ModuleSettings({
+                    moduleId: 777,
+                    moduleType: _SINGLE_MODULE_TYPE,
+                    moduleVersion: 777,
+                    moduleUpgradeable: true,
+                    moduleRemoveable: true
+                })
+            )
+        );
+
+        vm.expectRevert(
+            abi.encodeWithSelector(ModuleNonexistent.selector, 777)
+        );
+        installerProxy.upgradeModules(moduleAddresses);
+    }
+
+    function testRevertUpgradeModulesNonContract() external {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(1);
+
+        vm.expectRevert();
+        installerProxy.upgradeModules(moduleAddresses);
+    }
+
+    function testRevertUpgradeModulesNonModuleIdContract() external {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(dispatcher);
+
+        vm.expectRevert();
+        installerProxy.upgradeModules(moduleAddresses);
+    }
+
+    function testRevertRemoveModulesModuleNonexistent() external {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(
+            new MockBaseModule(
+                IBaseModule.ModuleSettings({
+                    moduleId: 777,
+                    moduleType: _SINGLE_MODULE_TYPE,
+                    moduleVersion: 777,
+                    moduleUpgradeable: true,
+                    moduleRemoveable: true
+                })
+            )
+        );
+
+        vm.expectRevert(
+            abi.encodeWithSelector(ModuleNonexistent.selector, 777)
+        );
+        installerProxy.removeModules(moduleAddresses);
+    }
+
+    function testRevertRemoveModulesNonContract() external {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(1);
+
+        vm.expectRevert();
+        installerProxy.removeModules(moduleAddresses);
+    }
+
+    function testRevertRemoveModulesNonModuleIdContract() external {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(dispatcher);
+
+        vm.expectRevert();
+        installerProxy.removeModules(moduleAddresses);
+    }
+
+    // =========================
+    // Single-proxy module tests
+    // =========================
+
+    function testAddModulesSingleProxy() public {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(singleModuleV1);
 
         vm.expectEmit(true, true, false, false);
         emit ModuleAdded(
-            _MOCK_MODULE_ID,
-            address(moduleV1),
-            _MOCK_MODULE_VERSION_V1
+            _SINGLE_MODULE_ID,
+            address(singleModuleV1),
+            _SINGLE_MODULE_VERSION_V1
         );
         installerProxy.addModules(moduleAddresses);
 
-        address moduleV1Implementation = dispatcher.moduleIdToImplementation(
-            _MOCK_MODULE_ID
-        );
-        address moduleProxy = dispatcher.moduleIdToProxy(_MOCK_MODULE_ID);
+        address singleModuleV1Implementation = dispatcher
+            .moduleIdToImplementation(_SINGLE_MODULE_ID);
+        address moduleProxy = dispatcher.moduleIdToProxy(_SINGLE_MODULE_ID);
 
-        assertEq(moduleV1Implementation, address(moduleV1));
+        assertEq(singleModuleV1Implementation, address(singleModuleV1));
         assertTrue(moduleProxy != address(0));
         assertTrue(
             dispatcher.proxyAddressToTrustRelation(moduleProxy).moduleId ==
-                _MOCK_MODULE_ID
+                _SINGLE_MODULE_ID
         );
         assertTrue(
             dispatcher
                 .proxyAddressToTrustRelation(moduleProxy)
-                .moduleImplementation == moduleV1Implementation
+                .moduleImplementation == singleModuleV1Implementation
         );
     }
+
+    function testUpgradeModulesSingleProxy() external {
+        testAddModulesSingleProxy();
+
+        address singleModuleV1Implementation = dispatcher
+            .moduleIdToImplementation(_SINGLE_MODULE_ID);
+        address moduleProxy = dispatcher.moduleIdToProxy(_SINGLE_MODULE_ID);
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(singleModuleV2);
+
+        vm.expectEmit(true, true, false, false);
+        emit ModuleUpgraded(
+            _SINGLE_MODULE_ID,
+            address(singleModuleV2),
+            _SINGLE_MODULE_VERSION_V1
+        );
+        installerProxy.upgradeModules(moduleAddresses);
+
+        address singleModuleV2Implementation = dispatcher
+            .moduleIdToImplementation(_SINGLE_MODULE_ID);
+
+        assertEq(moduleProxy, dispatcher.moduleIdToProxy(_SINGLE_MODULE_ID));
+        assertTrue(
+            singleModuleV1Implementation != singleModuleV2Implementation
+        );
+        assertEq(singleModuleV2Implementation, address(singleModuleV2));
+        assertTrue(
+            dispatcher.proxyAddressToTrustRelation(moduleProxy).moduleId ==
+                _SINGLE_MODULE_ID
+        );
+        assertTrue(
+            dispatcher
+                .proxyAddressToTrustRelation(moduleProxy)
+                .moduleImplementation == singleModuleV2Implementation
+        );
+    }
+
+    function testRemoveModulesSingleProxy() external {
+        testAddModulesSingleProxy();
+
+        address moduleProxy = dispatcher.moduleIdToProxy(_SINGLE_MODULE_ID);
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(singleModuleV1);
+
+        vm.expectEmit(true, true, false, false);
+        emit ModuleRemoved(
+            _SINGLE_MODULE_ID,
+            address(singleModuleV1),
+            _SINGLE_MODULE_VERSION_V1
+        );
+        installerProxy.removeModules(moduleAddresses);
+
+        assertEq(dispatcher.moduleIdToProxy(_SINGLE_MODULE_ID), address(0));
+        assertEq(
+            dispatcher.moduleIdToImplementation(_SINGLE_MODULE_ID),
+            address(0)
+        );
+        assertEq(
+            dispatcher.proxyAddressToTrustRelation(moduleProxy).moduleId,
+            uint32(0)
+        );
+        assertEq(
+            dispatcher
+                .proxyAddressToTrustRelation(moduleProxy)
+                .moduleImplementation,
+            address(0)
+        );
+    }
+
+    // ========================
+    // Multi-proxy module tests
+    // ========================
 
     function testAddModulesMultiProxy() external {
         address[] memory moduleAddresses = new address[](2);
@@ -183,161 +356,35 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         );
     }
 
-    function testRevertAddNonContract() external {
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(1);
+    // =====================
+    // Internal module tests
+    // =====================
 
-        vm.expectRevert();
-        installerProxy.addModules(moduleAddresses);
-    }
+    // function testAddModulesInternal() external {
+    //     address[] memory moduleAddresses = new address[](1);
+    //     moduleAddresses[0] = address(
+    //         new MockBaseModule(
+    //             IBaseModule.ModuleSettings({
+    //                 moduleId: 2,
+    //                 moduleType: _MODULE_TYPE_INTERNAL,
+    //                 moduleVersion: 1,
+    //                 moduleUpgradeable: true,
+    //                 moduleRemoveable: true
+    //             })
+    //         )
+    //     );
+    //     installerProxy.addModules(moduleAddresses);
 
-    function testRevertNonModuleIdContract() external {
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(dispatcher);
-
-        vm.expectRevert();
-        installerProxy.addModules(moduleAddresses);
-    }
-
-    function testUpgradeModules() external {
-        testAddModules();
-
-        address moduleV1Implementation = dispatcher.moduleIdToImplementation(
-            _MOCK_MODULE_ID
-        );
-        address moduleProxy = dispatcher.moduleIdToProxy(_MOCK_MODULE_ID);
-
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(moduleV2);
-
-        vm.expectEmit(true, true, false, false);
-        emit ModuleUpgraded(
-            _MOCK_MODULE_ID,
-            address(moduleV2),
-            _MOCK_MODULE_VERSION_V1
-        );
-        installerProxy.upgradeModules(moduleAddresses);
-
-        address moduleV2Implementation = dispatcher.moduleIdToImplementation(
-            _MOCK_MODULE_ID
-        );
-
-        assertEq(moduleProxy, dispatcher.moduleIdToProxy(_MOCK_MODULE_ID));
-        assertTrue(moduleV1Implementation != moduleV2Implementation);
-        assertEq(moduleV2Implementation, address(moduleV2));
-        assertTrue(
-            dispatcher.proxyAddressToTrustRelation(moduleProxy).moduleId ==
-                _MOCK_MODULE_ID
-        );
-        assertTrue(
-            dispatcher
-                .proxyAddressToTrustRelation(moduleProxy)
-                .moduleImplementation == moduleV2Implementation
-        );
-    }
-
-    function testRevertUpgradeModulesModuleNonexistent() external {
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(
-            new MockBaseModule(
-                IBaseModule.ModuleSettings({
-                    moduleId: 777,
-                    moduleType: _MOCK_MODULE_TYPE,
-                    moduleVersion: 777,
-                    moduleUpgradeable: true,
-                    moduleRemoveable: true
-                })
-            )
-        );
-
-        vm.expectRevert(
-            abi.encodeWithSelector(ModuleNonexistent.selector, 777)
-        );
-        installerProxy.upgradeModules(moduleAddresses);
-    }
-
-    function testRevertUpgradeModulesNonContract() external {
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(1);
-
-        vm.expectRevert();
-        installerProxy.upgradeModules(moduleAddresses);
-    }
-
-    function testRevertUpgradeModulesNonModuleIdContract() external {
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(dispatcher);
-
-        vm.expectRevert();
-        installerProxy.upgradeModules(moduleAddresses);
-    }
-
-    function testRemoveModules() external {
-        testAddModules();
-
-        address moduleProxy = dispatcher.moduleIdToProxy(_MOCK_MODULE_ID);
-
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(moduleV1);
-
-        vm.expectEmit(true, true, false, false);
-        emit ModuleRemoved(
-            _MOCK_MODULE_ID,
-            address(moduleV1),
-            _MOCK_MODULE_VERSION_V1
-        );
-        installerProxy.removeModules(moduleAddresses);
-
-        assertEq(dispatcher.moduleIdToProxy(_MOCK_MODULE_ID), address(0));
-        assertEq(
-            dispatcher.moduleIdToImplementation(_MOCK_MODULE_ID),
-            address(0)
-        );
-        assertEq(
-            dispatcher.proxyAddressToTrustRelation(moduleProxy).moduleId,
-            uint32(0)
-        );
-        assertEq(
-            dispatcher
-                .proxyAddressToTrustRelation(moduleProxy)
-                .moduleImplementation,
-            address(0)
-        );
-    }
-
-    function testRevertRemoveModulesModuleNonexistent() external {
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(
-            new MockBaseModule(
-                IBaseModule.ModuleSettings({
-                    moduleId: 777,
-                    moduleType: _MOCK_MODULE_TYPE,
-                    moduleVersion: 777,
-                    moduleUpgradeable: true,
-                    moduleRemoveable: true
-                })
-            )
-        );
-
-        vm.expectRevert(
-            abi.encodeWithSelector(ModuleNonexistent.selector, 777)
-        );
-        installerProxy.removeModules(moduleAddresses);
-    }
-
-    function testRevertRemoveModulesAddNonContract() external {
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(1);
-
-        vm.expectRevert();
-        installerProxy.removeModules(moduleAddresses);
-    }
-
-    function testRevertRemoveModulesNonModuleIdContract() external {
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(dispatcher);
-
-        vm.expectRevert();
-        installerProxy.removeModules(moduleAddresses);
-    }
+    //     assertEq(singleModuleV1Implementation, address(singleModuleV1));
+    //     assertTrue(moduleProxy != address(0));
+    //     assertTrue(
+    //         dispatcher.proxyAddressToTrustRelation(moduleProxy).moduleId ==
+    //             _SINGLE_MODULE_ID
+    //     );
+    //     assertTrue(
+    //         dispatcher
+    //             .proxyAddressToTrustRelation(moduleProxy)
+    //             .moduleImplementation == singleModuleV1Implementation
+    //     );
+    // }
 }

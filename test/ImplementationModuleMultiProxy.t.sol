@@ -22,40 +22,46 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     // Constants
     // =========
 
-    uint32 internal constant _TOKEN_HUB_MODULE_ID = 100;
-    uint16 internal constant _TOKEN_HUB_MODULE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
-    uint16 internal constant _TOKEN_HUB_MODULE_VERSION = 1;
+    uint32 internal constant _MODULE_SINGLE_ID = 100;
+    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
+    uint16 internal constant _MODULE_SINGLE_VERSION = 1;
+    bool internal constant _MODULE_SINGLE_UPGRADEABLE = true;
+    bool internal constant _MODULE_SINGLE_REMOVEABLE = true;
 
-    uint32 internal constant _TOKEN_MODULE_ID = 101;
-    uint16 internal constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_PROXY;
-    uint16 internal constant _TOKEN_MODULE_VERSION_V1 = 1;
-    uint16 internal constant _TOKEN_MODULE_VERSION_V2 = 2;
+    uint32 internal constant _MODULE_MULTI_ID = 101;
+    uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_PROXY;
+    uint16 internal constant _MODULE_MULTI_VERSION_V1 = 1;
+    uint16 internal constant _MODULE_MULTI_VERSION_V2 = 2;
+    bool internal constant _MODULE_MULTI_UPGRADEABLE_V1 = true;
+    bool internal constant _MODULE_MULTI_UPGRADEABLE_V2 = false;
+    bool internal constant _MODULE_MULTI_REMOVEABLE_V1 = true;
+    bool internal constant _MODULE_MULTI_REMOVEABLE_V2 = false;
 
-    string internal constant _TOKEN_A_MODULE_NAME = "TOKEN A";
-    string internal constant _TOKEN_A_MODULE_SYMBOL = "TKNA";
-    uint8 internal constant _TOKEN_A_MODULE_DECIMALS = 18;
+    string internal constant _MODULE_MULTI_NAME_A = "TOKEN A";
+    string internal constant _MODULE_MULTI_SYMBOL_A = "TKNA";
+    uint8 internal constant _MODULE_MULTI_DECIMALS_A = 18;
 
-    string internal constant _TOKEN_B_MODULE_NAME = "TOKEN B";
-    string internal constant _TOKEN_B_MODULE_SYMBOL = "TKNB";
-    uint8 internal constant _TOKEN_B_MODULE_DECIMALS = 6;
+    string internal constant _MODULE_MULTI_NAME_B = "TOKEN B";
+    string internal constant _MODULE_MULTI_SYMBOL_B = "TKNB";
+    uint8 internal constant _MODULE_MULTI_DECIMALS_B = 6;
 
-    string internal constant _TOKEN_C_MODULE_NAME = "TOKEN C";
-    string internal constant _TOKEN_C_MODULE_SYMBOL = "TKNC";
-    uint8 internal constant _TOKEN_C_MODULE_DECIMALS = 8;
+    string internal constant _MODULE_MULTI_NAME_C = "TOKEN C";
+    string internal constant _MODULE_MULTI_SYMBOL_C = "TKNC";
+    uint8 internal constant _MODULE_MULTI_DECIMALS_C = 8;
 
     // =======
     // Storage
     // =======
 
-    MockImplementationERC20Hub public tokenHub;
-    MockImplementationERC20Hub public tokenHubProxy;
+    MockImplementationERC20Hub public singleModule;
+    MockImplementationERC20Hub public singleModuleProxy;
 
-    MockImplementationERC20 public tokenV1;
-    MockImplementationERC20 public tokenV2;
+    MockImplementationERC20 public multiModuleV1;
+    MockImplementationERC20 public multiModuleV2;
 
-    MockImplementationERC20 public tokenAProxy;
-    MockImplementationERC20 public tokenBProxy;
-    MockImplementationERC20 public tokenCProxy;
+    MockImplementationERC20 public multiModuleProxyA;
+    MockImplementationERC20 public multiModuleProxyB;
+    MockImplementationERC20 public multiModuleProxyC;
 
     // =====
     // Setup
@@ -64,70 +70,70 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     function setUp() public virtual override {
         super.setUp();
 
-        tokenHub = new MockImplementationERC20Hub(
+        singleModule = new MockImplementationERC20Hub(
             IBaseModule.ModuleSettings({
-                moduleId: _TOKEN_HUB_MODULE_ID,
-                moduleType: _TOKEN_HUB_MODULE_TYPE,
-                moduleVersion: _TOKEN_HUB_MODULE_VERSION,
-                moduleUpgradeable: true,
-                moduleRemoveable: true
+                moduleId: _MODULE_SINGLE_ID,
+                moduleType: _MODULE_SINGLE_TYPE,
+                moduleVersion: _MODULE_SINGLE_VERSION,
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE,
+                moduleRemoveable: _MODULE_SINGLE_REMOVEABLE
             })
         );
 
-        tokenV1 = new MockImplementationERC20(
+        multiModuleV1 = new MockImplementationERC20(
             IBaseModule.ModuleSettings({
-                moduleId: _TOKEN_MODULE_ID,
-                moduleType: _TOKEN_MODULE_TYPE,
-                moduleVersion: _TOKEN_MODULE_VERSION_V1,
-                moduleUpgradeable: true,
-                moduleRemoveable: true
+                moduleId: _MODULE_MULTI_ID,
+                moduleType: _MODULE_MULTI_TYPE,
+                moduleVersion: _MODULE_MULTI_VERSION_V1,
+                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V1,
+                moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V1
             })
         );
 
-        tokenV2 = new MockImplementationERC20(
+        multiModuleV2 = new MockImplementationERC20(
             IBaseModule.ModuleSettings({
-                moduleId: _TOKEN_MODULE_ID,
-                moduleType: _TOKEN_MODULE_TYPE,
-                moduleVersion: _TOKEN_MODULE_VERSION_V2,
-                moduleUpgradeable: true,
-                moduleRemoveable: true
+                moduleId: _MODULE_MULTI_ID,
+                moduleType: _MODULE_MULTI_TYPE,
+                moduleVersion: _MODULE_MULTI_VERSION_V2,
+                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V2,
+                moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V2
             })
         );
 
         address[] memory moduleAddresses = new address[](2);
-        moduleAddresses[0] = address(tokenHub);
-        moduleAddresses[1] = address(tokenV1);
+        moduleAddresses[0] = address(singleModule);
+        moduleAddresses[1] = address(multiModuleV1);
         installerProxy.addModules(moduleAddresses);
 
-        tokenHubProxy = MockImplementationERC20Hub(
-            dispatcher.moduleIdToProxy(_TOKEN_HUB_MODULE_ID)
+        singleModuleProxy = MockImplementationERC20Hub(
+            dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID)
         );
 
-        tokenAProxy = MockImplementationERC20(
-            tokenHubProxy.addERC20(
-                _TOKEN_MODULE_ID,
-                _TOKEN_MODULE_TYPE,
-                _TOKEN_A_MODULE_NAME,
-                _TOKEN_A_MODULE_SYMBOL,
-                _TOKEN_A_MODULE_DECIMALS
+        multiModuleProxyA = MockImplementationERC20(
+            singleModuleProxy.addERC20(
+                _MODULE_MULTI_ID,
+                _MODULE_MULTI_TYPE,
+                _MODULE_MULTI_NAME_A,
+                _MODULE_MULTI_SYMBOL_A,
+                _MODULE_MULTI_DECIMALS_A
             )
         );
-        tokenBProxy = MockImplementationERC20(
-            tokenHubProxy.addERC20(
-                _TOKEN_MODULE_ID,
-                _TOKEN_MODULE_TYPE,
-                _TOKEN_B_MODULE_NAME,
-                _TOKEN_B_MODULE_SYMBOL,
-                _TOKEN_B_MODULE_DECIMALS
+        multiModuleProxyB = MockImplementationERC20(
+            singleModuleProxy.addERC20(
+                _MODULE_MULTI_ID,
+                _MODULE_MULTI_TYPE,
+                _MODULE_MULTI_NAME_B,
+                _MODULE_MULTI_SYMBOL_B,
+                _MODULE_MULTI_DECIMALS_B
             )
         );
-        tokenCProxy = MockImplementationERC20(
-            tokenHubProxy.addERC20(
-                _TOKEN_MODULE_ID,
-                _TOKEN_MODULE_TYPE,
-                _TOKEN_C_MODULE_NAME,
-                _TOKEN_C_MODULE_SYMBOL,
-                _TOKEN_C_MODULE_DECIMALS
+        multiModuleProxyC = MockImplementationERC20(
+            singleModuleProxy.addERC20(
+                _MODULE_MULTI_ID,
+                _MODULE_MULTI_TYPE,
+                _MODULE_MULTI_NAME_C,
+                _MODULE_MULTI_SYMBOL_C,
+                _MODULE_MULTI_DECIMALS_C
             )
         );
     }
@@ -137,34 +143,166 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     // ==========
 
     function invariantMetadata() public {
-        assertEq(tokenAProxy.name(), _TOKEN_A_MODULE_NAME);
-        assertEq(tokenAProxy.symbol(), _TOKEN_A_MODULE_SYMBOL);
-        assertEq(tokenAProxy.decimals(), _TOKEN_A_MODULE_DECIMALS);
+        assertEq(multiModuleProxyA.name(), _MODULE_MULTI_NAME_A);
+        assertEq(multiModuleProxyA.symbol(), _MODULE_MULTI_SYMBOL_A);
+        assertEq(multiModuleProxyA.decimals(), _MODULE_MULTI_DECIMALS_A);
 
-        assertEq(tokenBProxy.name(), _TOKEN_B_MODULE_NAME);
-        assertEq(tokenBProxy.symbol(), _TOKEN_B_MODULE_SYMBOL);
-        assertEq(tokenBProxy.decimals(), _TOKEN_B_MODULE_DECIMALS);
+        assertEq(multiModuleProxyB.name(), _MODULE_MULTI_NAME_B);
+        assertEq(multiModuleProxyB.symbol(), _MODULE_MULTI_SYMBOL_B);
+        assertEq(multiModuleProxyB.decimals(), _MODULE_MULTI_DECIMALS_B);
 
-        assertEq(tokenCProxy.name(), _TOKEN_C_MODULE_NAME);
-        assertEq(tokenCProxy.symbol(), _TOKEN_C_MODULE_SYMBOL);
-        assertEq(tokenCProxy.decimals(), _TOKEN_C_MODULE_DECIMALS);
+        assertEq(multiModuleProxyC.name(), _MODULE_MULTI_NAME_C);
+        assertEq(multiModuleProxyC.symbol(), _MODULE_MULTI_SYMBOL_C);
+        assertEq(multiModuleProxyC.decimals(), _MODULE_MULTI_DECIMALS_C);
     }
 
     // =====
     // Tests
     // =====
 
+    function testModuleSettings() external {
+        IBaseModule.ModuleSettings memory multiModuleSettingsV1 = multiModuleV1
+            .moduleSettings();
+
+        assertEq(multiModuleSettingsV1.moduleId, _MODULE_MULTI_ID);
+        assertEq(multiModuleSettingsV1.moduleVersion, _MODULE_MULTI_VERSION_V1);
+        assertEq(multiModuleSettingsV1.moduleType, _MODULE_MULTI_TYPE);
+        assertEq(
+            multiModuleSettingsV1.moduleUpgradeable,
+            _MODULE_MULTI_UPGRADEABLE_V1
+        );
+        assertEq(
+            multiModuleSettingsV1.moduleRemoveable,
+            _MODULE_MULTI_REMOVEABLE_V1
+        );
+
+        IBaseModule.ModuleSettings memory multiModuleSettingsV2 = multiModuleV2
+            .moduleSettings();
+
+        assertEq(multiModuleSettingsV2.moduleId, _MODULE_MULTI_ID);
+        assertEq(multiModuleSettingsV2.moduleVersion, _MODULE_MULTI_VERSION_V2);
+        assertEq(multiModuleSettingsV2.moduleType, _MODULE_MULTI_TYPE);
+        assertEq(
+            multiModuleSettingsV2.moduleUpgradeable,
+            _MODULE_MULTI_UPGRADEABLE_V2
+        );
+        assertEq(
+            multiModuleSettingsV2.moduleRemoveable,
+            _MODULE_MULTI_REMOVEABLE_V2
+        );
+    }
+
     function testUpgradeMultiProxySingleImplementation() external {
-        assertEq(tokenAProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V1);
-        assertEq(tokenBProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V1);
-        assertEq(tokenCProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V1);
+        IBaseModule.ModuleSettings
+            memory multiModuleProxySettingsA = multiModuleProxyA
+                .moduleSettings();
+
+        IBaseModule.ModuleSettings
+            memory multiModuleProxySettingsB = multiModuleProxyB
+                .moduleSettings();
+
+        IBaseModule.ModuleSettings
+            memory multiModuleProxySettingsC = multiModuleProxyC
+                .moduleSettings();
+
+        assertEq(multiModuleProxySettingsA.moduleId, _MODULE_MULTI_ID);
+        assertEq(
+            multiModuleProxySettingsA.moduleVersion,
+            _MODULE_MULTI_VERSION_V1
+        );
+        assertEq(multiModuleProxySettingsA.moduleType, _MODULE_MULTI_TYPE);
+        assertEq(
+            multiModuleProxySettingsA.moduleUpgradeable,
+            _MODULE_MULTI_UPGRADEABLE_V1
+        );
+        assertEq(
+            multiModuleProxySettingsA.moduleRemoveable,
+            _MODULE_MULTI_REMOVEABLE_V1
+        );
+
+        assertEq(multiModuleProxySettingsB.moduleId, _MODULE_MULTI_ID);
+        assertEq(
+            multiModuleProxySettingsB.moduleVersion,
+            _MODULE_MULTI_VERSION_V1
+        );
+        assertEq(multiModuleProxySettingsB.moduleType, _MODULE_MULTI_TYPE);
+        assertEq(
+            multiModuleProxySettingsB.moduleUpgradeable,
+            _MODULE_MULTI_UPGRADEABLE_V1
+        );
+        assertEq(
+            multiModuleProxySettingsB.moduleRemoveable,
+            _MODULE_MULTI_REMOVEABLE_V1
+        );
+
+        assertEq(multiModuleProxySettingsC.moduleId, _MODULE_MULTI_ID);
+        assertEq(
+            multiModuleProxySettingsC.moduleVersion,
+            _MODULE_MULTI_VERSION_V1
+        );
+        assertEq(multiModuleProxySettingsC.moduleType, _MODULE_MULTI_TYPE);
+        assertEq(
+            multiModuleProxySettingsC.moduleUpgradeable,
+            _MODULE_MULTI_UPGRADEABLE_V1
+        );
+        assertEq(
+            multiModuleProxySettingsC.moduleRemoveable,
+            _MODULE_MULTI_REMOVEABLE_V1
+        );
+
+        // Perform upgrade
 
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(tokenV2);
+        moduleAddresses[0] = address(multiModuleV2);
         installerProxy.upgradeModules(moduleAddresses);
 
-        assertEq(tokenAProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V2);
-        assertEq(tokenBProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V2);
-        assertEq(tokenCProxy.moduleVersion(), _TOKEN_MODULE_VERSION_V2);
+        multiModuleProxySettingsA = multiModuleProxyA.moduleSettings();
+        multiModuleProxySettingsB = multiModuleProxyB.moduleSettings();
+        multiModuleProxySettingsC = multiModuleProxyC.moduleSettings();
+
+        assertEq(multiModuleProxySettingsA.moduleId, _MODULE_MULTI_ID);
+        assertEq(
+            multiModuleProxySettingsA.moduleVersion,
+            _MODULE_MULTI_VERSION_V2
+        );
+        assertEq(multiModuleProxySettingsA.moduleType, _MODULE_MULTI_TYPE);
+        assertEq(
+            multiModuleProxySettingsA.moduleUpgradeable,
+            _MODULE_MULTI_UPGRADEABLE_V2
+        );
+        assertEq(
+            multiModuleProxySettingsA.moduleRemoveable,
+            _MODULE_MULTI_REMOVEABLE_V2
+        );
+
+        assertEq(multiModuleProxySettingsB.moduleId, _MODULE_MULTI_ID);
+        assertEq(
+            multiModuleProxySettingsB.moduleVersion,
+            _MODULE_MULTI_VERSION_V2
+        );
+        assertEq(multiModuleProxySettingsB.moduleType, _MODULE_MULTI_TYPE);
+        assertEq(
+            multiModuleProxySettingsB.moduleUpgradeable,
+            _MODULE_MULTI_UPGRADEABLE_V2
+        );
+        assertEq(
+            multiModuleProxySettingsB.moduleRemoveable,
+            _MODULE_MULTI_REMOVEABLE_V2
+        );
+
+        assertEq(multiModuleProxySettingsC.moduleId, _MODULE_MULTI_ID);
+        assertEq(
+            multiModuleProxySettingsC.moduleVersion,
+            _MODULE_MULTI_VERSION_V2
+        );
+        assertEq(multiModuleProxySettingsC.moduleType, _MODULE_MULTI_TYPE);
+        assertEq(
+            multiModuleProxySettingsC.moduleUpgradeable,
+            _MODULE_MULTI_UPGRADEABLE_V2
+        );
+        assertEq(
+            multiModuleProxySettingsC.moduleRemoveable,
+            _MODULE_MULTI_REMOVEABLE_V2
+        );
     }
 }

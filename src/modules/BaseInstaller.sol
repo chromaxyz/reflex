@@ -139,19 +139,26 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         for (uint256 i = 0; i < moduleAddresses_.length; ) {
             address moduleAddress = moduleAddresses_[i];
 
+            // Check against existing module
+
             IBaseModule.ModuleSettings memory moduleSettings = BaseModule(
                 moduleAddress
             ).moduleSettings();
 
+            // Verify that the module currently exists.
             if (_modules[moduleSettings.moduleId] == address(0))
                 revert ModuleNonexistent(moduleSettings.moduleId);
 
-            if (!moduleSettings.moduleUpgradeable)
-                revert ModuleNotUpgradeable(moduleSettings.moduleId);
+            // Verify that current module allows for upgrades.
+            if (
+                !IBaseModule(_modules[moduleSettings.moduleId])
+                    .moduleUpgradeable()
+            ) revert ModuleNotUpgradeable(moduleSettings.moduleId);
 
+            // Verify that the next module version is greater than the current module version.
             if (
                 moduleSettings.moduleVersion <=
-                BaseModule(_modules[moduleSettings.moduleId]).moduleVersion()
+                IBaseModule(_modules[moduleSettings.moduleId]).moduleVersion()
             ) revert ModuleInvalidVersion(moduleSettings.moduleId);
 
             _modules[moduleSettings.moduleId] = moduleAddress;
