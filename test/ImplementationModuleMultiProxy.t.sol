@@ -181,8 +181,6 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     }
 
     function testUpgradeMultiProxySingleImplementation() external {
-        // Verify configuration pre-upgrade.
-
         _testModuleConfiguration(
             multiModuleProxyA,
             _MODULE_MULTI_ID,
@@ -210,13 +208,9 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_REMOVEABLE_V1
         );
 
-        // Perform upgrade.
-
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(multiModuleV2);
         installerProxy.upgradeModules(moduleAddresses);
-
-        // Verify configuration post-upgrade.
 
         _testModuleConfiguration(
             multiModuleProxyA,
