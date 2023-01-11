@@ -64,19 +64,14 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
             })
         );
 
-        IBaseModule.ModuleSettings memory moduleSettings = module
-            .moduleSettings();
-
-        assertEq(moduleSettings.moduleId, _MODULE_VALID_ID);
-        assertEq(module.moduleId(), _MODULE_VALID_ID);
-        assertEq(moduleSettings.moduleType, _MODULE_VALID_TYPE_SINGLE);
-        assertEq(module.moduleType(), _MODULE_VALID_TYPE_SINGLE);
-        assertEq(moduleSettings.moduleVersion, _MODULE_VALID_VERSION);
-        assertEq(module.moduleVersion(), _MODULE_VALID_VERSION);
-        assertEq(moduleSettings.moduleUpgradeable, _MODULE_VALID_UPGRADEABLE);
-        assertEq(module.moduleUpgradeable(), _MODULE_VALID_UPGRADEABLE);
-        assertEq(moduleSettings.moduleRemoveable, _MODULE_VALID_REMOVEABLE);
-        assertEq(module.moduleRemoveable(), _MODULE_VALID_REMOVEABLE);
+        _testModuleConfiguration(
+            module,
+            _MODULE_VALID_ID,
+            _MODULE_VALID_TYPE_SINGLE,
+            _MODULE_VALID_VERSION,
+            _MODULE_VALID_UPGRADEABLE,
+            _MODULE_VALID_REMOVEABLE
+        );
     }
 
     function testRevertInvalidModuleIdZeroValue() external {
@@ -129,5 +124,32 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
                 moduleRemoveable: _MODULE_VALID_REMOVEABLE
             })
         );
+    }
+
+    // =========
+    // Utilities
+    // =========
+
+    function _testModuleConfiguration(
+        IBaseModule module_,
+        uint32 moduleId_,
+        uint16 moduleType_,
+        uint16 moduleVersion_,
+        bool moduleUpgradeable_,
+        bool moduleRemoveable_
+    ) internal {
+        IBaseModule.ModuleSettings memory moduleSettings = module_
+            .moduleSettings();
+
+        assertEq(moduleSettings.moduleId, moduleId_);
+        assertEq(module_.moduleId(), moduleId_);
+        assertEq(moduleSettings.moduleType, moduleType_);
+        assertEq(module_.moduleType(), moduleType_);
+        assertEq(moduleSettings.moduleVersion, moduleVersion_);
+        assertEq(module_.moduleVersion(), moduleVersion_);
+        assertEq(moduleSettings.moduleUpgradeable, moduleUpgradeable_);
+        assertEq(module_.moduleUpgradeable(), moduleUpgradeable_);
+        assertEq(moduleSettings.moduleRemoveable, moduleRemoveable_);
+        assertEq(module_.moduleRemoveable(), moduleRemoveable_);
     }
 }
