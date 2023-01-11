@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+# Exit if anything fails
+set -euo pipefail
+
+# Enter glob mode
+shopt -s extglob
+
+# Change directory to project root
+SCRIPT_PATH="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
+cd "$SCRIPT_PATH/.." || exit
+
+# Utilities
+RED="\033[00;31m"
+GREEN="\033[00;32m"
+
+function log () {
+	echo -e $1
+	echo "################################################################################"
+	echo "#### $2 "
+	echo "################################################################################"
+	echo -e "\033[0m"
+}
+
+function notify () {
+	echo -e $1
+	echo "$2 "
+	echo -e "\033[0m"
+}
+
+log $GREEN "Creating storage overview from contracts"
+
+# Variables
+CONTRACTS="BaseDispatcher ImplementationDispatcher"
+FILENAME=.storage-layout
+TEMP_FILENAME=.storage-layout.temp
+
+# Remove previous temporary storage layout
+rm -f $TEMP_FILENAME
+
+# Generate new temporary storage layout for diff
+for CONTRACT in ${CONTRACTS[@]}
+do
+	{
+		echo -e "\n**";
+		echo "$CONTRACT";
+		echo -e "**\n";
+	} >> "$TEMP_FILENAME"
+
+	forge inspect --pretty "$CONTRACT" storage-layout >> "$TEMP_FILENAME"
+
+	echo "Verifying storage layout for $CONTRACT."
+done
+
+if ! cmp -s $FILENAME $TEMP_FILENAME; then
+	notify $RED "Failed!"
+
+	echo "The following lines are different:"
+	diff -a --suppress-common-lines "$FILENAME" "$TEMP_FILENAME" || true
+	rm -f $TEMP_FILENAME
+
+	log $GREEN "Done"
+	exit 1
+else
+	notify $GREEN "Success!"
+
+	rm -f $TEMP_FILENAME
+
+	log $GREEN "Done"
+	exit 0
+fi

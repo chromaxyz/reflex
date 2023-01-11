@@ -3,9 +3,6 @@
 # Exit if anything fails
 set -euo pipefail
 
-# Set environment variables
-set -a; source .env; set +a
-
 # Change directory to project root
 SCRIPT_PATH="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
 cd "$SCRIPT_PATH/.." || exit
@@ -21,13 +18,26 @@ function log () {
   echo -e "\033[0m"
 }
 
-log $GREEN "Deploying using Deploy.s.sol"
+# Variables
+CONTRACTS="BaseDispatcher ImplementationDispatcher"
+FILENAME=.storage-layout
 
-forge script ./script/Deploy.s.sol \
-  --rpc-url $ETH_RPC_URL \
-  --private-key $ETH_PRIVATE_KEY \
-  # --etherscan-api-key $ETHERSCAN_API_KEY \
-  # --verify \
-  # --broadcast
+# Remove previous storage layout
+rm -f $FILENAME
+
+log $GREEN "Creating storage overview"
+
+for CONTRACT in ${CONTRACTS[@]}
+do
+  {
+    echo -e "\n**";
+    echo "$CONTRACT";
+    echo -e "**\n";
+  } >> "$FILENAME"
+
+  forge inspect --pretty "$CONTRACT" storage-layout >> "$FILENAME"
+
+  echo "Generated storage layout for $CONTRACT."
+done
 
 log $GREEN "Done"

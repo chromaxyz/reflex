@@ -167,7 +167,7 @@ sequenceDiagram
 
 ## Known limitations
 
-- Multiple application entrypoints via their proxies.
+- Multiple application entrypoints via their proxies. The proxy address stays consistent through module upgrades.
 - The `Dispatcher` and the internal `Proxy` contracts are not upgradable.
 - Storage in the `Dispatcher` is extendable but implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
 - The first `50` storage slots are reserved allowing us to add new features over time.
@@ -176,13 +176,11 @@ sequenceDiagram
 - Implementers MUST NOT implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
 - The registration of `Modules` MUST BE permissioned, malicious `Modules` can impact the behaviour of the entire application.
 
-## Implementers
+## Safety
 
-In-depth documentation for implementers can be found [here](docs/IMPLEMENTERS.md).
+This is **experimental software** and is provided on an "as is" and "as available" basis.
 
-## Contributors
-
-Documentation for (future) contributors can be found [here](docs/CONTRIBUTORS.md).
+We **do not give any warranties** and **will not be liable for any loss** incurred through any use of this codebase.
 
 ## Acknowledgements
 
@@ -193,7 +191,6 @@ The architecture is directly inspired by [Euler's Proxy Protocol](https://docs.e
 The contracts and tests were inspired by or directly modified from many sources, primarily:
 
 - [Euler](https://github.com/euler-xyz/euler-contracts)
-- [Balancer V2](https://github.com/balancer-labs/balancer-v2-monorepo/tree/master/pkg/vault/contracts)
 - [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
 - [Solmate](https://github.com/transmissions11/solmate)
 - [Solady](https://github.com/Vectorized/solady)

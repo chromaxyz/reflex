@@ -77,6 +77,10 @@ lcov.info
 # Snapshot
 .gas-snapshot
 
+# Storage layout
+.storage-layout
+.storage-layout.temp
+
 # Ignores development broadcast logs
 !/broadcast
 /broadcast/*/5/
