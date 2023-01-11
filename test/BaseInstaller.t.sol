@@ -576,10 +576,17 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // Multi-proxy module tests
     // ========================
 
-    function testAddModulesMultiProxy() external {
+    function testAddModulesMultiProxy() public {
         _addModule(multiModuleV1, _VALID);
 
-        // TODO: add tests
+        address multiModuleImplementationV1 = dispatcher
+            .moduleIdToImplementation(_MODULE_MULTI_ID);
+        address multiModuleProxyV1 = dispatcher.moduleIdToProxy(
+            _MODULE_MULTI_ID
+        );
+
+        assertEq(multiModuleImplementationV1, address(multiModuleV1));
+        assertEq(multiModuleProxyV1, address(0));
     }
 
     function testRevertAddModulesExistentMultiProxy() external {
@@ -589,17 +596,36 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     }
 
     function testUpgradeModulesMultiProxy() external {
-        _addModule(multiModuleV1, _VALID);
+        testAddModulesMultiProxy();
+
+        address multiModuleImplementationV1 = dispatcher
+            .moduleIdToImplementation(_MODULE_MULTI_ID);
+
         _upgradeModule(multiModuleV2, _VALID);
 
-        // TODO: add tests
+        address multiModuleImplementationV2 = dispatcher
+            .moduleIdToImplementation(_MODULE_MULTI_ID);
+        address multiModuleProxyV2 = dispatcher.moduleIdToProxy(
+            _MODULE_MULTI_ID
+        );
+
+        assertTrue(multiModuleImplementationV1 != multiModuleImplementationV2);
+        assertEq(multiModuleProxyV2, address(0));
+        assertEq(multiModuleImplementationV2, address(multiModuleV2));
     }
 
     function testRemoveModulesMultiProxy() external {
-        _addModule(multiModuleV1, _VALID);
+        testAddModulesMultiProxy();
+
         _removeModule(multiModuleV1, _VALID);
 
-        // TODO: add tests
+        assertEq(dispatcher.moduleIdToProxy(_MODULE_MULTI_ID), address(0));
+        assertEq(
+            dispatcher.moduleIdToImplementation(_MODULE_MULTI_ID),
+            address(0)
+        );
+
+        testAddModulesMultiProxy();
     }
 
     function testRevertUpgradeInvalidVersionMultiProxy() external {
@@ -654,10 +680,17 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // Internal module tests
     // =====================
 
-    function testAddModulesInternal() external {
+    function testAddModulesInternal() public {
         _addModule(internalModuleV1, _VALID);
 
-        // TODO: add tests
+        address internalModuleImplementationV1 = dispatcher
+            .moduleIdToImplementation(_MODULE_INTERNAL_ID);
+        address internalModuleProxyV1 = dispatcher.moduleIdToProxy(
+            _MODULE_INTERNAL_ID
+        );
+
+        assertEq(internalModuleImplementationV1, address(internalModuleV1));
+        assertEq(internalModuleProxyV1, address(0));
     }
 
     function testRevertAddModulesExistentInternal() external {
@@ -667,17 +700,38 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     }
 
     function testUpgradeModulesInternal() external {
-        _addModule(internalModuleV1, _VALID);
+        testAddModulesInternal();
+
+        address internalModuleImplementationV1 = dispatcher
+            .moduleIdToImplementation(_MODULE_INTERNAL_ID);
+
         _upgradeModule(internalModuleV2, _VALID);
 
-        // TODO: add tests
+        address internalModuleImplementationV2 = dispatcher
+            .moduleIdToImplementation(_MODULE_INTERNAL_ID);
+        address internalModuleProxyV2 = dispatcher.moduleIdToProxy(
+            _MODULE_INTERNAL_ID
+        );
+
+        assertTrue(
+            internalModuleImplementationV1 != internalModuleImplementationV2
+        );
+        assertEq(internalModuleProxyV2, address(0));
+        assertEq(internalModuleImplementationV2, address(internalModuleV2));
     }
 
     function testRemoveModulesInternal() external {
-        _addModule(internalModuleV1, _VALID);
+        testAddModulesInternal();
+
         _removeModule(internalModuleV1, _VALID);
 
-        // TODO: add tests
+        assertEq(dispatcher.moduleIdToProxy(_MODULE_INTERNAL_ID), address(0));
+        assertEq(
+            dispatcher.moduleIdToImplementation(_MODULE_INTERNAL_ID),
+            address(0)
+        );
+
+        testAddModulesInternal();
     }
 
     function testRevertUpgradeInvalidVersionInternal() external {
