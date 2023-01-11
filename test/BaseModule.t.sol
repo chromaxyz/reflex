@@ -26,6 +26,8 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
     uint16 internal constant _MODULE_VALID_TYPE_INTERNAL =
         _MODULE_TYPE_INTERNAL;
     uint16 internal constant _MODULE_VALID_VERSION = 1;
+    bool internal constant _MODULE_VALID_UPGRADEABLE = true;
+    bool internal constant _MODULE_VALID_REMOVEABLE = true;
 
     uint32 internal constant _MODULE_INVALID_ID = 0;
     uint16 internal constant _MODULE_INVALID_TYPE = 777;
@@ -57,16 +59,24 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
                 moduleId: _MODULE_VALID_ID,
                 moduleType: _MODULE_VALID_TYPE_SINGLE,
                 moduleVersion: _MODULE_VALID_VERSION,
-                moduleUpgradeable: true,
-                moduleRemoveable: true
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
+                moduleRemoveable: _MODULE_VALID_REMOVEABLE
             })
         );
 
+        IBaseModule.ModuleSettings memory moduleSettings = module
+            .moduleSettings();
+
+        assertEq(moduleSettings.moduleId, _MODULE_VALID_ID);
         assertEq(module.moduleId(), _MODULE_VALID_ID);
+        assertEq(moduleSettings.moduleType, _MODULE_VALID_TYPE_SINGLE);
         assertEq(module.moduleType(), _MODULE_VALID_TYPE_SINGLE);
+        assertEq(moduleSettings.moduleVersion, _MODULE_VALID_VERSION);
         assertEq(module.moduleVersion(), _MODULE_VALID_VERSION);
-        assertEq(module.moduleUpgradeable(), true);
-        assertEq(module.moduleRemoveable(), true);
+        assertEq(moduleSettings.moduleUpgradeable, _MODULE_VALID_UPGRADEABLE);
+        assertEq(module.moduleUpgradeable(), _MODULE_VALID_UPGRADEABLE);
+        assertEq(moduleSettings.moduleRemoveable, _MODULE_VALID_REMOVEABLE);
+        assertEq(module.moduleRemoveable(), _MODULE_VALID_REMOVEABLE);
     }
 
     function testRevertInvalidModuleIdZeroValue() external {
@@ -76,8 +86,8 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
                 moduleId: _MODULE_INVALID_ID,
                 moduleType: _MODULE_VALID_TYPE_SINGLE,
                 moduleVersion: _MODULE_VALID_VERSION,
-                moduleUpgradeable: true,
-                moduleRemoveable: true
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
+                moduleRemoveable: _MODULE_VALID_REMOVEABLE
             })
         );
     }
@@ -89,8 +99,8 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
                 moduleId: _MODULE_VALID_ID,
                 moduleType: _MODULE_INVALID_TYPE_ZERO,
                 moduleVersion: _MODULE_VALID_VERSION,
-                moduleUpgradeable: true,
-                moduleRemoveable: true
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
+                moduleRemoveable: _MODULE_VALID_REMOVEABLE
             })
         );
     }
@@ -102,8 +112,8 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
                 moduleId: _MODULE_VALID_ID,
                 moduleType: _MODULE_INVALID_TYPE,
                 moduleVersion: _MODULE_VALID_VERSION,
-                moduleUpgradeable: true,
-                moduleRemoveable: true
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
+                moduleRemoveable: _MODULE_VALID_REMOVEABLE
             })
         );
     }
@@ -115,8 +125,8 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
                 moduleId: _MODULE_VALID_ID,
                 moduleType: _MODULE_VALID_TYPE_SINGLE,
                 moduleVersion: _MODULE_INVALID_VERSION,
-                moduleUpgradeable: true,
-                moduleRemoveable: true
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
+                moduleRemoveable: _MODULE_VALID_REMOVEABLE
             })
         );
     }

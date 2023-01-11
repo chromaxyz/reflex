@@ -161,148 +161,115 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     // =====
 
     function testModuleSettings() external {
-        IBaseModule.ModuleSettings memory multiModuleSettingsV1 = multiModuleV1
-            .moduleSettings();
-
-        assertEq(multiModuleSettingsV1.moduleId, _MODULE_MULTI_ID);
-        assertEq(multiModuleSettingsV1.moduleVersion, _MODULE_MULTI_VERSION_V1);
-        assertEq(multiModuleSettingsV1.moduleType, _MODULE_MULTI_TYPE);
-        assertEq(
-            multiModuleSettingsV1.moduleUpgradeable,
-            _MODULE_MULTI_UPGRADEABLE_V1
-        );
-        assertEq(
-            multiModuleSettingsV1.moduleRemoveable,
+        _testModuleConfiguration(
+            multiModuleV1,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V1,
+            _MODULE_MULTI_UPGRADEABLE_V1,
             _MODULE_MULTI_REMOVEABLE_V1
         );
 
-        IBaseModule.ModuleSettings memory multiModuleSettingsV2 = multiModuleV2
-            .moduleSettings();
-
-        assertEq(multiModuleSettingsV2.moduleId, _MODULE_MULTI_ID);
-        assertEq(multiModuleSettingsV2.moduleVersion, _MODULE_MULTI_VERSION_V2);
-        assertEq(multiModuleSettingsV2.moduleType, _MODULE_MULTI_TYPE);
-        assertEq(
-            multiModuleSettingsV2.moduleUpgradeable,
-            _MODULE_MULTI_UPGRADEABLE_V2
-        );
-        assertEq(
-            multiModuleSettingsV2.moduleRemoveable,
+        _testModuleConfiguration(
+            multiModuleV2,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V2,
+            _MODULE_MULTI_UPGRADEABLE_V2,
             _MODULE_MULTI_REMOVEABLE_V2
         );
     }
 
     function testUpgradeMultiProxySingleImplementation() external {
-        IBaseModule.ModuleSettings
-            memory multiModuleProxySettingsA = multiModuleProxyA
-                .moduleSettings();
+        // Verify configuration pre-upgrade.
 
-        IBaseModule.ModuleSettings
-            memory multiModuleProxySettingsB = multiModuleProxyB
-                .moduleSettings();
-
-        IBaseModule.ModuleSettings
-            memory multiModuleProxySettingsC = multiModuleProxyC
-                .moduleSettings();
-
-        assertEq(multiModuleProxySettingsA.moduleId, _MODULE_MULTI_ID);
-        assertEq(
-            multiModuleProxySettingsA.moduleVersion,
-            _MODULE_MULTI_VERSION_V1
-        );
-        assertEq(multiModuleProxySettingsA.moduleType, _MODULE_MULTI_TYPE);
-        assertEq(
-            multiModuleProxySettingsA.moduleUpgradeable,
-            _MODULE_MULTI_UPGRADEABLE_V1
-        );
-        assertEq(
-            multiModuleProxySettingsA.moduleRemoveable,
+        _testModuleConfiguration(
+            multiModuleProxyA,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V1,
+            _MODULE_MULTI_UPGRADEABLE_V1,
             _MODULE_MULTI_REMOVEABLE_V1
         );
 
-        assertEq(multiModuleProxySettingsB.moduleId, _MODULE_MULTI_ID);
-        assertEq(
-            multiModuleProxySettingsB.moduleVersion,
-            _MODULE_MULTI_VERSION_V1
-        );
-        assertEq(multiModuleProxySettingsB.moduleType, _MODULE_MULTI_TYPE);
-        assertEq(
-            multiModuleProxySettingsB.moduleUpgradeable,
-            _MODULE_MULTI_UPGRADEABLE_V1
-        );
-        assertEq(
-            multiModuleProxySettingsB.moduleRemoveable,
+        _testModuleConfiguration(
+            multiModuleProxyB,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V1,
+            _MODULE_MULTI_UPGRADEABLE_V1,
             _MODULE_MULTI_REMOVEABLE_V1
         );
 
-        assertEq(multiModuleProxySettingsC.moduleId, _MODULE_MULTI_ID);
-        assertEq(
-            multiModuleProxySettingsC.moduleVersion,
-            _MODULE_MULTI_VERSION_V1
-        );
-        assertEq(multiModuleProxySettingsC.moduleType, _MODULE_MULTI_TYPE);
-        assertEq(
-            multiModuleProxySettingsC.moduleUpgradeable,
-            _MODULE_MULTI_UPGRADEABLE_V1
-        );
-        assertEq(
-            multiModuleProxySettingsC.moduleRemoveable,
+        _testModuleConfiguration(
+            multiModuleProxyC,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V1,
+            _MODULE_MULTI_UPGRADEABLE_V1,
             _MODULE_MULTI_REMOVEABLE_V1
         );
 
-        // Perform upgrade
+        // Perform upgrade.
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(multiModuleV2);
         installerProxy.upgradeModules(moduleAddresses);
 
-        multiModuleProxySettingsA = multiModuleProxyA.moduleSettings();
-        multiModuleProxySettingsB = multiModuleProxyB.moduleSettings();
-        multiModuleProxySettingsC = multiModuleProxyC.moduleSettings();
+        // Verify configuration post-upgrade.
 
-        assertEq(multiModuleProxySettingsA.moduleId, _MODULE_MULTI_ID);
-        assertEq(
-            multiModuleProxySettingsA.moduleVersion,
-            _MODULE_MULTI_VERSION_V2
-        );
-        assertEq(multiModuleProxySettingsA.moduleType, _MODULE_MULTI_TYPE);
-        assertEq(
-            multiModuleProxySettingsA.moduleUpgradeable,
-            _MODULE_MULTI_UPGRADEABLE_V2
-        );
-        assertEq(
-            multiModuleProxySettingsA.moduleRemoveable,
+        _testModuleConfiguration(
+            multiModuleProxyA,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V2,
+            _MODULE_MULTI_UPGRADEABLE_V2,
             _MODULE_MULTI_REMOVEABLE_V2
         );
 
-        assertEq(multiModuleProxySettingsB.moduleId, _MODULE_MULTI_ID);
-        assertEq(
-            multiModuleProxySettingsB.moduleVersion,
-            _MODULE_MULTI_VERSION_V2
-        );
-        assertEq(multiModuleProxySettingsB.moduleType, _MODULE_MULTI_TYPE);
-        assertEq(
-            multiModuleProxySettingsB.moduleUpgradeable,
-            _MODULE_MULTI_UPGRADEABLE_V2
-        );
-        assertEq(
-            multiModuleProxySettingsB.moduleRemoveable,
+        _testModuleConfiguration(
+            multiModuleProxyB,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V2,
+            _MODULE_MULTI_UPGRADEABLE_V2,
             _MODULE_MULTI_REMOVEABLE_V2
         );
 
-        assertEq(multiModuleProxySettingsC.moduleId, _MODULE_MULTI_ID);
-        assertEq(
-            multiModuleProxySettingsC.moduleVersion,
-            _MODULE_MULTI_VERSION_V2
-        );
-        assertEq(multiModuleProxySettingsC.moduleType, _MODULE_MULTI_TYPE);
-        assertEq(
-            multiModuleProxySettingsC.moduleUpgradeable,
-            _MODULE_MULTI_UPGRADEABLE_V2
-        );
-        assertEq(
-            multiModuleProxySettingsC.moduleRemoveable,
+        _testModuleConfiguration(
+            multiModuleProxyC,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V2,
+            _MODULE_MULTI_UPGRADEABLE_V2,
             _MODULE_MULTI_REMOVEABLE_V2
         );
+    }
+
+    // =========
+    // Utilities
+    // =========
+
+    function _testModuleConfiguration(
+        IBaseModule module_,
+        uint32 moduleId_,
+        uint16 moduleType_,
+        uint16 moduleVersion_,
+        bool moduleUpgradeable_,
+        bool moduleRemoveable_
+    ) internal {
+        IBaseModule.ModuleSettings memory moduleSettings = module_
+            .moduleSettings();
+
+        assertEq(moduleSettings.moduleId, moduleId_);
+        assertEq(module_.moduleId(), moduleId_);
+        assertEq(moduleSettings.moduleType, moduleType_);
+        assertEq(module_.moduleType(), moduleType_);
+        assertEq(moduleSettings.moduleVersion, moduleVersion_);
+        assertEq(module_.moduleVersion(), moduleVersion_);
+        assertEq(moduleSettings.moduleUpgradeable, moduleUpgradeable_);
+        assertEq(module_.moduleUpgradeable(), moduleUpgradeable_);
+        assertEq(moduleSettings.moduleRemoveable, moduleRemoveable_);
+        assertEq(module_.moduleRemoveable(), moduleRemoveable_);
     }
 }
