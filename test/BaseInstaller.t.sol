@@ -24,36 +24,45 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
     uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
     uint16 internal constant _MODULE_SINGLE_VERSION_V3 = 3;
+    uint16 internal constant _MODULE_SINGLE_VERSION_V4 = 4;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V2 = true;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V3 = false;
+    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V4 = false;
     bool internal constant _MODULE_SINGLE_REMOVEABLE_V1 = true;
     bool internal constant _MODULE_SINGLE_REMOVEABLE_V2 = true;
     bool internal constant _MODULE_SINGLE_REMOVEABLE_V3 = false;
+    bool internal constant _MODULE_SINGLE_REMOVEABLE_V4 = false;
 
     uint32 internal constant _MODULE_MULTI_ID = 101;
     uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_PROXY;
     uint16 internal constant _MODULE_MULTI_VERSION_V1 = 1;
     uint16 internal constant _MODULE_MULTI_VERSION_V2 = 2;
     uint16 internal constant _MODULE_MULTI_VERSION_V3 = 3;
+    uint16 internal constant _MODULE_MULTI_VERSION_V4 = 4;
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V2 = true;
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V3 = false;
+    bool internal constant _MODULE_MULTI_UPGRADEABLE_V4 = false;
     bool internal constant _MODULE_MULTI_REMOVEABLE_V1 = true;
     bool internal constant _MODULE_MULTI_REMOVEABLE_V2 = true;
     bool internal constant _MODULE_MULTI_REMOVEABLE_V3 = false;
+    bool internal constant _MODULE_MULTI_REMOVEABLE_V4 = false;
 
     uint32 internal constant _MODULE_INTERNAL_ID = 102;
     uint16 internal constant _MODULE_INTERNAL_TYPE = _MODULE_TYPE_INTERNAL;
     uint16 internal constant _MODULE_INTERNAL_VERSION_V1 = 1;
     uint16 internal constant _MODULE_INTERNAL_VERSION_V2 = 2;
     uint16 internal constant _MODULE_INTERNAL_VERSION_V3 = 3;
+    uint16 internal constant _MODULE_INTERNAL_VERSION_V4 = 4;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V2 = true;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V3 = false;
+    bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V4 = false;
     bool internal constant _MODULE_INTERNAL_REMOVEABLE_V1 = true;
     bool internal constant _MODULE_INTERNAL_REMOVEABLE_V2 = true;
     bool internal constant _MODULE_INTERNAL_REMOVEABLE_V3 = false;
+    bool internal constant _MODULE_INTERNAL_REMOVEABLE_V4 = false;
 
     // =======
     // Storage
@@ -77,6 +86,12 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
 
     function setUp() public virtual override {
         super.setUp();
+
+        // Scenario:
+        // - V1 is the initial module.
+        // - V2 is the next version, still upgradeable and removeable.
+        // - V3 is the next version, not upgradeable or removeable.
+        // - V4 is never used, expected to throw.
 
         singleModuleV1 = new MockBaseModule(
             IBaseModule.ModuleSettings({
@@ -167,6 +182,18 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                 moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V3
             })
         );
+
+        vm.label(address(singleModuleV1), "SingleModuleV1");
+        vm.label(address(singleModuleV2), "SingleModuleV2");
+        vm.label(address(singleModuleV3), "SingleModuleV3");
+
+        vm.label(address(multiModuleV1), "MultiModuleV1");
+        vm.label(address(multiModuleV2), "MultiModuleV2");
+        vm.label(address(multiModuleV3), "MultiModuleV3");
+
+        vm.label(address(internalModuleV1), "InternalModuleV1");
+        vm.label(address(internalModuleV2), "InternalModuleV2");
+        vm.label(address(internalModuleV3), "InternalModuleV3");
     }
 
     // =====
@@ -413,17 +440,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // Single-proxy module tests
     // =========================
 
-    function testAddModulesSingleProxy() public {
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(singleModuleV1);
-
-        vm.expectEmit(true, true, false, false);
-        emit ModuleAdded(
-            _MODULE_SINGLE_ID,
-            address(singleModuleV1),
-            _MODULE_SINGLE_VERSION_V1
-        );
-        installerProxy.addModules(moduleAddresses);
+    function testAddModulesSingleProxy() external {
+        _addModule(singleModuleV1);
 
         address singleModuleV1Implementation = dispatcher
             .moduleIdToImplementation(_MODULE_SINGLE_ID);
@@ -443,22 +461,13 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     }
 
     function testUpgradeModulesSingleProxy() external {
-        testAddModulesSingleProxy();
+        _addModule(singleModuleV1);
 
         address singleModuleV1Implementation = dispatcher
             .moduleIdToImplementation(_MODULE_SINGLE_ID);
         address moduleProxy = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
 
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(singleModuleV2);
-
-        vm.expectEmit(true, true, false, false);
-        emit ModuleUpgraded(
-            _MODULE_SINGLE_ID,
-            address(singleModuleV2),
-            _MODULE_SINGLE_VERSION_V1
-        );
-        installerProxy.upgradeModules(moduleAddresses);
+        _upgradeModule(singleModuleV2, false);
 
         address singleModuleV2Implementation = dispatcher
             .moduleIdToImplementation(_MODULE_SINGLE_ID);
@@ -480,20 +489,11 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     }
 
     function testRemoveModulesSingleProxy() external {
-        testAddModulesSingleProxy();
+        _addModule(singleModuleV1);
 
         address moduleProxy = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
 
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(singleModuleV1);
-
-        vm.expectEmit(true, true, false, false);
-        emit ModuleRemoved(
-            _MODULE_SINGLE_ID,
-            address(singleModuleV1),
-            _MODULE_SINGLE_VERSION_V1
-        );
-        installerProxy.removeModules(moduleAddresses);
+        _removeModule(singleModuleV1, false);
 
         assertEq(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID), address(0));
         assertEq(
@@ -513,23 +513,41 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     }
 
     function testRevertUpgradeModulesNonUpgradeableSingleProxy() external {
-        singleModuleV1 = new MockBaseModule(
-            IBaseModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION_V1,
-                moduleUpgradeable: true,
-                moduleRemoveable: true
-            })
-        );
+        _addModule(singleModuleV1);
+        _upgradeModule(singleModuleV2, false);
+        _upgradeModule(singleModuleV3, false);
 
-        // TODO: add tests
+        _upgradeModule(
+            new MockBaseModule(
+                IBaseModule.ModuleSettings({
+                    moduleId: _MODULE_SINGLE_ID,
+                    moduleType: _MODULE_SINGLE_TYPE,
+                    moduleVersion: _MODULE_SINGLE_VERSION_V4,
+                    moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V4,
+                    moduleRemoveable: _MODULE_SINGLE_REMOVEABLE_V4
+                })
+            ),
+            true
+        );
     }
 
     function testRevertUpgradeModulesNonRemoveableSingleProxy() external {
-        testAddModulesSingleProxy();
+        _addModule(singleModuleV1);
+        _upgradeModule(singleModuleV2, false);
+        _upgradeModule(singleModuleV3, false);
 
-        // TODO: add tests
+        _removeModule(
+            new MockBaseModule(
+                IBaseModule.ModuleSettings({
+                    moduleId: _MODULE_SINGLE_ID,
+                    moduleType: _MODULE_SINGLE_TYPE,
+                    moduleVersion: _MODULE_SINGLE_VERSION_V4,
+                    moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V4,
+                    moduleRemoveable: _MODULE_SINGLE_REMOVEABLE_V4
+                })
+            ),
+            true
+        );
     }
 
     // ========================
@@ -537,36 +555,9 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // ========================
 
     function testAddModulesMultiProxy() external {
-        address[] memory moduleAddresses = new address[](2);
-        moduleAddresses[0] = address(
-            new MockBaseModule(
-                IBaseModule.ModuleSettings({
-                    moduleId: 2,
-                    moduleType: _MODULE_MULTI_TYPE,
-                    moduleVersion: 1,
-                    moduleUpgradeable: true,
-                    moduleRemoveable: true
-                })
-            )
-        );
-        moduleAddresses[1] = address(
-            new MockBaseModule(
-                IBaseModule.ModuleSettings({
-                    moduleId: 3,
-                    moduleType: _MODULE_MULTI_TYPE,
-                    moduleVersion: 1,
-                    moduleUpgradeable: true,
-                    moduleRemoveable: true
-                })
-            )
-        );
-        installerProxy.addModules(moduleAddresses);
+        _addModule(multiModuleV1);
 
-        assertEq(dispatcher.moduleIdToProxy(2), dispatcher.moduleIdToProxy(3));
-        assertTrue(
-            dispatcher.moduleIdToImplementation(2) !=
-                dispatcher.moduleIdToImplementation(3)
-        );
+        // TODO: add tests
     }
 
     function testUpgradeModulesMultiProxy() external {
@@ -591,5 +582,68 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
 
     function testRemoveModulesInternal() external {
         // TODO: add tests
+    }
+
+    // =========
+    // Utilities
+    // =========
+
+    function _addModule(IBaseModule module_) internal {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(module_);
+
+        vm.expectEmit(true, true, false, false);
+        emit ModuleAdded(
+            module_.moduleId(),
+            address(module_),
+            module_.moduleVersion()
+        );
+        installerProxy.addModules(moduleAddresses);
+    }
+
+    function _upgradeModule(IBaseModule module_, bool throws_) internal {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(module_);
+
+        if (!throws_) {
+            vm.expectEmit(true, true, false, false);
+            emit ModuleUpgraded(
+                module_.moduleId(),
+                address(module_),
+                module_.moduleVersion()
+            );
+        } else {
+            vm.expectRevert(
+                abi.encodeWithSelector(
+                    TBaseInstaller.ModuleNotUpgradeable.selector,
+                    module_.moduleId()
+                )
+            );
+        }
+
+        installerProxy.upgradeModules(moduleAddresses);
+    }
+
+    function _removeModule(IBaseModule module_, bool throws_) internal {
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(module_);
+
+        if (!throws_) {
+            vm.expectEmit(true, true, false, false);
+            emit ModuleRemoved(
+                module_.moduleId(),
+                address(module_),
+                module_.moduleVersion()
+            );
+        } else {
+            vm.expectRevert(
+                abi.encodeWithSelector(
+                    TBaseInstaller.ModuleNotRemoveable.selector,
+                    module_.moduleId()
+                )
+            );
+        }
+
+        installerProxy.removeModules(moduleAddresses);
     }
 }
