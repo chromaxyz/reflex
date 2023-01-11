@@ -57,17 +57,18 @@ contract State is BaseState, Constants {
 }
 
 contract Installer is BaseInstaller, State {
-  constructor(uint16 moduleVersion_) BaseInstaller moduleVersion_) {}
+  constructor(
+    ModuleSettings memory moduleSettings_
+  ) BaseInstaller(moduleSettings_) {}
 
   // ...
 }
 
 contract Dispatcher is BaseDispatcher, State {
   constructor(
-    string memory name_,
     address owner_,
     address installerModule_
-  ) BaseDispatcher(name_, owner_, installerModule_) {}
+  ) BaseDispatcher(owner_, installerModule_) {}
 
   // ...
 }
@@ -79,6 +80,7 @@ contract ExampleModule is BaseModule, State {
 
   // ...
 }
+
 ```
 
 ## Inheritance diagram
