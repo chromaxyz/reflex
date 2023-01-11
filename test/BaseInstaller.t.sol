@@ -19,6 +19,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // Constants
     // =========
 
+    bytes4 internal constant _VALID = 0;
+
     uint32 internal constant _MODULE_SINGLE_ID = 100;
     uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
     uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
@@ -429,7 +431,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // =========================
 
     function testAddModulesSingleProxy() external {
-        _addModule(singleModuleV1);
+        _addModule(singleModuleV1, _VALID);
 
         address singleModuleV1Implementation = dispatcher
             .moduleIdToImplementation(_MODULE_SINGLE_ID);
@@ -448,14 +450,20 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         );
     }
 
+    function testRevertAddModulesExistentSingleProxy() external {
+        _addModule(singleModuleV1, _VALID);
+
+        _addModule(singleModuleV1, TBaseInstaller.ModuleExistent.selector);
+    }
+
     function testUpgradeModulesSingleProxy() external {
-        _addModule(singleModuleV1);
+        _addModule(singleModuleV1, _VALID);
 
         address singleModuleV1Implementation = dispatcher
             .moduleIdToImplementation(_MODULE_SINGLE_ID);
         address moduleProxy = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
 
-        _upgradeModule(singleModuleV2, false);
+        _upgradeModule(singleModuleV2, _VALID);
 
         address singleModuleV2Implementation = dispatcher
             .moduleIdToImplementation(_MODULE_SINGLE_ID);
@@ -477,11 +485,11 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     }
 
     function testRemoveModulesSingleProxy() external {
-        _addModule(singleModuleV1);
+        _addModule(singleModuleV1, _VALID);
 
         address moduleProxy = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
 
-        _removeModule(singleModuleV1, false);
+        _removeModule(singleModuleV1, _VALID);
 
         assertEq(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID), address(0));
         assertEq(
@@ -500,10 +508,20 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         );
     }
 
+    function testRevertUpgradeInvalidVersionSingleProxy() external {
+        _addModule(singleModuleV1, _VALID);
+        _upgradeModule(singleModuleV2, _VALID);
+
+        _upgradeModule(
+            singleModuleV1,
+            TBaseInstaller.ModuleInvalidVersion.selector
+        );
+    }
+
     function testRevertUpgradeModulesNonUpgradeableSingleProxy() external {
-        _addModule(singleModuleV1);
-        _upgradeModule(singleModuleV2, false);
-        _upgradeModule(singleModuleV3, false);
+        _addModule(singleModuleV1, _VALID);
+        _upgradeModule(singleModuleV2, _VALID);
+        _upgradeModule(singleModuleV3, _VALID);
 
         _upgradeModule(
             new MockBaseModule(
@@ -515,14 +533,14 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                     moduleRemoveable: _MODULE_SINGLE_REMOVEABLE_V4
                 })
             ),
-            true
+            TBaseInstaller.ModuleNotUpgradeable.selector
         );
     }
 
     function testRevertUpgradeModulesNonRemoveableSingleProxy() external {
-        _addModule(singleModuleV1);
-        _upgradeModule(singleModuleV2, false);
-        _upgradeModule(singleModuleV3, false);
+        _addModule(singleModuleV1, _VALID);
+        _upgradeModule(singleModuleV2, _VALID);
+        _upgradeModule(singleModuleV3, _VALID);
 
         _removeModule(
             new MockBaseModule(
@@ -534,7 +552,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                     moduleRemoveable: _MODULE_SINGLE_REMOVEABLE_V4
                 })
             ),
-            true
+            TBaseInstaller.ModuleNotRemoveable.selector
         );
     }
 
@@ -543,30 +561,46 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // ========================
 
     function testAddModulesMultiProxy() external {
-        _addModule(multiModuleV1);
-        _upgradeModule(multiModuleV2, false);
+        _addModule(multiModuleV1, _VALID);
+        _upgradeModule(multiModuleV2, _VALID);
 
         // TODO: add tests
     }
 
+    function testRevertAddModulesExistentMultiProxy() external {
+        _addModule(multiModuleV1, _VALID);
+
+        _addModule(multiModuleV1, TBaseInstaller.ModuleExistent.selector);
+    }
+
     function testUpgradeModulesMultiProxy() external {
-        _addModule(multiModuleV1);
-        _upgradeModule(multiModuleV2, false);
+        _addModule(multiModuleV1, _VALID);
+        _upgradeModule(multiModuleV2, _VALID);
 
         // TODO: add tests
     }
 
     function testRemoveModulesMultiProxy() external {
-        _addModule(multiModuleV1);
-        _removeModule(multiModuleV1, false);
+        _addModule(multiModuleV1, _VALID);
+        _removeModule(multiModuleV1, _VALID);
 
         // TODO: add tests
     }
 
+    function testRevertUpgradeInvalidVersionMultiProxy() external {
+        _addModule(multiModuleV1, _VALID);
+        _upgradeModule(multiModuleV2, _VALID);
+
+        _upgradeModule(
+            multiModuleV1,
+            TBaseInstaller.ModuleInvalidVersion.selector
+        );
+    }
+
     function testRevertUpgradeModulesNonUpgradeableMultiProxy() external {
-        _addModule(multiModuleV1);
-        _upgradeModule(multiModuleV2, false);
-        _upgradeModule(multiModuleV3, false);
+        _addModule(multiModuleV1, _VALID);
+        _upgradeModule(multiModuleV2, _VALID);
+        _upgradeModule(multiModuleV3, _VALID);
 
         _upgradeModule(
             new MockBaseModule(
@@ -578,14 +612,14 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                     moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V4
                 })
             ),
-            true
+            TBaseInstaller.ModuleNotUpgradeable.selector
         );
     }
 
     function testRevertUpgradeModulesNonRemoveableMultiProxy() external {
-        _addModule(multiModuleV1);
-        _upgradeModule(multiModuleV2, false);
-        _upgradeModule(multiModuleV3, false);
+        _addModule(multiModuleV1, _VALID);
+        _upgradeModule(multiModuleV2, _VALID);
+        _upgradeModule(multiModuleV3, _VALID);
 
         _removeModule(
             new MockBaseModule(
@@ -597,7 +631,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                     moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V4
                 })
             ),
-            true
+            TBaseInstaller.ModuleNotRemoveable.selector
         );
     }
 
@@ -606,29 +640,45 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // =====================
 
     function testAddModulesInternal() external {
-        _addModule(internalModuleV1);
+        _addModule(internalModuleV1, _VALID);
 
         // TODO: add tests
     }
 
+    function testRevertAddModulesExistentInternal() external {
+        _addModule(internalModuleV1, _VALID);
+
+        _addModule(internalModuleV1, TBaseInstaller.ModuleExistent.selector);
+    }
+
     function testUpgradeModulesInternal() external {
-        _addModule(internalModuleV1);
-        _upgradeModule(internalModuleV2, false);
+        _addModule(internalModuleV1, _VALID);
+        _upgradeModule(internalModuleV2, _VALID);
 
         // TODO: add tests
     }
 
     function testRemoveModulesInternal() external {
-        _addModule(internalModuleV1);
-        _removeModule(internalModuleV1, false);
+        _addModule(internalModuleV1, _VALID);
+        _removeModule(internalModuleV1, _VALID);
 
         // TODO: add tests
     }
 
+    function testRevertUpgradeInvalidVersionInternal() external {
+        _addModule(internalModuleV1, _VALID);
+        _upgradeModule(internalModuleV2, _VALID);
+
+        _upgradeModule(
+            internalModuleV1,
+            TBaseInstaller.ModuleInvalidVersion.selector
+        );
+    }
+
     function testRevertUpgradeModulesNonUpgradeableInternal() external {
-        _addModule(internalModuleV1);
-        _upgradeModule(internalModuleV2, false);
-        _upgradeModule(internalModuleV3, false);
+        _addModule(internalModuleV1, _VALID);
+        _upgradeModule(internalModuleV2, _VALID);
+        _upgradeModule(internalModuleV3, _VALID);
 
         _upgradeModule(
             new MockBaseModule(
@@ -640,14 +690,14 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                     moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V4
                 })
             ),
-            true
+            TBaseInstaller.ModuleNotUpgradeable.selector
         );
     }
 
     function testRevertUpgradeModulesNonRemoveableInternal() external {
-        _addModule(internalModuleV1);
-        _upgradeModule(internalModuleV2, false);
-        _upgradeModule(internalModuleV3, false);
+        _addModule(internalModuleV1, _VALID);
+        _upgradeModule(internalModuleV2, _VALID);
+        _upgradeModule(internalModuleV3, _VALID);
 
         _removeModule(
             new MockBaseModule(
@@ -659,7 +709,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                     moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V4
                 })
             ),
-            true
+            TBaseInstaller.ModuleNotRemoveable.selector
         );
     }
 
@@ -667,24 +717,31 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // Utilities
     // =========
 
-    function _addModule(IBaseModule module_) internal {
+    function _addModule(IBaseModule module_, bytes4 selector_) internal {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(module_);
 
-        vm.expectEmit(true, true, false, false);
-        emit ModuleAdded(
-            module_.moduleId(),
-            address(module_),
-            module_.moduleVersion()
-        );
+        if (selector_ == _VALID) {
+            vm.expectEmit(true, true, false, false);
+            emit ModuleAdded(
+                module_.moduleId(),
+                address(module_),
+                module_.moduleVersion()
+            );
+        } else {
+            vm.expectRevert(
+                abi.encodeWithSelector(selector_, module_.moduleId())
+            );
+        }
+
         installerProxy.addModules(moduleAddresses);
     }
 
-    function _upgradeModule(IBaseModule module_, bool throws_) internal {
+    function _upgradeModule(IBaseModule module_, bytes4 selector_) internal {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(module_);
 
-        if (!throws_) {
+        if (selector_ == _VALID) {
             vm.expectEmit(true, true, false, false);
             emit ModuleUpgraded(
                 module_.moduleId(),
@@ -693,21 +750,18 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
             );
         } else {
             vm.expectRevert(
-                abi.encodeWithSelector(
-                    TBaseInstaller.ModuleNotUpgradeable.selector,
-                    module_.moduleId()
-                )
+                abi.encodeWithSelector(selector_, module_.moduleId())
             );
         }
 
         installerProxy.upgradeModules(moduleAddresses);
     }
 
-    function _removeModule(IBaseModule module_, bool throws_) internal {
+    function _removeModule(IBaseModule module_, bytes4 selector_) internal {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(module_);
 
-        if (!throws_) {
+        if (selector_ == _VALID) {
             vm.expectEmit(true, true, false, false);
             emit ModuleRemoved(
                 module_.moduleId(),
