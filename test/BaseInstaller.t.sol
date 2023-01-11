@@ -182,18 +182,6 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                 moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V3
             })
         );
-
-        vm.label(address(singleModuleV1), "SingleModuleV1");
-        vm.label(address(singleModuleV2), "SingleModuleV2");
-        vm.label(address(singleModuleV3), "SingleModuleV3");
-
-        vm.label(address(multiModuleV1), "MultiModuleV1");
-        vm.label(address(multiModuleV2), "MultiModuleV2");
-        vm.label(address(multiModuleV3), "MultiModuleV3");
-
-        vm.label(address(internalModuleV1), "InternalModuleV1");
-        vm.label(address(internalModuleV2), "InternalModuleV2");
-        vm.label(address(internalModuleV3), "InternalModuleV3");
     }
 
     // =====
@@ -556,16 +544,61 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
 
     function testAddModulesMultiProxy() external {
         _addModule(multiModuleV1);
+        _upgradeModule(multiModuleV2, false);
 
         // TODO: add tests
     }
 
     function testUpgradeModulesMultiProxy() external {
+        _addModule(multiModuleV1);
+        _upgradeModule(multiModuleV2, false);
+
         // TODO: add tests
     }
 
     function testRemoveModulesMultiProxy() external {
+        _addModule(multiModuleV1);
+        _removeModule(multiModuleV1, false);
+
         // TODO: add tests
+    }
+
+    function testRevertUpgradeModulesNonUpgradeableMultiProxy() external {
+        _addModule(multiModuleV1);
+        _upgradeModule(multiModuleV2, false);
+        _upgradeModule(multiModuleV3, false);
+
+        _upgradeModule(
+            new MockBaseModule(
+                IBaseModule.ModuleSettings({
+                    moduleId: _MODULE_MULTI_ID,
+                    moduleType: _MODULE_MULTI_TYPE,
+                    moduleVersion: _MODULE_MULTI_VERSION_V4,
+                    moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V4,
+                    moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V4
+                })
+            ),
+            true
+        );
+    }
+
+    function testRevertUpgradeModulesNonRemoveableMultiProxy() external {
+        _addModule(multiModuleV1);
+        _upgradeModule(multiModuleV2, false);
+        _upgradeModule(multiModuleV3, false);
+
+        _removeModule(
+            new MockBaseModule(
+                IBaseModule.ModuleSettings({
+                    moduleId: _MODULE_MULTI_ID,
+                    moduleType: _MODULE_MULTI_TYPE,
+                    moduleVersion: _MODULE_MULTI_VERSION_V4,
+                    moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V4,
+                    moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V4
+                })
+            ),
+            true
+        );
     }
 
     // =====================
@@ -573,15 +606,61 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // =====================
 
     function testAddModulesInternal() external {
+        _addModule(internalModuleV1);
+
         // TODO: add tests
     }
 
     function testUpgradeModulesInternal() external {
+        _addModule(internalModuleV1);
+        _upgradeModule(internalModuleV2, false);
+
         // TODO: add tests
     }
 
     function testRemoveModulesInternal() external {
+        _addModule(internalModuleV1);
+        _removeModule(internalModuleV1, false);
+
         // TODO: add tests
+    }
+
+    function testRevertUpgradeModulesNonUpgradeableInternal() external {
+        _addModule(internalModuleV1);
+        _upgradeModule(internalModuleV2, false);
+        _upgradeModule(internalModuleV3, false);
+
+        _upgradeModule(
+            new MockBaseModule(
+                IBaseModule.ModuleSettings({
+                    moduleId: _MODULE_INTERNAL_ID,
+                    moduleType: _MODULE_INTERNAL_TYPE,
+                    moduleVersion: _MODULE_INTERNAL_VERSION_V4,
+                    moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V4,
+                    moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V4
+                })
+            ),
+            true
+        );
+    }
+
+    function testRevertUpgradeModulesNonRemoveableInternal() external {
+        _addModule(internalModuleV1);
+        _upgradeModule(internalModuleV2, false);
+        _upgradeModule(internalModuleV3, false);
+
+        _removeModule(
+            new MockBaseModule(
+                IBaseModule.ModuleSettings({
+                    moduleId: _MODULE_INTERNAL_ID,
+                    moduleType: _MODULE_INTERNAL_TYPE,
+                    moduleVersion: _MODULE_INTERNAL_VERSION_V4,
+                    moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V4,
+                    moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V4
+                })
+            ),
+            true
+        );
     }
 
     // =========
