@@ -367,7 +367,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     //             IBaseModule.ModuleSettings({
     //                 moduleId: 2,
     //                 moduleType: _MODULE_TYPE_INTERNAL,
-    //                 moduleVersion: 1,
+    //                 moduleVersion: _MODULE_VERSION_DEFAULT,
     //                 moduleUpgradeable: true,
     //                 moduleRemoveable: true
     //             })

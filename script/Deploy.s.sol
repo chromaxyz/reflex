@@ -15,19 +15,32 @@ import {ImplementationDispatcher} from "../test/implementations/ImplementationDi
 import {ImplementationInstaller} from "../test/implementations/ImplementationInstaller.sol";
 import {ImplementationModule} from "../test/implementations/ImplementationModule.sol";
 
-abstract contract DeployConstants is BaseConstants {
-    uint32 internal constant _MODULE_ID_EXAMPLE = 2;
-}
-
 /**
  * @title Deploy Script
  */
-contract DeployScript is Script, DeployConstants {
+contract DeployScript is Script, BaseConstants {
+    // =========
+    // Constants
+    // =========
+
+    uint32 internal constant _MODULE_ID_EXAMPLE = 2;
+    uint16 internal constant _MODULE_VERSION_EXAMPLE = 1;
+    bool internal constant _MODULE_UPGRADEABLE_EXAMPLE = true;
+    bool internal constant _MODULE_REMOVEABLE_EXAMPLE = true;
+
+    // =======
+    // Storage
+    // =======
+
     ImplementationInstaller public installerImplementation;
     ImplementationInstaller public installerProxy;
     ImplementationDispatcher public dispatcher;
     ImplementationModule public exampleModuleImplementation;
     ImplementationModule public exampleModuleProxy;
+
+    // ===
+    // Run
+    // ===
 
     function run() external {
         vm.startBroadcast();
@@ -36,9 +49,9 @@ contract DeployScript is Script, DeployConstants {
             IBaseModule.ModuleSettings({
                 moduleId: _MODULE_ID_INSTALLER,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
-                moduleVersion: 1,
-                moduleUpgradeable: true,
-                moduleRemoveable: false
+                moduleVersion: _MODULE_VERSION_INSTALLER,
+                moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER,
+                moduleRemoveable: _MODULE_REMOVEABLE_INSTALLER
             })
         );
 
@@ -55,9 +68,9 @@ contract DeployScript is Script, DeployConstants {
             IBaseModule.ModuleSettings({
                 moduleId: _MODULE_ID_EXAMPLE,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
-                moduleVersion: 1,
-                moduleUpgradeable: true,
-                moduleRemoveable: true
+                moduleVersion: _MODULE_VERSION_EXAMPLE,
+                moduleUpgradeable: _MODULE_UPGRADEABLE_EXAMPLE,
+                moduleRemoveable: _MODULE_REMOVEABLE_EXAMPLE
             })
         );
 

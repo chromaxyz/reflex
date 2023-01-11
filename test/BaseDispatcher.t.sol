@@ -55,7 +55,7 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
             IBaseModule.ModuleSettings({
                 moduleId: moduleId_,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
-                moduleVersion: 1,
+                moduleVersion: _MODULE_VERSION_INSTALLER,
                 moduleUpgradeable: true,
                 moduleRemoveable: true
             })
@@ -121,7 +121,7 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
         );
         assertEq(
             entries[2].topics[3],
-            bytes32(uint256(_INSTALLER_MODULE_VERSION))
+            bytes32(uint256(_MODULE_VERSION_INSTALLER))
         );
         assertEq(entries[2].emitter, address(dispatcher));
     }

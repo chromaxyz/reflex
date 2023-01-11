@@ -193,31 +193,4 @@ contract ImplementationModuleInternalProxyTest is ImplementationFixture {
 
         assertEq(address(internalModule), address(0));
     }
-
-    // =========
-    // Utilities
-    // =========
-
-    function _testModuleConfiguration(
-        IBaseModule module_,
-        uint32 moduleId_,
-        uint16 moduleType_,
-        uint16 moduleVersion_,
-        bool moduleUpgradeable_,
-        bool moduleRemoveable_
-    ) internal {
-        IBaseModule.ModuleSettings memory moduleSettings = module_
-            .moduleSettings();
-
-        assertEq(moduleSettings.moduleId, moduleId_);
-        assertEq(module_.moduleId(), moduleId_);
-        assertEq(moduleSettings.moduleType, moduleType_);
-        assertEq(module_.moduleType(), moduleType_);
-        assertEq(moduleSettings.moduleVersion, moduleVersion_);
-        assertEq(module_.moduleVersion(), moduleVersion_);
-        assertEq(moduleSettings.moduleUpgradeable, moduleUpgradeable_);
-        assertEq(module_.moduleUpgradeable(), moduleUpgradeable_);
-        assertEq(moduleSettings.moduleRemoveable, moduleRemoveable_);
-        assertEq(module_.moduleRemoveable(), moduleRemoveable_);
-    }
 }

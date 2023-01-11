@@ -39,4 +39,19 @@ abstract contract BaseConstants {
      * @dev Module id of built-in upgradeable installer module.
      */
     uint32 internal constant _MODULE_ID_INSTALLER = 1;
+
+    /**
+     * @dev Module version of built-in upgradeable installer module.
+     */
+    uint16 internal constant _MODULE_VERSION_INSTALLER = 1;
+
+    /**
+     * @dev Module upgradeability of built-in upgradeable installer module.
+     */
+    bool internal constant _MODULE_UPGRADEABLE_INSTALLER = true;
+
+    /**
+     * @dev Module removeability of built-in upgradeable installer module.
+     */
+    bool internal constant _MODULE_REMOVEABLE_INSTALLER = false;
 }
