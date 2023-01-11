@@ -1,6 +1,6 @@
 # Reflex
 
-A first-generation Solidity framework for upgradeable modularized applications.
+A Solidity framework for upgradeable modularized applications.
 
 ## Traits
 
@@ -11,28 +11,37 @@ A first-generation Solidity framework for upgradeable modularized applications.
 - Uses neutral language, avoids introducing new terminology.
 - A built-in upgradeable installer allowing you to add, upgrade and remove modules throughout the application lifetime.
 
-Noteably this is a so-called framework, a single well-tested implementation rather than a specification.
+Noteably this is a so-called framework, a single well-tested audited implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
+
+## Goals
+
+- The core framework must be as minimalistic and lean as possible, aim for a "zero-cost abstraction".
+- The core framework must have a highly optimized hot-path.
+- The core framework must have as little stack pressure as possible.
+- Priveledged administrative functions must optimize for legibility and safety, focus on preventing footguns.
+- Only the `Installer` is required, all other modules are optional.
 
 ## Contracts
 
 ```
 .
-├── BaseConstants.sol "Extendable `Constants`, constants used in the framework."
-├── BaseDispatcher.sol "Non-upgradeable `Dispatcher`, entry point of the framework."
-├── BaseModule.sol "Upgradeable `Module`, building block of the framework."
-├── BaseState.sol "Extendable `State`, state store of the framework."
+├── BaseConstants.sol "Extendable `Constants`: constants used in the framework."
+├── BaseDispatcher.sol "Non-upgradeable `Dispatcher`: dispatcher to module implementations"
+├── BaseModule.sol "Upgradeable `Module`, foundational building block of modules."
+├── BaseState.sol "Extendable `State`, foundational state store of the framework."
 ├── interfaces
 │   ├── IBaseDispatcher.sol "Interface for the `Dispatcher`."
 │   ├── IBaseInstaller.sol "Interface for the `Installer`."
 │   ├── IBaseModule.sol "Interface for the `Module`."
-│   ├── IBase.sol "Interface for the `Base`, internal building block."
-│   └── IBaseState.sol "Interface for the `State`."
+│   ├── IBase.sol "Interface for the `Base`, internal."
+│   ├── IBaseState.sol "Interface for the `State`."
+│   └── Proxy.sol "Interface for the `Proxy`, internal."
 ├── internals
 │   ├── Base.sol "Extendable `Base`, internal abstraction for `Dispatcher` and `Module`.
-│   └── Proxy.sol "Non-upgradeable `Proxy`, internal building block.
+│   └── Proxy.sol "Non-upgradeable `Proxy`, internal proxy indirection layer.
 └── modules
-    └── BaseInstaller.sol "Upgradeable `Installer`, built-in installer for modules."
+    └── BaseInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
 ```
 
 ## Inheritance snippet
@@ -111,7 +120,7 @@ graph TD
 
 ### Single-proxy modules
 
-Modules only accessible by a single `proxy` address and have a single `implementation` address.
+Modules that have a single proxy to a single implementation relation.
 
 ```mermaid
 graph TD
@@ -123,7 +132,7 @@ graph TD
 
 ### Multi-proxy modules
 
-Modules that have many `proxy` addrresses and have a single `implementation` address.
+Modules that have a multiple proxies to a single implementation relation.
 
 ```mermaid
 graph TD
@@ -137,8 +146,8 @@ graph TD
 
 ### Internal-proxy modules
 
-Modules that are called internally by the `Dispatcher` and don't have a `proxy` address.
-Internal modules have the benefit that they are upgradeable whilst the `Dispatcher` itself is not.
+Modules that are called internally and don't have any public-facing proxies.
+Internal modules have the benefit that they are upgradeable where the `Dispatcher` itself is not.
 
 ```mermaid
 graph TD
@@ -158,14 +167,6 @@ sequenceDiagram
     Dispatcher (Storage) ->>Module Proxy: Response
     Module Proxy->>User: Response
 ```
-
-## Goals
-
-- The core framework should be as minimalistic and lean as possible, aim for a "zero-cost abstraction".
-- The core framework should have a highly optimized hot-path.
-- The core framework should have as little stack pressure as possible.
-- Priveledged administrative functions should optimize for legibility and safety, focus on preventing footguns.
-- Only the installer is required, all other modules are optional.
 
 ## Known limitations
 
