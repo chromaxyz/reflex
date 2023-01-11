@@ -11,7 +11,7 @@ interface TBaseState {
 
     /**
      * @notice Trust relationship between `Proxy` and `Dispatcher`.
-     * @dev Packed slot: 4 + 20 + 1 + 1 = 26.
+     * @dev Packed slot: 4 + 20 = 24 bytes out of 32 bytes.
      */
     struct TrustRelation {
         /**

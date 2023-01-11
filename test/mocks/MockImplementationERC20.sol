@@ -12,6 +12,9 @@ contract MockImplementationERC20 is ImplementationERC20 {
     // Constructor
     // ===========
 
+    /**
+     * @param moduleSettings_ Module moduleSettings.
+     */
     constructor(
         ModuleSettings memory moduleSettings_
     ) ImplementationERC20(moduleSettings_) {}

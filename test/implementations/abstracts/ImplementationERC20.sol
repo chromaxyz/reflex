@@ -44,6 +44,9 @@ abstract contract ImplementationERC20 is BaseModule, ImplementationState {
     // Constructor
     // ===========
 
+    /**
+     * @param moduleSettings_ Module moduleSettings.
+     */
     constructor(
         ModuleSettings memory moduleSettings_
     ) BaseModule(moduleSettings_) {}
