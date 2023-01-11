@@ -30,30 +30,30 @@ contract MockImplementationState is ImplementationState {
         return _implementationState5[location_];
     }
 
-    function setImplementationState0(bytes32 message_) public {
+    function setImplementationState0(bytes32 message_) external {
         _implementationState0 = message_;
     }
 
-    function setImplementationState1(uint256 number_) public {
+    function setImplementationState1(uint256 number_) external {
         _implementationState1 = number_;
     }
 
-    function setImplementationState2(address location_) public {
+    function setImplementationState2(address location_) external {
         _implementationState2 = location_;
     }
 
-    function setImplementationState3(address location_) public {
+    function setImplementationState3(address location_) external {
         getImplementationState3 = location_;
     }
 
-    function setImplementationState4(bool value_) public {
+    function setImplementationState4(bool value_) external {
         getImplementationState4 = value_;
     }
 
     function setImplementationState5(
         address location_,
         uint256 number_
-    ) public {
+    ) external {
         _implementationState5[location_] = number_;
     }
 
@@ -74,7 +74,7 @@ contract MockImplementationState is ImplementationState {
         string memory name_,
         string memory symbol_,
         uint8 decimals_
-    ) public {
+    ) external {
         _tokens[token_].name = name_;
         _tokens[token_].symbol = symbol_;
         _tokens[token_].decimals = decimals_;

@@ -39,10 +39,6 @@ contract BaseTest is TBase, BaseFixture {
     // Tests
     // =====
 
-    // =============
-    // General tests
-    // =============
-
     function testRevertCreateProxyInvalidModuleId() external {
         vm.expectRevert(InvalidModuleId.selector);
         base.createProxy(uint32(0), uint16(0));

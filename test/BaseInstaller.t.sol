@@ -67,7 +67,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // Ownership tests
     // ===============
 
-    function testTransferOwnership() public {
+    function testTransferOwnership() external {
         vm.expectEmit(true, false, false, false);
         emit OwnershipTransferStarted(address(this), _users.Alice);
         installerProxy.transferOwnership(_users.Alice);

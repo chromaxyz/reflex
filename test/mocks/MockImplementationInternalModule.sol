@@ -27,7 +27,7 @@ contract MockImplementationInternalModule is BaseModule, ImplementationState {
         return _implementationState1;
     }
 
-    function setImplementationState1(uint256 number_) public {
+    function setImplementationState1(uint256 number_) external {
         _implementationState1 = number_;
     }
 }
