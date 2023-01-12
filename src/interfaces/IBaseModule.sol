@@ -5,7 +5,7 @@ pragma solidity ^0.8.13;
 import {TBase, IBase} from "./IBase.sol";
 
 /**
- * @title Base Installer Test Interface
+ * @title Base Module Test Interface
  */
 interface TBaseModule is TBase {
     // ======
