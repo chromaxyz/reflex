@@ -17,6 +17,25 @@ A Solidity framework for upgradeable modularized applications.
 
 ---
 
+## Table of Contents
+
+- [Reflex](#reflex)
+
+  - [Table of Contents](#table-of-contents)
+  - [Traits](#traits)
+  - [Contracts](#contracts)
+  - [Install](#install)
+  - [Usage](#usage)
+  - [Diagram](#diagram)
+    - [Single-proxy modules](#single-proxy-modules)
+    - [Multi-proxy modules](#multi-proxy-modules)
+    - [Internal modules](#internal-modules)
+    - [User interaction flow](#user-interaction-flow)
+  - [Known limitations](#known-limitations)
+  - [Safety](#safety)
+  - [Acknowledgements](#acknowledgements)
+  - [License](#license)
+
 ## Traits
 
 - Provides a minimal, gas-optimized framework for building and maintaining upgradeable modularized applications.
@@ -28,14 +47,6 @@ A Solidity framework for upgradeable modularized applications.
 
 Noteably this is a so-called framework, a single well-tested audited implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
-
-## Goals
-
-- The core framework must be as minimalistic and lean as possible, aim for a "zero-cost abstraction".
-- The core framework must have a highly optimized hot-path.
-- The core framework must have as little stack pressure as possible.
-- Priveledged administrative functions must optimize for legibility and safety, focus on preventing footguns.
-- Only the `Installer` is required, all other modules are optional.
 
 ## Contracts
 
@@ -59,7 +70,11 @@ The framework serves as the foundation of your modular application allowing you 
     └── BaseInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
 ```
 
-## Inheritance diagram
+## Install
+
+## Usage
+
+## Diagram
 
 ```mermaid
 graph TD
@@ -111,7 +126,7 @@ graph TD
   end
 ```
 
-### Internal-proxy modules
+### Internal modules
 
 Modules that are called internally and don't have any public-facing proxies.
 Internal modules have the benefit that they are upgradeable where the `Dispatcher` itself is not.
@@ -123,7 +138,7 @@ graph TD
   end
 ```
 
-## User flow
+### User interaction flow
 
 ```mermaid
 sequenceDiagram
