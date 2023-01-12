@@ -89,6 +89,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      * Requirements:
      *
      * - The caller must be the current owner.
+     * - Cannot be re-entered.
      */
     function addModules(
         address[] memory moduleAddresses_
@@ -132,6 +133,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      * Requirements:
      *
      * - The caller must be the current owner.
+     * - Cannot be re-entered.
      */
     function upgradeModules(
         address[] memory moduleAddresses_
@@ -190,6 +192,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      * Requirements:
      *
      * - The caller must be the current owner.
+     * - Cannot be re-entered.
      */
     function removeModules(
         address[] memory moduleAddresses_

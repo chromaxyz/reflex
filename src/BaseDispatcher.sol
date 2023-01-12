@@ -115,9 +115,6 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      * @notice Dispatch function to module.
      */
     function dispatch() external virtual override {
-        // TODO: evaluate if we can pack moduleId and moduleImplementation into a single bytes32, preventing multiple 2100 reads
-        // SEE: https://github.com/Chroma-Org/Reflex/tree/feature/packed-module-id
-
         uint32 moduleId = _trusts[msg.sender].moduleId;
         address moduleImplementation = _trusts[msg.sender].moduleImplementation;
 

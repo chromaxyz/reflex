@@ -8,6 +8,7 @@ import {console2} from "forge-std/console2.sol";
 /**
  * @title Harness
  * @dev A rigorous testing and invariant harness.
+ * @author `Users` has been modified from: PRBTest (https://github.com/PaulRBerg/prb-math/blob/main/test/BaseTest.t.sol)
  * @author `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/main/src/test/utils/DSTestPlus.sol)
  * @author `BrualizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol)
  */
@@ -61,6 +62,9 @@ abstract contract Harness is Test {
     // Modifiers
     // =========
 
+    /**
+     * @dev Modifier to perform a gas capture.
+     */
     modifier GasCapture(string memory label_) {
         _startGasCapture(label_);
 
@@ -69,6 +73,9 @@ abstract contract Harness is Test {
         _stopGasCapture();
     }
 
+    /**
+     * @dev Modifier to brutalize memory.
+     */
     modifier BrutalizeMemory() {
         /// @solidity memory-safe-assembly
         assembly {
@@ -147,6 +154,9 @@ abstract contract Harness is Test {
     // Public functions
     // ================
 
+    /**
+     * @dev Internal view for invariant testing.
+     */
     function targetContracts() public view returns (address[] memory) {
         if (_targets.length == 0) revert NoTargetContracts();
 
@@ -157,6 +167,9 @@ abstract contract Harness is Test {
     // Internal functions
     // ==================
 
+    /**
+     * @dev Add target contract for invariant testing.
+     */
     function _addTargetContract(address newTargetContract_) internal {
         _targets.push(newTargetContract_);
     }
@@ -198,6 +211,9 @@ abstract contract Harness is Test {
         );
     }
 
+    /**
+     * @dev Brutalize address space.
+     */
     function _brutalizedAddress(
         address value_
     ) private view returns (address result_) {
@@ -213,6 +229,9 @@ abstract contract Harness is Test {
         }
     }
 
+    /**
+     * @dev Internal memory check.
+     */
     function _checkMemory() internal pure {
         bool zeroSlotIsNotZero;
         bool freeMemoryPointerOverflowed;
@@ -231,6 +250,9 @@ abstract contract Harness is Test {
         if (zeroSlotIsNotZero) revert ZeroSlotNotZero();
     }
 
+    /**
+     * @dev Internal memory check.
+     */
     function _checkMemory(bytes memory s_) internal pure {
         bool notZeroRightPadded;
         bool fmpNotWordAligned;
@@ -265,6 +287,9 @@ abstract contract Harness is Test {
         _checkMemory();
     }
 
+    /**
+     * @dev Internal memory check.
+     */
     function _checkMemory(string memory s_) internal pure {
         _checkMemory(bytes(s_));
     }
@@ -273,6 +298,9 @@ abstract contract Harness is Test {
     // Casts
     // =====
 
+    /**
+     * @dev Cast bool to uint8.
+     */
     function _castBoolToUInt8(bool x_) internal pure returns (uint8 r_) {
         assembly {
             r_ := x_

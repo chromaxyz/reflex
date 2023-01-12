@@ -42,9 +42,7 @@ abstract contract BaseFixture is BaseConstants, Harness {
                 moduleRemoveable: _MODULE_REMOVEABLE_INSTALLER
             })
         );
-
         dispatcher = new MockBaseDispatcher(address(this), address(installer));
-
         installerProxy = MockBaseInstaller(
             dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER)
         );
