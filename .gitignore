@@ -66,6 +66,11 @@ xcuserdata/
 # Solidity
 /out/
 /cache/
+/flattened/
+
+# Python
+/env/
+/venv/
 
 # Coverage
 lcov.info
