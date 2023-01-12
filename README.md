@@ -33,7 +33,7 @@ A Solidity framework for upgradeable modularized applications.
     - [User interaction flow](#user-interaction-flow)
   - [Known limitations](#known-limitations)
   - [Safety](#safety)
-  - [Contribute](#contribute)
+  - [Contributing](#contributing)
   - [Acknowledgements](#acknowledgements)
   - [License](#license)
 
@@ -219,6 +219,12 @@ make test
 This is **experimental software** and is provided on an "as is" and "as available" basis.
 
 We **do not give any warranties** and **will not be liable for any loss** incurred through any use of this codebase.
+
+## Contributing
+
+Contributions to Reflex are welcome by anyone interested in writing more tests, improving readability, optimizing for gas efficiency, extending the core protocol or periphery modules.
+
+Please refer to the [CONTRIBUTORS](docs/CONTRIBUTORS.md) guide for more information.
 
 ## Acknowledgements
 
