@@ -185,7 +185,9 @@ contract ImplementationModuleInternalProxyTest is ImplementationFixture {
         moduleAddresses[0] = address(internalModule);
         installerProxy.removeModules(moduleAddresses);
 
-        internalModule = MockImplementationInternalModule(dispatcher.moduleIdToImplementation(_MODULE_INTERNAL_ID));
+        internalModule = MockImplementationInternalModule(
+            dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID)
+        );
 
         assertEq(address(internalModule), address(0));
     }

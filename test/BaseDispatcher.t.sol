@@ -104,14 +104,10 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
     }
 
     function testInstallerConfiguration() external {
-        assertEq(dispatcher.moduleIdToImplementation(_MODULE_ID_INSTALLER), address(installer));
-
-        TBaseDispatcher.TrustRelation memory installerTrust = dispatcher.proxyAddressToTrustRelation(
-            address(installerProxy)
-        );
-
-        assertEq(installerTrust.moduleId, _MODULE_ID_INSTALLER);
-        assertEq(address(installer), installerTrust.moduleImplementation);
+        assertEq(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER), address(installerProxy));
+        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installer));
+        assertEq(dispatcher.proxyToModuleId(address(installerProxy)), _MODULE_ID_INSTALLER);
+        assertEq(dispatcher.proxyToModuleImplementation(address(installerProxy)), address(installer));
     }
 
     function testGetOwnerThroughInstaller() external {

@@ -429,16 +429,11 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testAddModulesSingleProxy() public {
         _addModule(singleModuleV1, _VALID);
 
-        address singleModuleImplementationV1 = dispatcher.moduleIdToImplementation(_MODULE_SINGLE_ID);
+        address singleModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID);
         address singleModuleProxyV1 = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
 
         assertEq(singleModuleImplementationV1, address(singleModuleV1));
         assertTrue(singleModuleProxyV1 != address(0));
-        assertTrue(dispatcher.proxyAddressToTrustRelation(singleModuleProxyV1).moduleId == _MODULE_SINGLE_ID);
-        assertTrue(
-            dispatcher.proxyAddressToTrustRelation(singleModuleProxyV1).moduleImplementation ==
-                singleModuleImplementationV1
-        );
     }
 
     function testRevertAddModulesExistentSingleProxy() external {
@@ -450,22 +445,17 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testUpgradeModulesSingleProxy() external {
         testAddModulesSingleProxy();
 
-        address singleModuleImplementationV1 = dispatcher.moduleIdToImplementation(_MODULE_SINGLE_ID);
+        address singleModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID);
         address singleModuleProxyV1 = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
 
         _upgradeModule(singleModuleV2, _VALID);
 
-        address singleModuleImplementationV2 = dispatcher.moduleIdToImplementation(_MODULE_SINGLE_ID);
+        address singleModuleImplementationV2 = dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID);
         address singleModuleProxyV2 = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
 
         assertEq(singleModuleProxyV1, singleModuleProxyV2);
         assertTrue(singleModuleImplementationV1 != singleModuleImplementationV2);
         assertEq(singleModuleImplementationV2, address(singleModuleV2));
-        assertTrue(dispatcher.proxyAddressToTrustRelation(singleModuleProxyV2).moduleId == _MODULE_SINGLE_ID);
-        assertEq(
-            dispatcher.proxyAddressToTrustRelation(singleModuleProxyV2).moduleImplementation,
-            singleModuleImplementationV2
-        );
     }
 
     function testRemoveModulesSingleProxy() external {
@@ -476,9 +466,9 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         _removeModule(singleModuleV1, _VALID);
 
         assertEq(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID), address(0));
-        assertEq(dispatcher.moduleIdToImplementation(_MODULE_SINGLE_ID), address(0));
-        assertEq(dispatcher.proxyAddressToTrustRelation(singleModuleProxyV1).moduleId, uint32(0));
-        assertEq(dispatcher.proxyAddressToTrustRelation(singleModuleProxyV1).moduleImplementation, address(0));
+        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID), address(0));
+        assertEq(dispatcher.proxyToModuleId(singleModuleProxyV1), 0);
+        assertEq(dispatcher.proxyToModuleImplementation(singleModuleProxyV1), address(0));
 
         testAddModulesSingleProxy();
     }
@@ -535,7 +525,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testAddModulesMultiProxy() public {
         _addModule(multiModuleV1, _VALID);
 
-        address multiModuleImplementationV1 = dispatcher.moduleIdToImplementation(_MODULE_MULTI_ID);
+        address multiModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID);
         address multiModuleProxyV1 = dispatcher.moduleIdToProxy(_MODULE_MULTI_ID);
 
         assertEq(multiModuleImplementationV1, address(multiModuleV1));
@@ -551,11 +541,11 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testUpgradeModulesMultiProxy() external {
         testAddModulesMultiProxy();
 
-        address multiModuleImplementationV1 = dispatcher.moduleIdToImplementation(_MODULE_MULTI_ID);
+        address multiModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID);
 
         _upgradeModule(multiModuleV2, _VALID);
 
-        address multiModuleImplementationV2 = dispatcher.moduleIdToImplementation(_MODULE_MULTI_ID);
+        address multiModuleImplementationV2 = dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID);
         address multiModuleProxyV2 = dispatcher.moduleIdToProxy(_MODULE_MULTI_ID);
 
         assertTrue(multiModuleImplementationV1 != multiModuleImplementationV2);
@@ -569,7 +559,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         _removeModule(multiModuleV1, _VALID);
 
         assertEq(dispatcher.moduleIdToProxy(_MODULE_MULTI_ID), address(0));
-        assertEq(dispatcher.moduleIdToImplementation(_MODULE_MULTI_ID), address(0));
+        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID), address(0));
 
         testAddModulesMultiProxy();
     }
@@ -626,7 +616,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testAddModulesInternal() public {
         _addModule(internalModuleV1, _VALID);
 
-        address internalModuleImplementationV1 = dispatcher.moduleIdToImplementation(_MODULE_INTERNAL_ID);
+        address internalModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID);
         address internalModuleProxyV1 = dispatcher.moduleIdToProxy(_MODULE_INTERNAL_ID);
 
         assertEq(internalModuleImplementationV1, address(internalModuleV1));
@@ -642,11 +632,11 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testUpgradeModulesInternal() external {
         testAddModulesInternal();
 
-        address internalModuleImplementationV1 = dispatcher.moduleIdToImplementation(_MODULE_INTERNAL_ID);
+        address internalModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID);
 
         _upgradeModule(internalModuleV2, _VALID);
 
-        address internalModuleImplementationV2 = dispatcher.moduleIdToImplementation(_MODULE_INTERNAL_ID);
+        address internalModuleImplementationV2 = dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID);
         address internalModuleProxyV2 = dispatcher.moduleIdToProxy(_MODULE_INTERNAL_ID);
 
         assertTrue(internalModuleImplementationV1 != internalModuleImplementationV2);
@@ -660,7 +650,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         _removeModule(internalModuleV1, _VALID);
 
         assertEq(dispatcher.moduleIdToProxy(_MODULE_INTERNAL_ID), address(0));
-        assertEq(dispatcher.moduleIdToImplementation(_MODULE_INTERNAL_ID), address(0));
+        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID), address(0));
 
         testAddModulesInternal();
     }

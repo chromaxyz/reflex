@@ -65,7 +65,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     // =====
 
     function testModuleIdToImplementation() external {
-        assertEq(dispatcher.moduleIdToImplementation(_MODULE_SINGLE_ID), address(singleModule));
+        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID), address(singleModule));
     }
 
     function testModuleIdToProxy() external {
@@ -82,15 +82,6 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         address proxyAddress = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
 
         assertEq(dispatcher.proxyToModuleImplementation(proxyAddress), address(singleModule));
-    }
-
-    function testProxyAddressToTrustRelation() external {
-        address proxyAddress = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
-
-        TBaseModule.TrustRelation memory relation = dispatcher.proxyAddressToTrustRelation(proxyAddress);
-
-        assertEq(relation.moduleId, _MODULE_SINGLE_ID);
-        assertEq(relation.moduleImplementation, address(singleModule));
     }
 
     function testModuleSettings() external {

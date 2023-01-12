@@ -48,7 +48,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      * @param moduleId_ Module id.
      * @return address Module implementation address.
      */
-    function moduleIdToImplementation(uint32 moduleId_) external view virtual override returns (address) {
+    function moduleIdToModuleImplementation(uint32 moduleId_) external view virtual override returns (address) {
         return _modules[moduleId_];
     }
 
@@ -62,15 +62,6 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
     }
 
     /**
-     * @notice Returns the module id by proxy address.
-     * @param proxyAddress_ Proxy address.
-     * @return uint32 Module id.
-     */
-    function proxyToModuleId(address proxyAddress_) external view virtual override returns (uint32) {
-        return _trusts[proxyAddress_].moduleId;
-    }
-
-    /**
      * @notice Returns the module implementation by proxy address.
      * @param proxyAddress_ Proxy address.
      * @return address Module implementation.
@@ -80,14 +71,12 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
     }
 
     /**
-     * @notice Returns the trust relation by proxy address.
+     * @notice Returns the module id by proxy address.
      * @param proxyAddress_ Proxy address.
-     * @return TrustRelation Trust relation.
+     * @return uint32 Module id.
      */
-    function proxyAddressToTrustRelation(
-        address proxyAddress_
-    ) external view virtual override returns (TrustRelation memory) {
-        return _trusts[proxyAddress_];
+    function proxyToModuleId(address proxyAddress_) external view virtual override returns (uint32) {
+        return _trusts[proxyAddress_].moduleId;
     }
 
     // ==================
