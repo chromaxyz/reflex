@@ -32,9 +32,9 @@ forge flatten src/internals/Proxy.sol --output flattened/Proxy.flat.sol
 forge flatten test/mocks/MockBaseDispatcher.sol --output flattened/MockBaseDispatcher.flat.sol
 forge flatten test/implementations/ImplementationDispatcher.sol --output flattened/ImplementationDispatcher.flat.sol
 
-myth analyze flattened/Proxy.flat.sol
-myth analyze flattened/MockBaseDispatcher.flat.sol
-myth analyze flattened/ImplementationDispatcher.flat.sol
+myth -v 4 analyze flattened/Proxy.flat.sol
+myth -v 4 analyze flattened/MockBaseDispatcher.flat.sol
+myth -v 4 analyze flattened/ImplementationDispatcher.flat.sol
 
 rm -rf flattened
 
