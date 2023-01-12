@@ -61,24 +61,6 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         return _proxies[moduleId_];
     }
 
-    /**
-     * @notice Returns the module implementation by proxy address.
-     * @param proxyAddress_ Proxy address.
-     * @return address Module implementation.
-     */
-    function proxyToModuleImplementation(address proxyAddress_) external view virtual override returns (address) {
-        return _relations[proxyAddress_].moduleImplementation;
-    }
-
-    /**
-     * @notice Returns the module id by proxy address.
-     * @param proxyAddress_ Proxy address.
-     * @return uint32 Module id.
-     */
-    function proxyToModuleId(address proxyAddress_) external view virtual override returns (uint32) {
-        return _relations[proxyAddress_].moduleId;
-    }
-
     // ==================
     // Fallback functions
     // ==================

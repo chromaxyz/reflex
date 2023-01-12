@@ -164,6 +164,10 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         assertEq(IProxy(address(multiModuleProxyA)).implementation(), address(multiModuleV1));
     }
 
+    function testModuleIdToProxy() external {
+        assertEq(dispatcher.moduleIdToProxy(_MODULE_MULTI_ID), address(0));
+    }
+
     function testModuleSettings() external {
         _testModuleConfiguration(
             multiModuleV1,

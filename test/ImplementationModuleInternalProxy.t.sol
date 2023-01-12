@@ -82,6 +82,14 @@ contract ImplementationModuleInternalProxyTest is ImplementationFixture {
     // Tests
     // =====
 
+    function testModuleIdToImplementation() external {
+        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID), address(internalModule));
+    }
+
+    function testModuleIdToProxy() external {
+        assertEq(dispatcher.moduleIdToProxy(_MODULE_INTERNAL_ID), address(0));
+    }
+
     function testModuleSettings() external {
         _testModuleConfiguration(
             singleModule,

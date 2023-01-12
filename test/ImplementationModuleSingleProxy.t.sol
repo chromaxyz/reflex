@@ -73,18 +73,6 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         assertTrue(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID) != address(0));
     }
 
-    function testProxyToModuleId() external {
-        address proxyAddress = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
-
-        assertEq(dispatcher.proxyToModuleId(proxyAddress), _MODULE_SINGLE_ID);
-    }
-
-    function testProxyToModuleImplementation() external {
-        address proxyAddress = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
-
-        assertEq(dispatcher.proxyToModuleImplementation(proxyAddress), address(singleModule));
-    }
-
     function testModuleSettings() external {
         _testModuleConfiguration(
             singleModule,

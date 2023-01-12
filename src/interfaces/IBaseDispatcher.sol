@@ -43,9 +43,5 @@ interface IBaseDispatcher is IBase, TBaseDispatcher {
 
     function moduleIdToProxy(uint32 moduleId_) external view returns (address);
 
-    function proxyToModuleId(address proxyAddress_) external view returns (uint32);
-
-    function proxyToModuleImplementation(address proxyAddress_) external view returns (address);
-
     function dispatch() external;
 }

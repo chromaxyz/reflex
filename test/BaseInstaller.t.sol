@@ -467,8 +467,6 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
 
         assertEq(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID), address(0));
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID), address(0));
-        assertEq(dispatcher.proxyToModuleId(singleModuleProxyV1), 0);
-        assertEq(dispatcher.proxyToModuleImplementation(singleModuleProxyV1), address(0));
 
         testAddModulesSingleProxy();
     }
