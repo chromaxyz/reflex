@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.4;
 
 // Vendors
 import {Test} from "forge-std/Test.sol";
@@ -198,14 +198,4 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
     }
 
     // TODO: add test cases around storage clashes, what happens and can they be resolved?
-
-    // =========
-    // Utilities
-    // =========
-
-    function _castBoolToUInt8(bool x) internal pure returns (uint8 r) {
-        assembly {
-            r := x
-        }
-    }
 }

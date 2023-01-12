@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.4;
 
 // Vendor
 import {Test} from "forge-std/Test.sol";
@@ -157,8 +157,8 @@ abstract contract Harness is Test {
     // Internal functions
     // ==================
 
-    function _addTargetContract(address newTargetContract) internal {
-        _targets.push(newTargetContract);
+    function _addTargetContract(address newTargetContract_) internal {
+        _targets.push(newTargetContract_);
     }
 
     // =========
@@ -199,17 +199,17 @@ abstract contract Harness is Test {
     }
 
     function _brutalizedAddress(
-        address value
-    ) private view returns (address result) {
+        address value_
+    ) private view returns (address result_) {
         /// @solidity memory-safe-assembly
         assembly {
             // Some acrobatics to make the brutalized bits psuedorandomly
             // different with every call.
             mstore(0x00, or(calldataload(0), mload(0x40)))
             mstore(0x20, or(caller(), mload(0x00)))
-            result := or(shl(160, keccak256(0x00, 0x40)), value)
+            result_ := or(shl(160, keccak256(0x00, 0x40)), value_)
             mstore(0x40, add(0x20, mload(0x40)))
-            mstore(0x00, result)
+            mstore(0x00, result_)
         }
     }
 
@@ -231,15 +231,15 @@ abstract contract Harness is Test {
         if (zeroSlotIsNotZero) revert ZeroSlotNotZero();
     }
 
-    function _checkMemory(bytes memory s) internal pure {
+    function _checkMemory(bytes memory s_) internal pure {
         bool notZeroRightPadded;
         bool fmpNotWordAligned;
         bool insufficientMalloc;
 
         /// @solidity memory-safe-assembly
         assembly {
-            let length := mload(s)
-            let lastWord := mload(add(add(s, 0x20), and(length, not(31))))
+            let length := mload(s_)
+            let lastWord := mload(add(add(s_, 0x20), and(length, not(31))))
             let remainder := and(length, 31)
             if remainder {
                 if shl(mul(8, remainder), lastWord) {
@@ -252,7 +252,7 @@ abstract contract Harness is Test {
             mstore(mload(0x40), keccak256(0x00, 0x60))
             // Check if the memory allocated is sufficient.
             if length {
-                if gt(add(add(s, 0x20), length), mload(0x40)) {
+                if gt(add(add(s_, 0x20), length), mload(0x40)) {
                     insufficientMalloc := 1
                 }
             }
@@ -265,7 +265,25 @@ abstract contract Harness is Test {
         _checkMemory();
     }
 
-    function _checkMemory(string memory s) internal pure {
-        _checkMemory(bytes(s));
+    function _checkMemory(string memory s_) internal pure {
+        _checkMemory(bytes(s_));
+    }
+
+    // =====
+    // Casts
+    // =====
+
+    function _castBoolToUInt8(bool x_) internal pure returns (uint8 r_) {
+        assembly {
+            r_ := x_
+        }
+    }
+
+    function _castBytesToBytes32(
+        bytes memory x_
+    ) internal pure returns (bytes32 r_) {
+        assembly {
+            r_ := mload(add(x_, 32))
+        }
     }
 }

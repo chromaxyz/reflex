@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.4;
 
 // Vendor
 import {stdError} from "forge-std/StdError.sol";
@@ -184,7 +184,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         uint256 messageLength = message_.length;
-        bytes32 message = bytes32(abi.encodePacked(message_));
+        bytes32 message = _castBytesToBytes32(abi.encodePacked(message_));
 
         // NOTE: vm.expectEmit does not work as topic1 is checked implicitly.
         // Therefore a workaround using record logs is being used to check manually.
@@ -211,7 +211,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
-        bytes32 message = bytes32(abi.encodePacked(message_));
+        bytes32 message = _castBytesToBytes32(abi.encodePacked(message_));
         uint256 messageLength = message_.length;
 
         bytes32 topic1 = bytes32(uint256(1));
@@ -230,7 +230,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
-        bytes32 message = bytes32(abi.encodePacked(message_));
+        bytes32 message = _castBytesToBytes32(abi.encodePacked(message_));
         uint256 messageLength = message_.length;
 
         bytes32 topic1 = bytes32(uint256(1));
@@ -250,7 +250,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
-        bytes32 message = bytes32(abi.encodePacked(message_));
+        bytes32 message = _castBytesToBytes32(abi.encodePacked(message_));
         uint256 messageLength = message_.length;
 
         bytes32 topic1 = bytes32(uint256(1));
@@ -271,7 +271,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     ) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
-        bytes32 message = bytes32(abi.encodePacked(message_));
+        bytes32 message = _castBytesToBytes32(abi.encodePacked(message_));
         uint256 messageLength = message_.length;
 
         bytes32 topic1 = bytes32(uint256(1));

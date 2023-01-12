@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.4;
 
 // Interfaces
 import {TBase, IBase} from "./IBase.sol";
@@ -46,15 +46,23 @@ interface IBaseDispatcher is IBase, TBaseDispatcher {
     // Methods
     // =======
 
-    function dispatch() external;
-
     function moduleIdToImplementation(
         uint32 moduleId_
     ) external view returns (address);
 
     function moduleIdToProxy(uint32 moduleId_) external view returns (address);
 
+    function proxyToModuleId(
+        address proxyAddress_
+    ) external view returns (uint32);
+
+    function proxyToModuleImplementation(
+        address proxyAddress_
+    ) external view returns (address);
+
     function proxyAddressToTrustRelation(
         address proxyAddress_
     ) external view returns (TrustRelation memory);
+
+    function dispatch() external;
 }
