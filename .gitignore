@@ -81,6 +81,7 @@ lcov.info
 
 # Snapshot
 .gas-snapshot
+.gas-snapshot-*
 
 # Storage layout
 STORAGE_LAYOUT.temp.md

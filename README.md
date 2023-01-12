@@ -25,13 +25,13 @@ A Solidity framework for upgradeable modularized applications.
   - [Traits](#traits)
   - [Contracts](#contracts)
   - [Install](#install)
-  - [Usage](#usage)
   - [Diagram](#diagram)
     - [Single-proxy modules](#single-proxy-modules)
     - [Multi-proxy modules](#multi-proxy-modules)
     - [Internal modules](#internal-modules)
     - [User interaction flow](#user-interaction-flow)
   - [Known limitations](#known-limitations)
+  - [Usage](#usage)
   - [Safety](#safety)
   - [Acknowledgements](#acknowledgements)
   - [License](#license)
@@ -72,7 +72,17 @@ The framework serves as the foundation of your modular application allowing you 
 
 ## Install
 
-## Usage
+To install with [**Foundry**](https://github.com/foundry-rs/foundry):
+
+```sh
+TODO: ADD LINK
+```
+
+To install with [**Hardhat**](https://github.com/nomiclabs/hardhat) or [**Truffle**](https://github.com/trufflesuite/truffle):
+
+```sh
+TODO: ADD LINK
+```
 
 ## Diagram
 
@@ -160,6 +170,42 @@ sequenceDiagram
 - Implementers MUST NOT implement an `implementation()` method in `Modules` as this causes a function selector clash in the `Proxy`.
 - Implementers MUST NOT implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
 - The registration of `Modules` MUST BE permissioned, malicious `Modules` can impact the behaviour of the entire application.
+
+## Usage
+
+Reflex includes a suite of fuzzing and invariant tests written in Solidity with Foundry.
+
+To install Foundry:
+
+```sh
+curl -L https://foundry.paradigm.xyz | bash
+```
+
+This will download foundryup. To start Foundry, run:
+
+```sh
+foundryup
+```
+
+For convenience we use a [Makefile](/Makefile) for running different tasks.
+
+To install dependencies:
+
+```sh
+make install
+```
+
+To build:
+
+```sh
+make build
+```
+
+To test:
+
+```sh
+make test
+```
 
 ## Safety
 
