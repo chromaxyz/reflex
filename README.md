@@ -48,7 +48,7 @@ The framework serves as the foundation of your modular application allowing you 
 
 ```solidity
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.13;
 
 // Vendor
 import { BaseInstaller } from "reflex/modules/BaseInstaller.sol";

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.13;
 
 // Interfaces
 import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
@@ -54,12 +54,7 @@ contract ProxyTest is TProxy, Harness {
         assertTrue(success);
 
         // Expect return data to be empty, result is `popped`.
-        assertEq(
-            // Cast down to bytes32.
-            abi.encodePacked(data),
-            // Cast up to bytes32.
-            abi.encodePacked("")
-        );
+        assertEq(abi.encodePacked(data), abi.encodePacked(""));
 
         vm.stopPrank();
     }

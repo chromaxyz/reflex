@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.13;
 
 // Vendor
 import {Test} from "forge-std/Test.sol";
@@ -276,14 +276,6 @@ abstract contract Harness is Test {
     function _castBoolToUInt8(bool x_) internal pure returns (uint8 r_) {
         assembly {
             r_ := x_
-        }
-    }
-
-    function _castBytesToBytes32(
-        bytes memory x_
-    ) internal pure returns (bytes32 r_) {
-        assembly {
-            r_ := mload(add(x_, 32))
         }
     }
 }
