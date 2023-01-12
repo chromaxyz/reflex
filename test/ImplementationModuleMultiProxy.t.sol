@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 // Interfaces
 import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IProxy} from "../src/interfaces/IProxy.sol";
 
 // Implementations
 import {ImplementationERC20} from "./implementations/abstracts/ImplementationERC20.sol";
@@ -157,6 +158,11 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     // =====
     // Tests
     // =====
+
+    function testModuleIdToImplementation() external {
+        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID), address(multiModuleV1));
+        assertEq(IProxy(address(multiModuleProxyA)).implementation(), address(multiModuleV1));
+    }
 
     function testModuleSettings() external {
         _testModuleConfiguration(

@@ -4,6 +4,9 @@ pragma solidity ^0.8.13;
 // Interfaces
 import {IProxy} from "../interfaces/IProxy.sol";
 
+// Sources
+import {BaseConstants} from "../BaseConstants.sol";
+
 /**
  * @title Proxy
  * @dev Proxies are non-upgradeable stub contracts that have two jobs:
@@ -12,17 +15,30 @@ import {IProxy} from "../interfaces/IProxy.sol";
  * @dev Execution takes place within the dispatcher storage context, not the proxy's.
  * @dev Non-upgradeable.
  */
-contract Proxy is IProxy {
+contract Proxy is IProxy, BaseConstants {
     // =========
     // Constants
     // =========
 
+    /// @dev `bytes4(keccak256(bytes("moduleIdToModuleImplementation(uint32)")))`.
+    bytes4 private constant _MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR = 0x75ea225d;
+
     /// @dev `bytes4(keccak256(bytes("proxyToModuleImplementation(address)")))`.
-    bytes4 private constant _PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR = 0xf2b124bd;
+    bytes4 private constant _PROXY_TO_MODULE_IMPLEMENTATION_SELECTOR = 0xf2b124bd;
 
     // ==========
     // Immutables
     // ==========
+
+    /**
+     * @dev Same as the implementations' module id.
+     */
+    uint32 internal immutable _moduleId;
+
+    /**
+     * @dev Same as the implementations' module type.
+     */
+    uint16 internal immutable _moduleType;
 
     /**
      * @dev Deployer address.
@@ -33,7 +49,13 @@ contract Proxy is IProxy {
     // Constructor
     // ===========
 
-    constructor() {
+    /**
+     * @param moduleId_ Same as the implementations' module id.
+     * @param moduleType_ Same as the implementations' module type.
+     */
+    constructor(uint32 moduleId_, uint16 moduleType_) {
+        _moduleId = moduleId_;
+        _moduleType = moduleType_;
         _deployer = msg.sender;
     }
 
@@ -47,11 +69,18 @@ contract Proxy is IProxy {
      * @return address Implementation address or zero address if unresolved.
      */
     function implementation() external view virtual override returns (address) {
-        // TODO: resolve multi-proxy, somehow map proxy to implementation
+        bool success;
+        bytes memory response;
 
-        (bool success, bytes memory response) = _deployer.staticcall(
-            abi.encodeWithSelector(_PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR, address(this))
-        );
+        if (_moduleType == _MODULE_TYPE_SINGLE_PROXY) {
+            (success, response) = _deployer.staticcall(
+                abi.encodeWithSelector(_PROXY_TO_MODULE_IMPLEMENTATION_SELECTOR, address(this))
+            );
+        } else if (_moduleType == _MODULE_TYPE_MULTI_PROXY) {
+            (success, response) = _deployer.staticcall(
+                abi.encodeWithSelector(_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR, _moduleId)
+            );
+        }
 
         if (success) {
             return abi.decode(response, (address));

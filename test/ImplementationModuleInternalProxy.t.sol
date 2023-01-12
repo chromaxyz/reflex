@@ -82,7 +82,7 @@ contract ImplementationModuleInternalProxyTest is ImplementationFixture {
     // Tests
     // =====
 
-    function testValidModuleSettings() external {
+    function testModuleSettings() external {
         _testModuleConfiguration(
             singleModule,
             _MODULE_SINGLE_ID,

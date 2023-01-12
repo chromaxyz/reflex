@@ -66,6 +66,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
 
     function testModuleIdToImplementation() external {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID), address(singleModule));
+        assertEq(IProxy(address(singleModuleProxy)).implementation(), address(singleModule));
     }
 
     function testModuleIdToProxy() external {
