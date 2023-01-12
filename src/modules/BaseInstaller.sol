@@ -103,7 +103,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
             if (moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
                 address proxyAddress = _createProxy(moduleSettings.moduleId, moduleSettings.moduleType);
-                _trusts[proxyAddress].moduleImplementation = moduleAddress;
+                _relations[proxyAddress].moduleImplementation = moduleAddress;
             }
 
             emit ModuleAdded(moduleSettings.moduleId, moduleAddress, moduleSettings.moduleVersion);
@@ -148,7 +148,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
             if (moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
                 address proxyAddress = _createProxy(moduleSettings.moduleId, moduleSettings.moduleType);
-                _trusts[proxyAddress].moduleImplementation = moduleAddress;
+                _relations[proxyAddress].moduleImplementation = moduleAddress;
             }
 
             emit ModuleUpgraded(moduleSettings.moduleId, moduleAddress, moduleSettings.moduleVersion);
@@ -182,7 +182,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
             if (moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
                 address proxyAddress = _createProxy(moduleSettings.moduleId, moduleSettings.moduleType);
-                delete _trusts[proxyAddress];
+                delete _relations[proxyAddress];
             }
 
             if (

@@ -5,7 +5,13 @@ pragma solidity ^0.8.13;
  * @title Proxy Test Interface
  */
 interface TProxy {
+    // ======
+    // Errors
+    // ======
 
+    error InvalidModuleId();
+
+    error InvalidModuleType();
 }
 
 /**

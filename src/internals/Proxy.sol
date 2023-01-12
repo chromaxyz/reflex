@@ -54,9 +54,13 @@ contract Proxy is IProxy, BaseConstants {
      * @param moduleType_ Same as the implementations' module type.
      */
     constructor(uint32 moduleId_, uint16 moduleType_) {
+        if (moduleId_ == 0) revert InvalidModuleId();
+        if (moduleType_ == 0 || moduleType_ > _MODULE_TYPE_INTERNAL) revert InvalidModuleType();
+
+        _deployer = msg.sender;
+
         _moduleId = moduleId_;
         _moduleType = moduleType_;
-        _deployer = msg.sender;
     }
 
     // ==============
