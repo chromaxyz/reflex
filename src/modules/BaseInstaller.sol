@@ -20,9 +20,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(
-        ModuleSettings memory moduleSettings_
-    ) BaseModule(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) BaseModule(moduleSettings_) {}
 
     // ==============
     // View functions
@@ -54,9 +52,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      *
      * - The caller must be the current owner.
      */
-    function transferOwnership(
-        address newOwner_
-    ) external virtual override onlyOwner {
+    function transferOwnership(address newOwner_) external virtual override onlyOwner {
         if (newOwner_ == address(0)) revert ZeroAddress();
 
         _pendingOwner = newOwner_;
@@ -93,36 +89,24 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      * - The caller must be the current owner.
      * - Cannot be re-entered.
      */
-    function addModules(
-        address[] memory moduleAddresses_
-    ) external virtual override onlyOwner nonReentrant {
+    function addModules(address[] memory moduleAddresses_) external virtual override onlyOwner nonReentrant {
         uint256 moduleAddressLength = moduleAddresses_.length;
 
         for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
-            IBaseModule.ModuleSettings memory moduleSettings = BaseModule(
-                moduleAddress
-            ).moduleSettings();
+            IBaseModule.ModuleSettings memory moduleSettings = BaseModule(moduleAddress).moduleSettings();
 
-            if (_modules[moduleSettings.moduleId] != address(0))
-                revert ModuleExistent(moduleSettings.moduleId);
+            if (_modules[moduleSettings.moduleId] != address(0)) revert ModuleExistent(moduleSettings.moduleId);
 
             _modules[moduleSettings.moduleId] = moduleAddress;
 
             if (moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
-                address proxyAddress = _createProxy(
-                    moduleSettings.moduleId,
-                    moduleSettings.moduleType
-                );
+                address proxyAddress = _createProxy(moduleSettings.moduleId, moduleSettings.moduleType);
                 _trusts[proxyAddress].moduleImplementation = moduleAddress;
             }
 
-            emit ModuleAdded(
-                moduleSettings.moduleId,
-                moduleAddress,
-                moduleSettings.moduleVersion
-            );
+            emit ModuleAdded(moduleSettings.moduleId, moduleAddress, moduleSettings.moduleVersion);
 
             unchecked {
                 ++i;
@@ -139,9 +123,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      * - The caller must be the current owner.
      * - Cannot be re-entered.
      */
-    function upgradeModules(
-        address[] memory moduleAddresses_
-    ) external virtual override onlyOwner nonReentrant {
+    function upgradeModules(address[] memory moduleAddresses_) external virtual override onlyOwner nonReentrant {
         uint256 moduleAddressLength = moduleAddresses_.length;
 
         for (uint256 i = 0; i < moduleAddressLength; ) {
@@ -149,41 +131,27 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
             // Check against existing module
 
-            IBaseModule.ModuleSettings memory moduleSettings = BaseModule(
-                moduleAddress
-            ).moduleSettings();
+            IBaseModule.ModuleSettings memory moduleSettings = BaseModule(moduleAddress).moduleSettings();
 
             // Verify that the module currently exists.
-            if (_modules[moduleSettings.moduleId] == address(0))
-                revert ModuleNonexistent(moduleSettings.moduleId);
+            if (_modules[moduleSettings.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings.moduleId);
 
             // Verify that current module allows for upgrades.
-            if (
-                !IBaseModule(_modules[moduleSettings.moduleId])
-                    .moduleUpgradeable()
-            ) revert ModuleNotUpgradeable(moduleSettings.moduleId);
+            if (!IBaseModule(_modules[moduleSettings.moduleId]).moduleUpgradeable())
+                revert ModuleNotUpgradeable(moduleSettings.moduleId);
 
             // Verify that the next module version is greater than the current module version.
-            if (
-                moduleSettings.moduleVersion <=
-                IBaseModule(_modules[moduleSettings.moduleId]).moduleVersion()
-            ) revert ModuleInvalidVersion(moduleSettings.moduleId);
+            if (moduleSettings.moduleVersion <= IBaseModule(_modules[moduleSettings.moduleId]).moduleVersion())
+                revert ModuleInvalidVersion(moduleSettings.moduleId);
 
             _modules[moduleSettings.moduleId] = moduleAddress;
 
             if (moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
-                address proxyAddress = _createProxy(
-                    moduleSettings.moduleId,
-                    moduleSettings.moduleType
-                );
+                address proxyAddress = _createProxy(moduleSettings.moduleId, moduleSettings.moduleType);
                 _trusts[proxyAddress].moduleImplementation = moduleAddress;
             }
 
-            emit ModuleUpgraded(
-                moduleSettings.moduleId,
-                moduleAddress,
-                moduleSettings.moduleVersion
-            );
+            emit ModuleUpgraded(moduleSettings.moduleId, moduleAddress, moduleSettings.moduleVersion);
 
             unchecked {
                 ++i;
@@ -200,29 +168,20 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      * - The caller must be the current owner.
      * - Cannot be re-entered.
      */
-    function removeModules(
-        address[] memory moduleAddresses_
-    ) external virtual override onlyOwner nonReentrant {
+    function removeModules(address[] memory moduleAddresses_) external virtual override onlyOwner nonReentrant {
         uint256 moduleAddressLength = moduleAddresses_.length;
 
         for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
-            IBaseModule.ModuleSettings memory moduleSettings = BaseModule(
-                moduleAddress
-            ).moduleSettings();
+            IBaseModule.ModuleSettings memory moduleSettings = BaseModule(moduleAddress).moduleSettings();
 
-            if (_modules[moduleSettings.moduleId] == address(0))
-                revert ModuleNonexistent(moduleSettings.moduleId);
+            if (_modules[moduleSettings.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings.moduleId);
 
-            if (!moduleSettings.moduleRemoveable)
-                revert ModuleNotRemoveable(moduleSettings.moduleId);
+            if (!moduleSettings.moduleRemoveable) revert ModuleNotRemoveable(moduleSettings.moduleId);
 
             if (moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
-                address proxyAddress = _createProxy(
-                    moduleSettings.moduleId,
-                    moduleSettings.moduleType
-                );
+                address proxyAddress = _createProxy(moduleSettings.moduleId, moduleSettings.moduleType);
                 delete _trusts[proxyAddress];
             }
 
@@ -233,11 +192,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
             delete _modules[moduleSettings.moduleId];
 
-            emit ModuleRemoved(
-                moduleSettings.moduleId,
-                moduleAddress,
-                moduleSettings.moduleVersion
-            );
+            emit ModuleRemoved(moduleSettings.moduleId, moduleAddress, moduleSettings.moduleVersion);
 
             unchecked {
                 ++i;

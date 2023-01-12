@@ -105,9 +105,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         moduleAddresses[1] = address(multiModuleV1);
         installerProxy.addModules(moduleAddresses);
 
-        singleModuleProxy = MockImplementationERC20Hub(
-            dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID)
-        );
+        singleModuleProxy = MockImplementationERC20Hub(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID));
 
         multiModuleProxyA = MockImplementationERC20(
             singleModuleProxy.addERC20(

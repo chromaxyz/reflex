@@ -18,9 +18,7 @@ contract MockBaseModule is BaseModule, MockBase {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(
-        ModuleSettings memory moduleSettings_
-    ) BaseModule(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) BaseModule(moduleSettings_) {}
 
     // ==========
     // Test stubs
@@ -30,18 +28,11 @@ contract MockBaseModule is BaseModule, MockBase {
         return true;
     }
 
-    function testRevertBytesCustomError(
-        uint256 code,
-        string calldata message
-    ) external {
+    function testRevertBytesCustomError(uint256 code, string calldata message) external {
         CustomErrorThrower thrower = new CustomErrorThrower();
 
         (, bytes memory data) = address(thrower).call(
-            abi.encodeWithSelector(
-                CustomErrorThrower.throwCustomError.selector,
-                code,
-                message
-            )
+            abi.encodeWithSelector(CustomErrorThrower.throwCustomError.selector, code, message)
         );
 
         _revertBytes(data);
@@ -50,9 +41,7 @@ contract MockBaseModule is BaseModule, MockBase {
     function testRevertPanicAssert() external {
         PanicThrower thrower = new PanicThrower();
 
-        (, bytes memory data) = address(thrower).call(
-            abi.encodeWithSignature("throwPanicAssert()")
-        );
+        (, bytes memory data) = address(thrower).call(abi.encodeWithSignature("throwPanicAssert()"));
 
         _revertBytes(data);
     }
@@ -60,9 +49,7 @@ contract MockBaseModule is BaseModule, MockBase {
     function testRevertPanicDivisionByZero() external {
         PanicThrower thrower = new PanicThrower();
 
-        (, bytes memory data) = address(thrower).call(
-            abi.encodeWithSignature("throwPanicDivisionByZero()")
-        );
+        (, bytes memory data) = address(thrower).call(abi.encodeWithSignature("throwPanicDivisionByZero()"));
 
         _revertBytes(data);
     }
@@ -70,9 +57,7 @@ contract MockBaseModule is BaseModule, MockBase {
     function testRevertPanicArithmeticOverflow() external {
         PanicThrower thrower = new PanicThrower();
 
-        (, bytes memory data) = address(thrower).call(
-            abi.encodeWithSignature("throwPanicArithmeticOverflow()")
-        );
+        (, bytes memory data) = address(thrower).call(abi.encodeWithSignature("throwPanicArithmeticOverflow()"));
 
         _revertBytes(data);
     }
@@ -80,9 +65,7 @@ contract MockBaseModule is BaseModule, MockBase {
     function testRevertPanicArithmeticUnderflow() external {
         PanicThrower thrower = new PanicThrower();
 
-        (, bytes memory data) = address(thrower).call(
-            abi.encodeWithSignature("throwPanicArithmeticUnderflow()")
-        );
+        (, bytes memory data) = address(thrower).call(abi.encodeWithSignature("throwPanicArithmeticUnderflow()"));
 
         _revertBytes(data);
     }
@@ -92,31 +75,16 @@ contract MockBaseModule is BaseModule, MockBase {
     }
 
     function testProxyLog1Topic(bytes calldata message_) external {
-        _issueLogToProxy(
-            abi.encodePacked(uint8(1), bytes32(uint256(1)), message_)
-        );
+        _issueLogToProxy(abi.encodePacked(uint8(1), bytes32(uint256(1)), message_));
     }
 
     function testProxyLog2Topic(bytes memory message_) external {
-        _issueLogToProxy(
-            abi.encodePacked(
-                uint8(2),
-                bytes32(uint256(1)),
-                bytes32(uint256(2)),
-                message_
-            )
-        );
+        _issueLogToProxy(abi.encodePacked(uint8(2), bytes32(uint256(1)), bytes32(uint256(2)), message_));
     }
 
     function testProxyLog3Topic(bytes memory message_) external {
         _issueLogToProxy(
-            abi.encodePacked(
-                uint8(3),
-                bytes32(uint256(1)),
-                bytes32(uint256(2)),
-                bytes32(uint256(3)),
-                message_
-            )
+            abi.encodePacked(uint8(3), bytes32(uint256(1)), bytes32(uint256(2)), bytes32(uint256(3)), message_)
         );
     }
 
@@ -172,10 +140,7 @@ interface ICustomError {
 }
 
 contract CustomErrorThrower is ICustomError {
-    function throwCustomError(
-        uint256 code,
-        string calldata message
-    ) external pure {
+    function throwCustomError(uint256 code, string calldata message) external pure {
         revert CustomError(CustomErrorPayload({code: code, message: message}));
     }
 }

@@ -25,27 +25,18 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
 
         if (owner_ == address(0)) revert InvalidOwner();
-        if (installerModule_ == address(0))
-            revert InvalidInstallerModuleAddress();
-        if (IBaseInstaller(installerModule_).moduleId() != _MODULE_ID_INSTALLER)
-            revert InvalidInstallerModuleId();
+        if (installerModule_ == address(0)) revert InvalidInstallerModuleAddress();
+        if (IBaseInstaller(installerModule_).moduleId() != _MODULE_ID_INSTALLER) revert InvalidInstallerModuleId();
 
         _owner = owner_;
 
         // Register `Installer` module.
         _modules[_MODULE_ID_INSTALLER] = installerModule_;
-        address installerProxy = _createProxy(
-            _MODULE_ID_INSTALLER,
-            _MODULE_TYPE_SINGLE_PROXY
-        );
+        address installerProxy = _createProxy(_MODULE_ID_INSTALLER, _MODULE_TYPE_SINGLE_PROXY);
         _trusts[installerProxy].moduleImplementation = installerModule_;
 
         emit OwnershipTransferred(address(0), owner_);
-        emit ModuleAdded(
-            _MODULE_ID_INSTALLER,
-            installerModule_,
-            IBaseInstaller(installerModule_).moduleVersion()
-        );
+        emit ModuleAdded(_MODULE_ID_INSTALLER, installerModule_, IBaseInstaller(installerModule_).moduleVersion());
     }
 
     // ==============
@@ -57,9 +48,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      * @param moduleId_ Module id.
      * @return address Module implementation address.
      */
-    function moduleIdToImplementation(
-        uint32 moduleId_
-    ) external view virtual override returns (address) {
+    function moduleIdToImplementation(uint32 moduleId_) external view virtual override returns (address) {
         return _modules[moduleId_];
     }
 
@@ -68,9 +57,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      * @param moduleId_ Module id.
      * @return address Proxy address.
      */
-    function moduleIdToProxy(
-        uint32 moduleId_
-    ) external view virtual override returns (address) {
+    function moduleIdToProxy(uint32 moduleId_) external view virtual override returns (address) {
         return _proxies[moduleId_];
     }
 
@@ -79,9 +66,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      * @param proxyAddress_ Proxy address.
      * @return uint32 Module id.
      */
-    function proxyToModuleId(
-        address proxyAddress_
-    ) external view virtual override returns (uint32) {
+    function proxyToModuleId(address proxyAddress_) external view virtual override returns (uint32) {
         return _trusts[proxyAddress_].moduleId;
     }
 
@@ -90,9 +75,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      * @param proxyAddress_ Proxy address.
      * @return address Module implementation.
      */
-    function proxyToModuleImplementation(
-        address proxyAddress_
-    ) external view virtual override returns (address) {
+    function proxyToModuleImplementation(address proxyAddress_) external view virtual override returns (address) {
         return _trusts[proxyAddress_].moduleImplementation;
     }
 
@@ -120,8 +103,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
 
         if (moduleId == 0) revert CallerNotTrusted();
 
-        if (moduleImplementation == address(0))
-            moduleImplementation = _modules[moduleId];
+        if (moduleImplementation == address(0)) moduleImplementation = _modules[moduleId];
 
         uint256 messageDataLength = msg.data.length;
 

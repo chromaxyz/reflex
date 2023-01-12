@@ -39,9 +39,7 @@ contract ProxyTest is TProxy, Harness {
         assertEq(proxy.implementation(), address(0));
     }
 
-    function testSentinelSideEffectsDelegateCall(
-        bytes memory data_
-    ) public BrutalizeMemory {
+    function testSentinelSideEffectsDelegateCall(bytes memory data_) public BrutalizeMemory {
         // This should never happen in any actual deployments.
         vm.startPrank(address(0));
 

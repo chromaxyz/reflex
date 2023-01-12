@@ -24,9 +24,7 @@ contract MockImplementationState is ImplementationState {
         return _implementationState2;
     }
 
-    function getImplementationState5(
-        address location_
-    ) public view returns (uint256) {
+    function getImplementationState5(address location_) public view returns (uint256) {
         return _implementationState5[location_];
     }
 
@@ -50,31 +48,19 @@ contract MockImplementationState is ImplementationState {
         getImplementationState4 = value_;
     }
 
-    function setImplementationState5(
-        address location_,
-        uint256 number_
-    ) external {
+    function setImplementationState5(address location_, uint256 number_) external {
         _implementationState5[location_] = number_;
     }
 
     function getToken(
         address token_
-    )
-        public
-        view
-        returns (string memory name_, string memory symbol_, uint8 decimals_)
-    {
+    ) public view returns (string memory name_, string memory symbol_, uint8 decimals_) {
         name_ = _tokens[token_].name;
         symbol_ = _tokens[token_].symbol;
         decimals_ = _tokens[token_].decimals;
     }
 
-    function setToken(
-        address token_,
-        string memory name_,
-        string memory symbol_,
-        uint8 decimals_
-    ) external {
+    function setToken(address token_, string memory name_, string memory symbol_, uint8 decimals_) external {
         _tokens[token_].name = name_;
         _tokens[token_].symbol = symbol_;
         _tokens[token_].decimals = decimals_;

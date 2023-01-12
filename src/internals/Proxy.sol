@@ -18,8 +18,7 @@ contract Proxy is IProxy {
     // =========
 
     /// @dev `bytes4(keccak256(bytes("proxyToModuleImplementation(address)")))`.
-    bytes4 private constant _PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR =
-        0xf2b124bd;
+    bytes4 private constant _PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR = 0xf2b124bd;
 
     // ==========
     // Immutables
@@ -51,10 +50,7 @@ contract Proxy is IProxy {
         // TODO: resolve multi-proxy, somehow map proxy to implementation
 
         (bool success, bytes memory response) = _deployer.staticcall(
-            abi.encodeWithSelector(
-                _PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR,
-                address(this)
-            )
+            abi.encodeWithSelector(_PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR, address(this))
         );
 
         if (success) {
@@ -123,35 +119,17 @@ contract Proxy is IProxy {
                 case 2 {
                     // 2 Topics
                     // log2(memory[offset:offset+len], topic0, topic1)
-                    log2(
-                        0x60,
-                        sub(calldatasize(), 0x41),
-                        mload(0x20),
-                        mload(0x40)
-                    )
+                    log2(0x60, sub(calldatasize(), 0x41), mload(0x20), mload(0x40))
                 }
                 case 3 {
                     // 3 Topics
                     // log3(memory[offset:offset+len], topic0, topic1, topic2)
-                    log3(
-                        0x80,
-                        sub(calldatasize(), 0x61),
-                        mload(0x20),
-                        mload(0x40),
-                        mload(0x60)
-                    )
+                    log3(0x80, sub(calldatasize(), 0x61), mload(0x20), mload(0x40), mload(0x60))
                 }
                 case 4 {
                     // 4 Topics
                     // log4(memory[offset:offset+len], topic0, topic1, topic2, topic3)
-                    log4(
-                        0xA0,
-                        sub(calldatasize(), 0x81),
-                        mload(0x20),
-                        mload(0x40),
-                        mload(0x60),
-                        mload(0x80)
-                    )
+                    log4(0xA0, sub(calldatasize(), 0x81), mload(0x20), mload(0x40), mload(0x60), mload(0x80))
                 }
                 // The EVM doesn't support more than 4 topics, so in case the number of topics is not within the
                 // range {0..4} something probably went wrong and we should revert.

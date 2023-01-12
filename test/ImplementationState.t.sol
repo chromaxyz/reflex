@@ -81,60 +81,24 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
          * |-------------------------|-------------------------------------------------------|------|--------|-------|
          * | _implementationState0   | bytes32                                               | 50   | 0      | 32    |
          */
-        assertEq(
-            stdstore
-                .target(address(state))
-                .sig("getImplementationState0()")
-                .find(),
-            50
-        );
-        assertEq(
-            stdstore
-                .target(address(state))
-                .sig("getImplementationState0()")
-                .read_bytes32(),
-            message_
-        );
+        assertEq(stdstore.target(address(state)).sig("getImplementationState0()").find(), 50);
+        assertEq(stdstore.target(address(state)).sig("getImplementationState0()").read_bytes32(), message_);
 
         /**
          * | Name                    | Type                                                  | Slot | Offset | Bytes |
          * |-------------------------|-------------------------------------------------------|------|--------|-------|
          * | _implementationState1   | uint256                                               | 51   | 0      | 32    |
          */
-        assertEq(
-            stdstore
-                .target(address(state))
-                .sig("getImplementationState1()")
-                .find(),
-            51
-        );
-        assertEq(
-            stdstore
-                .target(address(state))
-                .sig("getImplementationState1()")
-                .read_uint(),
-            number_
-        );
+        assertEq(stdstore.target(address(state)).sig("getImplementationState1()").find(), 51);
+        assertEq(stdstore.target(address(state)).sig("getImplementationState1()").read_uint(), number_);
 
         /**
          * | Name                    | Type                                                  | Slot | Offset | Bytes |
          * |-------------------------|-------------------------------------------------------|------|--------|-------|
          * | _implementationState2   | address                                               | 52   | 0      | 20    |
          */
-        assertEq(
-            stdstore
-                .target(address(state))
-                .sig("getImplementationState2()")
-                .find(),
-            52
-        );
-        assertEq(
-            stdstore
-                .target(address(state))
-                .sig("getImplementationState2()")
-                .read_address(),
-            location_
-        );
+        assertEq(stdstore.target(address(state)).sig("getImplementationState2()").find(), 52);
+        assertEq(stdstore.target(address(state)).sig("getImplementationState2()").read_address(), location_);
 
         // Due to StdStorage not supporting packed slots at this point in time we access
         // the underlying storage slots directly.

@@ -42,13 +42,8 @@ abstract contract ImplementationFixture is BaseConstants, Harness {
                 moduleRemoveable: false
             })
         );
-        dispatcher = new ImplementationDispatcher(
-            address(this),
-            address(installer)
-        );
-        installerProxy = ImplementationInstaller(
-            dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER)
-        );
+        dispatcher = new ImplementationDispatcher(address(this), address(installer));
+        installerProxy = ImplementationInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
     }
 
     // =========
@@ -63,8 +58,7 @@ abstract contract ImplementationFixture is BaseConstants, Harness {
         bool moduleUpgradeable_,
         bool moduleRemoveable_
     ) internal {
-        IBaseModule.ModuleSettings memory moduleSettings = module_
-            .moduleSettings();
+        IBaseModule.ModuleSettings memory moduleSettings = module_.moduleSettings();
 
         assertEq(moduleSettings.moduleId, moduleId_);
         assertEq(module_.moduleId(), moduleId_);

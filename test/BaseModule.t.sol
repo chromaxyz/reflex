@@ -19,12 +19,9 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
     // =========
 
     uint32 internal constant _MODULE_VALID_ID = 5;
-    uint16 internal constant _MODULE_VALID_TYPE_SINGLE =
-        _MODULE_TYPE_SINGLE_PROXY;
-    uint16 internal constant _MODULE_VALID_TYPE_MULTI =
-        _MODULE_TYPE_MULTI_PROXY;
-    uint16 internal constant _MODULE_VALID_TYPE_INTERNAL =
-        _MODULE_TYPE_INTERNAL;
+    uint16 internal constant _MODULE_VALID_TYPE_SINGLE = _MODULE_TYPE_SINGLE_PROXY;
+    uint16 internal constant _MODULE_VALID_TYPE_MULTI = _MODULE_TYPE_MULTI_PROXY;
+    uint16 internal constant _MODULE_VALID_TYPE_INTERNAL = _MODULE_TYPE_INTERNAL;
     uint16 internal constant _MODULE_VALID_VERSION = 1;
     bool internal constant _MODULE_VALID_UPGRADEABLE = true;
     bool internal constant _MODULE_VALID_REMOVEABLE = true;

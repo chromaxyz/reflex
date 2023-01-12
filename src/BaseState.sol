@@ -46,19 +46,22 @@ abstract contract BaseState is IBaseState, BaseConstants {
     address internal _pendingOwner;
 
     /**
-     * @notice Module id => module implementation.
+     * @notice Internal module mapping.
+     * @dev Module id => module implementation.
      * @dev Slot 3 (32 bytes).
      */
     mapping(uint32 => address) internal _modules;
 
     /**
-     * @notice Module id => proxy address (only for single-proxy modules).
+     * @notice Internal proxy mapping.
+     * @dev Module id => proxy address (only for single-proxy modules).
      * @dev Slot 4 (32 bytes).
      */
     mapping(uint32 => address) internal _proxies;
 
     /**
-     * @notice Proxy address => TrustRelation { moduleId, moduleImplementation }.
+     * @notice Internal proxy to module relation mapping.
+     * @dev Proxy address => TrustRelation { moduleId, moduleImplementation }.
      * @dev Slot 5 (32 bytes).
      */
     mapping(address => TrustRelation) internal _trusts;

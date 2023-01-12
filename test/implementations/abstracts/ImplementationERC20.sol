@@ -34,11 +34,7 @@ abstract contract ImplementationERC20 is BaseModule, ImplementationState {
      * @notice Emitted when the allowance of a `spender` for an `owner` is set by
      * a call to {approve}. `value` is the new allowance.
      */
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 amount
-    );
+    event Approval(address indexed owner, address indexed spender, uint256 amount);
 
     // ===========
     // Constructor
@@ -47,9 +43,7 @@ abstract contract ImplementationERC20 is BaseModule, ImplementationState {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(
-        ModuleSettings memory moduleSettings_
-    ) BaseModule(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) BaseModule(moduleSettings_) {}
 
     // ==============
     // View functions
@@ -107,10 +101,7 @@ abstract contract ImplementationERC20 is BaseModule, ImplementationState {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(
-        address owner_,
-        address spender_
-    ) external view virtual returns (uint256) {
+    function allowance(address owner_, address spender_) external view virtual returns (uint256) {
         (Token storage token, , ) = _unpackCalldata();
 
         return token.allowance[owner_][spender_];
@@ -134,15 +125,8 @@ abstract contract ImplementationERC20 is BaseModule, ImplementationState {
      *
      * Emits an {Approval} event.
      */
-    function approve(
-        address spender_,
-        uint256 amount_
-    ) public virtual returns (bool) {
-        (
-            Token storage token,
-            address proxyAddress,
-            address messageSender
-        ) = _unpackCalldata();
+    function approve(address spender_, uint256 amount_) public virtual returns (bool) {
+        (Token storage token, address proxyAddress, address messageSender) = _unpackCalldata();
 
         token.allowance[messageSender][spender_] = amount_;
 
@@ -158,15 +142,8 @@ abstract contract ImplementationERC20 is BaseModule, ImplementationState {
      *
      * Emits a {Transfer} event.
      */
-    function transfer(
-        address to_,
-        uint256 amount_
-    ) public virtual returns (bool) {
-        (
-            Token storage token,
-            address proxyAddress,
-            address messageSender
-        ) = _unpackCalldata();
+    function transfer(address to_, uint256 amount_) public virtual returns (bool) {
+        (Token storage token, address proxyAddress, address messageSender) = _unpackCalldata();
 
         token.balanceOf[messageSender] -= amount_;
 
@@ -190,16 +167,8 @@ abstract contract ImplementationERC20 is BaseModule, ImplementationState {
      *
      * Emits a {Transfer} event.
      */
-    function transferFrom(
-        address from_,
-        address to_,
-        uint256 amount_
-    ) public virtual returns (bool) {
-        (
-            Token storage token,
-            address proxyAddress,
-            address messageSender
-        ) = _unpackCalldata();
+    function transferFrom(address from_, address to_, uint256 amount_) public virtual returns (bool) {
+        (Token storage token, address proxyAddress, address messageSender) = _unpackCalldata();
 
         uint256 allowed = token.allowance[from_][messageSender];
 
@@ -274,12 +243,7 @@ abstract contract ImplementationERC20 is BaseModule, ImplementationState {
     /**
      * @dev Emit `Transfer` event from the `Proxy` rather than the `Dispatcher`.
      */
-    function _emitTransferEvent(
-        address proxyAddress_,
-        address from_,
-        address to_,
-        uint256 amount_
-    ) internal virtual {
+    function _emitTransferEvent(address proxyAddress_, address from_, address to_, uint256 amount_) internal virtual {
         (bool success, ) = proxyAddress_.call(
             abi.encodePacked(
                 uint8(3),
@@ -322,11 +286,7 @@ abstract contract ImplementationERC20 is BaseModule, ImplementationState {
         internal
         view
         virtual
-        returns (
-            Token storage token_,
-            address proxyAddress_,
-            address messageSender_
-        )
+        returns (Token storage token_, address proxyAddress_, address messageSender_)
     {
         messageSender_ = _unpackMessageSender();
         proxyAddress_ = _unpackProxyAddress();

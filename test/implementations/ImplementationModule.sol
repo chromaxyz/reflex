@@ -18,9 +18,7 @@ contract ImplementationModule is BaseModule, ImplementationState {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(
-        ModuleSettings memory moduleSettings_
-    ) BaseModule(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) BaseModule(moduleSettings_) {}
 
     // ==========
     // Test stubs

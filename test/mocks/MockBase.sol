@@ -57,10 +57,7 @@ contract MockBase is Base, MockBaseState {
             _increaseCounter();
 
             (bool success, bytes memory data) = address(this).call(
-                abi.encodeWithSignature(
-                    "countIndirectRecursive(uint256)",
-                    n - 1
-                )
+                abi.encodeWithSignature("countIndirectRecursive(uint256)", n - 1)
             );
 
             if (!success) _revertBytes(data);
@@ -81,17 +78,11 @@ contract MockBase is Base, MockBaseState {
         require(getReentrancyStatus() == _REENTRANCY_LOCK_UNLOCKED);
     }
 
-    function createProxy(
-        uint32 moduleId_,
-        uint16 moduleType_
-    ) public returns (address) {
+    function createProxy(uint32 moduleId_, uint16 moduleType_) public returns (address) {
         return _createProxy(moduleId_, moduleType_);
     }
 
-    function callInternalModule(
-        uint32 moduleId_,
-        bytes memory input_
-    ) public returns (bytes memory) {
+    function callInternalModule(uint32 moduleId_, bytes memory input_) public returns (bytes memory) {
         return _callInternalModule(moduleId_, input_);
     }
 

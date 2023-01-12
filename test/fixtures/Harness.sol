@@ -181,12 +181,8 @@ abstract contract Harness is Test {
     /**
      * @dev Create user address from user label.
      */
-    function _createUser(
-        string memory label_
-    ) internal returns (address payable user) {
-        user = payable(
-            address(uint160(uint256(keccak256(abi.encodePacked(label_)))))
-        );
+    function _createUser(string memory label_) internal returns (address payable user) {
+        user = payable(address(uint160(uint256(keccak256(abi.encodePacked(label_))))));
         vm.label(user, label_);
         vm.deal(user, 100e18);
     }
@@ -205,18 +201,13 @@ abstract contract Harness is Test {
     function _stopGasCapture() internal {
         _gasUsed = _gasStart - gasleft();
 
-        console2.log(
-            string(abi.encodePacked("[GAS] ", _gasLabel, "()")),
-            _gasUsed
-        );
+        console2.log(string(abi.encodePacked("[GAS] ", _gasLabel, "()")), _gasUsed);
     }
 
     /**
      * @dev Brutalize address space.
      */
-    function _brutalizedAddress(
-        address value_
-    ) private view returns (address result_) {
+    function _brutalizedAddress(address value_) private view returns (address result_) {
         /// @solidity memory-safe-assembly
         assembly {
             // Some acrobatics to make the brutalized bits psuedorandomly

@@ -15,8 +15,5 @@ contract ImplementationDispatcher is BaseDispatcher, ImplementationState {
     // Constructor
     // ===========
 
-    constructor(
-        address owner_,
-        address installerModule_
-    ) BaseDispatcher(owner_, installerModule_) {}
+    constructor(address owner_, address installerModule_) BaseDispatcher(owner_, installerModule_) {}
 }

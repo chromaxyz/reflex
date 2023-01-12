@@ -15,7 +15,5 @@ contract MockBaseInstaller is BaseInstaller {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(
-        ModuleSettings memory moduleSettings_
-    ) BaseInstaller(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) BaseInstaller(moduleSettings_) {}
 }

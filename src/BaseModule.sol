@@ -65,10 +65,8 @@ abstract contract BaseModule is IBaseModule, Base {
      */
     constructor(ModuleSettings memory moduleSettings_) {
         if (moduleSettings_.moduleId == 0) revert InvalidModuleId();
-        if (
-            moduleSettings_.moduleType == 0 ||
-            moduleSettings_.moduleType > _MODULE_TYPE_INTERNAL
-        ) revert InvalidModuleType();
+        if (moduleSettings_.moduleType == 0 || moduleSettings_.moduleType > _MODULE_TYPE_INTERNAL)
+            revert InvalidModuleType();
         if (moduleSettings_.moduleVersion == 0) revert InvalidModuleVersion();
 
         _moduleId = moduleSettings_.moduleId;
@@ -126,13 +124,7 @@ abstract contract BaseModule is IBaseModule, Base {
      * @notice Get the module settings.
      * @return ModuleSettings Module settings.
      */
-    function moduleSettings()
-        external
-        view
-        virtual
-        override
-        returns (ModuleSettings memory)
-    {
+    function moduleSettings() external view virtual override returns (ModuleSettings memory) {
         return
             ModuleSettings({
                 moduleId: _moduleId,

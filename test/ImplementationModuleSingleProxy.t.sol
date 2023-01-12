@@ -57,9 +57,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModule);
         installerProxy.addModules(moduleAddresses);
 
-        singleModuleProxy = MockBaseModule(
-            dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID)
-        );
+        singleModuleProxy = MockBaseModule(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID));
     }
 
     // =====
@@ -67,10 +65,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     // =====
 
     function testModuleIdToImplementation() external {
-        assertEq(
-            dispatcher.moduleIdToImplementation(_MODULE_SINGLE_ID),
-            address(singleModule)
-        );
+        assertEq(dispatcher.moduleIdToImplementation(_MODULE_SINGLE_ID), address(singleModule));
     }
 
     function testModuleIdToProxy() external {
@@ -86,17 +81,13 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     function testProxyToModuleImplementation() external {
         address proxyAddress = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
 
-        assertEq(
-            dispatcher.proxyToModuleImplementation(proxyAddress),
-            address(singleModule)
-        );
+        assertEq(dispatcher.proxyToModuleImplementation(proxyAddress), address(singleModule));
     }
 
     function testProxyAddressToTrustRelation() external {
         address proxyAddress = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
 
-        TBaseModule.TrustRelation memory relation = dispatcher
-            .proxyAddressToTrustRelation(proxyAddress);
+        TBaseModule.TrustRelation memory relation = dispatcher.proxyAddressToTrustRelation(proxyAddress);
 
         assertEq(relation.moduleId, _MODULE_SINGLE_ID);
         assertEq(relation.moduleImplementation, address(singleModule));
@@ -123,32 +114,21 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     }
 
     function testGetModuleImplementationByProxy() external {
-        assertEq(
-            IProxy(address(singleModuleProxy)).implementation(),
-            address(singleModule)
-        );
+        assertEq(IProxy(address(singleModuleProxy)).implementation(), address(singleModule));
     }
 
     function testProxyImplementation() external {
-        assertEq(
-            IProxy(address(singleModuleProxy)).implementation(),
-            address(singleModule)
-        );
+        assertEq(IProxy(address(singleModuleProxy)).implementation(), address(singleModule));
     }
 
     function testProxySentinelFallback() external {
-        (bool success, bytes memory data) = address(singleModuleProxy).call(
-            abi.encodeWithSignature("sentinel()")
-        );
+        (bool success, bytes memory data) = address(singleModuleProxy).call(abi.encodeWithSignature("sentinel()"));
 
         assertTrue(success);
         assertTrue(abi.decode(data, (bool)));
     }
 
-    function testRevertBytesCustomError(
-        uint256 code,
-        string memory message
-    ) external {
+    function testRevertBytesCustomError(uint256 code, string memory message) external {
         vm.expectRevert(
             abi.encodeWithSelector(
                 ICustomError.CustomError.selector,
@@ -178,9 +158,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         singleModuleProxy.testRevertPanicArithmeticUnderflow();
     }
 
-    function testProxyLog0Topic(
-        bytes memory message_
-    ) external BrutalizeMemory {
+    function testProxyLog0Topic(bytes memory message_) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         uint256 messageLength = message_.length;
@@ -206,9 +184,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         assertEq(entries[0].emitter, address(singleModuleProxy));
     }
 
-    function testProxyLog1Topic(
-        bytes memory message_
-    ) external BrutalizeMemory {
+    function testProxyLog1Topic(bytes memory message_) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -225,9 +201,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         singleModuleProxy.testProxyLog1Topic(message_);
     }
 
-    function testProxyLog2Topic(
-        bytes memory message_
-    ) external BrutalizeMemory {
+    function testProxyLog2Topic(bytes memory message_) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -245,9 +219,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         singleModuleProxy.testProxyLog2Topic(message_);
     }
 
-    function testProxyLog3Topic(
-        bytes memory message_
-    ) external BrutalizeMemory {
+    function testProxyLog3Topic(bytes memory message_) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -266,9 +238,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         singleModuleProxy.testProxyLog3Topic(message_);
     }
 
-    function testProxyLog4Topic(
-        bytes memory message_
-    ) external BrutalizeMemory {
+    function testProxyLog4Topic(bytes memory message_) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -288,9 +258,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         singleModuleProxy.testProxyLog4Topic(message_);
     }
 
-    function testRevertProxyLogOutOfBounds(
-        bytes memory message_
-    ) external BrutalizeMemory {
+    function testRevertProxyLogOutOfBounds(bytes memory message_) external BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         vm.expectRevert(TBaseModule.FailedToLog.selector);

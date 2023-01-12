@@ -43,9 +43,7 @@ abstract contract BaseFixture is BaseConstants, Harness {
             })
         );
         dispatcher = new MockBaseDispatcher(address(this), address(installer));
-        installerProxy = MockBaseInstaller(
-            dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER)
-        );
+        installerProxy = MockBaseInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
     }
 
     // =========
@@ -60,8 +58,7 @@ abstract contract BaseFixture is BaseConstants, Harness {
         bool moduleUpgradeable_,
         bool moduleRemoveable_
     ) internal {
-        IBaseModule.ModuleSettings memory moduleSettings = module_
-            .moduleSettings();
+        IBaseModule.ModuleSettings memory moduleSettings = module_.moduleSettings();
 
         assertEq(moduleSettings.moduleId, moduleId_);
         assertEq(module_.moduleId(), moduleId_);

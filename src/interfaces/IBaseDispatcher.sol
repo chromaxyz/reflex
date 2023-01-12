@@ -26,16 +26,9 @@ interface TBaseDispatcher is TBase {
     // Events
     // ======
 
-    event ModuleAdded(
-        uint32 indexed moduleId_,
-        address indexed moduleImplementation_,
-        uint16 indexed moduleVersion_
-    );
+    event ModuleAdded(uint32 indexed moduleId_, address indexed moduleImplementation_, uint16 indexed moduleVersion_);
 
-    event OwnershipTransferred(
-        address indexed user_,
-        address indexed newOwner_
-    );
+    event OwnershipTransferred(address indexed user_, address indexed newOwner_);
 }
 
 /**
@@ -46,23 +39,15 @@ interface IBaseDispatcher is IBase, TBaseDispatcher {
     // Methods
     // =======
 
-    function moduleIdToImplementation(
-        uint32 moduleId_
-    ) external view returns (address);
+    function moduleIdToImplementation(uint32 moduleId_) external view returns (address);
 
     function moduleIdToProxy(uint32 moduleId_) external view returns (address);
 
-    function proxyToModuleId(
-        address proxyAddress_
-    ) external view returns (uint32);
+    function proxyToModuleId(address proxyAddress_) external view returns (uint32);
 
-    function proxyToModuleImplementation(
-        address proxyAddress_
-    ) external view returns (address);
+    function proxyToModuleImplementation(address proxyAddress_) external view returns (address);
 
-    function proxyAddressToTrustRelation(
-        address proxyAddress_
-    ) external view returns (TrustRelation memory);
+    function proxyAddressToTrustRelation(address proxyAddress_) external view returns (TrustRelation memory);
 
     function dispatch() external;
 }

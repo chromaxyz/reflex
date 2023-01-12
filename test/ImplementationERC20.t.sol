@@ -80,9 +80,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         moduleAddresses[1] = address(token);
         installerProxy.addModules(moduleAddresses);
 
-        tokenHubProxy = MockImplementationERC20Hub(
-            dispatcher.moduleIdToProxy(_TOKEN_HUB_MODULE_ID)
-        );
+        tokenHubProxy = MockImplementationERC20Hub(dispatcher.moduleIdToProxy(_TOKEN_HUB_MODULE_ID));
 
         tokenProxy = MockImplementationERC20(
             tokenHubProxy.addERC20(
@@ -179,10 +177,7 @@ contract ImplementationERC20Test is ImplementationFixture {
 
         assertTrue(tokenProxy.transferFrom(_users.Alice, _users.Bob, amount_));
         assertEq(tokenProxy.totalSupply(), amount_);
-        assertEq(
-            tokenProxy.allowance(_users.Alice, address(this)),
-            type(uint256).max
-        );
+        assertEq(tokenProxy.allowance(_users.Alice, address(this)), type(uint256).max);
         assertEq(tokenProxy.balanceOf(_users.Alice), 0);
         assertEq(tokenProxy.balanceOf(_users.Bob), amount_);
     }
@@ -196,9 +191,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         tokenProxy.transfer(_users.Alice, amount_);
     }
 
-    function testRevertTransferFromInsufficientAllowance(
-        uint256 amount_
-    ) external {
+    function testRevertTransferFromInsufficientAllowance(uint256 amount_) external {
         vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
         tokenProxy.mint(_users.Alice, amount_);
@@ -210,9 +203,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         tokenProxy.transferFrom(_users.Alice, _users.Bob, amount_);
     }
 
-    function testRevertTransferFromInsufficientBalance(
-        uint256 amount_
-    ) external {
+    function testRevertTransferFromInsufficientBalance(uint256 amount_) external {
         vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
         tokenProxy.mint(_users.Alice, amount_ - 1);
@@ -224,11 +215,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         tokenProxy.transferFrom(_users.Alice, _users.Bob, amount_);
     }
 
-    function testRevertBurnInsufficientBalance(
-        address to_,
-        uint256 mintAmount_,
-        uint256 burnAmount_
-    ) external {
+    function testRevertBurnInsufficientBalance(address to_, uint256 mintAmount_, uint256 burnAmount_) external {
         vm.assume(burnAmount_ > mintAmount_);
 
         tokenProxy.mint(to_, mintAmount_);
@@ -238,23 +225,13 @@ contract ImplementationERC20Test is ImplementationFixture {
     }
 
     function testMintBurn(uint256 amount_) external {
-        _expectEmitTransfer(
-            address(tokenProxy),
-            address(0),
-            _users.Alice,
-            amount_
-        );
+        _expectEmitTransfer(address(tokenProxy), address(0), _users.Alice, amount_);
         tokenProxy.mint(_users.Alice, amount_);
 
         assertEq(tokenProxy.balanceOf(_users.Alice), amount_);
         assertEq(tokenProxy.totalSupply(), amount_);
 
-        _expectEmitTransfer(
-            address(tokenProxy),
-            _users.Alice,
-            address(0),
-            amount_
-        );
+        _expectEmitTransfer(address(tokenProxy), _users.Alice, address(0), amount_);
         tokenProxy.burn(_users.Alice, amount_);
 
         assertEq(tokenProxy.balanceOf(_users.Alice), 0);
@@ -262,12 +239,7 @@ contract ImplementationERC20Test is ImplementationFixture {
     }
 
     function testApproveTransfer(uint256 amount_) external {
-        _expectEmitTransfer(
-            address(tokenProxy),
-            address(0),
-            _users.Alice,
-            amount_
-        );
+        _expectEmitTransfer(address(tokenProxy), address(0), _users.Alice, amount_);
         tokenProxy.mint(_users.Alice, amount_);
 
         assertEq(tokenProxy.balanceOf(_users.Alice), amount_);
@@ -275,22 +247,12 @@ contract ImplementationERC20Test is ImplementationFixture {
         assertEq(tokenProxy.totalSupply(), amount_);
 
         vm.startPrank(_users.Alice);
-        _expectEmitApproval(
-            address(tokenProxy),
-            _users.Alice,
-            _users.Bob,
-            amount_
-        );
+        _expectEmitApproval(address(tokenProxy), _users.Alice, _users.Bob, amount_);
         tokenProxy.approve(_users.Bob, amount_);
         vm.stopPrank();
 
         vm.startPrank(_users.Alice);
-        _expectEmitTransfer(
-            address(tokenProxy),
-            _users.Alice,
-            _users.Bob,
-            amount_
-        );
+        _expectEmitTransfer(address(tokenProxy), _users.Alice, _users.Bob, amount_);
         tokenProxy.transfer(_users.Bob, amount_);
         assertEq(tokenProxy.balanceOf(_users.Alice), 0);
         assertEq(tokenProxy.balanceOf(_users.Bob), amount_);
@@ -299,12 +261,7 @@ contract ImplementationERC20Test is ImplementationFixture {
     }
 
     function testApproveTransferFrom(uint256 amount_) external {
-        _expectEmitTransfer(
-            address(tokenProxy),
-            address(0),
-            _users.Alice,
-            amount_
-        );
+        _expectEmitTransfer(address(tokenProxy), address(0), _users.Alice, amount_);
         tokenProxy.mint(_users.Alice, amount_);
 
         assertEq(tokenProxy.balanceOf(_users.Alice), amount_);
@@ -312,22 +269,12 @@ contract ImplementationERC20Test is ImplementationFixture {
         assertEq(tokenProxy.totalSupply(), amount_);
 
         vm.startPrank(_users.Alice);
-        _expectEmitApproval(
-            address(tokenProxy),
-            _users.Alice,
-            _users.Bob,
-            amount_
-        );
+        _expectEmitApproval(address(tokenProxy), _users.Alice, _users.Bob, amount_);
         tokenProxy.approve(_users.Bob, amount_);
         vm.stopPrank();
 
         vm.startPrank(_users.Bob);
-        _expectEmitTransfer(
-            address(tokenProxy),
-            _users.Alice,
-            _users.Bob,
-            amount_
-        );
+        _expectEmitTransfer(address(tokenProxy), _users.Alice, _users.Bob, amount_);
         tokenProxy.transferFrom(_users.Alice, _users.Bob, amount_);
         assertEq(tokenProxy.balanceOf(_users.Alice), 0);
         assertEq(tokenProxy.balanceOf(_users.Bob), amount_);
@@ -337,20 +284,10 @@ contract ImplementationERC20Test is ImplementationFixture {
 
     function testRevertFailedProxyLog() external {
         vm.expectRevert(ImplementationERC20.ProxyEventEmittanceFailed.selector);
-        tokenProxy.emitTransferEvent(
-            address(dispatcher),
-            address(0),
-            address(0),
-            100e18
-        );
+        tokenProxy.emitTransferEvent(address(dispatcher), address(0), address(0), 100e18);
 
         vm.expectRevert(ImplementationERC20.ProxyEventEmittanceFailed.selector);
-        tokenProxy.emitApprovalEvent(
-            address(dispatcher),
-            address(0),
-            address(0),
-            100e18
-        );
+        tokenProxy.emitApprovalEvent(address(dispatcher), address(0), address(0), 100e18);
     }
 
     // =========
@@ -366,9 +303,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         bytes32 message = bytes32(amount_);
         uint256 messageLength = message.length;
 
-        bytes32 topic1 = bytes32(
-            keccak256(bytes("Transfer(address,address,uint256"))
-        );
+        bytes32 topic1 = bytes32(keccak256(bytes("Transfer(address,address,uint256")));
         bytes32 topic2 = bytes32(uint256(uint160(from_)));
         bytes32 topic3 = bytes32(uint256(uint160(to_)));
 
@@ -389,9 +324,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         bytes32 message = bytes32(amount_);
         uint256 messageLength = message.length;
 
-        bytes32 topic1 = bytes32(
-            keccak256(bytes("Approval(address,address,uint256)"))
-        );
+        bytes32 topic1 = bytes32(keccak256(bytes("Approval(address,address,uint256)")));
         bytes32 topic2 = bytes32(uint256(uint160(owner_)));
         bytes32 topic3 = bytes32(uint256(uint160(spender_)));
 
