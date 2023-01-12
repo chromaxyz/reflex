@@ -7,9 +7,9 @@ A Solidity framework for upgradeable modularized applications.
 [![Foundry][foundry-badge]][foundry]
 [![License: AGPL-3.0][license-badge]][license]
 
-[gha-contracts]: https://github.com/Chroma-Org/Reflex/blob/master/.github/workflows/contracts.yml
+[gha-contracts]: https://github.com/Chroma-Org/Reflex/actions/workflows/contracts.yml
 [gha-contracts-badge]: https://github.com/Chroma-Org/Reflex/actions/workflows/contracts.yml/badge.svg
-[gha-lint]: https://github.com/Chroma-Org/Reflex/blob/master/.github/workflows/lint.yml
+[gha-lint]: https://github.com/Chroma-Org/Reflex/actions/workflows/lint.yml
 [gha-lint-badge]: https://github.com/Chroma-Org/Reflex/actions/workflows/lint.yml/badge.svg
 [foundry]: https://getfoundry.sh/
 [foundry-badge]: https://img.shields.io/badge/Built%20with-Foundry-DEA584.svg
