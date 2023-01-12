@@ -25,14 +25,15 @@ A Solidity framework for upgradeable modularized applications.
   - [Traits](#traits)
   - [Contracts](#contracts)
   - [Install](#install)
+  - [Usage](#usage)
   - [Diagram](#diagram)
     - [Single-proxy modules](#single-proxy-modules)
     - [Multi-proxy modules](#multi-proxy-modules)
     - [Internal modules](#internal-modules)
     - [User interaction flow](#user-interaction-flow)
   - [Known limitations](#known-limitations)
-  - [Usage](#usage)
   - [Safety](#safety)
+  - [Contribute](#contribute)
   - [Acknowledgements](#acknowledgements)
   - [License](#license)
 
@@ -83,6 +84,10 @@ To install with [**Hardhat**](https://github.com/nomiclabs/hardhat) or [**Truffl
 ```sh
 TODO: ADD LINK
 ```
+
+## Usage
+
+TODO: add code snippets and link to guide
 
 ## Diagram
 
@@ -171,7 +176,7 @@ sequenceDiagram
 - Implementers MUST NOT implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
 - The registration of `Modules` MUST BE permissioned, malicious `Modules` can impact the behaviour of the entire application.
 
-## Usage
+## Contribute
 
 Reflex includes a suite of fuzzing and invariant tests written in Solidity with Foundry.
 
