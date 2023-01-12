@@ -59,7 +59,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      */
     function moduleIdToImplementation(
         uint32 moduleId_
-    ) external view virtual returns (address) {
+    ) external view virtual override returns (address) {
         return _modules[moduleId_];
     }
 
@@ -70,7 +70,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      */
     function moduleIdToProxy(
         uint32 moduleId_
-    ) external view virtual returns (address) {
+    ) external view virtual override returns (address) {
         return _proxies[moduleId_];
     }
 
@@ -81,7 +81,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      */
     function proxyToModuleId(
         address proxyAddress_
-    ) external view virtual returns (uint32) {
+    ) external view virtual override returns (uint32) {
         return _trusts[proxyAddress_].moduleId;
     }
 
@@ -92,7 +92,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      */
     function proxyToModuleImplementation(
         address proxyAddress_
-    ) external view virtual returns (address) {
+    ) external view virtual override returns (address) {
         return _trusts[proxyAddress_].moduleImplementation;
     }
 
@@ -103,7 +103,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      */
     function proxyAddressToTrustRelation(
         address proxyAddress_
-    ) external view virtual returns (TrustRelation memory) {
+    ) external view virtual override returns (TrustRelation memory) {
         return _trusts[proxyAddress_];
     }
 
@@ -114,10 +114,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
     /**
      * @notice Dispatch function to module.
      */
-    function dispatch() external virtual {
-        // TODO: evaluate if we can pack moduleId and moduleImplementation into a single bytes32, preventing multiple 2100 reads
-        // SEE: https://github.com/Chroma-Org/Reflex/tree/feature/packed-module-id
-
+    function dispatch() external virtual override {
         uint32 moduleId = _trusts[msg.sender].moduleId;
         address moduleImplementation = _trusts[msg.sender].moduleImplementation;
 

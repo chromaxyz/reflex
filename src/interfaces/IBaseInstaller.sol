@@ -28,16 +28,14 @@ interface TBaseInstaller is TBaseModule {
     // Events
     // ======
 
-    event ModuleAllowlisted(
-        uint32 indexed moduleId_,
-        address indexed moduleImplementation_,
-        uint16 indexed moduleVersion_
+    event OwnershipTransferred(
+        address indexed user_,
+        address indexed newOwner_
     );
 
-    event ModuleDenylisted(
-        uint32 indexed moduleId_,
-        address indexed moduleImplementation_,
-        uint16 indexed moduleVersion_
+    event OwnershipTransferStarted(
+        address indexed previousOwner_,
+        address indexed newOwner_
     );
 
     event ModuleAdded(
@@ -56,16 +54,6 @@ interface TBaseInstaller is TBaseModule {
         uint32 indexed moduleId_,
         address indexed moduleImplementation_,
         uint16 indexed moduleVersion_
-    );
-
-    event OwnershipTransferred(
-        address indexed user_,
-        address indexed newOwner_
-    );
-
-    event OwnershipTransferStarted(
-        address indexed previousOwner_,
-        address indexed newOwner_
     );
 }
 

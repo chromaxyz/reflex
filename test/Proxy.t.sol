@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Vendors
-import {Test} from "forge-std/Test.sol";
-import {console2} from "forge-std/console2.sol";
-
 // Interfaces
 import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
 import {TProxy} from "../src/interfaces/IProxy.sol";
@@ -18,7 +14,7 @@ import {Harness} from "./fixtures/Harness.sol";
 /**
  * @title Proxy Test
  */
-contract ProxyTest is TProxy, Test, Harness {
+contract ProxyTest is TProxy, Harness {
     // =======
     // Storage
     // =======
@@ -58,12 +54,7 @@ contract ProxyTest is TProxy, Test, Harness {
         assertTrue(success);
 
         // Expect return data to be empty, result is `popped`.
-        assertEq(
-            // Cast down to bytes32.
-            abi.encodePacked(bytes32(data)),
-            // Cast up to bytes32.
-            abi.encodePacked(bytes32(""))
-        );
+        assertEq(abi.encodePacked(data), abi.encodePacked(""));
 
         vm.stopPrank();
     }

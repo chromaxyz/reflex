@@ -47,7 +47,7 @@ contract Proxy is IProxy {
      * @dev To prevent selector clashing avoid using the `implementation()` selector inside of modules.
      * @return address Implementation address or zero address if unresolved.
      */
-    function implementation() external view virtual returns (address) {
+    function implementation() external view virtual override returns (address) {
         // TODO: resolve multi-proxy, somehow map proxy to implementation
 
         (bool success, bytes memory response) = _deployer.staticcall(
@@ -68,7 +68,7 @@ contract Proxy is IProxy {
      * @dev Sentinel DELEGATECALL opcode to nudge Etherscan to recognize this as being a proxy.
      * @dev Function selector clashing is mitigated by falling through to the fallback.
      */
-    function sentinel() external virtual {
+    function sentinel() external virtual override {
         // TODO: replace with better solution, preferably permanent.
 
         if (msg.sender == address(0)) {

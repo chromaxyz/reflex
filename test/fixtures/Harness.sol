@@ -8,6 +8,7 @@ import {console2} from "forge-std/console2.sol";
 /**
  * @title Harness
  * @dev A rigorous testing and invariant harness.
+ * @author `Users` has been modified from: PRBTest (https://github.com/PaulRBerg/prb-math/blob/main/test/BaseTest.t.sol)
  * @author `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/main/src/test/utils/DSTestPlus.sol)
  * @author `BrualizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol)
  */
@@ -61,6 +62,9 @@ abstract contract Harness is Test {
     // Modifiers
     // =========
 
+    /**
+     * @dev Modifier to perform a gas capture.
+     */
     modifier GasCapture(string memory label_) {
         _startGasCapture(label_);
 
@@ -69,6 +73,9 @@ abstract contract Harness is Test {
         _stopGasCapture();
     }
 
+    /**
+     * @dev Modifier to brutalize memory.
+     */
     modifier BrutalizeMemory() {
         /// @solidity memory-safe-assembly
         assembly {
@@ -147,6 +154,9 @@ abstract contract Harness is Test {
     // Public functions
     // ================
 
+    /**
+     * @dev Internal view for invariant testing.
+     */
     function targetContracts() public view returns (address[] memory) {
         if (_targets.length == 0) revert NoTargetContracts();
 
@@ -157,8 +167,11 @@ abstract contract Harness is Test {
     // Internal functions
     // ==================
 
-    function _addTargetContract(address newTargetContract) internal {
-        _targets.push(newTargetContract);
+    /**
+     * @dev Add target contract for invariant testing.
+     */
+    function _addTargetContract(address newTargetContract_) internal {
+        _targets.push(newTargetContract_);
     }
 
     // =========
@@ -198,21 +211,27 @@ abstract contract Harness is Test {
         );
     }
 
+    /**
+     * @dev Brutalize address space.
+     */
     function _brutalizedAddress(
-        address value
-    ) private view returns (address result) {
+        address value_
+    ) private view returns (address result_) {
         /// @solidity memory-safe-assembly
         assembly {
             // Some acrobatics to make the brutalized bits psuedorandomly
             // different with every call.
             mstore(0x00, or(calldataload(0), mload(0x40)))
             mstore(0x20, or(caller(), mload(0x00)))
-            result := or(shl(160, keccak256(0x00, 0x40)), value)
+            result_ := or(shl(160, keccak256(0x00, 0x40)), value_)
             mstore(0x40, add(0x20, mload(0x40)))
-            mstore(0x00, result)
+            mstore(0x00, result_)
         }
     }
 
+    /**
+     * @dev Internal memory check.
+     */
     function _checkMemory() internal pure {
         bool zeroSlotIsNotZero;
         bool freeMemoryPointerOverflowed;
@@ -231,15 +250,18 @@ abstract contract Harness is Test {
         if (zeroSlotIsNotZero) revert ZeroSlotNotZero();
     }
 
-    function _checkMemory(bytes memory s) internal pure {
+    /**
+     * @dev Internal memory check.
+     */
+    function _checkMemory(bytes memory s_) internal pure {
         bool notZeroRightPadded;
         bool fmpNotWordAligned;
         bool insufficientMalloc;
 
         /// @solidity memory-safe-assembly
         assembly {
-            let length := mload(s)
-            let lastWord := mload(add(add(s, 0x20), and(length, not(31))))
+            let length := mload(s_)
+            let lastWord := mload(add(add(s_, 0x20), and(length, not(31))))
             let remainder := and(length, 31)
             if remainder {
                 if shl(mul(8, remainder), lastWord) {
@@ -252,7 +274,7 @@ abstract contract Harness is Test {
             mstore(mload(0x40), keccak256(0x00, 0x60))
             // Check if the memory allocated is sufficient.
             if length {
-                if gt(add(add(s, 0x20), length), mload(0x40)) {
+                if gt(add(add(s_, 0x20), length), mload(0x40)) {
                     insufficientMalloc := 1
                 }
             }
@@ -265,7 +287,23 @@ abstract contract Harness is Test {
         _checkMemory();
     }
 
-    function _checkMemory(string memory s) internal pure {
-        _checkMemory(bytes(s));
+    /**
+     * @dev Internal memory check.
+     */
+    function _checkMemory(string memory s_) internal pure {
+        _checkMemory(bytes(s_));
+    }
+
+    // =====
+    // Casts
+    // =====
+
+    /**
+     * @dev Cast bool to uint8.
+     */
+    function _castBoolToUInt8(bool x_) internal pure returns (uint8 r_) {
+        assembly {
+            r_ := x_
+        }
     }
 }

@@ -198,14 +198,4 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
     }
 
     // TODO: add test cases around storage clashes, what happens and can they be resolved?
-
-    // =========
-    // Utilities
-    // =========
-
-    function _castBoolToUInt8(bool x) internal pure returns (uint8 r) {
-        assembly {
-            r := x
-        }
-    }
 }
