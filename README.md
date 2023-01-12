@@ -87,7 +87,9 @@ TODO: ADD LINK
 
 ## Usage
 
-TODO: add code snippets and link to guide
+TODO: add code snippets and high-level overview
+
+Please refer to the [IMPLEMENTERS](docs/IMPLEMENTERS.md) guide for more information.
 
 ## Diagram
 
