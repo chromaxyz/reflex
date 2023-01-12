@@ -44,54 +44,6 @@ The framework serves as the foundation of your modular application allowing you 
     └── BaseInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
 ```
 
-## Inheritance snippet
-
-```solidity
-// SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity ^0.8.13;
-
-// Vendor
-import { BaseInstaller } from "reflex/modules/BaseInstaller.sol";
-import { BaseConstants } from "reflex/BaseConstants.sol";
-import { BaseDispatcher } from "reflex/BaseDispatcher.sol";
-import { BaseModule } from "reflex/BaseModule.sol";
-import { BaseState } from "reflex/BaseState.sol";
-
-abstract contract Constants is BaseConstants {
-  // ...
-}
-
-contract State is BaseState, Constants {
-  // ...
-}
-
-contract Installer is BaseInstaller, State {
-  constructor(
-    ModuleSettings memory moduleSettings_
-  ) BaseInstaller(moduleSettings_) {}
-
-  // ...
-}
-
-contract Dispatcher is BaseDispatcher, State {
-  constructor(
-    address owner_,
-    address installerModule_
-  ) BaseDispatcher(owner_, installerModule_) {}
-
-  // ...
-}
-
-contract ExampleModule is BaseModule, State {
-  constructor(
-    ModuleSettings memory moduleSettings_
-  ) BaseModule(moduleSettings_) {}
-
-  // ...
-}
-
-```
-
 ## Inheritance diagram
 
 ```mermaid

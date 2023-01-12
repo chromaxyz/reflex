@@ -18,7 +18,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     // ===========
 
     /**
-     * @param moduleSettings_ Module moduleSettings.
+     * @param moduleSettings_ Module settings.
      */
     constructor(
         ModuleSettings memory moduleSettings_
@@ -96,7 +96,9 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     function addModules(
         address[] memory moduleAddresses_
     ) external virtual override onlyOwner nonReentrant {
-        for (uint256 i = 0; i < moduleAddresses_.length; ) {
+        uint256 moduleAddressLength = moduleAddresses_.length;
+
+        for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
             IBaseModule.ModuleSettings memory moduleSettings = BaseModule(
@@ -140,7 +142,9 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     function upgradeModules(
         address[] memory moduleAddresses_
     ) external virtual override onlyOwner nonReentrant {
-        for (uint256 i = 0; i < moduleAddresses_.length; ) {
+        uint256 moduleAddressLength = moduleAddresses_.length;
+
+        for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
             // Check against existing module
@@ -199,7 +203,9 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     function removeModules(
         address[] memory moduleAddresses_
     ) external virtual override onlyOwner nonReentrant {
-        for (uint256 i = 0; i < moduleAddresses_.length; ) {
+        uint256 moduleAddressLength = moduleAddresses_.length;
+
+        for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
             IBaseModule.ModuleSettings memory moduleSettings = BaseModule(
