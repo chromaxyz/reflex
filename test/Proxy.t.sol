@@ -8,22 +8,18 @@ import {TProxy} from "../src/interfaces/IProxy.sol";
 // Internals
 import {Proxy} from "../src/internals/Proxy.sol";
 
-// Sources
-import {BaseConstants} from "../src/BaseConstants.sol";
-
 // Fixtures
 import {Harness} from "./fixtures/Harness.sol";
 
 /**
  * @title Proxy Test
  */
-contract ProxyTest is TProxy, BaseConstants, Harness {
+contract ProxyTest is TProxy, Harness {
     // =========
     // Constants
     // =========
 
     uint32 internal constant _MODULE_VALID_ID = 100;
-    uint16 internal constant _MODULE_VALID_TYPE = _MODULE_TYPE_SINGLE_PROXY;
 
     // =======
     // Storage
@@ -38,7 +34,7 @@ contract ProxyTest is TProxy, BaseConstants, Harness {
     function setUp() public virtual override {
         super.setUp();
 
-        proxy = new Proxy(_MODULE_VALID_ID, _MODULE_VALID_TYPE);
+        proxy = new Proxy(_MODULE_VALID_ID);
     }
 
     // =====
@@ -47,12 +43,7 @@ contract ProxyTest is TProxy, BaseConstants, Harness {
 
     function testRevertInvalidModuleId() external {
         vm.expectRevert(InvalidModuleId.selector);
-        new Proxy(0, _MODULE_VALID_TYPE);
-    }
-
-    function testRevertInvalidModuleType() external {
-        vm.expectRevert(InvalidModuleType.selector);
-        new Proxy(_MODULE_VALID_ID, 777);
+        new Proxy(0);
     }
 
     function testResolveInvalidImplementationToZeroAddress() external {

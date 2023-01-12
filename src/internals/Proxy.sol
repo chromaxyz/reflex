@@ -23,9 +23,6 @@ contract Proxy is IProxy, BaseConstants {
     /// @dev `bytes4(keccak256(bytes("moduleIdToModuleImplementation(uint32)")))`.
     bytes4 private constant _MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR = 0x75ea225d;
 
-    /// @dev `bytes4(keccak256(bytes("proxyToModuleImplementation(address)")))`.
-    bytes4 private constant _PROXY_TO_MODULE_IMPLEMENTATION_SELECTOR = 0xf2b124bd;
-
     // ==========
     // Immutables
     // ==========
@@ -34,11 +31,6 @@ contract Proxy is IProxy, BaseConstants {
      * @dev Same as the implementations' module id.
      */
     uint32 internal immutable _moduleId;
-
-    /**
-     * @dev Same as the implementations' module type.
-     */
-    uint16 internal immutable _moduleType;
 
     /**
      * @dev Deployer address.
@@ -51,16 +43,12 @@ contract Proxy is IProxy, BaseConstants {
 
     /**
      * @param moduleId_ Same as the implementations' module id.
-     * @param moduleType_ Same as the implementations' module type.
      */
-    constructor(uint32 moduleId_, uint16 moduleType_) {
+    constructor(uint32 moduleId_) {
         if (moduleId_ == 0) revert InvalidModuleId();
-        if (moduleType_ == 0 || moduleType_ > _MODULE_TYPE_INTERNAL) revert InvalidModuleType();
-
-        _deployer = msg.sender;
 
         _moduleId = moduleId_;
-        _moduleType = moduleType_;
+        _deployer = msg.sender;
     }
 
     // ==============
@@ -73,18 +61,9 @@ contract Proxy is IProxy, BaseConstants {
      * @return address Implementation address or zero address if unresolved.
      */
     function implementation() external view virtual override returns (address) {
-        bool success;
-        bytes memory response;
-
-        if (_moduleType == _MODULE_TYPE_SINGLE_PROXY) {
-            (success, response) = _deployer.staticcall(
-                abi.encodeWithSelector(_PROXY_TO_MODULE_IMPLEMENTATION_SELECTOR, address(this))
-            );
-        } else if (_moduleType == _MODULE_TYPE_MULTI_PROXY) {
-            (success, response) = _deployer.staticcall(
-                abi.encodeWithSelector(_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR, _moduleId)
-            );
-        }
+        (bool success, bytes memory response) = _deployer.staticcall(
+            abi.encodeWithSelector(_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR, _moduleId)
+        );
 
         if (success) {
             return abi.decode(response, (address));
