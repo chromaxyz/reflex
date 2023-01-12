@@ -14,13 +14,13 @@ interface TBase is TBaseState {
 
     error EmptyError();
 
-    error Reentrancy();
-
     error InternalModule();
 
     error InvalidModuleId();
 
     error InvalidModuleType();
+
+    error Reentrancy();
 
     // ======
     // Events
@@ -33,7 +33,5 @@ interface TBase is TBaseState {
  * @title Base Interface
  */
 interface IBase is IBaseState, TBase {
-    // =======
-    // Methods
-    // =======
+
 }

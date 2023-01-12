@@ -28,10 +28,8 @@ interface TBaseState {
 }
 
 /**
- * @title BaseState Interface
+ * @title Base State Interface
  */
 interface IBaseState is TBaseState {
-    // =======
-    // Methods
-    // =======
+
 }

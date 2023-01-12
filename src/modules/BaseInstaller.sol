@@ -31,14 +31,14 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     /**
      * @notice Returns the address of the owner.
      */
-    function owner() external view virtual returns (address) {
+    function owner() external view virtual override returns (address) {
         return _owner;
     }
 
     /**
      * @notice Returns the address of the pending owner.
      */
-    function pendingOwner() external view virtual returns (address) {
+    function pendingOwner() external view virtual override returns (address) {
         return _pendingOwner;
     }
 
@@ -54,7 +54,9 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      *
      * - The caller must be the current owner.
      */
-    function transferOwnership(address newOwner_) external virtual onlyOwner {
+    function transferOwnership(
+        address newOwner_
+    ) external virtual override onlyOwner {
         if (newOwner_ == address(0)) revert ZeroAddress();
 
         _pendingOwner = newOwner_;
@@ -69,7 +71,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      *
      * - The caller must be the pending owner.
      */
-    function acceptOwnership() external virtual {
+    function acceptOwnership() external virtual override {
         address newOwner = _unpackMessageSender();
 
         if (newOwner != _pendingOwner) revert Unauthorized();
@@ -93,7 +95,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      */
     function addModules(
         address[] memory moduleAddresses_
-    ) external virtual onlyOwner nonReentrant {
+    ) external virtual override onlyOwner nonReentrant {
         for (uint256 i = 0; i < moduleAddresses_.length; ) {
             address moduleAddress = moduleAddresses_[i];
 
@@ -137,7 +139,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      */
     function upgradeModules(
         address[] memory moduleAddresses_
-    ) external virtual onlyOwner nonReentrant {
+    ) external virtual override onlyOwner nonReentrant {
         for (uint256 i = 0; i < moduleAddresses_.length; ) {
             address moduleAddress = moduleAddresses_[i];
 
@@ -196,7 +198,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      */
     function removeModules(
         address[] memory moduleAddresses_
-    ) external virtual onlyOwner nonReentrant {
+    ) external virtual override onlyOwner nonReentrant {
         for (uint256 i = 0; i < moduleAddresses_.length; ) {
             address moduleAddress = moduleAddresses_[i];
 

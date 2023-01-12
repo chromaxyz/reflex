@@ -39,7 +39,7 @@ interface TBaseDispatcher is TBase {
 }
 
 /**
- * @title BaseDispatcher Interface
+ * @title Base Dispatcher Interface
  */
 interface IBaseDispatcher is IBase, TBaseDispatcher {
     // =======

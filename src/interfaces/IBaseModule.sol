@@ -60,13 +60,16 @@ interface IBaseModule is IBase, TBaseModule {
 
     function moduleId() external view returns (uint32);
 
-    function moduleType() external view returns (uint16);
+    function moduleRemoveable() external view returns (bool);
 
-    function moduleVersion() external view returns (uint16);
+    function moduleSettings()
+        external
+        view
+        returns (IBaseModule.ModuleSettings memory);
+
+    function moduleType() external view returns (uint16);
 
     function moduleUpgradeable() external view returns (bool);
 
-    function moduleRemoveable() external view returns (bool);
-
-    function moduleSettings() external view returns (ModuleSettings memory);
+    function moduleVersion() external view returns (uint16);
 }

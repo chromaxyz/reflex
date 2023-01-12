@@ -12,31 +12,21 @@ interface TBaseInstaller is TBaseModule {
     // Errors
     // ======
 
-    error ZeroAddress();
+    error ModuleExistent(uint32 moduleId_);
 
     error ModuleInvalidVersion(uint32 moduleId_);
 
-    error ModuleExistent(uint32 moduleId_);
-
     error ModuleNonexistent(uint32 moduleId_);
+
+    error ModuleNotRemoveable(uint32 moduleId_);
 
     error ModuleNotUpgradeable(uint32 moduleId_);
 
-    error ModuleNotRemoveable(uint32 moduleId_);
+    error ZeroAddress();
 
     // ======
     // Events
     // ======
-
-    event OwnershipTransferred(
-        address indexed user_,
-        address indexed newOwner_
-    );
-
-    event OwnershipTransferStarted(
-        address indexed previousOwner_,
-        address indexed newOwner_
-    );
 
     event ModuleAdded(
         uint32 indexed moduleId_,
@@ -55,6 +45,16 @@ interface TBaseInstaller is TBaseModule {
         address indexed moduleImplementation_,
         uint16 indexed moduleVersion_
     );
+
+    event OwnershipTransferStarted(
+        address indexed previousOwner_,
+        address indexed newOwner_
+    );
+
+    event OwnershipTransferred(
+        address indexed user_,
+        address indexed newOwner_
+    );
 }
 
 /**
@@ -64,4 +64,18 @@ interface IBaseInstaller is IBaseModule, TBaseInstaller {
     // =======
     // Methods
     // =======
+
+    function acceptOwnership() external;
+
+    function addModules(address[] memory moduleAddresses_) external;
+
+    function owner() external view returns (address);
+
+    function pendingOwner() external view returns (address);
+
+    function removeModules(address[] memory moduleAddresses_) external;
+
+    function transferOwnership(address newOwner_) external;
+
+    function upgradeModules(address[] memory moduleAddresses_) external;
 }
