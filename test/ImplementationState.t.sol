@@ -151,15 +151,10 @@ contract ImplementationStateTest is IImplementationState, Test, Harness {
         state.getToken(tokenA_);
         (reads, ) = vm.accesses(address(state));
         assertEq((reads[0]), keccak256(abi.encode(tokenA_, uint256(55))));
-        current = vm.load(address(state), bytes32(reads[0]));
 
         vm.record();
         state.getToken(tokenB_);
         (reads, ) = vm.accesses(address(state));
         assertEq((reads[0]), keccak256(abi.encode(tokenB_, uint256(55))));
-
-        // TODO: add extended tests for verifying layout of struct data
     }
-
-    // TODO: add test cases around storage clashes, what happens and can they be resolved?
 }
