@@ -178,7 +178,7 @@ sequenceDiagram
 - It is possible to potentially cause function selector clashes though the surface area is very small and documented.
 - Implementers **MUST NOT** implement an `implementation()` or `sentinel()` method in `Modules` as this causes a function selector clash in the `Proxy`.
 - Implementers **MUST NOT** implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
-- The registration of `Modules` MUST BE permissioned, malicious `Modules` can impact the behaviour of the entire application.
+- The registration of `Modules` **MUST BE** permissioned, malicious `Modules` can impact the behaviour of the entire application.
 - `Modules` **MUST NOT** define any storage variables. In the rare case this is necessary you should use unstructured storage.
 - `Modules` **CAN ONLY** initialize **IMMUTABLE** storage variables inside of their constructor.
 
