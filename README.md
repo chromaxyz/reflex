@@ -171,14 +171,16 @@ sequenceDiagram
 
 ## Known limitations
 
-- Multiple application entrypoints via their proxies. The proxy address stays consistent through module upgrades.
+- Reflex has multiple application entrypoints via their proxies. The proxy address however stays consistent throughout module upgrades.
 - The `Dispatcher` and the internal `Proxy` contracts are not upgradable.
-- Storage in the `Dispatcher` is extendable but implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
+- Storage in the `Dispatcher` is append-only extendable but implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
 - The first `50` storage slots are reserved allowing us to add new features over time.
-- It is possible to possibly cause function selector clashes though the surface area is very small.
-- Implementers MUST NOT implement an `implementation()` method in `Modules` as this causes a function selector clash in the `Proxy`.
+- It is possible to potentially cause function selector clashes though the surface area is very small and documented.
+- Implementers MUST NOT implement an `implementation()` or `sentinel()` method in `Modules` as this causes a function selector clash in the `Proxy`.
 - Implementers MUST NOT implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
 - The registration of `Modules` MUST BE permissioned, malicious `Modules` can impact the behaviour of the entire application.
+- `Modules` MUST NOT define any storage variables. In the rare case this is necessary you should use unstructured storage.
+- `Modules` CAN ONLY initialize IMMUTABLE storage variables inside of their constructor.
 
 ## Contribute
 
