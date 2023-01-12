@@ -56,9 +56,9 @@ contract ProxyTest is TProxy, Harness {
         // Expect return data to be empty, result is `popped`.
         assertEq(
             // Cast down to bytes32.
-            abi.encodePacked(_castBytesToBytes32(data)),
+            abi.encodePacked(data),
             // Cast up to bytes32.
-            abi.encodePacked(bytes32(""))
+            abi.encodePacked("")
         );
 
         vm.stopPrank();
