@@ -36,4 +36,7 @@ do
   forge inspect --pretty "$CONTRACT" storage-layout >> "$FILENAME"
 done
 
+# Run prettier so diff works properly.
+npx prettier --write $FILENAME
+
 log $GREEN "Done"
