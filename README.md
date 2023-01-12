@@ -246,3 +246,5 @@ The contracts and tests were inspired by or directly modified from many sources,
 ## License
 
 Licensed under the [AGPL-3.0-only](/LICENSE) license.
+
+For third party licenses please refer to [THIRD_PARTY_LICENSES](/THIRD_PARTY_LICENSES).
