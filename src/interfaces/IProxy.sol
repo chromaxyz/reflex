@@ -10,8 +10,6 @@ interface TProxy {
     // ======
 
     error InvalidModuleId();
-
-    error InvalidModuleType();
 }
 
 /**
