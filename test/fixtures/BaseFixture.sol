@@ -14,10 +14,13 @@ import {MockBaseDispatcher} from "../mocks/MockBaseDispatcher.sol";
 // Fixtures
 import {Harness} from "./Harness.sol";
 
+// Script
+import {DeployConstants} from "../../script/Deploy.s.sol";
+
 /**
  * @title Base Fixture
  */
-abstract contract BaseFixture is BaseConstants, Harness {
+abstract contract BaseFixture is BaseConstants, DeployConstants, Harness {
     // =======
     // Storage
     // =======

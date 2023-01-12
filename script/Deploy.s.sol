@@ -16,9 +16,29 @@ import {ImplementationInstaller} from "../test/implementations/ImplementationIns
 import {ImplementationModule} from "../test/implementations/ImplementationModule.sol";
 
 /**
+ * @title Deploy Constants
+ */
+abstract contract DeployConstants is BaseConstants {
+    /**
+     * @dev Module version of built-in upgradeable installer module.
+     */
+    uint16 internal constant _MODULE_VERSION_INSTALLER = 1;
+
+    /**
+     * @dev Module upgradeability setting of built-in upgradeable installer module.
+     */
+    bool internal constant _MODULE_UPGRADEABLE_INSTALLER = true;
+
+    /**
+     * @dev Module removeability setting of built-in upgradeable installer module.
+     */
+    bool internal constant _MODULE_REMOVEABLE_INSTALLER = false;
+}
+
+/**
  * @title Deploy Script
  */
-contract DeployScript is Script, BaseConstants {
+contract DeployScript is Script, DeployConstants {
     // =========
     // Constants
     // =========
@@ -55,14 +75,9 @@ contract DeployScript is Script, BaseConstants {
             })
         );
 
-        dispatcher = new ImplementationDispatcher(
-            msg.sender,
-            address(installerImplementation)
-        );
+        dispatcher = new ImplementationDispatcher(msg.sender, address(installerImplementation));
 
-        installerProxy = ImplementationInstaller(
-            dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER)
-        );
+        installerProxy = ImplementationInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
 
         exampleModuleImplementation = new ImplementationModule(
             IBaseModule.ModuleSettings({
@@ -80,8 +95,6 @@ contract DeployScript is Script, BaseConstants {
 
         vm.stopBroadcast();
 
-        exampleModuleProxy = ImplementationModule(
-            dispatcher.moduleIdToProxy(_MODULE_ID_EXAMPLE)
-        );
+        exampleModuleProxy = ImplementationModule(dispatcher.moduleIdToProxy(_MODULE_ID_EXAMPLE));
     }
 }
