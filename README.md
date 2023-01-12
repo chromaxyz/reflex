@@ -91,6 +91,8 @@ TODO: add code snippets and link to guide
 
 ## Diagram
 
+TODO: add general description of how the framework works.
+
 ```mermaid
 graph TD
     subgraph Application [ ]
