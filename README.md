@@ -238,10 +238,10 @@ The architecture is directly inspired by [Euler's Proxy Protocol](https://docs.e
 
 The contracts and tests were inspired by or directly modified from many sources, primarily:
 
-- [Euler](https://github.com/euler-xyz/euler-contracts)
-- [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
-- [Solmate](https://github.com/transmissions11/solmate)
-- [Solady](https://github.com/Vectorized/solady)
+- [Euler](https://github.com/euler-xyz/euler-contracts) - `GPL-2.0-or-later`
+- [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts) - `MIT`
+- [Solmate](https://github.com/transmissions11/solmate) - `AGPL-3.0-only`
+- [Solady](https://github.com/Vectorized/solady) - `MIT`
 
 ## License
 
