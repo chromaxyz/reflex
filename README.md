@@ -2,12 +2,14 @@
 
 A Solidity framework for upgradeable modularized applications.
 
+[![Tests][gha-contracts-badge]][gha-contracts]
+[![Linter][gha-lint-badge]][gha-lint]
+[![License: AGPL-3.0][license-badge]][license]
+
 [gha-contracts]: https://github.com/Chroma-Org/Reflex/blob/master/.github/workflows/contracts.yml
 [gha-contracts-badge]: https://github.com/Chroma-Org/Reflex/actions/workflows/contracts.yml/badge.svg
 [gha-lint]: https://github.com/Chroma-Org/Reflex/blob/master/.github/workflows/lint.yml
 [gha-lint-badge]: https://github.com/Chroma-Org/Reflex/actions/workflows/lint.yml/badge.svg
-[prettier]: https://prettier.io
-[prettier-badge]: https://img.shields.io/badge/Code_Style-Prettier-orange.svg
 [license]: https://www.gnu.org/licenses/agpl-3.0
 [license-badge]: https://img.shields.io/badge/License-AGPL%203.0-blue
 
