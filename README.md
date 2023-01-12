@@ -2,10 +2,7 @@
 
 A Solidity framework for upgradeable modularized applications.
 
-[![Tests][gha-contracts-badge]][gha-contracts]
-[![Linter][gha-lint-badge]][gha-lint]
-[![Foundry][foundry-badge]][foundry]
-[![License: AGPL-3.0][license-badge]][license]
+## [![Tests][gha-contracts-badge]][gha-contracts] [![Linter][gha-lint-badge]][gha-lint] [![Foundry][foundry-badge]][foundry] [![License: AGPL-3.0][license-badge]][license]
 
 [gha-contracts]: https://github.com/Chroma-Org/Reflex/actions/workflows/contracts.yml
 [gha-contracts-badge]: https://github.com/Chroma-Org/Reflex/actions/workflows/contracts.yml/badge.svg
