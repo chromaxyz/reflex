@@ -7,6 +7,7 @@
   - [Single-proxy modules](#single-proxy-modules)
   - [Multi-proxy modules](#multi-proxy-modules)
   - [Internal modules](#internal-modules)
+  - [User interaction flow](#user-interaction-flow)
 - [Proxy](#proxy)
   - [Proxy => Dispatcher](#proxy--dispatcher)
   - [Dispatcher => Module](#dispatcher--module)
@@ -25,16 +26,6 @@ Reflex supports multiple types of modules out of the box:
 - [Internal modules](#internal-modules)
 
 Since modules are invoked by `DELEGATECALL` they should **NOT** have any storage-related initialization in their constructors. The only thing that should be done in their constructors is to initialize immutable variables, since these are embedded into the contract's bytecode, not storage. Modules also should not define any storage variables. In the rare cases they need private storage, they should use unstructured storage.
-
-```mermaid
-sequenceDiagram
-    User->>Module Proxy: Request
-    Module Proxy->>Dispatcher (Storage): call()
-    Dispatcher (Storage) ->>Module Implementation: delegatecall()
-    Module Implementation->>Dispatcher (Storage): Response
-    Dispatcher (Storage) ->>Module Proxy: Response
-    Module Proxy->>User: Response
-```
 
 ### Single-proxy modules
 
@@ -72,6 +63,20 @@ graph TD
   subgraph InternalProxy [ ]
   Dispatcher --> Module["Module Implementation"]
   end
+```
+
+### User interaction flow
+
+From the users' perspective the flow of interaction looks as follows:
+
+```mermaid
+sequenceDiagram
+    User->>Module Proxy: Request
+    Module Proxy->>Dispatcher (Storage): call()
+    Dispatcher (Storage) ->>Module Implementation: delegatecall()
+    Module Implementation->>Dispatcher (Storage): Response
+    Dispatcher (Storage) ->>Module Proxy: Response
+    Module Proxy->>User: Response
 ```
 
 ## Proxy
