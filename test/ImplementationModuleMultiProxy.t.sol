@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+// Vendor
+import {stdError} from "forge-std/StdError.sol";
+import {Vm} from "forge-std/Vm.sol";
+
 // Interfaces
-import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IBaseModule, TBaseModule} from "../src/interfaces/IBaseModule.sol";
 import {IBaseProxy} from "../src/interfaces/IBaseProxy.sol";
 
 // Implementations
@@ -12,6 +16,7 @@ import {ImplementationERC20} from "./implementations/abstracts/ImplementationERC
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
+import {MockBaseModule, ICustomError} from "./mocks/MockBaseModule.sol";
 import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
 import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
 
@@ -248,5 +253,55 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V2,
             _MODULE_MULTI_REMOVEABLE_V2
         );
+    }
+
+    function testProxySentinelFallback() external {
+        _testProxySentinelFallback(multiModuleProxyA);
+        _testProxySentinelFallback(multiModuleProxyB);
+        _testProxySentinelFallback(multiModuleProxyC);
+    }
+
+    function testRevertBytesCustomError(uint256 code_, string memory message_) external {
+        _testRevertBytesCustomError(multiModuleProxyA, code_, message_);
+    }
+
+    function testRevertBytesPanicAssert() external {
+        _testRevertBytesPanicAssert(multiModuleProxyA);
+    }
+
+    function testRevertBytesPanicDivideByZero() external {
+        _testRevertBytesPanicDivideByZero(multiModuleProxyA);
+    }
+
+    function testRevertBytesPanicArithmaticOverflow() external {
+        _testRevertBytesPanicArithmaticOverflow(multiModuleProxyA);
+    }
+
+    function testRevertBytesPanicArithmaticUnderflow() external {
+        _testRevertBytesPanicArithmaticUnderflow(multiModuleProxyA);
+    }
+
+    function testProxyLog0Topic(bytes memory message_) external {
+        _testProxyLog0Topic(multiModuleProxyA, message_);
+    }
+
+    function testProxyLog1Topic(bytes memory message_) external {
+        _testProxyLog1Topic(multiModuleProxyA, message_);
+    }
+
+    function testProxyLog2Topic(bytes memory message_) external {
+        _testProxyLog2Topic(multiModuleProxyA, message_);
+    }
+
+    function testProxyLog3Topic(bytes memory message_) external {
+        _testProxyLog3Topic(multiModuleProxyA, message_);
+    }
+
+    function testProxyLog4Topic(bytes memory message_) external {
+        _testProxyLog4Topic(multiModuleProxyA, message_);
+    }
+
+    function testRevertProxyLogOutOfBounds(bytes memory message_) external {
+        _testRevertProxyLogOutOfBounds(multiModuleProxyA, message_);
     }
 }

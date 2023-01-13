@@ -7,10 +7,13 @@ import {BaseModule} from "../../src/BaseModule.sol";
 // Implementations
 import {ImplementationState} from "./ImplementationState.sol";
 
+// Mocks
+import {MockBaseModule} from "../mocks/MockBaseModule.sol";
+
 /**
  * @title Implementation Module
  */
-contract ImplementationModule is BaseModule, ImplementationState {
+contract ImplementationModule is MockBaseModule, ImplementationState {
     // ===========
     // Constructor
     // ===========
@@ -18,9 +21,5 @@ contract ImplementationModule is BaseModule, ImplementationState {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(ModuleSettings memory moduleSettings_) BaseModule(moduleSettings_) {}
-
-    // ==========
-    // Test stubs
-    // ==========
+    constructor(ModuleSettings memory moduleSettings_) MockBaseModule(moduleSettings_) {}
 }

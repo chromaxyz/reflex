@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IBaseModule, TBaseModule} from "../src/interfaces/IBaseModule.sol";
 
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
@@ -14,7 +14,7 @@ import {MockImplementationInternalModule} from "./mocks/MockImplementationIntern
 /**
  * @title Implementation Module Internal Proxy Test
  */
-contract ImplementationModuleInternalProxyTest is ImplementationFixture {
+contract ImplementationModuleInternalProxyTest is TBaseModule, ImplementationFixture {
     // =========
     // Constants
     // =========
