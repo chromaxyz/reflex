@@ -8,11 +8,11 @@ import {IBaseProxy} from "../interfaces/IBaseProxy.sol";
 import {BaseConstants} from "../BaseConstants.sol";
 
 /**
- * @title Proxy
- * @dev Proxies are non-upgradeable stub contracts that have two jobs:
- * - Forward method calls from external users to the dispatcher.
- * - Receive method calls from the dispatcher and log events as instructed
- * @dev Execution takes place within the dispatcher storage context, not the proxy's.
+ * @title Base Proxy
+ * @dev Proxies are non-upgradeable contracts that have two jobs:
+ * - Forward method calls from external users to the Dispatcher.
+ * - Receive method calls from the Dispatcher and log events as instructed.
+ * @dev Execution takes place within the Dispatcher storage context, not the proxy's.
  * @dev Non-upgradeable.
  */
 contract BaseProxy is IBaseProxy, BaseConstants {
