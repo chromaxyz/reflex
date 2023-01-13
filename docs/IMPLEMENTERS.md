@@ -35,7 +35,7 @@ This is the most common type of module.
 ```mermaid
 graph TD
   subgraph SingleProxy [ ]
-  Proxy --> Dispatcher
+  BaseProxy --> Dispatcher
   Dispatcher --> Module["Module Implementation"]
   end
 ```
@@ -48,9 +48,9 @@ It is relatively uncommon that one needs this type of module.
 ```mermaid
 graph TD
   subgraph MultiProxy [ ]
-  Proxy1["Proxy"] --> Dispatcher
-  Proxy2["Proxy"] --> Dispatcher
-  Proxy3["Proxy"] --> Dispatcher
+  Proxy1["BaseProxy"] --> Dispatcher
+  Proxy2["BaseProxy"] --> Dispatcher
+  Proxy3["BaseProxy"] --> Dispatcher
   Dispatcher --> Module["Module Implementation"]
   end
 ```
@@ -226,7 +226,7 @@ graph TD
     BaseInstaller --> BaseModule
     BaseDispatcher --> Base
     BaseModule --> Base
-    Base --> Proxy
+    Base --> BaseProxy
     Base --> BaseState
     BaseState --> BaseConstants
     State --> BaseState
