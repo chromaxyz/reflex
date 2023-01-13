@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IProxy} from "../interfaces/IProxy.sol";
+import {IBaseProxy} from "../interfaces/IBaseProxy.sol";
 
 // Sources
 import {BaseConstants} from "../BaseConstants.sol";
@@ -15,7 +15,7 @@ import {BaseConstants} from "../BaseConstants.sol";
  * @dev Execution takes place within the dispatcher storage context, not the proxy's.
  * @dev Non-upgradeable.
  */
-contract Proxy is IProxy, BaseConstants {
+contract BaseProxy is IBaseProxy, BaseConstants {
     // =========
     // Constants
     // =========

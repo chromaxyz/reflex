@@ -3,18 +3,18 @@ pragma solidity ^0.8.13;
 
 // Interfaces
 import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
-import {TProxy} from "../src/interfaces/IProxy.sol";
+import {TBaseProxy} from "../src/interfaces/IBaseProxy.sol";
 
 // Internals
-import {Proxy} from "../src/internals/Proxy.sol";
+import {BaseProxy} from "../src/internals/BaseProxy.sol";
 
 // Fixtures
 import {Harness} from "./fixtures/Harness.sol";
 
 /**
- * @title Proxy Test
+ * @title Base Proxy Test
  */
-contract ProxyTest is TProxy, Harness {
+contract BaseProxyTest is TBaseProxy, Harness {
     // =========
     // Constants
     // =========
@@ -25,7 +25,7 @@ contract ProxyTest is TProxy, Harness {
     // Storage
     // =======
 
-    Proxy public proxy;
+    BaseProxy public proxy;
 
     // =====
     // Setup
@@ -34,7 +34,7 @@ contract ProxyTest is TProxy, Harness {
     function setUp() public virtual override {
         super.setUp();
 
-        proxy = new Proxy(_MODULE_VALID_ID);
+        proxy = new BaseProxy(_MODULE_VALID_ID);
     }
 
     // =====
@@ -43,7 +43,7 @@ contract ProxyTest is TProxy, Harness {
 
     function testRevertInvalidModuleId() external {
         vm.expectRevert(InvalidModuleId.selector);
-        new Proxy(0);
+        new BaseProxy(0);
     }
 
     function testResolveInvalidImplementationToZeroAddress() external {

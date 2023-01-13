@@ -5,7 +5,7 @@ pragma solidity ^0.8.13;
 import {IBase} from "../interfaces/IBase.sol";
 
 // Internals
-import {Proxy} from "./Proxy.sol";
+import {BaseProxy} from "./BaseProxy.sol";
 
 // Sources
 import {BaseState} from "../BaseState.sol";
@@ -52,7 +52,7 @@ abstract contract Base is IBase, BaseState {
 
         if (_proxies[moduleId_] != address(0)) return _proxies[moduleId_];
 
-        address proxyAddress = address(new Proxy(moduleId_));
+        address proxyAddress = address(new BaseProxy(moduleId_));
 
         if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) _proxies[moduleId_] = proxyAddress;
 

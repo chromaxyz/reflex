@@ -2,9 +2,9 @@
 pragma solidity ^0.8.13;
 
 /**
- * @title Proxy Test Interface
+ * @title Base Proxy Test Interface
  */
-interface TProxy {
+interface TBaseProxy {
     // ======
     // Errors
     // ======
@@ -13,9 +13,9 @@ interface TProxy {
 }
 
 /**
- * @title Proxy Interface
+ * @title Base Proxy Interface
  */
-interface IProxy is TProxy {
+interface IBaseProxy is TBaseProxy {
     // =======
     // Methods
     // =======

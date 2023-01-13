@@ -7,7 +7,7 @@ import {Vm} from "forge-std/Vm.sol";
 
 // Interfaces
 import {IBaseModule, TBaseModule} from "../src/interfaces/IBaseModule.sol";
-import {IProxy} from "../src/interfaces/IProxy.sol";
+import {IBaseProxy} from "../src/interfaces/IBaseProxy.sol";
 
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
@@ -66,7 +66,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
 
     function testModuleIdToImplementation() external {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID), address(singleModule));
-        assertEq(IProxy(address(singleModuleProxy)).implementation(), address(singleModule));
+        assertEq(IBaseProxy(address(singleModuleProxy)).implementation(), address(singleModule));
     }
 
     function testModuleIdToProxy() external {
@@ -94,11 +94,11 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     }
 
     function testGetModuleImplementationByProxy() external {
-        assertEq(IProxy(address(singleModuleProxy)).implementation(), address(singleModule));
+        assertEq(IBaseProxy(address(singleModuleProxy)).implementation(), address(singleModule));
     }
 
     function testProxyImplementation() external {
-        assertEq(IProxy(address(singleModuleProxy)).implementation(), address(singleModule));
+        assertEq(IBaseProxy(address(singleModuleProxy)).implementation(), address(singleModule));
     }
 
     function testProxySentinelFallback() external {
