@@ -2,27 +2,32 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IProxy} from "../interfaces/IProxy.sol";
+import {IBaseProxy} from "../interfaces/IBaseProxy.sol";
 
 /**
- * @title Proxy
- * @dev Proxies are non-upgradeable stub contracts that have two jobs:
- * - Forward method calls from external users to the dispatcher.
- * - Receive method calls from the dispatcher and log events as instructed
- * @dev Execution takes place within the dispatcher storage context, not the proxy's.
+ * @title Base Proxy
+ * @dev Proxies are non-upgradeable contracts that have two jobs:
+ * - Forward method calls from external users to the Dispatcher.
+ * - Receive method calls from the Dispatcher and log events as instructed.
+ * @dev Execution takes place within the Dispatcher storage context, not the proxy's.
  * @dev Non-upgradeable.
  */
-contract Proxy is IProxy {
+contract BaseProxy is IBaseProxy {
     // =========
     // Constants
     // =========
 
-    /// @dev `bytes4(keccak256(bytes("proxyToModuleImplementation(address)")))`.
-    bytes4 private constant _PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR = 0xf2b124bd;
+    /// @dev `bytes4(keccak256(bytes("moduleIdToModuleImplementation(uint32)")))`.
+    bytes4 private constant _MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR = 0x75ea225d;
 
     // ==========
     // Immutables
     // ==========
+
+    /**
+     * @dev Same as the implementations' module id.
+     */
+    uint32 internal immutable _moduleId;
 
     /**
      * @dev Deployer address.
@@ -33,7 +38,13 @@ contract Proxy is IProxy {
     // Constructor
     // ===========
 
-    constructor() {
+    /**
+     * @param moduleId_ Same as the implementations' module id.
+     */
+    constructor(uint32 moduleId_) {
+        if (moduleId_ == 0) revert InvalidModuleId();
+
+        _moduleId = moduleId_;
         _deployer = msg.sender;
     }
 
@@ -47,10 +58,8 @@ contract Proxy is IProxy {
      * @return address Implementation address or zero address if unresolved.
      */
     function implementation() external view virtual override returns (address) {
-        // TODO: resolve multi-proxy, somehow map proxy to implementation
-
         (bool success, bytes memory response) = _deployer.staticcall(
-            abi.encodeWithSelector(_PROXY_ADDRESS_TO_MODULE_IMPLEMENTATION_SELECTOR, address(this))
+            abi.encodeWithSelector(_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR, _moduleId)
         );
 
         if (success) {

@@ -26,10 +26,10 @@ test-via-ir:; FOUNDRY_PROFILE=via-ir forge test
 test-min-solc-via-ir:; FOUNDRY_PROFILE=min-solc-via-ir forge test
 
 # Snapshot
-snapshot:; forge snapshot
-snapshot-min-solc:; FOUNDRY_PROFILE=min-solc forge snapshot
-snapshot-via-ir:; FOUNDRY_PROFILE=via-ir forge snapshot
-snapshot-min-solc-via-ir:; FOUNDRY_PROFILE=min-solc-via-ir forge snapshot
+snapshot:; forge snapshot --snap .gas-snapshot
+snapshot-min-solc:; FOUNDRY_PROFILE=min-solc forge snapshot --snap .gas-snapshot-min-solc
+snapshot-via-ir:; FOUNDRY_PROFILE=via-ir forge snapshot --snap .gas-snapshot-via-ir
+snapshot-min-solc-via-ir:; FOUNDRY_PROFILE=min-solc-via-ir forge snapshot --snap .gas-snapshot-min-solc-via-ir
 
 # Linting
 lint-check:; npm run lint:check

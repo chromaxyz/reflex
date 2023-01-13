@@ -33,7 +33,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         // Register `Installer` module.
         _modules[_MODULE_ID_INSTALLER] = installerModule_;
         address installerProxy = _createProxy(_MODULE_ID_INSTALLER, _MODULE_TYPE_SINGLE_PROXY);
-        _trusts[installerProxy].moduleImplementation = installerModule_;
+        _relations[installerProxy].moduleImplementation = installerModule_;
 
         emit OwnershipTransferred(address(0), owner_);
         emit ModuleAdded(_MODULE_ID_INSTALLER, installerModule_, IBaseInstaller(installerModule_).moduleVersion());
@@ -61,24 +61,6 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         return _proxies[moduleId_];
     }
 
-    /**
-     * @notice Returns the module implementation by proxy address.
-     * @param proxyAddress_ Proxy address.
-     * @return address Module implementation.
-     */
-    function proxyToModuleImplementation(address proxyAddress_) external view virtual override returns (address) {
-        return _trusts[proxyAddress_].moduleImplementation;
-    }
-
-    /**
-     * @notice Returns the module id by proxy address.
-     * @param proxyAddress_ Proxy address.
-     * @return uint32 Module id.
-     */
-    function proxyToModuleId(address proxyAddress_) external view virtual override returns (uint32) {
-        return _trusts[proxyAddress_].moduleId;
-    }
-
     // ==================
     // Fallback functions
     // ==================
@@ -87,8 +69,8 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
      * @notice Dispatch function to module.
      */
     function dispatch() external virtual override {
-        uint32 moduleId = _trusts[msg.sender].moduleId;
-        address moduleImplementation = _trusts[msg.sender].moduleImplementation;
+        uint32 moduleId = _relations[msg.sender].moduleId;
+        address moduleImplementation = _relations[msg.sender].moduleImplementation;
 
         if (moduleId == 0) revert CallerNotTrusted();
 

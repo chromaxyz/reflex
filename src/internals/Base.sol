@@ -5,7 +5,7 @@ pragma solidity ^0.8.13;
 import {IBase} from "../interfaces/IBase.sol";
 
 // Internals
-import {Proxy} from "./Proxy.sol";
+import {BaseProxy} from "./BaseProxy.sol";
 
 // Sources
 import {BaseState} from "../BaseState.sol";
@@ -33,8 +33,7 @@ abstract contract Base is IBase, BaseState {
 
         _;
 
-        // By storing the original value once again, a refund is triggered (see
-        // https://eips.ethereum.org/EIPS/eip-2200).
+        // By storing the original value once again, a refund is triggered (see https://eips.ethereum.org/EIPS/eip-2200).
         _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
     }
 
@@ -49,17 +48,16 @@ abstract contract Base is IBase, BaseState {
     function _createProxy(uint32 moduleId_, uint16 moduleType_) internal virtual returns (address) {
         if (moduleId_ == 0) revert InvalidModuleId();
         if (moduleType_ == 0 || moduleType_ > _MODULE_TYPE_INTERNAL) revert InvalidModuleType();
-
         if (moduleType_ == _MODULE_TYPE_INTERNAL) revert InternalModule();
 
         if (_proxies[moduleId_] != address(0)) return _proxies[moduleId_];
 
-        address proxyAddress = address(new Proxy());
+        address proxyAddress = address(new BaseProxy(moduleId_));
 
         if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) _proxies[moduleId_] = proxyAddress;
 
-        _trusts[proxyAddress].moduleId = moduleId_;
-        _trusts[proxyAddress].moduleImplementation = address(0);
+        _relations[proxyAddress].moduleId = moduleId_;
+        _relations[proxyAddress].moduleImplementation = address(0);
 
         emit ProxyCreated(proxyAddress);
 
@@ -67,7 +65,7 @@ abstract contract Base is IBase, BaseState {
     }
 
     /**
-     * @dev Call internal module.
+     * @dev Perform delegatecall to trusted internal module.
      * @param moduleId_ Module id.
      * @param input_ Input data.
      */
@@ -86,7 +84,7 @@ abstract contract Base is IBase, BaseState {
     function _unpackMessageSender() internal pure virtual returns (address messageSender_) {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
         assembly {
-            messageSender_ := shr(0x60, calldataload(sub(calldatasize(), 0x28)))
+            messageSender_ := shr(0x60, calldataload(sub(calldatasize(), 40)))
         }
     }
 
@@ -97,7 +95,7 @@ abstract contract Base is IBase, BaseState {
     function _unpackProxyAddress() internal pure virtual returns (address proxyAddress_) {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
         assembly {
-            proxyAddress_ := shr(0x60, calldataload(sub(calldatasize(), 0x14)))
+            proxyAddress_ := shr(0x60, calldataload(sub(calldatasize(), 20)))
         }
     }
 

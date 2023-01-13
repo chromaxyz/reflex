@@ -1,17 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Sources
-import {BaseModule} from "../../../src/BaseModule.sol";
-import {BaseState} from "../../../src/BaseState.sol";
-
 // Implementations
 import {ImplementationState} from "../ImplementationState.sol";
+
+// Mocks
+import {MockBaseModule} from "../../mocks/MockBaseModule.sol";
 
 /**
  * @title Implementation ERC20
  */
-abstract contract ImplementationERC20 is BaseModule, ImplementationState {
+abstract contract ImplementationERC20 is MockBaseModule, ImplementationState {
     // ======
     // Errors
     // ======
@@ -43,7 +42,7 @@ abstract contract ImplementationERC20 is BaseModule, ImplementationState {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(ModuleSettings memory moduleSettings_) BaseModule(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) MockBaseModule(moduleSettings_) {}
 
     // ==============
     // View functions

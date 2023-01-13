@@ -19,8 +19,4 @@ contract ImplementationInstaller is BaseInstaller, ImplementationState {
      * @param moduleSettings_ Module settings.
      */
     constructor(ModuleSettings memory moduleSettings_) BaseInstaller(moduleSettings_) {}
-
-    // ==========
-    // Test stubs
-    // ==========
 }

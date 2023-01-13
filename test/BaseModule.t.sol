@@ -50,7 +50,7 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
     // Tests
     // =====
 
-    function testValidModuleSettings() external {
+    function testModuleSettings() external {
         module = new MockBaseModule(
             IBaseModule.ModuleSettings({
                 moduleId: _MODULE_VALID_ID,

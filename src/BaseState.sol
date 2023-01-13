@@ -19,7 +19,7 @@ import {BaseConstants} from "./BaseConstants.sol";
  * | _pendingOwner   | address                                             | 2    | 0      | 20    |
  * | _modules        | mapping(uint32 => address)                          | 3    | 0      | 32    |
  * | _proxies        | mapping(uint32 => address)                          | 4    | 0      | 32    |
- * | _trusts         | mapping(address => struct TBaseState.TrustRelation) | 5    | 0      | 32    |
+ * | _relations      | mapping(address => struct TBaseState.TrustRelation) | 5    | 0      | 32    |
  * | __gap           | uint256[44]                                         | 6    | 0      | 1408  |
  */
 abstract contract BaseState is IBaseState, BaseConstants {
@@ -64,7 +64,7 @@ abstract contract BaseState is IBaseState, BaseConstants {
      * @dev Proxy address => TrustRelation { moduleId, moduleImplementation }.
      * @dev Slot 5 (32 bytes).
      */
-    mapping(address => TrustRelation) internal _trusts;
+    mapping(address => TrustRelation) internal _relations;
 
     /**
      * @notice This empty reserved space is put in place to allow future versions to add new

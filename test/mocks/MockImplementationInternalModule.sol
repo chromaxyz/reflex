@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Sources
-import {BaseModule} from "../../src/BaseModule.sol";
-
 // Implementations
 import {ImplementationState} from "../implementations/ImplementationState.sol";
+
+// Mocks
+import {MockBaseModule} from "../mocks/MockBaseModule.sol";
 
 /**
  * @title Mock Implementation Internal Module
  */
-contract MockImplementationInternalModule is BaseModule, ImplementationState {
+contract MockImplementationInternalModule is MockBaseModule, ImplementationState {
     // ===========
     // Constructor
     // ===========
@@ -18,7 +18,7 @@ contract MockImplementationInternalModule is BaseModule, ImplementationState {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(ModuleSettings memory moduleSettings_) BaseModule(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) MockBaseModule(moduleSettings_) {}
 
     // ==========
     // Test stubs

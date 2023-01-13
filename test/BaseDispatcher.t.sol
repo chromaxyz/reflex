@@ -13,7 +13,6 @@ import {BaseFixture} from "./fixtures/BaseFixture.sol";
 
 // Mocks
 import {MockBaseDispatcher} from "./mocks/MockBaseDispatcher.sol";
-import {MockBaseInstaller} from "./mocks/MockBaseInstaller.sol";
 import {MockBaseModule} from "./mocks/MockBaseModule.sol";
 
 /**
@@ -106,8 +105,6 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
     function testInstallerConfiguration() external {
         assertEq(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER), address(installerProxy));
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installer));
-        assertEq(dispatcher.proxyToModuleId(address(installerProxy)), _MODULE_ID_INSTALLER);
-        assertEq(dispatcher.proxyToModuleImplementation(address(installerProxy)), address(installer));
     }
 
     function testGetOwnerThroughInstaller() external {

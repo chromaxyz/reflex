@@ -2,6 +2,41 @@
 
 A Solidity framework for upgradeable modularized applications.
 
+---
+
+[![Tests][gha-contracts-badge]][gha-contracts] [![Linter][gha-lint-badge]][gha-lint] [![Foundry][foundry-badge]][foundry] [![License: AGPL-3.0][license-badge]][license]
+
+[gha-contracts]: https://github.com/Chroma-Org/Reflex/actions/workflows/contracts.yml
+[gha-contracts-badge]: https://github.com/Chroma-Org/Reflex/actions/workflows/contracts.yml/badge.svg
+[gha-lint]: https://github.com/Chroma-Org/Reflex/actions/workflows/lint.yml
+[gha-lint-badge]: https://github.com/Chroma-Org/Reflex/actions/workflows/lint.yml/badge.svg
+[foundry]: https://getfoundry.sh/
+[foundry-badge]: https://img.shields.io/badge/Built%20with-Foundry-DEA584.svg
+[license]: https://www.gnu.org/licenses/agpl-3.0
+[license-badge]: https://img.shields.io/badge/License-AGPL%203.0-blue
+
+---
+
+## Table of Contents
+
+- [Reflex](#reflex)
+
+  - [Table of Contents](#table-of-contents)
+  - [Traits](#traits)
+  - [Contracts](#contracts)
+  - [Install](#install)
+  - [Usage](#usage)
+  - [Diagram](#diagram)
+    - [Single-proxy modules](#single-proxy-modules)
+    - [Multi-proxy modules](#multi-proxy-modules)
+    - [Internal modules](#internal-modules)
+    - [User interaction flow](#user-interaction-flow)
+  - [Known limitations](#known-limitations)
+  - [Safety](#safety)
+  - [Contributing](#contributing)
+  - [Acknowledgements](#acknowledgements)
+  - [License](#license)
+
 ## Traits
 
 - Provides a minimal, gas-optimized framework for building and maintaining upgradeable modularized applications.
@@ -13,14 +48,6 @@ A Solidity framework for upgradeable modularized applications.
 
 Noteably this is a so-called framework, a single well-tested audited implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
-
-## Goals
-
-- The core framework must be as minimalistic and lean as possible, aim for a "zero-cost abstraction".
-- The core framework must have a highly optimized hot-path.
-- The core framework must have as little stack pressure as possible.
-- Priveledged administrative functions must optimize for legibility and safety, focus on preventing footguns.
-- Only the `Installer` is required, all other modules are optional.
 
 ## Contracts
 
@@ -44,7 +71,29 @@ The framework serves as the foundation of your modular application allowing you 
     └── BaseInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
 ```
 
-## Inheritance diagram
+## Install
+
+To install with [**Foundry**](https://github.com/foundry-rs/foundry):
+
+```sh
+TODO: ADD LINK
+```
+
+To install with [**Hardhat**](https://github.com/nomiclabs/hardhat) or [**Truffle**](https://github.com/trufflesuite/truffle):
+
+```sh
+TODO: ADD LINK
+```
+
+## Usage
+
+TODO: add code snippets and high-level overview
+
+Please refer to the [IMPLEMENTERS](docs/IMPLEMENTERS.md) guide for more information.
+
+## Diagram
+
+TODO: add general description of how the framework works.
 
 ```mermaid
 graph TD
@@ -96,7 +145,7 @@ graph TD
   end
 ```
 
-### Internal-proxy modules
+### Internal modules
 
 Modules that are called internally and don't have any public-facing proxies.
 Internal modules have the benefit that they are upgradeable where the `Dispatcher` itself is not.
@@ -108,7 +157,7 @@ graph TD
   end
 ```
 
-## User flow
+### User interaction flow
 
 ```mermaid
 sequenceDiagram
@@ -122,20 +171,64 @@ sequenceDiagram
 
 ## Known limitations
 
-- Multiple application entrypoints via their proxies. The proxy address stays consistent through module upgrades.
+- Reflex has multiple application entrypoints via their proxies. The proxy address however stays consistent throughout module upgrades.
 - The `Dispatcher` and the internal `Proxy` contracts are not upgradable.
-- Storage in the `Dispatcher` is extendable but implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
+- Storage in the `Dispatcher` is append-only extendable but implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
 - The first `50` storage slots are reserved allowing us to add new features over time.
-- It is possible to possibly cause function selector clashes though the surface area is very small.
-- Implementers MUST NOT implement an `implementation()` method in `Modules` as this causes a function selector clash in the `Proxy`.
-- Implementers MUST NOT implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
-- The registration of `Modules` MUST BE permissioned, malicious `Modules` can impact the behaviour of the entire application.
+- It is possible to potentially cause function selector clashes though the surface area is very small and documented.
+- Implementers **MUST NOT** implement an `implementation()` or `sentinel()` method in `Modules` as this causes a function selector clash in the `Proxy`.
+- Implementers **MUST NOT** implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
+- The registration of `Modules` **MUST BE** permissioned, malicious `Modules` can impact the behaviour of the entire application.
+- `Modules` **MUST NOT** define any storage variables. In the rare case this is necessary you should use unstructured storage.
+- `Modules` **CAN ONLY** initialize **IMMUTABLE** storage variables inside of their constructor.
+
+## Contribute
+
+Reflex includes a suite of fuzzing and invariant tests written in Solidity with Foundry.
+
+To install Foundry:
+
+```sh
+curl -L https://foundry.paradigm.xyz | bash
+```
+
+This will download foundryup. To start Foundry, run:
+
+```sh
+foundryup
+```
+
+For convenience we use a [Makefile](/Makefile) for running different tasks.
+
+To install dependencies:
+
+```sh
+make install
+```
+
+To build:
+
+```sh
+make build
+```
+
+To test:
+
+```sh
+make test
+```
 
 ## Safety
 
 This is **experimental software** and is provided on an "as is" and "as available" basis.
 
 We **do not give any warranties** and **will not be liable for any loss** incurred through any use of this codebase.
+
+## Contributing
+
+Contributions to Reflex are welcome by anyone interested in writing more tests, improving readability, optimizing for gas efficiency, extending the core protocol or periphery modules.
+
+Please refer to the [CONTRIBUTORS](docs/CONTRIBUTORS.md) guide for more information.
 
 ## Acknowledgements
 
@@ -145,11 +238,14 @@ The architecture is directly inspired by [Euler's Proxy Protocol](https://docs.e
 
 The contracts and tests were inspired by or directly modified from many sources, primarily:
 
-- [Euler](https://github.com/euler-xyz/euler-contracts)
-- [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
-- [Solmate](https://github.com/transmissions11/solmate)
-- [Solady](https://github.com/Vectorized/solady)
+- [Euler](https://github.com/euler-xyz/euler-contracts) - `GPL-2.0-or-later`
+- [EIP-2535: Diamonds, Multi-Facet Proxy](https://eips.ethereum.org/EIPS/eip-2535) - `CC0`
+- [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts) - `MIT`
+- [Solmate](https://github.com/transmissions11/solmate) - `AGPL-3.0-only`
+- [Solady](https://github.com/Vectorized/solady) - `MIT`
 
 ## License
 
 Licensed under the [AGPL-3.0-only](/LICENSE) license.
+
+For third party licenses please refer to [THIRD_PARTY_LICENSES](/THIRD_PARTY_LICENSES).

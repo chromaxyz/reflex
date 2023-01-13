@@ -15,5 +15,9 @@ contract ImplementationDispatcher is BaseDispatcher, ImplementationState {
     // Constructor
     // ===========
 
+    /**
+     * @param owner_ Protocol owner.
+     * @param installerModule_ Installer module address.
+     */
     constructor(address owner_, address installerModule_) BaseDispatcher(owner_, installerModule_) {}
 }

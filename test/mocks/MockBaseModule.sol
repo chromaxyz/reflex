@@ -11,6 +11,12 @@ import {MockBase} from "./MockBase.sol";
  * @title Mock Base Module
  */
 contract MockBaseModule is BaseModule, MockBase {
+    // =====
+    // Error
+    // =====
+
+    error ZeroAddress();
+
     // ===========
     // Constructor
     // ===========
@@ -25,6 +31,9 @@ contract MockBaseModule is BaseModule, MockBase {
     // ==========
 
     function sentinel() external pure returns (bool) {
+        if (_unpackProxyAddress() == address(0)) revert ZeroAddress();
+        if (_unpackMessageSender() == address(0)) revert ZeroAddress();
+
         return true;
     }
 

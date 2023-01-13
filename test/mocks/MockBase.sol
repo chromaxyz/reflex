@@ -3,20 +3,19 @@ pragma solidity ^0.8.13;
 
 // Internals
 import {Base} from "../../src/internals/Base.sol";
-import {BaseState} from "../../src/BaseState.sol";
-
-abstract contract MockBaseState is BaseState {
-    // =======
-    // Storage
-    // =======
-
-    uint256 public reentrancyCounter = 0;
-}
 
 /**
  * @title Mock Base
  */
-contract MockBase is Base, MockBaseState {
+contract MockBase is Base {
+    // =======
+    // Storage
+    // =======
+
+    /// @dev `bytes32(uint256(keccak256("reentrancy.counter")) - 1))`
+    bytes32 internal constant _REENTRANCY_COUNTER_SLOT =
+        0xc2db8520a4cb85e45c0b428b71b461e7932f3b9c2b41fa1662675e79660783f2;
+
     // ===========
     // Constructor
     // ===========
@@ -28,6 +27,10 @@ contract MockBase is Base, MockBaseState {
     // ==========
     // Test stubs
     // ==========
+
+    function reentrancyCounter() public view returns (uint256 n_) {
+        n_ = _getCounter();
+    }
 
     function getReentrancyStatus() public view returns (uint256) {
         return _reentrancyLock;
@@ -45,29 +48,29 @@ contract MockBase is Base, MockBaseState {
         _increaseCounter();
     }
 
-    function countDirectRecursive(uint256 n) public nonReentrant {
-        if (n > 0) {
+    function countDirectRecursive(uint256 n_) public nonReentrant {
+        if (n_ > 0) {
             _increaseCounter();
-            countDirectRecursive(n - 1);
+            countDirectRecursive(n_ - 1);
         }
     }
 
-    function countIndirectRecursive(uint256 n) public nonReentrant {
-        if (n > 0) {
+    function countIndirectRecursive(uint256 n_) public nonReentrant {
+        if (n_ > 0) {
             _increaseCounter();
 
             (bool success, bytes memory data) = address(this).call(
-                abi.encodeWithSignature("countIndirectRecursive(uint256)", n - 1)
+                abi.encodeWithSignature("countIndirectRecursive(uint256)", n_ - 1)
             );
 
             if (!success) _revertBytes(data);
         }
     }
 
-    function countAndCall(ReentrancyAttack attacker) public nonReentrant {
+    function countAndCall(ReentrancyAttack attacker_) public nonReentrant {
         _increaseCounter();
         bytes4 func = bytes4(keccak256("callback()"));
-        attacker.callSender(func);
+        attacker_.callSender(func);
     }
 
     function guardedCheckLocked() public nonReentrant {
@@ -102,8 +105,21 @@ contract MockBase is Base, MockBaseState {
     // Utilities
     // =========
 
+    function _getCounter() internal view returns (uint256 n) {
+        assembly {
+            n := sload(_REENTRANCY_COUNTER_SLOT)
+        }
+    }
+
+    function _setCounter(uint256 n) internal {
+        assembly {
+            sstore(_REENTRANCY_COUNTER_SLOT, n)
+        }
+    }
+
     function _increaseCounter() internal {
-        reentrancyCounter += 1;
+        uint256 value = _getCounter();
+        _setCounter(value + 1);
     }
 }
 
