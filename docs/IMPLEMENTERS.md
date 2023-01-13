@@ -30,6 +30,7 @@ Since modules are invoked by `DELEGATECALL` they should **NOT** have any storage
 ### Single-proxy modules
 
 Modules that have a single proxy to a single implementation relation.
+This is the most common type of module.
 
 ```mermaid
 graph TD
@@ -41,7 +42,8 @@ graph TD
 
 ### Multi-proxy modules
 
-Modules that have a multiple proxies to a single implementation relation.
+Modules that have a multiple proxies to a single implementation relation.]
+It is relatively uncommon that one needs this type of module.
 
 ```mermaid
 graph TD
@@ -155,7 +157,7 @@ The proxy unpacks this message and executes the appropriate log instruction: `lo
 
 ## Implementing
 
-In order to use the Reflex framework there are multiple abstract contracts you have to inherit as follows:
+In order to use the Reflex framework there are multiple abstract contracts one has to inherit as follows:
 
 ```solidity
 // SPDX-License-Identifier: AGPL-3.0-only
@@ -265,7 +267,7 @@ An example of a deployment flow can be found in [`script/Deploy.s.sol`](../scrip
 - Implementers **MUST NOT** implement an `implementation()` or `sentinel()` method in `Modules` as this causes a function selector clash in the `Proxy`.
 - Implementers **MUST NOT** implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
 - The registration of `Modules` **MUST BE** permissioned, malicious `Modules` can impact the behaviour of the entire application.
-- `Modules` **MUST NOT** define any storage variables. In the rare case this is necessary you should use unstructured storage.
+- `Modules` **MUST NOT** define any storage variables. In the rare case this is necessary one should use unstructured storage.
 - `Modules` **CAN ONLY** initialize **IMMUTABLE** storage variables inside of their constructor.
 
 ## Acknowledgements
