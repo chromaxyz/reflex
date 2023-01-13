@@ -4,9 +4,6 @@ pragma solidity ^0.8.13;
 // Interfaces
 import {IBaseProxy} from "../interfaces/IBaseProxy.sol";
 
-// Sources
-import {BaseConstants} from "../BaseConstants.sol";
-
 /**
  * @title Base Proxy
  * @dev Proxies are non-upgradeable contracts that have two jobs:
@@ -15,7 +12,7 @@ import {BaseConstants} from "../BaseConstants.sol";
  * @dev Execution takes place within the Dispatcher storage context, not the proxy's.
  * @dev Non-upgradeable.
  */
-contract BaseProxy is IBaseProxy, BaseConstants {
+contract BaseProxy is IBaseProxy {
     // =========
     // Constants
     // =========

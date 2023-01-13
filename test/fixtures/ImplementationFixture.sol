@@ -10,7 +10,6 @@ import {BaseConstants} from "../../src/BaseConstants.sol";
 
 // Interfaces
 import {IBaseModule, TBaseModule} from "../../src/interfaces/IBaseModule.sol";
-import {IBaseProxy} from "../../src/interfaces/IBaseProxy.sol";
 
 // Implementations
 import {ImplementationDispatcher} from "../implementations/ImplementationDispatcher.sol";

@@ -13,7 +13,6 @@ import {BaseFixture} from "./fixtures/BaseFixture.sol";
 
 // Mocks
 import {MockBaseDispatcher} from "./mocks/MockBaseDispatcher.sol";
-import {MockBaseInstaller} from "./mocks/MockBaseInstaller.sol";
 import {MockBaseModule} from "./mocks/MockBaseModule.sol";
 
 /**

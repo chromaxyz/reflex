@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TBaseModule} from "../src/interfaces/IBaseModule.sol";
 import {TBaseProxy} from "../src/interfaces/IBaseProxy.sol";
 
 // Internals

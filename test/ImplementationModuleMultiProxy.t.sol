@@ -1,12 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Vendor
-import {stdError} from "forge-std/StdError.sol";
-import {Vm} from "forge-std/Vm.sol";
-
 // Interfaces
-import {IBaseModule, TBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
 import {IBaseProxy} from "../src/interfaces/IBaseProxy.sol";
 
 // Implementations
@@ -16,7 +12,6 @@ import {ImplementationERC20} from "./implementations/abstracts/ImplementationERC
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {MockBaseModule, ICustomError} from "./mocks/MockBaseModule.sol";
 import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
 import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
 
@@ -263,45 +258,67 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
 
     function testRevertBytesCustomError(uint256 code_, string memory message_) external {
         _testRevertBytesCustomError(multiModuleProxyA, code_, message_);
+        _testRevertBytesCustomError(multiModuleProxyB, code_, message_);
+        _testRevertBytesCustomError(multiModuleProxyC, code_, message_);
     }
 
     function testRevertBytesPanicAssert() external {
         _testRevertBytesPanicAssert(multiModuleProxyA);
+        _testRevertBytesPanicAssert(multiModuleProxyB);
+        _testRevertBytesPanicAssert(multiModuleProxyC);
     }
 
     function testRevertBytesPanicDivideByZero() external {
         _testRevertBytesPanicDivideByZero(multiModuleProxyA);
+        _testRevertBytesPanicDivideByZero(multiModuleProxyB);
+        _testRevertBytesPanicDivideByZero(multiModuleProxyC);
     }
 
     function testRevertBytesPanicArithmaticOverflow() external {
         _testRevertBytesPanicArithmaticOverflow(multiModuleProxyA);
+        _testRevertBytesPanicArithmaticOverflow(multiModuleProxyB);
+        _testRevertBytesPanicArithmaticOverflow(multiModuleProxyC);
     }
 
     function testRevertBytesPanicArithmaticUnderflow() external {
         _testRevertBytesPanicArithmaticUnderflow(multiModuleProxyA);
+        _testRevertBytesPanicArithmaticUnderflow(multiModuleProxyB);
+        _testRevertBytesPanicArithmaticUnderflow(multiModuleProxyC);
     }
 
     function testProxyLog0Topic(bytes memory message_) external {
         _testProxyLog0Topic(multiModuleProxyA, message_);
+        _testProxyLog0Topic(multiModuleProxyB, message_);
+        _testProxyLog0Topic(multiModuleProxyC, message_);
     }
 
     function testProxyLog1Topic(bytes memory message_) external {
         _testProxyLog1Topic(multiModuleProxyA, message_);
+        _testProxyLog1Topic(multiModuleProxyB, message_);
+        _testProxyLog1Topic(multiModuleProxyC, message_);
     }
 
     function testProxyLog2Topic(bytes memory message_) external {
         _testProxyLog2Topic(multiModuleProxyA, message_);
+        _testProxyLog2Topic(multiModuleProxyB, message_);
+        _testProxyLog2Topic(multiModuleProxyC, message_);
     }
 
     function testProxyLog3Topic(bytes memory message_) external {
         _testProxyLog3Topic(multiModuleProxyA, message_);
+        _testProxyLog3Topic(multiModuleProxyB, message_);
+        _testProxyLog3Topic(multiModuleProxyC, message_);
     }
 
     function testProxyLog4Topic(bytes memory message_) external {
         _testProxyLog4Topic(multiModuleProxyA, message_);
+        _testProxyLog4Topic(multiModuleProxyB, message_);
+        _testProxyLog4Topic(multiModuleProxyC, message_);
     }
 
     function testRevertProxyLogOutOfBounds(bytes memory message_) external {
         _testRevertProxyLogOutOfBounds(multiModuleProxyA, message_);
+        _testRevertProxyLogOutOfBounds(multiModuleProxyB, message_);
+        _testRevertProxyLogOutOfBounds(multiModuleProxyC, message_);
     }
 }
