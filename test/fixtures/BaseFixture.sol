@@ -57,7 +57,7 @@ abstract contract BaseFixture is BaseConstants, DeployConstants, Harness {
         IBaseModule module_,
         uint32 moduleId_,
         uint16 moduleType_,
-        uint16 moduleVersion_,
+        uint32 moduleVersion_,
         bool moduleUpgradeable_,
         bool moduleRemoveable_
     ) internal {

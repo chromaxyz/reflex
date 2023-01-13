@@ -39,9 +39,9 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         emit ModuleAdded(_MODULE_ID_INSTALLER, installerModule_, IBaseInstaller(installerModule_).moduleVersion());
     }
 
-    // ==============
-    // View functions
-    // ==============
+    // ============
+    // View methods
+    // ============
 
     /**
      * @notice Returns the module implementation address by module id.
@@ -61,9 +61,9 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         return _proxies[moduleId_];
     }
 
-    // ==================
-    // Fallback functions
-    // ==================
+    // ================
+    // Fallback methods
+    // ================
 
     /**
      * @notice Dispatch function to module.

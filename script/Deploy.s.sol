@@ -22,7 +22,7 @@ abstract contract DeployConstants is BaseConstants {
     /**
      * @dev Module version of built-in upgradeable installer module.
      */
-    uint16 internal constant _MODULE_VERSION_INSTALLER = 1;
+    uint32 internal constant _MODULE_VERSION_INSTALLER = 1;
 
     /**
      * @dev Module upgradeability setting of built-in upgradeable installer module.
@@ -44,7 +44,7 @@ contract DeployScript is Script, DeployConstants {
     // =========
 
     uint32 internal constant _MODULE_ID_EXAMPLE = 2;
-    uint16 internal constant _MODULE_VERSION_EXAMPLE = 1;
+    uint32 internal constant _MODULE_VERSION_EXAMPLE = 1;
     bool internal constant _MODULE_UPGRADEABLE_EXAMPLE = true;
     bool internal constant _MODULE_REMOVEABLE_EXAMPLE = true;
 

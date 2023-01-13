@@ -19,29 +19,21 @@ A Solidity framework for upgradeable modularized applications.
 
 ## Table of Contents
 
-- [Reflex](#reflex)
-
-  - [Table of Contents](#table-of-contents)
-  - [Traits](#traits)
-  - [Contracts](#contracts)
-  - [Install](#install)
-  - [Usage](#usage)
-  - [Diagram](#diagram)
-    - [Single-proxy modules](#single-proxy-modules)
-    - [Multi-proxy modules](#multi-proxy-modules)
-    - [Internal modules](#internal-modules)
-    - [User interaction flow](#user-interaction-flow)
-  - [Known limitations](#known-limitations)
-  - [Safety](#safety)
-  - [Contributing](#contributing)
-  - [Acknowledgements](#acknowledgements)
-  - [License](#license)
+- [Table of Contents](#table-of-contents)
+- [Traits](#traits)
+- [Contracts](#contracts)
+- [Install](#install)
+- [Usage](#usage)
+- [Safety](#safety)
+- [Contributing](#contributing)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
 
 ## Traits
 
 - Provides a minimal, gas-optimized framework for building and maintaining upgradeable modularized applications.
 - Modularization prevents hitting the Spurious Dragon maximum contract size limitation of ~24.5kb.
-- Avoids function selector clashing alltogether, allowing you to have multiple spec-compliant modules run side-by-side.
+- Avoids function selector clashing allowing you to run multiple spec-compliant modules side-by-side.
 - Multiple module types: single-proxy modules, multi-proxy modules and internal modules.
 - Uses neutral language, avoids introducing new terminology.
 - A built-in upgradeable installer allowing you to add, upgrade and remove modules throughout the application lifetime.
@@ -71,6 +63,18 @@ The framework serves as the foundation of your modular application allowing you 
     └── BaseInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
 ```
 
+```mermaid
+graph TD
+    subgraph Framework [ ]
+
+    BaseInstaller --> BaseModule
+    BaseDispatcher --> Base
+    BaseModule --> Base
+    Base --> BaseState
+    BaseState --> BaseConstants
+    end
+```
+
 ## Install
 
 To install with [**Foundry**](https://github.com/foundry-rs/foundry):
@@ -87,136 +91,7 @@ TODO: ADD LINK
 
 ## Usage
 
-TODO: add code snippets and high-level overview
-
-Please refer to the [IMPLEMENTERS](docs/IMPLEMENTERS.md) guide for more information.
-
-## Diagram
-
-TODO: add general description of how the framework works.
-
-```mermaid
-graph TD
-    subgraph Application [ ]
-    Dispatcher --> State
-    Installer --> State
-    Module --> State
-    State --> Constants
-    end
-
-    subgraph Framework [ ]
-    Dispatcher --> BaseDispatcher
-    Installer --> BaseInstaller
-    Module --> BaseModule
-    BaseInstaller --> BaseModule
-    BaseDispatcher --> Base
-    BaseModule --> Base
-    Base --> Proxy
-    Base --> BaseState
-    BaseState --> BaseConstants
-    State --> BaseState
-    Constants --> BaseConstants
-    end
-```
-
-### Single-proxy modules
-
-Modules that have a single proxy to a single implementation relation.
-
-```mermaid
-graph TD
-  subgraph SingleProxy [ ]
-  Proxy --> Dispatcher
-  Dispatcher --> Module["Module Implementation"]
-  end
-```
-
-### Multi-proxy modules
-
-Modules that have a multiple proxies to a single implementation relation.
-
-```mermaid
-graph TD
-  subgraph MultiProxy [ ]
-  Proxy1["Proxy"] --> Dispatcher
-  Proxy2["Proxy"] --> Dispatcher
-  Proxy3["Proxy"] --> Dispatcher
-  Dispatcher --> Module["Module Implementation"]
-  end
-```
-
-### Internal modules
-
-Modules that are called internally and don't have any public-facing proxies.
-Internal modules have the benefit that they are upgradeable where the `Dispatcher` itself is not.
-
-```mermaid
-graph TD
-  subgraph InternalProxy [ ]
-  Dispatcher --> Module["Module Implementation"]
-  end
-```
-
-### User interaction flow
-
-```mermaid
-sequenceDiagram
-    User->>Module Proxy: Request
-    Module Proxy->>Dispatcher (Storage): call()
-    Dispatcher (Storage) ->>Module Implementation: delegatecall()
-    Module Implementation->>Dispatcher (Storage): Response
-    Dispatcher (Storage) ->>Module Proxy: Response
-    Module Proxy->>User: Response
-```
-
-## Known limitations
-
-- Reflex has multiple application entrypoints via their proxies. The proxy address however stays consistent throughout module upgrades.
-- The `Dispatcher` and the internal `Proxy` contracts are not upgradable.
-- Storage in the `Dispatcher` is append-only extendable but implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
-- The first `50` storage slots are reserved allowing us to add new features over time.
-- It is possible to potentially cause function selector clashes though the surface area is very small and documented.
-- Implementers **MUST NOT** implement an `implementation()` or `sentinel()` method in `Modules` as this causes a function selector clash in the `Proxy`.
-- Implementers **MUST NOT** implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
-- The registration of `Modules` **MUST BE** permissioned, malicious `Modules` can impact the behaviour of the entire application.
-- `Modules` **MUST NOT** define any storage variables. In the rare case this is necessary you should use unstructured storage.
-- `Modules` **CAN ONLY** initialize **IMMUTABLE** storage variables inside of their constructor.
-
-## Contribute
-
-Reflex includes a suite of fuzzing and invariant tests written in Solidity with Foundry.
-
-To install Foundry:
-
-```sh
-curl -L https://foundry.paradigm.xyz | bash
-```
-
-This will download foundryup. To start Foundry, run:
-
-```sh
-foundryup
-```
-
-For convenience we use a [Makefile](/Makefile) for running different tasks.
-
-To install dependencies:
-
-```sh
-make install
-```
-
-To build:
-
-```sh
-make build
-```
-
-To test:
-
-```sh
-make test
-```
+Please refer to the [IMPLEMENTERS](docs/IMPLEMENTERS.md) guide for an in-depth breakdown of the framework.
 
 ## Safety
 

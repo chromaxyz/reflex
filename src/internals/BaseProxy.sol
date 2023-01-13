@@ -7,8 +7,8 @@ import {IBaseProxy} from "../interfaces/IBaseProxy.sol";
 /**
  * @title Base Proxy
  * @dev Proxies are non-upgradeable contracts that have two jobs:
- * - Forward method calls from external users to the Dispatcher.
- * - Receive method calls from the Dispatcher and log events as instructed.
+ * - Forward method calls from external users to the `Dispatcher`.
+ * - Receive method calls from the `Dispatcher` and log events as instructed.
  * @dev Execution takes place within the Dispatcher storage context, not the proxy's.
  * @dev Non-upgradeable.
  */
@@ -48,9 +48,9 @@ contract BaseProxy is IBaseProxy {
         _deployer = msg.sender;
     }
 
-    // ==============
-    // View functions
-    // ==============
+    // ============
+    // View methods
+    // ============
 
     /**
      * @notice Returns implementation address by resolving through the `Dispatcher`.
@@ -90,9 +90,9 @@ contract BaseProxy is IBaseProxy {
         }
     }
 
-    // ==================
-    // Internal functions
-    // ==================
+    // ================
+    // Internal methods
+    // ================
 
     /**
      * @dev Will run if no other function in the contract matches the call data.

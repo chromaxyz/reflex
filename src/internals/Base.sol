@@ -37,9 +37,9 @@ abstract contract Base is IBase, BaseState {
         _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
     }
 
-    // ==================
-    // Internal functions
-    // ==================
+    // ================
+    // Internal methods
+    // ================
 
     /**
      * @dev Create or return proxy by module id.

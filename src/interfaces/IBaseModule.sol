@@ -16,7 +16,7 @@ interface TBaseModule is TBase {
 
     error InvalidModuleVersion();
 
-    error Unauthorized(); // TODO: add test
+    error Unauthorized();
 }
 
 /**
@@ -29,7 +29,7 @@ interface IBaseModule is IBase, TBaseModule {
 
     /**
      * @notice Module settings.
-     * @dev Packed slot: 4 + 2 + 2 + 1 + 1 = 10 bytes out of 32 bytes.
+     * @dev Packed slot: 4 + 2 + 4 + 1 + 1 = 12 bytes out of 32 bytes.
      */
     struct ModuleSettings {
         /**
@@ -43,7 +43,7 @@ interface IBaseModule is IBase, TBaseModule {
         /**
          * @notice Module version.
          */
-        uint16 moduleVersion;
+        uint32 moduleVersion;
         /**
          * @notice Whether the module is upgradeable.
          */
@@ -62,11 +62,11 @@ interface IBaseModule is IBase, TBaseModule {
 
     function moduleRemoveable() external view returns (bool);
 
-    function moduleSettings() external view returns (IBaseModule.ModuleSettings memory);
+    function moduleSettings() external view returns (ModuleSettings memory);
 
     function moduleType() external view returns (uint16);
 
     function moduleUpgradeable() external view returns (bool);
 
-    function moduleVersion() external view returns (uint16);
+    function moduleVersion() external view returns (uint32);
 }

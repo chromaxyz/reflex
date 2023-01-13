@@ -36,4 +36,6 @@ slither . \
   --solc-remaps '$(cat remappings.txt)' \
   > reports/slither.md
 
+npx prettier --write reports/slither.md
+
 log $GREEN "Done"

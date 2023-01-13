@@ -23,13 +23,20 @@ When making a pull request, ensure that:
 - Memory addresses and memory related constants should be in hexadecimal format (e.g. `0x20`).
 - While the linter is set to a maximum line length of 120, please try to keep everything, including comments to 100 characters or below.
 - Private and internal constants are `_PREFIXED_ALL_CAPS`.
-- Imports are sorted by their category and marked by a comment.
+- Imports are named imports, sorted by their category and marked by a comment as follows:
+
+```solidity
+// Vendor
+import { Test } from "forge-std/Test.sol";
+
+```
+
 - Code blocks are commented as follows:
 
 ```solidity
-// ==============
-// View functions
-// ==============
+// ============
+// View methods
+// ============
 ```
 
 ## File naming
@@ -39,3 +46,39 @@ When making a pull request, ensure that:
 ## Compiler
 
 Make sure your PR's are compilable with the default profile and the profiles `intense`, `min-solc`, `via-ir` and `min-solc-via-ir`.
+
+## Tests
+
+Reflex includes a suite of fuzzing and invariant tests written in Solidity with Foundry.
+
+To install Foundry:
+
+```sh
+curl -L https://foundry.paradigm.xyz | bash
+```
+
+This will download foundryup. To start Foundry, run:
+
+```sh
+foundryup
+```
+
+For convenience we use a [Makefile](/Makefile) for running different tasks.
+
+To install dependencies:
+
+```sh
+make install
+```
+
+To build:
+
+```sh
+make build
+```
+
+To test:
+
+```sh
+make test
+```

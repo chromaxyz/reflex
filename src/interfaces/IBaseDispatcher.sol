@@ -26,7 +26,7 @@ interface TBaseDispatcher is TBase {
     // Events
     // ======
 
-    event ModuleAdded(uint32 indexed moduleId_, address indexed moduleImplementation_, uint16 indexed moduleVersion_);
+    event ModuleAdded(uint32 indexed moduleId_, address indexed moduleImplementation_, uint32 indexed moduleVersion_);
 
     event OwnershipTransferred(address indexed user_, address indexed newOwner_);
 }

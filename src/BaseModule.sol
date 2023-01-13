@@ -29,7 +29,7 @@ abstract contract BaseModule is IBaseModule, Base {
     /**
      * @notice Module version.
      */
-    uint16 internal immutable _moduleVersion;
+    uint32 internal immutable _moduleVersion;
 
     /**
      * @notice Whether the module is upgradeable.
@@ -76,9 +76,9 @@ abstract contract BaseModule is IBaseModule, Base {
         _moduleRemoveable = moduleSettings_.moduleRemoveable;
     }
 
-    // ==============
-    // View functions
-    // ==============
+    // ============
+    // View methods
+    // ============
 
     /**
      * @notice Get module id.
@@ -98,9 +98,9 @@ abstract contract BaseModule is IBaseModule, Base {
 
     /**
      * @notice Get module version.
-     * @return uint16 Module version.
+     * @return uint32 Module version.
      */
-    function moduleVersion() external view virtual override returns (uint16) {
+    function moduleVersion() external view virtual override returns (uint32) {
         return _moduleVersion;
     }
 

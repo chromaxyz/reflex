@@ -22,9 +22,9 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      */
     constructor(ModuleSettings memory moduleSettings_) BaseModule(moduleSettings_) {}
 
-    // ==============
-    // View functions
-    // ==============
+    // ============
+    // View methods
+    // ============
 
     /**
      * @notice Returns the address of the owner.
@@ -40,9 +40,9 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         return _pendingOwner;
     }
 
-    // ======================
-    // Permissioned functions
-    // ======================
+    // ====================
+    // Permissioned methods
+    // ====================
 
     /**
      * @notice Transfer ownership in two steps.

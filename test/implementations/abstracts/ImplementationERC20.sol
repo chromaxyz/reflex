@@ -44,9 +44,9 @@ abstract contract ImplementationERC20 is MockBaseModule, ImplementationState {
      */
     constructor(ModuleSettings memory moduleSettings_) MockBaseModule(moduleSettings_) {}
 
-    // ==============
-    // View functions
-    // ==============
+    // ============
+    // View methods
+    // ============
 
     /**
      * @notice Returns the name of the token.
@@ -106,9 +106,9 @@ abstract contract ImplementationERC20 is MockBaseModule, ImplementationState {
         return token.allowance[owner_][spender_];
     }
 
-    // ================
-    // Public functions
-    // ================
+    // ==============
+    // Public methods
+    // ==============
 
     /**
      * @notice Sets `amount` as the allowance of `spender` over the caller's tokens.
@@ -188,9 +188,9 @@ abstract contract ImplementationERC20 is MockBaseModule, ImplementationState {
         return true;
     }
 
-    // ==================
-    // Internal functions
-    // ==================
+    // ================
+    // Internal methods
+    // ================
 
     /** @dev Creates `amount` tokens and assigns them to `account`, increasing
      * the total supply.
@@ -235,9 +235,9 @@ abstract contract ImplementationERC20 is MockBaseModule, ImplementationState {
         _emitTransferEvent(proxyAddress, from_, address(0), amount_);
     }
 
-    // ==================
-    // Internal functions
-    // ==================
+    // ================
+    // Internal methods
+    // ================
 
     /**
      * @dev Emit `Transfer` event from the `Proxy` rather than the `Dispatcher`.

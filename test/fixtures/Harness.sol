@@ -150,9 +150,9 @@ abstract contract Harness is Test {
         });
     }
 
-    // ================
-    // Public functions
-    // ================
+    // ==============
+    // Public methods
+    // ==============
 
     /**
      * @dev Internal view for invariant testing.
@@ -163,9 +163,9 @@ abstract contract Harness is Test {
         return _targets;
     }
 
-    // ==================
-    // Internal functions
-    // ==================
+    // ================
+    // Internal methods
+    // ================
 
     /**
      * @dev Add target contract for invariant testing.
