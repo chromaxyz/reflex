@@ -13,7 +13,8 @@
   - [Dispatcher => Module](#dispatcher--module)
   - [Module => Proxy](#module--proxy)
 - [Implementing](#implementing)
-- [Deploying](#deploying)
+- [Framework deployment](#framework-deployment)
+- [Module deployment](#module-deployment)
 - [Numerical limitations](#numerical-limitations)
 - [Acknowledgements](#acknowledgements)
 
@@ -234,9 +235,24 @@ graph TD
     end
 ```
 
-## Deploying
+## Framework deployment
 
 An example of a deployment flow can be found in [`script/Deploy.s.sol`](../script/Deploy.s.sol).
+
+## Module deployment
+
+Prior to adding, upgrading or removing a module make sure to go through the [CHECKLIST](/docs/CHECKLIST.md)
+
+### Removing modules
+
+Whilst possible it is not encouraged to remove modules as there could be potential side-effects.
+
+Ask oneself:
+
+- Is it strictly necessary to remove this module?
+- Are there possible side effects?
+
+In order to remove one or more modules call `removeModules()` on the `Installer`s proxy.
 
 ## Numerical limitations
 
