@@ -95,18 +95,18 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
-            IBaseModule.ModuleSettings memory moduleSettings = BaseModule(moduleAddress).moduleSettings();
+            IBaseModule.ModuleSettings memory moduleSettings_ = BaseModule(moduleAddress).moduleSettings();
 
-            if (_modules[moduleSettings.moduleId] != address(0)) revert ModuleExistent(moduleSettings.moduleId);
+            if (_modules[moduleSettings_.moduleId] != address(0)) revert ModuleExistent(moduleSettings_.moduleId);
 
-            _modules[moduleSettings.moduleId] = moduleAddress;
+            _modules[moduleSettings_.moduleId] = moduleAddress;
 
-            if (moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
-                address proxyAddress = _createProxy(moduleSettings.moduleId, moduleSettings.moduleType);
+            if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
+                address proxyAddress = _createProxy(moduleSettings_.moduleId, moduleSettings_.moduleType);
                 _relations[proxyAddress].moduleImplementation = moduleAddress;
             }
 
-            emit ModuleAdded(moduleSettings.moduleId, moduleAddress, moduleSettings.moduleVersion);
+            emit ModuleAdded(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
 
             unchecked {
                 ++i;
@@ -131,27 +131,27 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
             // Check against existing module
 
-            IBaseModule.ModuleSettings memory moduleSettings = BaseModule(moduleAddress).moduleSettings();
+            IBaseModule.ModuleSettings memory moduleSettings_ = BaseModule(moduleAddress).moduleSettings();
 
             // Verify that the module currently exists.
-            if (_modules[moduleSettings.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings.moduleId);
+            if (_modules[moduleSettings_.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings_.moduleId);
 
             // Verify that current module allows for upgrades.
-            if (!IBaseModule(_modules[moduleSettings.moduleId]).moduleUpgradeable())
-                revert ModuleNotUpgradeable(moduleSettings.moduleId);
+            if (!IBaseModule(_modules[moduleSettings_.moduleId]).moduleUpgradeable())
+                revert ModuleNotUpgradeable(moduleSettings_.moduleId);
 
             // Verify that the next module version is greater than the current module version.
-            if (moduleSettings.moduleVersion <= IBaseModule(_modules[moduleSettings.moduleId]).moduleVersion())
-                revert ModuleInvalidVersion(moduleSettings.moduleId);
+            if (moduleSettings_.moduleVersion <= IBaseModule(_modules[moduleSettings_.moduleId]).moduleVersion())
+                revert ModuleInvalidVersion(moduleSettings_.moduleId);
 
-            _modules[moduleSettings.moduleId] = moduleAddress;
+            _modules[moduleSettings_.moduleId] = moduleAddress;
 
-            if (moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
-                address proxyAddress = _createProxy(moduleSettings.moduleId, moduleSettings.moduleType);
+            if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
+                address proxyAddress = _createProxy(moduleSettings_.moduleId, moduleSettings_.moduleType);
                 _relations[proxyAddress].moduleImplementation = moduleAddress;
             }
 
-            emit ModuleUpgraded(moduleSettings.moduleId, moduleAddress, moduleSettings.moduleVersion);
+            emit ModuleUpgraded(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
 
             unchecked {
                 ++i;
@@ -174,25 +174,25 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
-            IBaseModule.ModuleSettings memory moduleSettings = BaseModule(moduleAddress).moduleSettings();
+            IBaseModule.ModuleSettings memory moduleSettings_ = BaseModule(moduleAddress).moduleSettings();
 
-            if (_modules[moduleSettings.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings.moduleId);
+            if (_modules[moduleSettings_.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings_.moduleId);
 
-            if (!moduleSettings.moduleRemoveable) revert ModuleNotRemoveable(moduleSettings.moduleId);
+            if (!moduleSettings_.moduleRemoveable) revert ModuleNotRemoveable(moduleSettings_.moduleId);
 
-            if (moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
-                address proxyAddress = _createProxy(moduleSettings.moduleId, moduleSettings.moduleType);
+            if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
+                address proxyAddress = _createProxy(moduleSettings_.moduleId, moduleSettings_.moduleType);
                 delete _relations[proxyAddress];
             }
 
             if (
-                moduleSettings.moduleType == _MODULE_TYPE_SINGLE_PROXY ||
-                moduleSettings.moduleType == _MODULE_TYPE_MULTI_PROXY
-            ) delete _proxies[moduleSettings.moduleId];
+                moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY ||
+                moduleSettings_.moduleType == _MODULE_TYPE_MULTI_PROXY
+            ) delete _proxies[moduleSettings_.moduleId];
 
-            delete _modules[moduleSettings.moduleId];
+            delete _modules[moduleSettings_.moduleId];
 
-            emit ModuleRemoved(moduleSettings.moduleId, moduleAddress, moduleSettings.moduleVersion);
+            emit ModuleRemoved(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
 
             unchecked {
                 ++i;

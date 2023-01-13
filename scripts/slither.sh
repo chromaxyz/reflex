@@ -29,7 +29,7 @@ log $GREEN "Running Slither script"
 mkdir -p reports
 
 slither . \
-  --filter-path "node_modules|lib|test" \
+  --filter-path "node_modules|lib|test|script" \
   --exclude "solc-version" \
   --markdown-root "../" \
   --checklist \
