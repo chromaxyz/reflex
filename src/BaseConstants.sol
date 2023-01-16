@@ -35,9 +35,14 @@ abstract contract BaseConstants {
     uint16 internal constant _MODULE_TYPE_MULTI_PROXY = 2;
 
     /**
-     * @dev Modules that are called internally and don't have any public-facing proxies.
+     * @dev Modules that are available internally, called internally and don't have any public-facing proxies.
      */
     uint16 internal constant _MODULE_TYPE_INTERNAL = 3;
+
+    /**
+     * @dev Modules that are available externally, called internally and don't have any public-facing proxies.
+     */
+    uint16 internal constant _MODULE_TYPE_EXTERNAL = 4;
 
     // =======
     // Modules

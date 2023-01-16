@@ -63,7 +63,7 @@ Internal modules have the benefit that they are upgradeable where the `Dispatche
 
 ```mermaid
 graph TD
-  subgraph InternalProxy [ ]
+  subgraph InternalModule [ ]
   Dispatcher --> Module["Module Implementation"]
   end
 ```

@@ -14,6 +14,8 @@ interface TBase is TBaseState {
 
     error EmptyError();
 
+    error ExternalModule();
+
     error InternalModule();
 
     error InvalidModuleId();

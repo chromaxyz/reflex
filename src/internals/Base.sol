@@ -47,8 +47,9 @@ abstract contract Base is IBase, BaseState {
      */
     function _createProxy(uint32 moduleId_, uint16 moduleType_) internal virtual returns (address) {
         if (moduleId_ == 0) revert InvalidModuleId();
-        if (moduleType_ == 0 || moduleType_ > _MODULE_TYPE_INTERNAL) revert InvalidModuleType();
+        if (moduleType_ == 0 || moduleType_ > _MODULE_TYPE_EXTERNAL) revert InvalidModuleType();
         if (moduleType_ == _MODULE_TYPE_INTERNAL) revert InternalModule();
+        if (moduleType_ == _MODULE_TYPE_EXTERNAL) revert ExternalModule();
 
         if (_proxies[moduleId_] != address(0)) return _proxies[moduleId_];
 
@@ -71,6 +72,32 @@ abstract contract Base is IBase, BaseState {
      */
     function _callInternalModule(uint32 moduleId_, bytes memory input_) internal returns (bytes memory) {
         (bool success, bytes memory result) = _modules[moduleId_].delegatecall(input_);
+
+        if (!success) _revertBytes(result);
+
+        return result;
+    }
+
+    /**
+     * @dev Perform call to trusted external module.
+     * @param moduleId_ Module id.
+     * @param input_ Input data.
+     */
+    function _callExternalModule(uint32 moduleId_, bytes memory input_) internal returns (bytes memory) {
+        (bool success, bytes memory result) = _modules[moduleId_].call(input_);
+
+        if (!success) _revertBytes(result);
+
+        return result;
+    }
+
+    /**
+     * @dev Perform static call to trusted external module.
+     * @param moduleId_ Module id.
+     * @param input_ Input data.
+     */
+    function _staticCallExternalModule(uint32 moduleId_, bytes memory input_) internal view returns (bytes memory) {
+        (bool success, bytes memory result) = _modules[moduleId_].staticcall(input_);
 
         if (!success) _revertBytes(result);
 
