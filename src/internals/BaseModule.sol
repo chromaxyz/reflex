@@ -2,10 +2,10 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBaseModule} from "./interfaces/IBaseModule.sol";
+import {IBaseModule} from "../interfaces/IBaseModule.sol";
 
 // Internals
-import {Base} from "./internals/Base.sol";
+import {Base} from "./Base.sol";
 
 /**
  * @title Base Module

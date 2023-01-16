@@ -4,12 +4,15 @@ pragma solidity ^0.8.13;
 // Interfaces
 import {IBaseExternalModule} from "./interfaces/IBaseExternalModule.sol";
 
+// Sources
+import {BaseConstants} from "./BaseConstants.sol";
+
 /**
  * @title Base External Module
  * @dev Does not inherit storage, maintains its own.
  * @dev Upgradeable.
  */
-abstract contract BaseExternalModule is IBaseExternalModule {
+abstract contract BaseExternalModule is IBaseExternalModule, BaseConstants {
     // ==========
     // Immutables
     // ==========
@@ -44,18 +47,17 @@ abstract contract BaseExternalModule is IBaseExternalModule {
     // ===========
 
     /**
-     * @param moduleSettings_ Module settings.
+     * @param moduleConfiguration_ Module configuration.
      */
-    constructor(ModuleSettings memory moduleSettings_) {
-        if (moduleSettings_.moduleId == 0) revert InvalidModuleId();
-        if (moduleSettings_.moduleType == 0) revert InvalidModuleType();
-        if (moduleSettings_.moduleVersion == 0) revert InvalidModuleVersion();
+    constructor(ModuleConfiguration memory moduleConfiguration_) {
+        if (moduleConfiguration_.moduleId == 0) revert InvalidModuleId();
+        if (moduleConfiguration_.moduleVersion == 0) revert InvalidModuleVersion();
 
-        _moduleId = moduleSettings_.moduleId;
-        _moduleType = moduleSettings_.moduleType;
-        _moduleVersion = moduleSettings_.moduleVersion;
-        _moduleUpgradeable = moduleSettings_.moduleUpgradeable;
-        _moduleRemoveable = moduleSettings_.moduleRemoveable;
+        _moduleId = moduleConfiguration_.moduleId;
+        _moduleType = _MODULE_TYPE_EXTERNAL;
+        _moduleVersion = moduleConfiguration_.moduleVersion;
+        _moduleUpgradeable = moduleConfiguration_.moduleUpgradeable;
+        _moduleRemoveable = moduleConfiguration_.moduleRemoveable;
     }
 
     // ============

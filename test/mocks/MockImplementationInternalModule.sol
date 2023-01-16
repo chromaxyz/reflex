@@ -16,9 +16,9 @@ contract MockImplementationInternalModule is MockBaseModule, ImplementationState
     // ===========
 
     /**
-     * @param moduleSettings_ Module settings.
+     * @param moduleConfiguration_ Module configuration.
      */
-    constructor(ModuleSettings memory moduleSettings_) MockBaseModule(moduleSettings_) {}
+    constructor(ModuleConfiguration memory moduleConfiguration_) MockBaseModule(moduleConfiguration_) {}
 
     // ==========
     // Test stubs

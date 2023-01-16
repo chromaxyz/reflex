@@ -23,9 +23,9 @@ contract MockImplementationExternalModule is BaseExternalModule {
     // ===========
 
     /**
-     * @param moduleSettings_ Module settings.
+     * @param moduleConfiguration_ Module configuration.
      */
-    constructor(ModuleSettings memory moduleSettings_) BaseExternalModule(moduleSettings_) {}
+    constructor(ModuleConfiguration memory moduleConfiguration_) BaseExternalModule(moduleConfiguration_) {}
 
     // ==========
     // Test stubs

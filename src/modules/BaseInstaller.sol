@@ -6,21 +6,21 @@ import {IBaseInstaller} from "../interfaces/IBaseInstaller.sol";
 import {IBaseModule} from "../interfaces/IBaseModule.sol";
 
 // Sources
-import {BaseModule} from "../BaseModule.sol";
+import {BaseSingleProxyModule} from "../BaseSingleProxyModule.sol";
 
 /**
  * @title Base Installer
  * @dev Upgradeable.
  */
-abstract contract BaseInstaller is IBaseInstaller, BaseModule {
+abstract contract BaseInstaller is IBaseInstaller, BaseSingleProxyModule {
     // ===========
     // Constructor
     // ===========
 
     /**
-     * @param moduleSettings_ Module settings.
+     * @param moduleConfiguration_ Module configuration.
      */
-    constructor(ModuleSettings memory moduleSettings_) BaseModule(moduleSettings_) {}
+    constructor(ModuleConfiguration memory moduleConfiguration_) BaseSingleProxyModule(moduleConfiguration_) {}
 
     // ============
     // View methods
@@ -95,7 +95,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
-            IBaseModule.ModuleSettings memory moduleSettings_ = BaseModule(moduleAddress).moduleSettings();
+            IBaseModule.ModuleSettings memory moduleSettings_ = IBaseModule(moduleAddress).moduleSettings();
 
             if (_modules[moduleSettings_.moduleId] != address(0)) revert ModuleExistent(moduleSettings_.moduleId);
 
@@ -131,7 +131,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
             // Check against existing module
 
-            IBaseModule.ModuleSettings memory moduleSettings_ = BaseModule(moduleAddress).moduleSettings();
+            IBaseModule.ModuleSettings memory moduleSettings_ = IBaseModule(moduleAddress).moduleSettings();
 
             // Verify that the module currently exists.
             if (_modules[moduleSettings_.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings_.moduleId);
@@ -174,7 +174,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
-            IBaseModule.ModuleSettings memory moduleSettings_ = BaseModule(moduleAddress).moduleSettings();
+            IBaseModule.ModuleSettings memory moduleSettings_ = IBaseModule(moduleAddress).moduleSettings();
 
             if (_modules[moduleSettings_.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings_.moduleId);
 

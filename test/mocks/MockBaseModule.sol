@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Sources
-import {BaseModule} from "../../src/BaseModule.sol";
+// Internals
+import {BaseModule} from "../../src/internals/BaseModule.sol";
 
 // Mocks
 import {MockBase} from "./MockBase.sol";

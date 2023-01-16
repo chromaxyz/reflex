@@ -27,6 +27,29 @@ interface IBaseModule is IBase, TBaseModule {
 
     /**
      * @notice Module settings.
+     * @dev Packed slot: 4 + 4 + 1 + 1 = 10 bytes out of 32 bytes.
+     */
+    struct ModuleConfiguration {
+        /**
+         * @notice Module id.
+         */
+        uint32 moduleId;
+        /**
+         * @notice Module version.
+         */
+        uint32 moduleVersion;
+        /**
+         * @notice Whether the module is upgradeable.
+         */
+        bool moduleUpgradeable;
+        /**
+         * @notice Whether the module is removeable.
+         */
+        bool moduleRemoveable;
+    }
+
+    /**
+     * @notice Module settings.
      * @dev Packed slot: 4 + 2 + 4 + 1 + 1 = 12 bytes out of 32 bytes.
      */
     struct ModuleSettings {

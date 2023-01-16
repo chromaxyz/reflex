@@ -66,9 +66,8 @@ contract DeployScript is Script, DeployConstants {
         vm.startBroadcast();
 
         installerImplementation = new ImplementationInstaller(
-            IBaseModule.ModuleSettings({
+            IBaseModule.ModuleConfiguration({
                 moduleId: _MODULE_ID_INSTALLER,
-                moduleType: _MODULE_TYPE_SINGLE_PROXY,
                 moduleVersion: _MODULE_VERSION_INSTALLER,
                 moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER,
                 moduleRemoveable: _MODULE_REMOVEABLE_INSTALLER
