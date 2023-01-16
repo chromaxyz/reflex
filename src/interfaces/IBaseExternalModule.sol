@@ -1,26 +1,25 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Interfaces
-import {TBase, IBase} from "./IBase.sol";
-
 /**
- * @title Base Module Test Interface
+ * @title Base External Module Test Interface
  */
-interface TBaseModule is TBase {
+interface TBaseExternalModule {
     // ======
     // Errors
     // ======
 
-    error InvalidModuleVersion();
+    error InvalidModuleId();
 
-    error Unauthorized();
+    error InvalidModuleType();
+
+    error InvalidModuleVersion();
 }
 
 /**
- * @title Base Module Interface
+ * @title Base External Module Interface
  */
-interface IBaseModule is IBase, TBaseModule {
+interface IBaseExternalModule is TBaseExternalModule {
     // =======
     // Structs
     // =======

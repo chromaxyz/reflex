@@ -219,7 +219,7 @@ abstract contract ImplementationFixture is BaseConstants, Harness {
     function _testRevertProxyLogOutOfBounds(MockBaseModule proxy_, bytes memory message_) internal BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
-        vm.expectRevert(TBaseModule.FailedToLog.selector);
+        vm.expectRevert(MockBaseModule.FailedToLog.selector);
         proxy_.testRevertProxyLogOutOfBounds(message_);
     }
 }

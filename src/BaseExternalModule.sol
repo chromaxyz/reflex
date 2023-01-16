@@ -1,20 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity ^0.8.13;
-
 // Interfaces
-import {IBaseModule} from "./interfaces/IBaseModule.sol";
-
-// Internals
-import {Base} from "./internals/Base.sol";
+import {IBaseExternalModule} from "./interfaces/IBaseExternalModule.sol";
 
 /**
- * @title Base Module
+ * @title Base External Module
  * @dev Upgradeable.
  */
-abstract contract BaseExternalModule is IBaseModule {
+abstract contract BaseExternalModule is IBaseExternalModule {
     // ==========
     // Immutables
     // ==========
@@ -44,21 +38,6 @@ abstract contract BaseExternalModule is IBaseModule {
      */
     bool private immutable _moduleRemoveable;
 
-    // =========
-    // Modifiers
-    // =========
-
-    /**
-     * @dev Throws if called by any account other than the owner.
-     */
-    modifier onlyOwner() virtual {
-        address messageSender = _unpackMessageSender();
-
-        if (messageSender != _owner) revert Unauthorized();
-
-        _;
-    }
-
     // ===========
     // Constructor
     // ===========
@@ -68,8 +47,7 @@ abstract contract BaseExternalModule is IBaseModule {
      */
     constructor(ModuleSettings memory moduleSettings_) {
         if (moduleSettings_.moduleId == 0) revert InvalidModuleId();
-        if (moduleSettings_.moduleType == 0 || moduleSettings_.moduleType > _MODULE_TYPE_INTERNAL)
-            revert InvalidModuleType();
+        if (moduleSettings_.moduleType == 0) revert InvalidModuleType();
         if (moduleSettings_.moduleVersion == 0) revert InvalidModuleVersion();
 
         _moduleId = moduleSettings_.moduleId;

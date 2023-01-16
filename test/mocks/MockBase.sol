@@ -89,6 +89,14 @@ contract MockBase is Base {
         return _callInternalModule(moduleId_, input_);
     }
 
+    function callExternalModule(uint32 moduleId_, bytes memory input_) public returns (bytes memory) {
+        return _callExternalModule(moduleId_, input_);
+    }
+
+    function callStaticExternalModule(uint32 moduleId_, bytes memory input_) public view returns (bytes memory) {
+        return _callStaticExternalModule(moduleId_, input_);
+    }
+
     function unpackMessageSender() public pure returns (address) {
         return _unpackMessageSender();
     }

@@ -11,6 +11,12 @@ import {MockBase} from "./MockBase.sol";
  * @title Mock Base Module
  */
 contract MockBaseModule is BaseModule, MockBase {
+    // ======
+    // Errors
+    // ======
+
+    error FailedToLog();
+
     // =====
     // Error
     // =====

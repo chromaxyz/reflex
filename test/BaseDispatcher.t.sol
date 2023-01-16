@@ -37,7 +37,7 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
     }
 
     function testRevertInvalidInstallerZeroAddress() external {
-        vm.expectRevert(InvalidInstallerModuleAddress.selector);
+        vm.expectRevert(InvalidModuleAddress.selector);
         new MockBaseDispatcher(address(this), address(0));
     }
 
@@ -60,7 +60,7 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
             })
         );
 
-        vm.expectRevert(InvalidInstallerModuleId.selector);
+        vm.expectRevert(InvalidModuleId.selector);
         new MockBaseDispatcher(address(this), address(module));
     }
 
