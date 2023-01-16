@@ -12,9 +12,9 @@ import {MockBaseModule} from "./mocks/MockBaseModule.sol";
 import {MockImplementationInternalModule} from "./mocks/MockImplementationInternalModule.sol";
 
 /**
- * @title Implementation Module Internal Proxy Test
+ * @title Implementation Module Internal Test
  */
-contract ImplementationModuleInternalProxyTest is ImplementationFixture {
+contract ImplementationModuleInternalTest is ImplementationFixture {
     // =========
     // Constants
     // =========
@@ -145,7 +145,7 @@ contract ImplementationModuleInternalProxyTest is ImplementationFixture {
         );
     }
 
-    function testUpgradeInternalProxy() external {
+    function testUpgradeInternalModule() external {
         _testModuleConfiguration(
             internalModule,
             _MODULE_INTERNAL_ID,
@@ -179,7 +179,7 @@ contract ImplementationModuleInternalProxyTest is ImplementationFixture {
         );
     }
 
-    function testRemoveInternalProxy() external {
+    function testRemoveInternalModule() external {
         _testModuleConfiguration(
             internalModule,
             _MODULE_INTERNAL_ID,
