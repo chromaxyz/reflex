@@ -6,6 +6,7 @@ import {IBaseExternalModule} from "./interfaces/IBaseExternalModule.sol";
 
 /**
  * @title Base External Module
+ * @dev Does not inherit storage, maintains its own.
  * @dev Upgradeable.
  */
 abstract contract BaseExternalModule is IBaseExternalModule {

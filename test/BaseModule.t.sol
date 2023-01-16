@@ -25,8 +25,7 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
     bool internal constant _MODULE_VALID_REMOVEABLE = true;
 
     uint32 internal constant _MODULE_INVALID_ID = 0;
-    uint16 internal constant _MODULE_INVALID_TYPE = 777;
-    uint16 internal constant _MODULE_INVALID_TYPE_ZERO = 0;
+    uint16 internal constant _MODULE_INVALID_TYPE = 0;
     uint16 internal constant _MODULE_INVALID_VERSION = 0;
 
     // =======
@@ -83,19 +82,6 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
     }
 
     function testRevertInvalidModuleTypeZeroValue() external {
-        vm.expectRevert(InvalidModuleType.selector);
-        module = new MockBaseModule(
-            IBaseModule.ModuleSettings({
-                moduleId: _MODULE_VALID_ID,
-                moduleType: _MODULE_INVALID_TYPE_ZERO,
-                moduleVersion: _MODULE_VALID_VERSION,
-                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
-                moduleRemoveable: _MODULE_VALID_REMOVEABLE
-            })
-        );
-    }
-
-    function testRevertInvalidModuleTypeOverflowValue() external {
         vm.expectRevert(InvalidModuleType.selector);
         module = new MockBaseModule(
             IBaseModule.ModuleSettings({

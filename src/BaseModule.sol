@@ -9,6 +9,7 @@ import {Base} from "./internals/Base.sol";
 
 /**
  * @title Base Module
+ * @dev Inherits storage, does not maintain its own.
  * @dev Upgradeable.
  */
 abstract contract BaseModule is IBaseModule, Base {
@@ -65,8 +66,7 @@ abstract contract BaseModule is IBaseModule, Base {
      */
     constructor(ModuleSettings memory moduleSettings_) {
         if (moduleSettings_.moduleId == 0) revert InvalidModuleId();
-        if (moduleSettings_.moduleType == 0 || moduleSettings_.moduleType > _MODULE_TYPE_INTERNAL)
-            revert InvalidModuleType();
+        if (moduleSettings_.moduleType == 0) revert InvalidModuleType();
         if (moduleSettings_.moduleVersion == 0) revert InvalidModuleVersion();
 
         _moduleId = moduleSettings_.moduleId;

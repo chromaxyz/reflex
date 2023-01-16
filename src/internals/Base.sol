@@ -70,8 +70,9 @@ abstract contract Base is IBase, BaseState {
      * @param moduleId_ Module id.
      * @param input_ Input data.
      */
-    function _callInternalModule(uint32 moduleId_, bytes memory input_) internal returns (bytes memory) {
+    function _callInternalModule(uint32 moduleId_, bytes memory input_) internal virtual returns (bytes memory) {
         // TODO: add check for whether module is of type INTERNAL
+        // TODO: add reentrancy guard?
 
         (bool success, bytes memory result) = _modules[moduleId_].delegatecall(input_);
 
@@ -85,9 +86,9 @@ abstract contract Base is IBase, BaseState {
      * @param moduleId_ Module id.
      * @param input_ Input data.
      */
-    function _callExternalModule(uint32 moduleId_, bytes memory input_) internal returns (bytes memory) {
+    function _callExternalModule(uint32 moduleId_, bytes memory input_) internal virtual returns (bytes memory) {
         // TODO: add check for whether module is of type EXTERNAL
-        // TODO: add reentrancy guard
+        // TODO: add reentrancy guard?
 
         (bool success, bytes memory result) = _modules[moduleId_].call(input_);
 
@@ -101,9 +102,12 @@ abstract contract Base is IBase, BaseState {
      * @param moduleId_ Module id.
      * @param input_ Input data.
      */
-    function _callStaticExternalModule(uint32 moduleId_, bytes memory input_) internal view returns (bytes memory) {
+    function _callStaticExternalModule(
+        uint32 moduleId_,
+        bytes memory input_
+    ) internal view virtual returns (bytes memory) {
         // TODO: add check for whether module is of type EXTERNAL
-        // TODO: add reentrancy guard
+        // TODO: add reentrancy guard?
 
         (bool success, bytes memory result) = _modules[moduleId_].staticcall(input_);
 
