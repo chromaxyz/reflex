@@ -9,6 +9,7 @@ import {Base} from "./internals/Base.sol";
 
 /**
  * @title Base Module
+ * @dev Execution takes place within the Dispatcher's storage context.
  * @dev Upgradeable.
  */
 abstract contract BaseModule is IBaseModule, Base {

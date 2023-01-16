@@ -15,6 +15,8 @@ contract MockBaseModule is BaseModule, MockBase {
     // Error
     // =====
 
+    error FailedToLog();
+
     error ZeroAddress();
 
     // ===========

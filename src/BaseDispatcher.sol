@@ -66,7 +66,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
     // ================
 
     /**
-     * @notice Dispatch function to module.
+     * @notice Dispatch call to module implementation.
      */
     function dispatch() external virtual override {
         uint32 moduleId = _relations[msg.sender].moduleId;

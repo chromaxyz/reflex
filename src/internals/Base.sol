@@ -21,8 +21,7 @@ abstract contract Base is IBase, BaseState {
 
     /**
      * @dev Prevents a contract from calling itself, directly or indirectly.
-     * Calling a `nonReentrant` function from another `nonReentrant`
-     * function is not supported.
+     * Calling a `nonReentrant` function from another `nonReentrant` function is not supported.
      */
     modifier nonReentrant() virtual {
         // On the first call to `nonReentrant`, _status will be `_REENTRANCY_LOCK_UNLOCKED`.
@@ -44,6 +43,7 @@ abstract contract Base is IBase, BaseState {
     /**
      * @dev Create or return proxy by module id.
      * @param moduleId_ Module id.
+     * @param moduleType_ Module type.
      */
     function _createProxy(uint32 moduleId_, uint16 moduleType_) internal virtual returns (address) {
         if (moduleId_ == 0) revert InvalidModuleId();

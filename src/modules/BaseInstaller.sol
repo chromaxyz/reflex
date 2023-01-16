@@ -10,7 +10,8 @@ import {BaseModule} from "../BaseModule.sol";
 
 /**
  * @title Base Installer
- * @dev Upgradeable.
+ * @dev Execution takes place within the Dispatcher's storage context.
+ * @dev Upgradeable, non-removeable.
  */
 abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     // ===========
@@ -95,7 +96,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
-            IBaseModule.ModuleSettings memory moduleSettings_ = BaseModule(moduleAddress).moduleSettings();
+            IBaseModule.ModuleSettings memory moduleSettings_ = IBaseModule(moduleAddress).moduleSettings();
 
             if (_modules[moduleSettings_.moduleId] != address(0)) revert ModuleExistent(moduleSettings_.moduleId);
 
@@ -131,7 +132,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
             // Check against existing module
 
-            IBaseModule.ModuleSettings memory moduleSettings_ = BaseModule(moduleAddress).moduleSettings();
+            IBaseModule.ModuleSettings memory moduleSettings_ = IBaseModule(moduleAddress).moduleSettings();
 
             // Verify that the module currently exists.
             if (_modules[moduleSettings_.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings_.moduleId);
@@ -174,7 +175,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
-            IBaseModule.ModuleSettings memory moduleSettings_ = BaseModule(moduleAddress).moduleSettings();
+            IBaseModule.ModuleSettings memory moduleSettings_ = IBaseModule(moduleAddress).moduleSettings();
 
             if (_modules[moduleSettings_.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings_.moduleId);
 
