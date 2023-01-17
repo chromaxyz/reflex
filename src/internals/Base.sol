@@ -100,6 +100,19 @@ abstract contract Base is IBase, BaseState {
     }
 
     /**
+     * @dev Unpack trailing parameters from calldata.
+     * @return messageSender_ Message sender.
+     * @return proxyAddress_ Proxy address.
+     */
+    function _unpackTrailingParameters() internal pure virtual returns (address messageSender_, address proxyAddress_) {
+        assembly {
+            // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
+            messageSender_ := shr(0x60, calldataload(sub(calldatasize(), 40)))
+            proxyAddress_ := shr(0x60, calldataload(sub(calldatasize(), 20)))
+        }
+    }
+
+    /**
      * @dev Revert with error message.
      * @param errorMessage_ Error message.
      */
