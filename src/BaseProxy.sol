@@ -15,7 +15,7 @@ contract BaseProxy is IBaseProxy {
     // =========
 
     /**
-     * @dev `bytes4(keccak256(bytes("moduleIdToModuleImplementation(uint32)")))`.
+     * @dev `bytes4(keccak256("moduleIdToModuleImplementation(uint32)"))`.
      */
     bytes4 private constant _MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR = 0x75ea225d;
 
