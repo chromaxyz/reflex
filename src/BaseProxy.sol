@@ -65,6 +65,8 @@ contract BaseProxy is IBaseProxy {
     // Internal methods
     // ================
 
+    // TODO: transform to direct utility methods, _getModuleId, _getDeployer
+
     /**
      * @dev Reads an immutable arg with type uint32.
      */
