@@ -19,18 +19,16 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
 
     /**
      * @param owner_ Protocol owner.
-     * @param installerModule_ Installer module address.
+     * @param installerModule_ Installer module implementation address.
      */
     constructor(address owner_, address installerModule_) {
         _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
 
         if (owner_ == address(0)) revert InvalidOwner();
-        if (installerModule_ == address(0)) revert InvalidInstallerModuleAddress();
-        if (IBaseInstaller(installerModule_).moduleId() != _MODULE_ID_INSTALLER) revert InvalidInstallerModuleId();
+        if (installerModule_ == address(0)) revert InvalidModuleAddress();
+        if (IBaseInstaller(installerModule_).moduleId() != _MODULE_ID_INSTALLER) revert InvalidModuleId();
 
         _owner = owner_;
-
-        // TODO: can we simplify this to create a new Installer inside of the constructor.
 
         // Register `Installer` module.
         _modules[_MODULE_ID_INSTALLER] = installerModule_;
@@ -74,17 +72,17 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         uint32 moduleId = _relations[msg.sender].moduleId;
         address moduleImplementation = _relations[msg.sender].moduleImplementation;
 
+        // Revert if module has not been registered.
         if (moduleId == 0) revert CallerNotTrusted();
 
+        // Look up implementation address dynamically if module is not of type single-proxy.
         if (moduleImplementation == address(0)) moduleImplementation = _modules[moduleId];
-
-        uint256 messageDataLength = msg.data.length;
 
         // Message length >= (4 + 4 + 20)
         // 4 bytes for the dispatch() selector.
         // 4 bytes for selector used to call the proxy.
         // 20 bytes for the trailing msg.sender.
-        if (messageDataLength < 28) revert MessageTooShort();
+        if (msg.data.length < 28) revert MessageTooShort();
 
         // [dispatch() selector (4 bytes)][calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
