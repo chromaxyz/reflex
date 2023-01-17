@@ -11,7 +11,7 @@ import {BaseModule} from "./BaseModule.sol";
 /**
  * @title Base Installer
  * @dev Execution takes place within the Dispatcher's storage context.
- * @dev Upgradeable, non-removeable.
+ * @dev Upgradeable, non-removeable, extendable.
  */
 abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     // ===========

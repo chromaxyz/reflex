@@ -9,7 +9,7 @@ import {BaseConstants} from "./BaseConstants.sol";
 
 /**
  * @title Base State
- * @dev Append-only, extendable after __gap: first 50 slots (0-49) are reserved.
+ * @dev Append-only extendable, only after __gap: first 50 slots (0-49) are reserved!
  *
  * @dev Storage layout:
  * | Name            | Type                                                | Slot | Offset | Bytes |

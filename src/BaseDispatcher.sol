@@ -10,7 +10,7 @@ import {Base} from "./Base.sol";
 
 /**
  * @title Base Dispatcher
- * @dev Non-upgradeable.
+ * @dev Non-upgradeable, extendable.
  */
 abstract contract BaseDispatcher is IBaseDispatcher, Base {
     // ===========

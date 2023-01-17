@@ -7,7 +7,7 @@ import {IBaseProxy} from "./interfaces/IBaseProxy.sol";
 /**
  * @title Base Proxy
  * @dev Execution takes place within the Dispatcher's storage context, not the proxy's.
- * @dev Non-upgradeable.
+ * @dev Non-upgradeable, extendable.
  */
 contract BaseProxy is IBaseProxy {
     // =========

@@ -10,7 +10,7 @@ import {BaseState} from "./BaseState.sol";
 
 /**
  * @title Base
- * @dev Extendable.
+ * @dev Upgradeable, extendable.
  */
 abstract contract Base is IBase, BaseState {
     // =========
