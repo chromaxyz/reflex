@@ -2,11 +2,11 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBaseInstaller} from "../interfaces/IBaseInstaller.sol";
-import {IBaseModule} from "../interfaces/IBaseModule.sol";
+import {IBaseInstaller} from "./interfaces/IBaseInstaller.sol";
+import {IBaseModule} from "./interfaces/IBaseModule.sol";
 
 // Sources
-import {BaseModule} from "../BaseModule.sol";
+import {BaseModule} from "./BaseModule.sol";
 
 /**
  * @title Base Installer

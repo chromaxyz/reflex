@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Modules
-import {BaseInstaller} from "../../src/modules/BaseInstaller.sol";
+// Sources
+import {BaseInstaller} from "../../src/BaseInstaller.sol";
 
 /**
  * @title Mock Base Installer

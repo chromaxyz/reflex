@@ -5,8 +5,8 @@ pragma solidity ^0.8.13;
 import {IBaseDispatcher} from "./interfaces/IBaseDispatcher.sol";
 import {IBaseInstaller} from "./interfaces/IBaseInstaller.sol";
 
-// Internals
-import {Base} from "./internals/Base.sol";
+// Sources
+import {Base} from "./Base.sol";
 
 /**
  * @title Base Dispatcher

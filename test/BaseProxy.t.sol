@@ -4,8 +4,8 @@ pragma solidity ^0.8.13;
 // Interfaces
 import {TBaseProxy} from "../src/interfaces/IBaseProxy.sol";
 
-// Internals
-import {BaseProxy} from "../src/internals/BaseProxy.sol";
+// Sources
+import {BaseProxy} from "../src/BaseProxy.sol";
 
 // Fixtures
 import {Harness} from "./fixtures/Harness.sol";

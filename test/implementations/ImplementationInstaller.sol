@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Sources
-import {BaseInstaller} from "../../src/modules/BaseInstaller.sol";
+import {BaseInstaller} from "../../src/BaseInstaller.sol";
 
 // Implementations
 import {ImplementationState} from "./ImplementationState.sol";
