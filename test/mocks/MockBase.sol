@@ -12,7 +12,9 @@ contract MockBase is Base {
     // Storage
     // =======
 
-    /// @dev `bytes32(uint256(keccak256("reentrancy.counter")) - 1))`
+    /**
+     * @dev `bytes32(uint256(keccak256("reentrancy.counter")) - 1))`
+     */
     bytes32 internal constant _REENTRANCY_COUNTER_SLOT =
         0xc2db8520a4cb85e45c0b428b71b461e7932f3b9c2b41fa1662675e79660783f2;
 
