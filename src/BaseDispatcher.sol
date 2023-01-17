@@ -30,6 +30,8 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
 
         _owner = owner_;
 
+        // TODO: can we simplify this to create a new Installer inside of the constructor.
+
         // Register `Installer` module.
         _modules[_MODULE_ID_INSTALLER] = installerModule_;
         address installerProxy = _createProxy(_MODULE_ID_INSTALLER, _MODULE_TYPE_SINGLE_PROXY);

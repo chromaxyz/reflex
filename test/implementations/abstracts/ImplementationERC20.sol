@@ -287,8 +287,7 @@ abstract contract ImplementationERC20 is MockBaseModule, ImplementationState {
         virtual
         returns (Token storage token_, address proxyAddress_, address messageSender_)
     {
-        messageSender_ = _unpackMessageSender();
-        proxyAddress_ = _unpackProxyAddress();
+        (messageSender_, proxyAddress_) = _unpackTrailingParameters();
         token_ = _tokens[proxyAddress_];
     }
 }

@@ -97,6 +97,10 @@ contract MockBase is Base {
         return _unpackProxyAddress();
     }
 
+    function unpackTrailingParameters() public pure returns (address, address) {
+        return _unpackTrailingParameters();
+    }
+
     function revertBytes(bytes memory errorMessage_) public pure {
         return _revertBytes(errorMessage_);
     }
