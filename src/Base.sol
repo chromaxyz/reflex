@@ -14,6 +14,13 @@ import {BaseState} from "./BaseState.sol";
  */
 abstract contract Base is IBase, BaseState {
     // =========
+    // Constants
+    // =========
+
+    /// @dev `bytes4(keccak256("DeploymentFailed()"))`.
+    uint256 private constant _DEPLOYMENT_FAILED_ERROR_SELECTOR = 0x30116425;
+
+    // =========
     // Modifiers
     // =========
 
@@ -125,5 +132,55 @@ abstract contract Base is IBase, BaseState {
         }
 
         revert EmptyError();
+    }
+
+    // ===============
+    // Private methods
+    // ===============
+
+    function _clone(address implementation_, bytes memory data, bytes32 salt) private returns (address instance_) {
+        // TODO: no need for payable
+
+        assembly {
+            // Compute the boundaries of the data and cache the memory slots around it.
+            let memoryBeforeCacheChunk3 := mload(sub(data, 0x60))
+            let memoryBeforeCacheChunk2 := mload(sub(data, 0x40))
+            let memoryBeforeCacheChunk1 := mload(sub(data, 0x20))
+            let dataLength := mload(data)
+            let dataEnd := add(add(data, 0x20), dataLength)
+            let memoryAfterCacheChunk1 := mload(dataEnd)
+
+            // +2 bytes for telling how much data there is appended to the call.
+            let extraLength := add(dataLength, 2)
+
+            // Write the bytecode before the data.
+            mstore(data, 0x5af43d3d93803e606057fd5bf3)
+            // Write the address of the implementation.
+            mstore(sub(data, 0x0d), implementation_)
+            // Write the rest of the bytecode.
+            mstore(sub(data, 0x21), or(shl(0x48, extraLength), 0x593da1005b363d3d373d3d3d3d610000806062363936013d73))
+            // `keccak256("ReceiveETH(uint256)")`
+            mstore(sub(data, 0x3a), 0x9e4ac34f21c619cefc926c8bd93b54bf5a39c7ab2127a895af1cc0691d7e3dff)
+            mstore(sub(data, 0x5a), or(shl(0x78, add(extraLength, 0x62)), 0x6100003d81600a3d39f336602c57343d527f))
+            mstore(dataEnd, shl(0xf0, extraLength))
+
+            // Create the instance.
+            instance_ := create2(0, sub(data, 0x4c), add(extraLength, 0x6c), salt)
+
+            // If `instance` is zero, revert.
+            if iszero(instance_) {
+                // Store the function selector of `DeploymentFailed()`.
+                mstore(0x00, _DEPLOYMENT_FAILED_ERROR_SELECTOR)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
+
+            // Restore the overwritten memory surrounding `data`.
+            mstore(dataEnd, memoryAfterCacheChunk1)
+            mstore(data, dataLength)
+            mstore(sub(data, 0x20), memoryBeforeCacheChunk1)
+            mstore(sub(data, 0x40), memoryBeforeCacheChunk2)
+            mstore(sub(data, 0x60), memoryBeforeCacheChunk3)
+        }
     }
 }

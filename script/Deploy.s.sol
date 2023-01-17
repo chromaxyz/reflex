@@ -75,6 +75,8 @@ contract DeployScript is Script, DeployConstants {
             })
         );
 
+        proxyImplementation = new ImplementationProxy();
+
         dispatcher = new ImplementationDispatcher(msg.sender, address(installerImplementation));
 
         installerProxy = ImplementationInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));

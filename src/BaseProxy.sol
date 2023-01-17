@@ -19,34 +19,6 @@ contract BaseProxy is IBaseProxy {
      */
     bytes4 private constant _MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR = 0x75ea225d;
 
-    // ==========
-    // Immutables
-    // ==========
-
-    /**
-     * @dev Same as the implementations' module id.
-     */
-    uint32 internal immutable _moduleId;
-
-    /**
-     * @dev Deployer address.
-     */
-    address internal immutable _deployer;
-
-    // ===========
-    // Constructor
-    // ===========
-
-    /**
-     * @param moduleId_ Same as the implementations' module id.
-     */
-    constructor(uint32 moduleId_) {
-        if (moduleId_ == 0) revert InvalidModuleId();
-
-        _moduleId = moduleId_;
-        _deployer = msg.sender;
-    }
-
     // ============
     // View methods
     // ============
@@ -57,8 +29,8 @@ contract BaseProxy is IBaseProxy {
      * @return address Implementation address or zero address if unresolved.
      */
     function implementation() external view virtual override returns (address) {
-        (bool success, bytes memory response) = _deployer.staticcall(
-            abi.encodeWithSelector(_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR, _moduleId)
+        (bool success, bytes memory response) = _getArgAddress(0x20).staticcall(
+            abi.encodeWithSelector(_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR, _getArgUint32(0x00))
         );
 
         if (success) {
@@ -94,10 +66,44 @@ contract BaseProxy is IBaseProxy {
     // ================
 
     /**
+     * @dev Reads an immutable arg with type uint32.
+     */
+    function _getArgUint32(uint32 argOffset_) internal pure returns (uint32 arg_) {
+        uint256 offset = _getImmutableArgsOffset();
+
+        /// @solidity memory-safe-assembly
+        assembly {
+            arg_ := shr(0xE0, calldataload(add(offset, argOffset_)))
+        }
+    }
+
+    /**
+     * @dev Reads an immutable arg with type address.
+     */
+    function _getArgAddress(uint256 argOffset_) internal pure returns (address arg_) {
+        uint256 offset = _getImmutableArgsOffset();
+
+        /// @solidity memory-safe-assembly
+        assembly {
+            arg_ := shr(0x60, calldataload(add(offset, argOffset_)))
+        }
+    }
+
+    /**
+     * @return offset_ The offset of the packed immutable args in calldata.
+     */
+    function _getImmutableArgsOffset() internal pure returns (uint256 offset_) {
+        /// @solidity memory-safe-assembly
+        assembly {
+            offset_ := sub(calldatasize(), shr(0xF0, calldataload(sub(calldatasize(), 2))))
+        }
+    }
+
+    /**
      * @dev Will run if no other function in the contract matches the call data.
      */
     function _fallback() internal virtual {
-        address deployer_ = _deployer;
+        address deployer_ = _getArgAddress(0x20);
 
         // If the caller is the deployer, instead of re-enter - issue a log message.
         if (msg.sender == deployer_) {

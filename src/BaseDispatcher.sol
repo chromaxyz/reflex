@@ -17,26 +17,38 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
     // Constructor
     // ===========
 
+    // TODO: use interfaces for parameters?
+
     /**
      * @param owner_ Protocol owner.
-     * @param installerModule_ Installer module implementation address.
+     * @param installerModuleImplementation_ Installer module implementation address.
+     * @param proxyImplementation_ Proxy implementation address.
      */
-    constructor(address owner_, address installerModule_) {
+    constructor(address owner_, address installerModuleImplementation_, address proxyImplementation_) {
+        // Unlock global reentrancy lock.
         _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
 
         if (owner_ == address(0)) revert InvalidOwner();
-        if (installerModule_ == address(0)) revert InvalidModuleAddress();
-        if (IBaseInstaller(installerModule_).moduleId() != _MODULE_ID_INSTALLER) revert InvalidModuleId();
+        if (installerModuleImplementation_ == address(0)) revert InvalidModuleAddress();
+        if (IBaseInstaller(installerModuleImplementation_).moduleId() != _MODULE_ID_INSTALLER) revert InvalidModuleId();
 
+        // Register `owner`.
         _owner = owner_;
 
+        // Register `Proxy` implementation.
+        _proxyImplementation = proxyImplementation_;
+
         // Register `Installer` module.
-        _modules[_MODULE_ID_INSTALLER] = installerModule_;
+        _modules[_MODULE_ID_INSTALLER] = installerModuleImplementation_;
         address installerProxy = _createProxy(_MODULE_ID_INSTALLER, _MODULE_TYPE_SINGLE_PROXY);
-        _relations[installerProxy].moduleImplementation = installerModule_;
+        _relations[installerProxy].moduleImplementation = installerModuleImplementation_;
 
         emit OwnershipTransferred(address(0), owner_);
-        emit ModuleAdded(_MODULE_ID_INSTALLER, installerModule_, IBaseInstaller(installerModule_).moduleVersion());
+        emit ModuleAdded(
+            _MODULE_ID_INSTALLER,
+            installerModuleImplementation_,
+            IBaseInstaller(installerModuleImplementation_).moduleVersion()
+        );
     }
 
     // ============

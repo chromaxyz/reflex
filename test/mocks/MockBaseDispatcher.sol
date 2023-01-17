@@ -12,5 +12,14 @@ contract MockBaseDispatcher is BaseDispatcher {
     // Constructor
     // ===========
 
-    constructor(address owner_, address installerModule_) BaseDispatcher(owner_, installerModule_) {}
+    /**
+     * @param owner_ Protocol owner.
+     * @param installerModuleImplementation_ Installer module implementation address.
+     * @param proxyImplementation_ Proxy implementation address.
+     */
+    constructor(
+        address owner_,
+        address installerModuleImplementation_,
+        address proxyImplementation_
+    ) BaseDispatcher(owner_, installerModuleImplementation_, proxyImplementation_) {}
 }

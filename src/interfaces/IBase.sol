@@ -12,6 +12,8 @@ interface TBase is TBaseState {
     // Errors
     // ======
 
+    error DeploymentFailed();
+
     error EmptyError();
 
     error InternalModule();
