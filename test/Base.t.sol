@@ -71,11 +71,19 @@ contract BaseTest is TBase, BaseFixture {
     // ======================
 
     function testGuardedCheckLocked() external {
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
+
         base.guardedCheckLocked();
+
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
     }
 
-    function testUnguardedCheckUnlocked() external view {
+    function testUnguardedCheckUnlocked() external {
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
+
         base.unguardedCheckUnlocked();
+
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
     }
 
     function testNonReentrantMethodCanBeCalled() external {

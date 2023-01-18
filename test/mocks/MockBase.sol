@@ -23,7 +23,7 @@ contract MockBase is Base {
     // ===========
 
     constructor() {
-        unlockReentrancyLock();
+        _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
     }
 
     // ==========
@@ -36,14 +36,6 @@ contract MockBase is Base {
 
     function getReentrancyStatus() public view returns (uint256) {
         return _reentrancyLock;
-    }
-
-    function lockReentrancyLock() external {
-        _reentrancyLock = _REENTRANCY_LOCK_LOCKED;
-    }
-
-    function unlockReentrancyLock() public {
-        _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
     }
 
     function callback() external nonReentrant {
