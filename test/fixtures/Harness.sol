@@ -257,17 +257,4 @@ abstract contract Harness is InvariantTest, Test {
     function _checkMemory(string memory s_) internal pure {
         _checkMemory(bytes(s_));
     }
-
-    // =====
-    // Casts
-    // =====
-
-    /**
-     * @dev Cast bool to uint8.
-     */
-    function _castBoolToUInt8(bool x_) internal pure returns (uint8 r_) {
-        assembly {
-            r_ := x_
-        }
-    }
 }

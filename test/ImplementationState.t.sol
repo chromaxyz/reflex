@@ -153,4 +153,17 @@ contract ImplementationStateTest is Harness {
         (reads, ) = vm.accesses(address(state));
         assertEq((reads[0]), keccak256(abi.encode(tokenB_, uint256(55))));
     }
+
+    // =========
+    // Utilities
+    // =========
+
+    /**
+     * @dev Cast bool to uint8.
+     */
+    function _castBoolToUInt8(bool x_) internal pure returns (uint8 r_) {
+        assembly {
+            r_ := x_
+        }
+    }
 }
