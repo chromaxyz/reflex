@@ -20,7 +20,7 @@ function log () {
 
 # Variables
 CONTRACTS="BaseDispatcher ImplementationDispatcher"
-FILENAME=STORAGE_LAYOUT.md
+FILENAME=docs/STORAGE_LAYOUT.md
 
 # Remove previous storage layout
 rm -f $FILENAME

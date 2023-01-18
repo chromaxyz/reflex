@@ -32,8 +32,8 @@ log $GREEN "Verifying storage overview compatibility"
 
 # Variables
 CONTRACTS="BaseDispatcher ImplementationDispatcher"
-FILENAME=STORAGE_LAYOUT.md
-TEMP_FILENAME=STORAGE_LAYOUT.temp.md
+FILENAME=docs/STORAGE_LAYOUT.md
+TEMP_FILENAME=docs/STORAGE_LAYOUT.temp.md
 
 # Remove previous temporary storage layout
 rm -f $TEMP_FILENAME

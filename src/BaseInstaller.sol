@@ -53,7 +53,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      *
      * - The caller must be the current owner.
      */
-    function transferOwnership(address newOwner_) external virtual override onlyOwner {
+    function transferOwnership(address newOwner_) external virtual override onlyOwner reentrancyAllowed {
         if (newOwner_ == address(0)) revert ZeroAddress();
 
         _pendingOwner = newOwner_;
@@ -68,7 +68,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
      *
      * - The caller must be the pending owner.
      */
-    function acceptOwnership() external virtual override {
+    function acceptOwnership() external virtual override reentrancyAllowed {
         address newOwner = _unpackMessageSender();
 
         if (newOwner != _pendingOwner) revert Unauthorized();

@@ -18,6 +18,13 @@ abstract contract Base is IBase, BaseState {
     // =========
 
     /**
+     * @dev Explicitly tag a method as being allowed to be reentered.
+     */
+    modifier reentrancyAllowed() virtual {
+        _;
+    }
+
+    /**
      * @dev Prevents a contract from calling itself, directly or indirectly.
      * Calling a `nonReentrant` function from another `nonReentrant` function is not supported.
      */

@@ -84,7 +84,7 @@ lcov.info
 .gas-snapshot-*
 
 # Storage layout
-STORAGE_LAYOUT.temp.md
+docs/STORAGE_LAYOUT.temp.md
 
 # Ignores development broadcast logs
 !/broadcast
