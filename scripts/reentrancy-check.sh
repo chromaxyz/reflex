@@ -11,6 +11,7 @@ SCRIPT_PATH="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
 cd "$SCRIPT_PATH/.." || exit
 
 # Utilities
+RED="\033[00;31m"
 GREEN="\033[00;32m"
 
 function log () {
@@ -21,30 +22,34 @@ function log () {
   echo -e "\033[0m"
 }
 
+function notify () {
+  echo -e $1
+  echo "$2 "
+  echo -e "\033[0m"
+}
+
 # Check for jq dependency
 if ! [ -x "$(command -v jq)" ]; then
   echo 'Error: jq is not installed.' >&2
   exit 1
 fi
 
-log $GREEN "Creating reentrancy modifier overview from contracts"
+log $GREEN "Checking reentrancy modifiers on external methods"
 
 # Variables
 CONTRACTS="BaseDispatcher BaseInstaller"
 FILENAME=docs/REENTRANCY_LAYOUT.md
+TEMP_FILENAME=docs/REENTRANCY_LAYOUT.temp.md
 
-# Remove previous storage layout
-rm -f $FILENAME
-
-# Generate a fresh build
-forge build
+# Remove previous reentrancy layout
+rm -f $TEMP_FILENAME
 
 # Generate new temporary storage layout for diff
 for CONTRACT in ${CONTRACTS[@]}
 do
-  echo "Generating reentrancy layout for $CONTRACT..."
+  echo "Verifying reentrancy layout for $CONTRACT..."
 
-  echo -e "\n**$CONTRACT**\n\n\`\`\`json" >> "$FILENAME"
+  echo -e "\n**$CONTRACT**\n\n\`\`\`json" >> "$TEMP_FILENAME"
 
   cat out/$CONTRACT.sol/$CONTRACT.json | jq '
       .ast.nodes |
@@ -55,12 +60,28 @@ do
       select(.stateMutability!="view") |
       select(.stateMutability!="pure") |
       select(.visibility=="external") |
-      { name: .name, modifiers: .modifiers }' >> "$FILENAME"
+      { name: .name, modifiers: .modifiers }' >> "$TEMP_FILENAME"
 
-  echo -e "\`\`\`" >> "$FILENAME"
+  echo -e "\`\`\`" >> "$TEMP_FILENAME"
 done
 
 # Run prettier so diff works properly.
-npx prettier --write $FILENAME
+npx prettier --write $TEMP_FILENAME
 
-log $GREEN "Done"
+if ! cmp -s $FILENAME $TEMP_FILENAME; then
+  notify $RED "Failed!"
+
+  echo "The following lines are different:"
+  diff -a --suppress-common-lines "$FILENAME" "$TEMP_FILENAME" || true
+  rm -f $TEMP_FILENAME
+
+  log $GREEN "Done"
+  exit 1
+else
+  notify $GREEN "Success!"
+
+  rm -f $TEMP_FILENAME
+
+  log $GREEN "Done"
+  exit 0
+fi
