@@ -83,7 +83,8 @@ lcov.info
 .gas-snapshot
 .gas-snapshot-*
 
-# Storage layout
+# Scripts
+docs/REENTRANCY_LAYOUT.temp.md
 docs/STORAGE_LAYOUT.temp.md
 
 # Ignores development broadcast logs

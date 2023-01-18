@@ -3,9 +3,6 @@
 # Exit if anything fails
 set -euo pipefail
 
-# Enter glob mode
-shopt -s extglob
-
 # Change directory to project root
 SCRIPT_PATH="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
 cd "$SCRIPT_PATH/.." || exit
@@ -34,7 +31,7 @@ if ! [ -x "$(command -v jq)" ]; then
   exit 1
 fi
 
-log $GREEN "Checking reentrancy modifiers on external methods"
+log $GREEN "Verifying reentrancy modifier overview from contracts"
 
 # Variables
 CONTRACTS="BaseDispatcher BaseInstaller"
@@ -44,7 +41,10 @@ TEMP_FILENAME=docs/REENTRANCY_LAYOUT.temp.md
 # Remove previous reentrancy layout
 rm -f $TEMP_FILENAME
 
-# Generate new temporary storage layout for diff
+# Generate a fresh build
+forge build
+
+# Generate new temporary reentrancy layout for diff
 for CONTRACT in ${CONTRACTS[@]}
 do
   echo "Verifying reentrancy layout for $CONTRACT..."

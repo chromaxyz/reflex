@@ -3,9 +3,6 @@
 # Exit if anything fails
 set -euo pipefail
 
-# Enter glob mode
-shopt -s extglob
-
 # Change directory to project root
 SCRIPT_PATH="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
 cd "$SCRIPT_PATH/.." || exit
@@ -28,7 +25,7 @@ function notify () {
   echo -e "\033[0m"
 }
 
-log $GREEN "Verifying storage overview compatibility"
+log $GREEN "Verifying storage overview from contracts"
 
 # Variables
 CONTRACTS="BaseDispatcher ImplementationDispatcher"
@@ -37,6 +34,9 @@ TEMP_FILENAME=docs/STORAGE_LAYOUT.temp.md
 
 # Remove previous temporary storage layout
 rm -f $TEMP_FILENAME
+
+# Generate a fresh build
+forge build
 
 # Generate new temporary storage layout for diff
 for CONTRACT in ${CONTRACTS[@]}

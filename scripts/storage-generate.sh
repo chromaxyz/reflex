@@ -18,6 +18,8 @@ function log () {
   echo -e "\033[0m"
 }
 
+log $GREEN "Creating storage overview from contracts"
+
 # Variables
 CONTRACTS="BaseDispatcher ImplementationDispatcher"
 FILENAME=docs/STORAGE_LAYOUT.md
@@ -25,8 +27,10 @@ FILENAME=docs/STORAGE_LAYOUT.md
 # Remove previous storage layout
 rm -f $FILENAME
 
-log $GREEN "Creating storage overview from contracts"
+# Generate a fresh build
+forge build
 
+# Generate new storage layout
 for CONTRACT in ${CONTRACTS[@]}
 do
 	echo "Generating storage layout for $CONTRACT..."

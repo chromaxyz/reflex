@@ -3,9 +3,6 @@
 # Exit if anything fails
 set -euo pipefail
 
-# Enter glob mode
-shopt -s extglob
-
 # Change directory to project root
 SCRIPT_PATH="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
 cd "$SCRIPT_PATH/.." || exit
@@ -33,13 +30,13 @@ log $GREEN "Creating reentrancy modifier overview from contracts"
 CONTRACTS="BaseDispatcher BaseInstaller"
 FILENAME=docs/REENTRANCY_LAYOUT.md
 
-# Remove previous storage layout
+# Remove previous reentracy layout
 rm -f $FILENAME
 
 # Generate a fresh build
 forge build
 
-# Generate new temporary storage layout for diff
+# Generate new reentracy layout
 for CONTRACT in ${CONTRACTS[@]}
 do
   echo "Generating reentrancy layout for $CONTRACT..."
