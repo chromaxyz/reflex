@@ -46,21 +46,19 @@ The framework serves as the foundation of your modular application allowing you 
 ```
 .
 ├── BaseConstants.sol "Extendable `Constants`: constants used in the framework."
-├── BaseDispatcher.sol "Non-upgradeable `Dispatcher`: dispatcher to module implementations"
+├── BaseDispatcher.sol "Non-upgradeable `Dispatcher`: dispatcher to module implementations."
+├── BaseInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
 ├── BaseModule.sol "Upgradeable `Module`, foundational building block of modules."
+├── BaseProxy.sol "Non-upgradeable `Proxy`, internal proxy indirection layer."
+├── Base.sol "Extendable `Base`, internal abstraction for `Dispatcher` and `Module`."
 ├── BaseState.sol "Extendable `State`, foundational state store of the framework."
-├── interfaces
-│   ├── IBaseDispatcher.sol "Interface for the `Dispatcher`."
-│   ├── IBaseInstaller.sol "Interface for the `Installer`."
-│   ├── IBaseModule.sol "Interface for the `Module`."
-│   ├── IBase.sol "Interface for the `Base`, internal."
-│   ├── IBaseState.sol "Interface for the `State`."
-│   └── Proxy.sol "Interface for the `Proxy`, internal."
-├── internals
-│   ├── Base.sol "Extendable `Base`, internal abstraction for `Dispatcher` and `Module`.
-│   └── Proxy.sol "Non-upgradeable `Proxy`, internal proxy indirection layer.
-└── modules
-    └── BaseInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
+└── interfaces
+    ├── IBaseDispatcher.sol "Interface for the `Dispatcher`."
+    ├── IBaseInstaller.sol "Interface for the `Installer`."
+    ├── IBaseModule.sol "Interface for the `Module`."
+    ├── IBaseProxy.sol "Interface for the `Proxy`."
+    ├── IBase.sol "Interface for the `Base`."
+    └── IBaseState.sol "Interface for the `State`."
 ```
 
 ```mermaid
@@ -71,6 +69,7 @@ graph TD
     BaseDispatcher --> Base
     BaseModule --> Base
     Base --> BaseState
+    Base --> BaseProxy
     BaseState --> BaseConstants
     end
 ```
