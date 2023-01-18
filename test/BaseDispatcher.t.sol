@@ -107,11 +107,11 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installer));
     }
 
-    function testGetOwnerThroughInstaller() external {
+    function testGetOwnerThroughInstallerProxy() external {
         assertEq(installerProxy.owner(), address(this));
     }
 
-    function testUpdateOwnerThroughInstaller() external {
+    function testUpdateOwnerThroughInstallerProxy() external {
         assertEq(installerProxy.owner(), address(this));
         assertEq(installerProxy.pendingOwner(), address(0));
 
