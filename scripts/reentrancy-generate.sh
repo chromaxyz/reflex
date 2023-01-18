@@ -11,17 +11,17 @@ cd "$SCRIPT_PATH/.." || exit
 GREEN="\033[00;32m"
 
 function log () {
-  echo -e $1
-  echo "################################################################################"
-  echo "#### $2 "
-  echo "################################################################################"
-  echo -e "\033[0m"
+echo -e $1
+echo "################################################################################"
+echo "#### $2 "
+echo "################################################################################"
+echo -e "\033[0m"
 }
 
 # Check for jq dependency
 if ! [ -x "$(command -v jq)" ]; then
-  echo 'Error: jq is not installed.' >&2
-  exit 1
+echo 'Error: jq is not installed.' >&2
+exit 1
 fi
 
 log $GREEN "Creating reentrancy modifier overview from contracts"
@@ -44,15 +44,15 @@ do
   echo -e "\n**$CONTRACT**\n\n\`\`\`json" >> "$FILENAME"
 
   cat out/$CONTRACT.sol/$CONTRACT.json | jq '
-      .ast.nodes |
-      map(.nodes) |
-      flatten |
-      .[] |
-      select(.kind=="function") |
-      select(.stateMutability!="view") |
-      select(.stateMutability!="pure") |
-      select(.visibility=="external") |
-      { name: .name, modifiers: .modifiers }' >> "$FILENAME"
+    .ast.nodes |
+    map(.nodes) |
+    flatten |
+    .[] |
+    select(.kind=="function") |
+    select(.stateMutability!="view") |
+    select(.stateMutability!="pure") |
+    select(.visibility=="external") |
+    { name: .name, modifiers: .modifiers }' >> "$FILENAME"
 
   echo -e "\`\`\`" >> "$FILENAME"
 done

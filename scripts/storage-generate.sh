@@ -33,7 +33,7 @@ forge build
 # Generate new storage layout
 for CONTRACT in ${CONTRACTS[@]}
 do
-	echo "Generating storage layout for $CONTRACT..."
+  echo "Generating storage layout for $CONTRACT..."
 
   echo -e "\n**$CONTRACT**\n" >> "$FILENAME"
 

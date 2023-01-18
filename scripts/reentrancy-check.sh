@@ -52,15 +52,15 @@ do
   echo -e "\n**$CONTRACT**\n\n\`\`\`json" >> "$TEMP_FILENAME"
 
   cat out/$CONTRACT.sol/$CONTRACT.json | jq '
-      .ast.nodes |
-      map(.nodes) |
-      flatten |
-      .[] |
-      select(.kind=="function") |
-      select(.stateMutability!="view") |
-      select(.stateMutability!="pure") |
-      select(.visibility=="external") |
-      { name: .name, modifiers: .modifiers }' >> "$TEMP_FILENAME"
+    .ast.nodes |
+    map(.nodes) |
+    flatten |
+    .[] |
+    select(.kind=="function") |
+    select(.stateMutability!="view") |
+    select(.stateMutability!="pure") |
+    select(.visibility=="external") |
+    { name: .name, modifiers: .modifiers }' >> "$TEMP_FILENAME"
 
   echo -e "\`\`\`" >> "$TEMP_FILENAME"
 done
