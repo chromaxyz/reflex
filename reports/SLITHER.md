@@ -15,7 +15,7 @@ Impact: High
 Confidence: High
 
 - [ ] ID-0
-      [BaseState.\_modules](../src/BaseState.sol#L53) is never initialized. It is used in: - [Base.\_callInternalModule(uint32,bytes)](../src/Base.sol#L71-L77)
+      [BaseState.\_modules](../src/BaseState.sol#L53) is never initialized. It is used in: - [Base.\_callInternalModule(uint32,bytes)](../src/Base.sol#L78-L84)
 
 ../src/BaseState.sol#L53
 
@@ -60,39 +60,39 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-7
-      [BaseProxy.sentinel()](../src/BaseProxy.sol#L73-L88) uses assembly - [INLINE ASM](../src/BaseProxy.sol#L80-L83)
+      [Base.\_unpackProxyAddress()](../src/Base.sol#L101-L106) uses assembly - [INLINE ASM](../src/Base.sol#L103-L105)
 
-../src/BaseProxy.sol#L73-L88
+../src/Base.sol#L101-L106
 
 - [ ] ID-8
+      [Base.\_unpackTrailingParameters()](../src/Base.sol#L113-L119) uses assembly - [INLINE ASM](../src/Base.sol#L114-L118)
+
+../src/Base.sol#L113-L119
+
+- [ ] ID-9
       [BaseDispatcher.dispatch()](../src/BaseDispatcher.sol#L73-L121) uses assembly - [INLINE ASM](../src/BaseDispatcher.sol#L90-L120)
 
 ../src/BaseDispatcher.sol#L73-L121
 
-- [ ] ID-9
-      [Base.\_unpackTrailingParameters()](../src/Base.sol#L106-L112) uses assembly - [INLINE ASM](../src/Base.sol#L107-L111)
-
-../src/Base.sol#L106-L112
-
 - [ ] ID-10
-      [Base.\_unpackProxyAddress()](../src/Base.sol#L94-L99) uses assembly - [INLINE ASM](../src/Base.sol#L96-L98)
+      [BaseProxy.sentinel()](../src/BaseProxy.sol#L75-L90) uses assembly - [INLINE ASM](../src/BaseProxy.sol#L82-L85)
 
-../src/Base.sol#L94-L99
+../src/BaseProxy.sol#L75-L90
 
 - [ ] ID-11
-      [Base.\_unpackMessageSender()](../src/Base.sol#L83-L88) uses assembly - [INLINE ASM](../src/Base.sol#L85-L87)
+      [Base.\_revertBytes(bytes)](../src/Base.sol#L125-L133) uses assembly - [INLINE ASM](../src/Base.sol#L127-L129)
 
-../src/Base.sol#L83-L88
+../src/Base.sol#L125-L133
 
 - [ ] ID-12
-      [BaseProxy.\_fallback()](../src/BaseProxy.sol#L97-L194) uses assembly - [INLINE ASM](../src/BaseProxy.sol#L103-L148) - [INLINE ASM](../src/BaseProxy.sol#L151-L192)
+      [BaseProxy.\_fallback()](../src/BaseProxy.sol#L99-L196) uses assembly - [INLINE ASM](../src/BaseProxy.sol#L105-L150) - [INLINE ASM](../src/BaseProxy.sol#L153-L194)
 
-../src/BaseProxy.sol#L97-L194
+../src/BaseProxy.sol#L99-L196
 
 - [ ] ID-13
-      [Base.\_revertBytes(bytes)](../src/Base.sol#L118-L126) uses assembly - [INLINE ASM](../src/Base.sol#L120-L122)
+      [Base.\_unpackMessageSender()](../src/Base.sol#L90-L95) uses assembly - [INLINE ASM](../src/Base.sol#L92-L94)
 
-../src/Base.sol#L118-L126
+../src/Base.sol#L90-L95
 
 ## costly-loop
 
@@ -120,14 +120,14 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-17
-      Low level call in [Base.\_callInternalModule(uint32,bytes)](../src/Base.sol#L71-L77): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/Base.sol#L72)
+      Low level call in [BaseProxy.implementation()](../src/BaseProxy.sol#L59-L69): - [(success,response) = \_deployer.staticcall(abi.encodeWithSelector(\_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR,\_moduleId))](../src/BaseProxy.sol#L60-L62)
 
-../src/Base.sol#L71-L77
+../src/BaseProxy.sol#L59-L69
 
 - [ ] ID-18
-      Low level call in [BaseProxy.implementation()](../src/BaseProxy.sol#L57-L67): - [(success,response) = \_deployer.staticcall(abi.encodeWithSelector(\_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR,\_moduleId))](../src/BaseProxy.sol#L58-L60)
+      Low level call in [Base.\_callInternalModule(uint32,bytes)](../src/Base.sol#L78-L84): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/Base.sol#L79)
 
-../src/BaseProxy.sol#L57-L67
+../src/Base.sol#L78-L84
 
 ## naming-convention
 
@@ -170,9 +170,9 @@ Confidence: High
 ../src/BaseState.sol#L34
 
 - [ ] ID-26
-      Variable [BaseProxy.\_deployer](../src/BaseProxy.sol#L32) is not in mixedCase
+      Variable [BaseProxy.\_deployer](../src/BaseProxy.sol#L34) is not in mixedCase
 
-../src/BaseProxy.sol#L32
+../src/BaseProxy.sol#L34
 
 - [ ] ID-27
       Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L28) is not in mixedCase
@@ -180,9 +180,9 @@ Confidence: High
 ../src/BaseModule.sol#L28
 
 - [ ] ID-28
-      Variable [BaseProxy.\_moduleId](../src/BaseProxy.sol#L27) is not in mixedCase
+      Variable [BaseProxy.\_moduleId](../src/BaseProxy.sol#L29) is not in mixedCase
 
-../src/BaseProxy.sol#L27
+../src/BaseProxy.sol#L29
 
 - [ ] ID-29
       Variable [BaseState.\_\_gap](../src/BaseState.sol#L76) is not in mixedCase
@@ -200,7 +200,7 @@ Impact: Informational
 Confidence: Medium
 
 - [ ] ID-31
-      Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L28) is too similar to [Base._createProxy(uint32,uint16).moduleType_](../src/Base.sol#L46)
+      Variable [BaseModule.\_moduleType](../src/BaseModule.sol#L28) is too similar to [Base._createProxy(uint32,uint16).moduleType_](../src/Base.sol#L53)
 
 ../src/BaseModule.sol#L28
 
@@ -210,6 +210,6 @@ Impact: Informational
 Confidence: Medium
 
 - [ ] ID-32
-      [BaseProxy.\_fallback()](../src/BaseProxy.sol#L97-L194) uses literals with too many digits: - [mstore(uint256,uint256)(0x00,0xe9c4a3ac00000000000000000000000000000000000000000000000000000000)](../src/BaseProxy.sol#L155-L159)
+      [BaseProxy.\_fallback()](../src/BaseProxy.sol#L99-L196) uses literals with too many digits: - [mstore(uint256,uint256)(0x00,0xe9c4a3ac00000000000000000000000000000000000000000000000000000000)](../src/BaseProxy.sol#L157-L161)
 
-../src/BaseProxy.sol#L97-L194
+../src/BaseProxy.sol#L99-L196

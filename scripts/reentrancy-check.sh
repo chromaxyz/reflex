@@ -65,7 +65,7 @@ do
   echo -e "\`\`\`" >> "$TEMP_FILENAME"
 done
 
-# Run prettier so diff works properly.
+# Run prettier so diff works properly
 npx prettier --write $TEMP_FILENAME
 
 if ! cmp -s $FILENAME $TEMP_FILENAME; then

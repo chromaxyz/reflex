@@ -30,7 +30,7 @@ if ! [ -x "$(command -v http-server)" ]; then
   exit 1
 fi
 
-log $GREEN "Running Coverage script"
+log $GREEN "Creating Coverage report"
 
 mkdir -p reports
 

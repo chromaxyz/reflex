@@ -156,6 +156,24 @@ When the proxy sees a call to its fallback from the `Dispatcher`, it knows not t
 
 The proxy unpacks this message and executes the appropriate log instruction: `log0`, `log1`, `log2`, `log3` or `log4`, depending on the number of topics.
 
+## Reentracy guard
+
+All `single-proxy` modules and `multi-proxy` modules `CALL` (not `DELEGATECALL`) the `Dispatcher` meaning that all operations happen inside of the `Dispatcher` storage context. This allows us to have a single global re-entrancy lock that can cover every storage modifiying method in the protocol.
+
+There are exceptions however to this rule and these must be handled with great care namely:
+
+- `internal` modules are called internally using `DELEGATECALL`.
+- One must only make `CALL`s to trusted modules and trusted sources.
+- One must assume that any `CALL` made from inside of any module may re-enter.
+
+To verify that all external state-modifying methods have a `nonReentrant` or `reentrancyAllowed` modifier applied one SHOULD RUN the respective [scripts/reentrancy-check.sh](../scripts/reentrancy-check.sh) and [scripts/reentrancy-generate.sh](../scripts/reentrancy-generate.sh) scripts.
+
+## Storage
+
+As mentioned before, execution takes place within the `Dispatcher` contract's storage context, not the proxy's. Implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
+
+To verify that the storage layout is compatible one SHOULD RUN the respective [scripts/storage-check.sh](../scripts/storage-check.sh) and [scripts/storage-generate.sh](../scripts/storage-generate.sh) scripts after applying any updates.
+
 ## Implementing
 
 In order to use the Reflex framework there are multiple abstract contracts one has to inherit as follows:
@@ -276,6 +294,7 @@ In order to remove one or more modules call `removeModules()` on the `Installer`
 ## Known limitations
 
 - Reflex has multiple application entrypoints via their proxies. The proxy address however stays consistent throughout module upgrades.
+- Reflex does not support `payable` modifiers and native token transfers due to reentrancy concerns.
 - The `Dispatcher` and the internal `Proxy` contracts are not upgradable.
 - Storage in the `Dispatcher` is append-only extendable but implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
 - The first `50` storage slots are reserved allowing us to add new features over time.

@@ -24,11 +24,12 @@ if ! [ -x "$(command -v myth)" ]; then
   exit 1
 fi
 
-log $GREEN "Running Mythril script"
+log $GREEN "Creating Mythril report"
 
+# Create temporary directory
 mkdir -p flattened
 
-forge flatten src/internals/Proxy.sol --output flattened/Proxy.flat.sol
+forge flatten src/Proxy.sol --output flattened/Proxy.flat.sol
 forge flatten test/mocks/MockBaseDispatcher.sol --output flattened/MockBaseDispatcher.flat.sol
 forge flatten test/implementations/ImplementationDispatcher.sol --output flattened/ImplementationDispatcher.flat.sol
 
@@ -36,6 +37,7 @@ myth -v 4 analyze flattened/Proxy.flat.sol
 myth -v 4 analyze flattened/MockBaseDispatcher.flat.sol
 myth -v 4 analyze flattened/ImplementationDispatcher.flat.sol
 
+# Remove temporary directory
 rm -rf flattened
 
 log $GREEN "Done"

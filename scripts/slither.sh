@@ -24,9 +24,13 @@ if ! [ -x "$(command -v slither)" ]; then
   exit 1
 fi
 
-log $GREEN "Running Slither script"
+log $GREEN "Creating Slither report"
 
-mkdir -p reports
+# Variables
+FILENAME=reports/SLITHER.md
+
+# Remove previous report.
+rm -f $FILENAME
 
 slither . \
   --filter-path "node_modules|lib|test|script" \
@@ -34,8 +38,9 @@ slither . \
   --markdown-root "../" \
   --checklist \
   --solc-remaps '$(cat remappings.txt)' \
-  > reports/slither.md
+  > "$FILENAME"
 
-npx prettier --write reports/slither.md
+# Run prettier.
+npx prettier --write reports/SLITHER.md
 
 log $GREEN "Done"
