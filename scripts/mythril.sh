@@ -26,18 +26,17 @@ fi
 
 log $GREEN "Creating Mythril report"
 
-# Create temporary directory
-mkdir -p flattened
+# Generate a fresh build
+forge build
 
-forge flatten src/Proxy.sol --output flattened/Proxy.flat.sol
-forge flatten test/mocks/MockBaseDispatcher.sol --output flattened/MockBaseDispatcher.flat.sol
-forge flatten test/implementations/ImplementationDispatcher.sol --output flattened/ImplementationDispatcher.flat.sol
+# Flatten select files
+forge flatten src/BaseProxy.sol --output flattened/BaseProxy.sol
+forge flatten test/mocks/MockBaseDispatcher.sol --output flattened/MockBaseDispatcher.sol
+forge flatten test/implementations/ImplementationDispatcher.sol --output flattened/ImplementationDispatcher.sol
 
-myth -v 4 analyze flattened/Proxy.flat.sol
-myth -v 4 analyze flattened/MockBaseDispatcher.flat.sol
-myth -v 4 analyze flattened/ImplementationDispatcher.flat.sol
-
-# Remove temporary directory
-rm -rf flattened
+# Analyze flattened files
+myth -v 4 analyze flattened/BaseProxy.sol
+myth -v 4 analyze flattened/MockBaseDispatcher.sol
+myth -v 4 analyze flattened/ImplementationDispatcher.sol
 
 log $GREEN "Done"

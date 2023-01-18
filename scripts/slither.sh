@@ -27,10 +27,10 @@ fi
 log $GREEN "Creating Slither report"
 
 # Variables
-FILENAME=reports/SLITHER.md
+FILENAME=reports/SLITHER_REPORT.md
 
 # Remove previous report.
-rm -f $FILENAME
+rm -f "$FILENAME"
 
 slither . \
   --filter-path "node_modules|lib|test|script" \
@@ -41,6 +41,6 @@ slither . \
   > "$FILENAME"
 
 # Run prettier.
-npx prettier --write reports/SLITHER.md
+npx prettier --write "$FILENAME"
 
 log $GREEN "Done"

@@ -22,10 +22,10 @@ log $GREEN "Creating storage overview from contracts"
 
 # Variables
 CONTRACTS="Base BaseConstants BaseDispatcher BaseInstaller BaseModule BaseProxy BaseState ImplementationDispatcher"
-FILENAME=docs/STORAGE_LAYOUT.md
+FILENAME=reports/STORAGE_LAYOUT.md
 
 # Remove previous storage layout
-rm -f $FILENAME
+rm -f "$FILENAME"
 
 # Generate a fresh build
 forge build
@@ -41,6 +41,6 @@ do
 done
 
 # Run prettier so diff works properly
-npx prettier --write $FILENAME
+npx prettier --write "$FILENAME"
 
 log $GREEN "Done"

@@ -28,10 +28,10 @@ log $GREEN "Creating reentrancy modifier overview from contracts"
 
 # Variables
 CONTRACTS="Base BaseConstants BaseDispatcher BaseInstaller BaseModule BaseProxy BaseState ImplementationDispatcher"
-FILENAME=docs/REENTRANCY_LAYOUT.md
+FILENAME=reports/REENTRANCY_LAYOUT.md
 
 # Remove previous reentracy layout
-rm -f $FILENAME
+rm -f "$FILENAME"
 
 # Generate a fresh build
 forge build
@@ -57,7 +57,7 @@ do
   echo -e "\`\`\`" >> "$FILENAME"
 done
 
-# Run prettier so diff works properly
-npx prettier --write $FILENAME
+# Run prettier so diff works properly.
+npx prettier --write "$FILENAME"
 
 log $GREEN "Done"
