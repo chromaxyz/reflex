@@ -94,7 +94,7 @@ contract ImplementationERC20Test is ImplementationFixture {
 
         tokenBalanceSum = new InvariantBalanceSum(tokenProxy);
 
-        _addTargetContract(address(tokenBalanceSum));
+        targetContract(address(tokenBalanceSum));
     }
 
     // ==========

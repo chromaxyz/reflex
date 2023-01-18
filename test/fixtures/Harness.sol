@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Vendor
+import {InvariantTest} from "forge-std/InvariantTest.sol";
 import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
 
@@ -12,7 +13,7 @@ import {console2} from "forge-std/console2.sol";
  * @author `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/main/src/test/utils/DSTestPlus.sol)
  * @author `BrualizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol)
  */
-abstract contract Harness is Test {
+abstract contract Harness is InvariantTest, Test {
     // ======
     // Errors
     // ======
@@ -28,8 +29,6 @@ abstract contract Harness is Test {
     error Not32ByteWordAligned();
 
     error InsufficientMemoryAllocation();
-
-    error NoTargetContracts();
 
     // =======
     // Structs
@@ -49,8 +48,6 @@ abstract contract Harness is Test {
     // =======
     // Storage
     // =======
-
-    address[] private _targets;
 
     Users internal _users;
 
@@ -148,30 +145,6 @@ abstract contract Harness is Test {
             Caroll: _createUser("Caroll"),
             Dave: _createUser("Dave")
         });
-    }
-
-    // ==============
-    // Public methods
-    // ==============
-
-    /**
-     * @dev Internal view for invariant testing.
-     */
-    function targetContracts() public view returns (address[] memory) {
-        if (_targets.length == 0) revert NoTargetContracts();
-
-        return _targets;
-    }
-
-    // ================
-    // Internal methods
-    // ================
-
-    /**
-     * @dev Add target contract for invariant testing.
-     */
-    function _addTargetContract(address newTargetContract_) internal {
-        _targets.push(newTargetContract_);
     }
 
     // =========
