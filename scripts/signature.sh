@@ -21,9 +21,8 @@ function log () {
 log $GREEN "Creating selector from \"$1\" signature"
 
 # Check for arguments passed
-if [ $# -eq 0 ]
-  then
-    echo "Please supply signature."
+if [ $# -eq 0 ]; then
+  echo "Please supply signature."
 fi
 
 cast sig $1

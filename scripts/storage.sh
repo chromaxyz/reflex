@@ -21,9 +21,8 @@ function log () {
 log $GREEN "Creating storage overview from $1 contract"
 
 # Check for arguments passed
-if [ $# -eq 0 ]
-  then
-    echo "Please supply contract name."
+if [ $# -eq 0 ]; then
+  echo "Please supply contract name."
 fi
 
 forge inspect $1 storage-layout --pretty
