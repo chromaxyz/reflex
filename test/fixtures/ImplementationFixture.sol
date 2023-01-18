@@ -53,7 +53,7 @@ abstract contract ImplementationFixture is BaseConstants, Harness {
         installerProxy = ImplementationInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
     }
 
-    // ==========
+    // =========s=
     // Test stubs
     // ==========
 
@@ -221,5 +221,24 @@ abstract contract ImplementationFixture is BaseConstants, Harness {
 
         vm.expectRevert(MockBaseModule.FailedToLog.selector);
         proxy_.testRevertProxyLogOutOfBounds(message_);
+    }
+
+    function _testUnpackMessageSender(MockBaseModule proxy_, address sender_) internal BrutalizeMemory {
+        address messageSender = proxy_.testUnpackMessageSender();
+
+        assertEq(messageSender, sender_);
+    }
+
+    function _testUnpackProxyAddress(MockBaseModule proxy_) internal BrutalizeMemory {
+        address proxyAddress = proxy_.testUnpackProxyAddress();
+
+        assertEq(proxyAddress, address(proxy_));
+    }
+
+    function _testUnpackTrailingParameters(MockBaseModule proxy_, address sender_) internal BrutalizeMemory {
+        (address messageSender, address proxyAddress) = proxy_.testUnpackTrailingParameters();
+
+        assertEq(messageSender, sender_);
+        assertEq(proxyAddress, address(proxy_));
     }
 }

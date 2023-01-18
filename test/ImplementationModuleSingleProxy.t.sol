@@ -136,4 +136,20 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     function testRevertProxyLogOutOfBounds(bytes memory message_) external {
         _testRevertProxyLogOutOfBounds(singleModuleProxy, message_);
     }
+
+    function testUnpackMessageSender() external {
+        vm.startPrank(_users.Alice);
+        _testUnpackMessageSender(singleModuleProxy, _users.Alice);
+        vm.stopPrank();
+    }
+
+    function testUnpackProxyAddress() external {
+        _testUnpackProxyAddress(singleModuleProxy);
+    }
+
+    function testUnpackTrailingParameters() external {
+        vm.startPrank(_users.Alice);
+        _testUnpackTrailingParameters(singleModuleProxy, _users.Alice);
+        vm.stopPrank();
+    }
 }

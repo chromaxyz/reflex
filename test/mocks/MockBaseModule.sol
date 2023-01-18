@@ -126,6 +126,22 @@ contract MockBaseModule is BaseModule, MockBase {
         );
     }
 
+    function testUnpackMessageSender() external pure returns (address) {
+        return _unpackMessageSender();
+    }
+
+    function testUnpackProxyAddress() external pure returns (address) {
+        return _unpackProxyAddress();
+    }
+
+    function testUnpackTrailingParameters() external pure returns (address, address) {
+        return _unpackTrailingParameters();
+    }
+
+    // =========
+    // Utilities
+    // =========
+
     function _issueLogToProxy(bytes memory payload) private {
         address proxyAddress = _unpackProxyAddress();
 

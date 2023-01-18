@@ -91,18 +91,6 @@ contract MockBase is Base {
         return _callInternalModule(moduleId_, input_);
     }
 
-    function unpackMessageSender() public pure returns (address) {
-        return _unpackMessageSender();
-    }
-
-    function unpackProxyAddress() public pure returns (address) {
-        return _unpackProxyAddress();
-    }
-
-    function unpackTrailingParameters() public pure returns (address, address) {
-        return _unpackTrailingParameters();
-    }
-
     function revertBytes(bytes memory errorMessage_) public pure {
         return _revertBytes(errorMessage_);
     }

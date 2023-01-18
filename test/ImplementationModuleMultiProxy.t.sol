@@ -321,4 +321,26 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         _testRevertProxyLogOutOfBounds(multiModuleProxyB, message_);
         _testRevertProxyLogOutOfBounds(multiModuleProxyC, message_);
     }
+
+    function testUnpackMessageSender() external {
+        vm.startPrank(_users.Alice);
+        _testUnpackMessageSender(multiModuleProxyA, _users.Alice);
+        _testUnpackMessageSender(multiModuleProxyB, _users.Alice);
+        _testUnpackMessageSender(multiModuleProxyC, _users.Alice);
+        vm.stopPrank();
+    }
+
+    function testUnpackProxyAddress() external {
+        _testUnpackProxyAddress(multiModuleProxyA);
+        _testUnpackProxyAddress(multiModuleProxyB);
+        _testUnpackProxyAddress(multiModuleProxyC);
+    }
+
+    function testUnpackTrailingParameters() external {
+        vm.startPrank(_users.Alice);
+        _testUnpackTrailingParameters(multiModuleProxyA, _users.Alice);
+        _testUnpackTrailingParameters(multiModuleProxyB, _users.Alice);
+        _testUnpackTrailingParameters(multiModuleProxyC, _users.Alice);
+        vm.stopPrank();
+    }
 }

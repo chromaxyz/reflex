@@ -605,10 +605,6 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         );
     }
 
-    // =====================
-    // Internal module tests
-    // =====================
-
     function testAddModulesInternal() public {
         _addModule(internalModuleV1, _VALID);
 
