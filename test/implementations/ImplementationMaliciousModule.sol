@@ -1,0 +1,38 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+pragma solidity ^0.8.13;
+
+// Implementations
+import {ImplementationState} from "../implementations/ImplementationState.sol";
+
+// Mocks
+import {MockBaseModule} from "../mocks/MockBaseModule.sol";
+
+/**
+ * @title Implementation Malicious Module
+ */
+contract ImplementationMaliciousModule is MockBaseModule, ImplementationState {
+    // ===========
+    // Constructor
+    // ===========
+
+    /**
+     * @param moduleSettings_ Module settings.
+     */
+    constructor(ModuleSettings memory moduleSettings_) MockBaseModule(moduleSettings_) {}
+
+    // ==========
+    // Test stubs
+    // ==========
+
+    function getImplementationState1() public view returns (uint256) {
+        return _implementationState1;
+    }
+
+    function setImplementationState1(uint256 number_) external {
+        _implementationState1 = number_;
+    }
+
+    function destroy() external {
+        selfdestruct(payable(address(msg.sender)));
+    }
+}

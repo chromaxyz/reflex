@@ -21,13 +21,12 @@ function log () {
   echo -e "\033[0m"
 }
 
-log $GREEN "Deploying using Deploy.s.sol"
+log $GREEN "Deploying to local using IntegrationTest.s.sol"
 
-forge script ./script/Deploy.s.sol \
-  --rpc-url $ETH_RPC_URL \
-  --private-key $ETH_PRIVATE_KEY \
-  # --etherscan-api-key $ETHERSCAN_API_KEY \
-  # --verify \
-  # --broadcast
+forge script ./script/IntegrationTest.s.sol \
+  --rpc-url $LOCAL_RPC_URL \
+  --private-key $LOCAL_PRIVATE_KEY \
+  --broadcast \
+  --slow
 
 log $GREEN "Done"

@@ -37,3 +37,6 @@ runs = 10_000
 
 [profile.intense.invariant]
 runs = 5_000
+
+[rpc_endpoints]
+local = "${LOCAL_RPC_URL}"
