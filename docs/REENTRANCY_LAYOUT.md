@@ -1,3 +1,15 @@
+**Base**
+
+```json
+
+```
+
+**BaseConstants**
+
+```json
+
+```
+
 **BaseDispatcher**
 
 ```json
@@ -194,4 +206,31 @@
     }
   ]
 }
+```
+
+**BaseModule**
+
+```json
+
+```
+
+**BaseProxy**
+
+```json
+{
+  "name": "sentinel",
+  "modifiers": []
+}
+```
+
+**BaseState**
+
+```json
+
+```
+
+**ImplementationDispatcher**
+
+```json
+
 ```

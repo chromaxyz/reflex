@@ -21,7 +21,7 @@ function log () {
 log $GREEN "Creating storage overview from contracts"
 
 # Variables
-CONTRACTS="BaseDispatcher ImplementationDispatcher"
+CONTRACTS="Base BaseConstants BaseDispatcher BaseInstaller BaseModule BaseProxy BaseState ImplementationDispatcher"
 FILENAME=docs/STORAGE_LAYOUT.md
 
 # Remove previous storage layout

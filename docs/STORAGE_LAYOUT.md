@@ -1,3 +1,20 @@
+**Base**
+
+| Name             | Type                                                | Slot | Offset | Bytes | Contract          |
+| ---------------- | --------------------------------------------------- | ---- | ------ | ----- | ----------------- |
+| \_reentrancyLock | uint256                                             | 0    | 0      | 32    | src/Base.sol:Base |
+| \_owner          | address                                             | 1    | 0      | 20    | src/Base.sol:Base |
+| \_pendingOwner   | address                                             | 2    | 0      | 20    | src/Base.sol:Base |
+| \_modules        | mapping(uint32 => address)                          | 3    | 0      | 32    | src/Base.sol:Base |
+| \_proxies        | mapping(uint32 => address)                          | 4    | 0      | 32    | src/Base.sol:Base |
+| \_relations      | mapping(address => struct TBaseState.TrustRelation) | 5    | 0      | 32    | src/Base.sol:Base |
+| \_\_gap          | uint256[44]                                         | 6    | 0      | 1408  | src/Base.sol:Base |
+
+**BaseConstants**
+
+| Name | Type | Slot | Offset | Bytes | Contract |
+| ---- | ---- | ---- | ------ | ----- | -------- |
+
 **BaseDispatcher**
 
 | Name             | Type                                                | Slot | Offset | Bytes | Contract                              |
@@ -9,6 +26,47 @@
 | \_proxies        | mapping(uint32 => address)                          | 4    | 0      | 32    | src/BaseDispatcher.sol:BaseDispatcher |
 | \_relations      | mapping(address => struct TBaseState.TrustRelation) | 5    | 0      | 32    | src/BaseDispatcher.sol:BaseDispatcher |
 | \_\_gap          | uint256[44]                                         | 6    | 0      | 1408  | src/BaseDispatcher.sol:BaseDispatcher |
+
+**BaseInstaller**
+
+| Name             | Type                                                | Slot | Offset | Bytes | Contract                            |
+| ---------------- | --------------------------------------------------- | ---- | ------ | ----- | ----------------------------------- |
+| \_reentrancyLock | uint256                                             | 0    | 0      | 32    | src/BaseInstaller.sol:BaseInstaller |
+| \_owner          | address                                             | 1    | 0      | 20    | src/BaseInstaller.sol:BaseInstaller |
+| \_pendingOwner   | address                                             | 2    | 0      | 20    | src/BaseInstaller.sol:BaseInstaller |
+| \_modules        | mapping(uint32 => address)                          | 3    | 0      | 32    | src/BaseInstaller.sol:BaseInstaller |
+| \_proxies        | mapping(uint32 => address)                          | 4    | 0      | 32    | src/BaseInstaller.sol:BaseInstaller |
+| \_relations      | mapping(address => struct TBaseState.TrustRelation) | 5    | 0      | 32    | src/BaseInstaller.sol:BaseInstaller |
+| \_\_gap          | uint256[44]                                         | 6    | 0      | 1408  | src/BaseInstaller.sol:BaseInstaller |
+
+**BaseModule**
+
+| Name             | Type                                                | Slot | Offset | Bytes | Contract                      |
+| ---------------- | --------------------------------------------------- | ---- | ------ | ----- | ----------------------------- |
+| \_reentrancyLock | uint256                                             | 0    | 0      | 32    | src/BaseModule.sol:BaseModule |
+| \_owner          | address                                             | 1    | 0      | 20    | src/BaseModule.sol:BaseModule |
+| \_pendingOwner   | address                                             | 2    | 0      | 20    | src/BaseModule.sol:BaseModule |
+| \_modules        | mapping(uint32 => address)                          | 3    | 0      | 32    | src/BaseModule.sol:BaseModule |
+| \_proxies        | mapping(uint32 => address)                          | 4    | 0      | 32    | src/BaseModule.sol:BaseModule |
+| \_relations      | mapping(address => struct TBaseState.TrustRelation) | 5    | 0      | 32    | src/BaseModule.sol:BaseModule |
+| \_\_gap          | uint256[44]                                         | 6    | 0      | 1408  | src/BaseModule.sol:BaseModule |
+
+**BaseProxy**
+
+| Name | Type | Slot | Offset | Bytes | Contract |
+| ---- | ---- | ---- | ------ | ----- | -------- |
+
+**BaseState**
+
+| Name             | Type                                                | Slot | Offset | Bytes | Contract                    |
+| ---------------- | --------------------------------------------------- | ---- | ------ | ----- | --------------------------- |
+| \_reentrancyLock | uint256                                             | 0    | 0      | 32    | src/BaseState.sol:BaseState |
+| \_owner          | address                                             | 1    | 0      | 20    | src/BaseState.sol:BaseState |
+| \_pendingOwner   | address                                             | 2    | 0      | 20    | src/BaseState.sol:BaseState |
+| \_modules        | mapping(uint32 => address)                          | 3    | 0      | 32    | src/BaseState.sol:BaseState |
+| \_proxies        | mapping(uint32 => address)                          | 4    | 0      | 32    | src/BaseState.sol:BaseState |
+| \_relations      | mapping(address => struct TBaseState.TrustRelation) | 5    | 0      | 32    | src/BaseState.sol:BaseState |
+| \_\_gap          | uint256[44]                                         | 6    | 0      | 1408  | src/BaseState.sol:BaseState |
 
 **ImplementationDispatcher**
 

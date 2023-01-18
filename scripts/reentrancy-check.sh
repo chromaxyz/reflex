@@ -34,7 +34,7 @@ fi
 log $GREEN "Verifying reentrancy modifier overview from contracts"
 
 # Variables
-CONTRACTS="BaseDispatcher BaseInstaller"
+CONTRACTS="Base BaseConstants BaseDispatcher BaseInstaller BaseModule BaseProxy BaseState ImplementationDispatcher"
 FILENAME=docs/REENTRANCY_LAYOUT.md
 TEMP_FILENAME=docs/REENTRANCY_LAYOUT.temp.md
 

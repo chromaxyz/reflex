@@ -28,7 +28,7 @@ function notify () {
 log $GREEN "Verifying storage overview from contracts"
 
 # Variables
-CONTRACTS="BaseDispatcher ImplementationDispatcher"
+CONTRACTS="Base BaseConstants BaseDispatcher BaseInstaller BaseModule BaseProxy BaseState ImplementationDispatcher"
 FILENAME=docs/STORAGE_LAYOUT.md
 TEMP_FILENAME=docs/STORAGE_LAYOUT.temp.md
 
