@@ -28,19 +28,19 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
     // =======
 
     /**
-     * @notice Reentrancy lock.
+     * @notice Global reentrancy lock.
      * @dev Slot 0 (32 bytes).
      */
     uint256 internal _reentrancyLock;
 
     /**
-     * @notice Protocol owner.
+     * @notice Owner address.
      * @dev Slot 1 (20 bytes).
      */
     address internal _owner;
 
     /**
-     * @notice Pending protocol owner.
+     * @notice Pending owner address.
      * @dev Slot 2 (20 bytes).
      */
     address internal _pendingOwner;
