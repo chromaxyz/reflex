@@ -142,7 +142,7 @@ contract MockBaseModule is BaseModule, MockBase {
     // Utilities
     // =========
 
-    function _issueLogToProxy(bytes memory payload) private {
+    function _issueLogToProxy(bytes memory payload) internal {
         address proxyAddress = _unpackProxyAddress();
 
         (bool success, ) = proxyAddress.call(payload);

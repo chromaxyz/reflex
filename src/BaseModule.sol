@@ -35,12 +35,12 @@ abstract contract BaseModule is IBaseModule, Base {
     /**
      * @notice Whether the module is upgradeable.
      */
-    bool private immutable _moduleUpgradeable;
+    bool internal immutable _moduleUpgradeable;
 
     /**
      * @notice Whether the module is removeable.
      */
-    bool private immutable _moduleRemoveable;
+    bool internal immutable _moduleRemoveable;
 
     // =========
     // Modifiers
