@@ -5,20 +5,20 @@ pragma solidity ^0.8.13;
 import {Vm} from "forge-std/Vm.sol";
 
 // Interfaces
-import {TBaseDispatcher} from "../src/interfaces/IBaseDispatcher.sol";
-import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {TReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
+import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
-import {BaseFixture} from "./fixtures/BaseFixture.sol";
+import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
 // Mocks
-import {MockBaseDispatcher} from "./mocks/MockBaseDispatcher.sol";
-import {MockBaseModule} from "./mocks/MockBaseModule.sol";
+import {MockReflexDispatcher} from "./mocks/MockReflexDispatcher.sol";
+import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 
 /**
- * @title Base Dispatcher Test
+ * @title Reflex Dispatcher Test
  */
-contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
+contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
     // =====
     // Setup
     // =====
@@ -33,25 +33,25 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
 
     function testRevertInvalidOwnerZeroAddress() external {
         vm.expectRevert(InvalidOwner.selector);
-        new MockBaseDispatcher(address(0), address(installer));
+        new MockReflexDispatcher(address(0), address(installer));
     }
 
     function testRevertInvalidInstallerZeroAddress() external {
         vm.expectRevert(InvalidInstallerModuleAddress.selector);
-        new MockBaseDispatcher(address(this), address(0));
+        new MockReflexDispatcher(address(this), address(0));
     }
 
     function testRevertInvalidInstallerModuleIdSentinel() external {
         vm.expectRevert();
-        new MockBaseDispatcher(address(this), address(_users.Alice));
+        new MockReflexDispatcher(address(this), address(_users.Alice));
     }
 
     function testRevertInvalidInstallerModuleId(uint32 moduleId_) external {
         vm.assume(moduleId_ != 0);
         vm.assume(moduleId_ != _MODULE_ID_INSTALLER);
 
-        MockBaseModule module = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        MockReflexModule module = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: moduleId_,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
                 moduleVersion: _MODULE_VERSION_INSTALLER,
@@ -61,13 +61,13 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
         );
 
         vm.expectRevert(InvalidInstallerModuleId.selector);
-        new MockBaseDispatcher(address(this), address(module));
+        new MockReflexDispatcher(address(this), address(module));
     }
 
     function testLogEmittanceUponConstruction() external {
         vm.recordLogs();
 
-        MockBaseDispatcher dispatcher = new MockBaseDispatcher(address(this), address(installer));
+        MockReflexDispatcher dispatcher = new MockReflexDispatcher(address(this), address(installer));
 
         address installerProxy = dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER);
 
@@ -92,7 +92,7 @@ contract BaseDispatcherTest is TBaseDispatcher, BaseFixture {
         // emit ModuleAdded(
         //     _MODULE_ID_INSTALLER,
         //     address(installer),
-        //     MockBaseInstaller(installer).moduleVersion()
+        //     MockReflexInstaller(installer).moduleVersion()
         // );
         assertEq(entries[2].topics.length, 4);
         assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint32,address,uint32)"));

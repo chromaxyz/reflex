@@ -4,13 +4,10 @@ pragma solidity ^0.8.13;
 // Sources
 import {ReflexInstaller} from "../../src/ReflexInstaller.sol";
 
-// Implementations
-import {ImplementationState} from "./ImplementationState.sol";
-
 /**
- * @title Implementation Installer
+ * @title Mock Reflex Installer
  */
-contract ImplementationInstaller is ReflexInstaller, ImplementationState {
+contract MockReflexInstaller is ReflexInstaller {
     // ===========
     // Constructor
     // ===========

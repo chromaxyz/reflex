@@ -5,10 +5,10 @@ pragma solidity ^0.8.13;
 import {Script} from "forge-std/Script.sol";
 
 // Interfaces
-import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Sources
-import {BaseConstants} from "../src/BaseConstants.sol";
+import {ReflexConstants} from "../src/ReflexConstants.sol";
 
 // Implementations
 import {ImplementationDispatcher} from "../test/implementations/ImplementationDispatcher.sol";
@@ -18,7 +18,7 @@ import {ImplementationModule} from "../test/implementations/ImplementationModule
 /**
  * @title Deploy Constants
  */
-abstract contract DeployConstants is BaseConstants {
+abstract contract DeployConstants is ReflexConstants {
     /**
      * @dev Module version of built-in upgradeable installer module.
      */
@@ -66,7 +66,7 @@ contract DeployScript is Script, DeployConstants {
         vm.startBroadcast();
 
         installerImplementation = new ImplementationInstaller(
-            IBaseModule.ModuleSettings({
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INSTALLER,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
                 moduleVersion: _MODULE_VERSION_INSTALLER,
@@ -80,7 +80,7 @@ contract DeployScript is Script, DeployConstants {
         installerProxy = ImplementationInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
 
         exampleModuleImplementation = new ImplementationModule(
-            IBaseModule.ModuleSettings({
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_EXAMPLE,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
                 moduleVersion: _MODULE_VERSION_EXAMPLE,

@@ -2,10 +2,10 @@
 pragma solidity ^0.8.13;
 
 /**
- * @title Base Constants
+ * @title Reflex Constants
  * @dev Append-only extendable, only use internal constants!
  */
-abstract contract BaseConstants {
+abstract contract ReflexConstants {
     // =======
     // Globals
     // =======

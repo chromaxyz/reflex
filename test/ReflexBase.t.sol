@@ -2,23 +2,23 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TBase} from "../src/interfaces/IBase.sol";
+import {TReflexBase} from "../src/interfaces/IReflexBase.sol";
 
 // Fixtures
-import {BaseFixture} from "./fixtures/BaseFixture.sol";
+import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
 // Mocks
-import {MockBase, ReentrancyAttack} from "./mocks/MockBase.sol";
+import {MockReflexBase, ReentrancyAttack} from "./mocks/MockReflexBase.sol";
 
 /**
- * @title Base Test
+ * @title Reflex Base Test
  */
-contract BaseTest is TBase, BaseFixture {
+contract ReflexBaseTest is TReflexBase, ReflexFixture {
     // =======
     // Storage
     // =======
 
-    MockBase public base;
+    MockReflexBase public base;
     ReentrancyAttack public reentrancyAttack;
 
     // =====
@@ -28,7 +28,7 @@ contract BaseTest is TBase, BaseFixture {
     function setUp() public virtual override {
         super.setUp();
 
-        base = new MockBase();
+        base = new MockReflexBase();
         reentrancyAttack = new ReentrancyAttack();
 
         assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);

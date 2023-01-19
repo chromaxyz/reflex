@@ -2,14 +2,14 @@
 pragma solidity ^0.8.13;
 
 // Sources
-import {BaseConstants} from "../../src/BaseConstants.sol";
+import {ReflexConstants} from "../../src/ReflexConstants.sol";
 
 // Interfaces
-import {IBaseModule} from "../../src/interfaces/IBaseModule.sol";
+import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Mocks
-import {MockBaseInstaller} from "../mocks/MockBaseInstaller.sol";
-import {MockBaseDispatcher} from "../mocks/MockBaseDispatcher.sol";
+import {MockReflexInstaller} from "../mocks/MockReflexInstaller.sol";
+import {MockReflexDispatcher} from "../mocks/MockReflexDispatcher.sol";
 
 // Fixtures
 import {Harness} from "./Harness.sol";
@@ -18,16 +18,16 @@ import {Harness} from "./Harness.sol";
 import {DeployConstants} from "../../script/Deploy.s.sol";
 
 /**
- * @title Base Fixture
+ * @title Reflex Fixture
  */
-abstract contract BaseFixture is BaseConstants, DeployConstants, Harness {
+abstract contract ReflexFixture is ReflexConstants, DeployConstants, Harness {
     // =======
     // Storage
     // =======
 
-    MockBaseInstaller public installer;
-    MockBaseDispatcher public dispatcher;
-    MockBaseInstaller public installerProxy;
+    MockReflexInstaller public installer;
+    MockReflexDispatcher public dispatcher;
+    MockReflexInstaller public installerProxy;
 
     // =====
     // Setup
@@ -36,8 +36,8 @@ abstract contract BaseFixture is BaseConstants, DeployConstants, Harness {
     function setUp() public virtual override {
         super.setUp();
 
-        installer = new MockBaseInstaller(
-            IBaseModule.ModuleSettings({
+        installer = new MockReflexInstaller(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INSTALLER,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
                 moduleVersion: _MODULE_VERSION_INSTALLER,
@@ -45,8 +45,8 @@ abstract contract BaseFixture is BaseConstants, DeployConstants, Harness {
                 moduleRemoveable: _MODULE_REMOVEABLE_INSTALLER
             })
         );
-        dispatcher = new MockBaseDispatcher(address(this), address(installer));
-        installerProxy = MockBaseInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
+        dispatcher = new MockReflexDispatcher(address(this), address(installer));
+        installerProxy = MockReflexInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
     }
 
     // =========
@@ -54,14 +54,14 @@ abstract contract BaseFixture is BaseConstants, DeployConstants, Harness {
     // =========
 
     function _testModuleConfiguration(
-        IBaseModule module_,
+        IReflexModule module_,
         uint32 moduleId_,
         uint16 moduleType_,
         uint32 moduleVersion_,
         bool moduleUpgradeable_,
         bool moduleRemoveable_
     ) internal {
-        IBaseModule.ModuleSettings memory moduleSettings = module_.moduleSettings();
+        IReflexModule.ModuleSettings memory moduleSettings = module_.moduleSettings();
 
         assertEq(moduleSettings.moduleId, moduleId_);
         assertEq(module_.moduleId(), moduleId_);

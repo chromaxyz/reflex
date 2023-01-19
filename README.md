@@ -34,9 +34,9 @@ A Solidity framework for upgradeable modularized applications.
 - Provides a minimal, gas-optimized framework for building and maintaining upgradeable modularized applications.
 - Modularization prevents hitting the Spurious Dragon maximum contract size limitation of ~24.5kb.
 - Avoids function selector clashing allowing you to run multiple spec-compliant modules side-by-side.
-- Multiple module types: single-proxy modules, multi-proxy modules and internal modules.
+- Multiple module types: `single-proxy` modules, `multi-proxy` modules and `internal` modules.
 - Uses neutral language, avoids introducing new terminology.
-- A built-in upgradeable installer allowing you to add, upgrade and remove modules throughout the application lifetime.
+- A built-in upgradeable installer allowing you to add, upgrade and remove modules throughout the application lifespan.
 
 Noteably this is a so-called framework, a single well-tested audited implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
@@ -45,32 +45,32 @@ The framework serves as the foundation of your modular application allowing you 
 
 ```
 .
-├── BaseConstants.sol "Extendable `Constants`: constants used in the framework."
-├── BaseDispatcher.sol "Non-upgradeable `Dispatcher`: dispatcher to module implementations."
-├── BaseInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
-├── BaseModule.sol "Upgradeable `Module`, foundational building block of modules."
-├── BaseProxy.sol "Non-upgradeable `Proxy`, internal proxy indirection layer."
-├── Base.sol "Extendable `Base`, internal abstraction for `Dispatcher` and `Module`."
-├── BaseState.sol "Extendable `State`, foundational state store of the framework."
+├── ReflexConstants.sol "Extendable `Constants`: constants used in the framework."
+├── ReflexDispatcher.sol "Non-upgradeable `Dispatcher`: dispatcher to module implementations."
+├── ReflexInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
+├── ReflexModule.sol "Upgradeable `Module`, foundational building block of modules."
+├── ReflexProxy.sol "Non-upgradeable `Proxy`, internal proxy indirection layer."
+├── ReflexBase.sol "Extendable `Base`, internal abstraction for `Dispatcher` and `Module`."
+├── ReflexState.sol "Extendable `State`, foundational state store of the framework."
 └── interfaces
-    ├── IBaseDispatcher.sol "Interface for the `Dispatcher`."
-    ├── IBaseInstaller.sol "Interface for the `Installer`."
-    ├── IBaseModule.sol "Interface for the `Module`."
-    ├── IBaseProxy.sol "Interface for the `Proxy`."
-    ├── IBase.sol "Interface for the `Base`."
-    └── IBaseState.sol "Interface for the `State`."
+    ├── IReflexDispatcher.sol "Interface for the `Dispatcher`."
+    ├── IReflexInstaller.sol "Interface for the `Installer`."
+    ├── IReflexModule.sol "Interface for the `Module`."
+    ├── IReflexProxy.sol "Interface for the `Proxy`."
+    ├── IReflexBase.sol "Interface for the `Base`."
+    └── IReflexState.sol "Interface for the `State`."
 ```
 
 ```mermaid
 graph TD
     subgraph Framework [ ]
 
-    BaseInstaller --> BaseModule
-    BaseDispatcher --> Base
-    BaseModule --> Base
-    Base --> BaseState
-    Base --> BaseProxy
-    BaseState --> BaseConstants
+    ReflexInstaller --> ReflexModule
+    ReflexDispatcher --> ReflexBase
+    ReflexModule --> ReflexBase
+    ReflexBase --> ReflexState
+    ReflexBase --> ReflexProxy
+    ReflexState --> ReflexConstants
     end
 ```
 

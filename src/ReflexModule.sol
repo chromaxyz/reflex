@@ -2,17 +2,17 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBaseModule} from "./interfaces/IBaseModule.sol";
+import {IReflexModule} from "./interfaces/IReflexModule.sol";
 
 // Sources
-import {Base} from "./Base.sol";
+import {ReflexBase} from "./ReflexBase.sol";
 
 /**
- * @title Base Module
+ * @title Reflex Module
  * @dev Execution takes place within the Dispatcher's storage context.
  * @dev Upgradeable, extendable.
  */
-abstract contract BaseModule is IBaseModule, Base {
+abstract contract ReflexModule is IReflexModule, ReflexBase {
     // ==========
     // Immutables
     // ==========

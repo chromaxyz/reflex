@@ -5,7 +5,7 @@ pragma solidity ^0.8.13;
 import {stdError} from "forge-std/StdError.sol";
 
 // Interfaces
-import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Implementations
 import {ImplementationERC20} from "./implementations/abstracts/ImplementationERC20.sol";
@@ -56,7 +56,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         super.setUp();
 
         tokenHub = new MockImplementationERC20Hub(
-            IBaseModule.ModuleSettings({
+            IReflexModule.ModuleSettings({
                 moduleId: _TOKEN_HUB_MODULE_ID,
                 moduleType: _TOKEN_HUB_MODULE_TYPE,
                 moduleVersion: _TOKEN_HUB_MODULE_VERSION,
@@ -66,7 +66,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         );
 
         token = new MockImplementationERC20(
-            IBaseModule.ModuleSettings({
+            IReflexModule.ModuleSettings({
                 moduleId: _TOKEN_MODULE_ID,
                 moduleType: _TOKEN_MODULE_TYPE,
                 moduleVersion: _TOKEN_MODULE_VERSION,

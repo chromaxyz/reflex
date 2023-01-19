@@ -5,12 +5,12 @@ pragma solidity ^0.8.13;
 import {ImplementationState} from "./ImplementationState.sol";
 
 // Mocks
-import {MockBaseModule} from "../mocks/MockBaseModule.sol";
+import {MockReflexModule} from "../mocks/MockReflexModule.sol";
 
 /**
  * @title Implementation Module
  */
-contract ImplementationModule is MockBaseModule, ImplementationState {
+contract ImplementationModule is MockReflexModule, ImplementationState {
     // ===========
     // Constructor
     // ===========
@@ -18,5 +18,5 @@ contract ImplementationModule is MockBaseModule, ImplementationState {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(ModuleSettings memory moduleSettings_) MockBaseModule(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) MockReflexModule(moduleSettings_) {}
 }

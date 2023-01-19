@@ -2,12 +2,12 @@
 pragma solidity ^0.8.13;
 
 // Sources
-import {Base} from "../../src/Base.sol";
+import {ReflexBase} from "../../src/ReflexBase.sol";
 
 /**
- * @title Mock Base
+ * @title Mock Reflex Base
  */
-contract MockBase is Base {
+contract MockReflexBase is ReflexBase {
     // =======
     // Storage
     // =======
