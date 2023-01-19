@@ -15,9 +15,11 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
     // Error
     // =====
 
-    error FailedToLog();
+    error InvalidProxyAddress();
 
-    error ZeroAddress();
+    error InvalidMessageSender();
+
+    error FailedToLog();
 
     // ===========
     // Constructor
@@ -33,8 +35,8 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
     // ==========
 
     function sentinel() external pure returns (bool) {
-        if (_unpackProxyAddress() == address(0)) revert ZeroAddress();
-        if (_unpackMessageSender() == address(0)) revert ZeroAddress();
+        if (_unpackProxyAddress() == address(0)) revert InvalidProxyAddress();
+        if (_unpackMessageSender() == address(0)) revert InvalidMessageSender();
 
         return true;
     }

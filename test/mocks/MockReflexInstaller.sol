@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 // Sources
 import {ReflexInstaller} from "../../src/ReflexInstaller.sol";
+import {ReflexModule} from "../../src/ReflexModule.sol";
 
 /**
  * @title Mock Reflex Installer
@@ -15,5 +16,5 @@ contract MockReflexInstaller is ReflexInstaller {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(ModuleSettings memory moduleSettings_) ReflexInstaller(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) ReflexModule(moduleSettings_) {}
 }

@@ -14,15 +14,6 @@ import {ReflexModule} from "./ReflexModule.sol";
  * @dev Upgradeable, non-removeable, extendable.
  */
 abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
-    // ===========
-    // Constructor
-    // ===========
-
-    /**
-     * @param moduleSettings_ Module settings.
-     */
-    constructor(ModuleSettings memory moduleSettings_) ReflexModule(moduleSettings_) {}
-
     // ============
     // View methods
     // ============
