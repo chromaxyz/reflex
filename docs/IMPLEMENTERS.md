@@ -36,7 +36,7 @@ This is the most common type of module.
 ```mermaid
 graph TD
   subgraph SingleProxy [ ]
-  ReflexProxy --> Dispatcher
+  Proxy --> Dispatcher
   Dispatcher --> Module["Module Implementation"]
   end
 ```
@@ -49,9 +49,9 @@ It is relatively uncommon that one needs this type of module.
 ```mermaid
 graph TD
   subgraph MultiProxy [ ]
-  Proxy1["ReflexProxy"] --> Dispatcher
-  Proxy2["ReflexProxy"] --> Dispatcher
-  Proxy3["ReflexProxy"] --> Dispatcher
+  Proxy1["Proxy"] --> Dispatcher
+  Proxy2["Proxy"] --> Dispatcher
+  Proxy3["Proxy"] --> Dispatcher
   Dispatcher --> Module["Module Implementation"]
   end
 ```
@@ -92,7 +92,7 @@ Proxies are non-upgradeable contracts that have two jobs:
 Although proxies themselves are non-upgradeable, they integrate with Reflex's module system, which does allow for upgrades.
 
 Modules cannot be called directly. Instead, they must be invoked through a proxy.
-By default, all proxies are implemented by the same code: [src/internals/ReflexProxy.sol](../src/internals/ReflexProxy.sol). This is a very simple contract that forwards its requests to the `Dispatcher`, along with the original `msg.sender`. The call is done with a normal `call()`, so the execution takes place within the `Dispatcher` contract's storage context, not the proxy's.
+By default, all proxies are implemented by the same code: [src/ReflexProxy.sol](../src/ReflexProxy.sol). This is a very simple contract that forwards its requests to the `Dispatcher`, along with the original `msg.sender`. The call is done with a normal `call()`, so the execution takes place within the `Dispatcher` contract's storage context, not the proxy's.
 
 Proxies contain the bare minimum amount of logic required for forwarding. This is because they are not upgradeable. They should ideally be as optimized as possible so as to minimise gas costs since many of them will be deployed.
 
@@ -118,7 +118,7 @@ In the `dispatch()` method, the `Dispatcher` contract looks up its view of `msg.
 
 The presumed proxy address is then looked up in the internal `_relations` mapping, which must exist otherwise the call is reverted. It is determined to exist by having a non-zero entry in the `moduleId` field (modules must have non-zero IDs, see section [Numerical limitations](#numerical-limitations)).
 
-The only way a proxy address can be added to internal `_relations` mapping is if the `Dispatcher` contract itself creates it (using the `_createProxy` function in [src/internals/ReflexBase.sol](../src/internals/ReflexBase.sol)).
+The only way a proxy address can be added to internal `_relations` mapping is if the `Dispatcher` contract itself creates it (using the `_createProxy` function in [src/ReflexBase.sol](../src/ReflexBase.sol)).
 
 In the case of a `single-proxy module`, the same storage slot in the internal `_relations` mapping will also contain an address for the module's implementation.
 
