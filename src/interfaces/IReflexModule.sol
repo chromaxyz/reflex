@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexBase, IReflexBase} from "./IReflexBase.sol";
+import {IReflexBase, TReflexBase} from "./IReflexBase.sol";
 
 /**
  * @title Reflex Module Test Interface

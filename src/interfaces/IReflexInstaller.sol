@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexModule, IReflexModule} from "./IReflexModule.sol";
+import {IReflexModule, TReflexModule} from "./IReflexModule.sol";
 
 /**
  * @title Reflex Installer Test Interface
@@ -40,7 +40,7 @@ interface TReflexInstaller is TReflexModule {
 
     event OwnershipTransferStarted(address indexed previousOwner_, address indexed newOwner_);
 
-    event OwnershipTransferred(address indexed user_, address indexed newOwner_);
+    event OwnershipTransferred(address indexed previousOwner_, address indexed newOwner_);
 }
 
 /**

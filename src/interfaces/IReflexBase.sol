@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexState, IReflexState} from "./IReflexState.sol";
+import {IReflexState, TReflexState} from "./IReflexState.sol";
 
 /**
  * @title Reflex Base Test Interface

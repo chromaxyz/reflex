@@ -30,29 +30,29 @@ Impact: Low
 Confidence: Medium
 
 - [ ] ID-2
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L127-L161) has external calls inside a loop: [! IReflexModule(_modules[moduleSettings_.moduleId]).moduleUpgradeable()](../src/ReflexInstaller.sol#L141)
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L118-L152) has external calls inside a loop: [moduleSettings*.moduleVersion <= IReflexModule(\_modules[moduleSettings*.moduleId]).moduleVersion()](../src/ReflexInstaller.sol#L136)
 
-../src/ReflexInstaller.sol#L127-L161
+../src/ReflexInstaller.sol#L118-L152
 
 - [ ] ID-3
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L127-L161) has external calls inside a loop: [moduleSettings*.moduleVersion <= IReflexModule(\_modules[moduleSettings*.moduleId]).moduleVersion()](../src/ReflexInstaller.sol#L145)
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L118-L152) has external calls inside a loop: [! IReflexModule(_modules[moduleSettings_.moduleId]).moduleUpgradeable()](../src/ReflexInstaller.sol#L132)
 
-../src/ReflexInstaller.sol#L127-L161
+../src/ReflexInstaller.sol#L118-L152
 
 - [ ] ID-4
-      [ReflexInstaller.addModules(address[])](../src/ReflexInstaller.sol#L93-L116) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L99)
+      [ReflexInstaller.removeModules(address[])](../src/ReflexInstaller.sol#L163-L193) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L169)
 
-../src/ReflexInstaller.sol#L93-L116
+../src/ReflexInstaller.sol#L163-L193
 
 - [ ] ID-5
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L127-L161) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L135)
+      [ReflexInstaller.addModules(address[])](../src/ReflexInstaller.sol#L84-L107) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L90)
 
-../src/ReflexInstaller.sol#L127-L161
+../src/ReflexInstaller.sol#L84-L107
 
 - [ ] ID-6
-      [ReflexInstaller.removeModules(address[])](../src/ReflexInstaller.sol#L172-L202) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L178)
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L118-L152) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L126)
 
-../src/ReflexInstaller.sol#L172-L202
+../src/ReflexInstaller.sol#L118-L152
 
 ## assembly
 
@@ -60,9 +60,9 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-7
-      [ReflexDispatcher.dispatch()](../src/ReflexDispatcher.sol#L73-L121) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L90-L120)
+      [ReflexDispatcher.dispatch()](../src/ReflexDispatcher.sol#L71-L119) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L88-L118)
 
-../src/ReflexDispatcher.sol#L73-L121
+../src/ReflexDispatcher.sol#L71-L119
 
 - [ ] ID-8
       [ReflexBase.\_unpackProxyAddress()](../src/ReflexBase.sol#L101-L106) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L103-L105)
@@ -100,19 +100,19 @@ Impact: Informational
 Confidence: Medium
 
 - [ ] ID-14
-      [ReflexInstaller.removeModules(address[])](../src/ReflexInstaller.sol#L172-L202) has costly operations inside a loop: - [delete \_relations[proxyAddress]](../src/ReflexInstaller.sol#L186)
+      [ReflexInstaller.removeModules(address[])](../src/ReflexInstaller.sol#L163-L193) has costly operations inside a loop: - [delete _proxies[moduleSettings_.moduleId]](../src/ReflexInstaller.sol#L183)
 
-../src/ReflexInstaller.sol#L172-L202
+../src/ReflexInstaller.sol#L163-L193
 
 - [ ] ID-15
-      [ReflexInstaller.removeModules(address[])](../src/ReflexInstaller.sol#L172-L202) has costly operations inside a loop: - [delete _modules[moduleSettings_.moduleId]](../src/ReflexInstaller.sol#L194)
+      [ReflexInstaller.removeModules(address[])](../src/ReflexInstaller.sol#L163-L193) has costly operations inside a loop: - [delete _modules[moduleSettings_.moduleId]](../src/ReflexInstaller.sol#L185)
 
-../src/ReflexInstaller.sol#L172-L202
+../src/ReflexInstaller.sol#L163-L193
 
 - [ ] ID-16
-      [ReflexInstaller.removeModules(address[])](../src/ReflexInstaller.sol#L172-L202) has costly operations inside a loop: - [delete _proxies[moduleSettings_.moduleId]](../src/ReflexInstaller.sol#L192)
+      [ReflexInstaller.removeModules(address[])](../src/ReflexInstaller.sol#L163-L193) has costly operations inside a loop: - [delete \_relations[proxyAddress]](../src/ReflexInstaller.sol#L177)
 
-../src/ReflexInstaller.sol#L172-L202
+../src/ReflexInstaller.sol#L163-L193
 
 ## low-level-calls
 
