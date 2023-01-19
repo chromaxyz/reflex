@@ -20,7 +20,7 @@ interface TReflexModule is TReflexBase {
 /**
  * @title Reflex Module Interface
  */
-interface IReflexModule is IBase, TReflexModule {
+interface IReflexModule is IReflexBase, TReflexModule {
     // =======
     // Structs
     // =======

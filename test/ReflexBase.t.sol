@@ -11,9 +11,9 @@ import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 import {MockReflexBase, ReentrancyAttack} from "./mocks/MockReflexBase.sol";
 
 /**
- * @title Base Test
+ * @title Reflex Base Test
  */
-contract BaseTest is TReflexBase, ReflexFixture {
+contract ReflexBaseTest is TReflexBase, ReflexFixture {
     // =======
     // Storage
     // =======
