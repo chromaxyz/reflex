@@ -53,7 +53,7 @@ abstract contract ImplementationFixture is ReflexConstants, Harness {
         installerProxy = ImplementationInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
     }
 
-    // =========s=
+    // ==========
     // Test stubs
     // ==========
 
