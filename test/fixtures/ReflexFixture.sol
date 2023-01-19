@@ -25,8 +25,9 @@ abstract contract ReflexFixture is ReflexConstants, DeployConstants, Harness {
     // Storage
     // =======
 
-    MockReflexInstaller public installer;
     MockReflexDispatcher public dispatcher;
+
+    MockReflexInstaller public installer;
     MockReflexInstaller public installerProxy;
 
     // =====

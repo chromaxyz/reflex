@@ -29,8 +29,9 @@ abstract contract ImplementationFixture is ReflexConstants, Harness {
     // Storage
     // =======
 
-    ImplementationInstaller public installer;
     ImplementationDispatcher public dispatcher;
+
+    ImplementationInstaller public installer;
     ImplementationInstaller public installerProxy;
 
     // =====
