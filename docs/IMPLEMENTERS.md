@@ -100,7 +100,7 @@ The `Dispatcher` contract ensures that all requests to it are from a known trust
 
 The only other thing that proxies do is to accept messages from the `Dispatcher` that instruct them to issue log messages as mentioned above.
 
-One important feature provided by the proxy/module system is that a single storage context (i.e. the `Dispatcher` contract) can have multiple possibly-colliding function ABI namespaces, which is not possible with systems like a conventional upgradeable proxy, or the [EIP-2535 Diamond, Multi-Facet Proxy](https://eips.ethereum.org/EIPS/eip-2535) standard. An example of how this works in practice can be found in [test/implementations/abstracts/ImplementationERC20.sol](../test/implementations/abstracts/ImplementationERC20.sol), [test/ImplementationERC20.t.sol](../test/ImplementationERC20.t.sol) and [test/ImplementationModuleMultiProxy.t.sol](../test/ImplementationERC20.t.sol).
+One important feature provided by the proxy/module system is that a single storage context (i.e. the `Dispatcher` contract) can have multiple possibly-colliding function ABI namespaces, which is not possible with systems like a conventional upgradeable proxy, or the [EIP-2535 Diamond, Multi-Facet Proxy](https://eips.ethereum.org/EIPS/eip-2535) standard. An example of how this works in practice can be found in [test/implementations/abstracts/ImplementationERC20.sol](../test/implementations/abstracts/ImplementationERC20.sol), [test/ImplementationERC20.t.sol](../test/ImplementationERC20.t.sol) and [test/ImplementationModuleMultiProxy.t.sol](../test/ImplementationModuleMultiProxy.t.sol).
 
 ### Proxy => Dispatcher
 
