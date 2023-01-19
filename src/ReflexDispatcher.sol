@@ -25,8 +25,8 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
 
         if (owner_ == address(0)) revert InvalidOwner();
-        if (installerModule_ == address(0)) revert InvalidInstallerModuleAddress();
-        if (IReflexInstaller(installerModule_).moduleId() != _MODULE_ID_INSTALLER) revert InvalidInstallerModuleId();
+        if (installerModule_ == address(0)) revert InvalidModuleAddress();
+        if (IReflexInstaller(installerModule_).moduleId() != _MODULE_ID_INSTALLER) revert InvalidModuleId();
 
         _owner = owner_;
 

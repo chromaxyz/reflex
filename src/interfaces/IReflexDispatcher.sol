@@ -16,9 +16,7 @@ interface TReflexDispatcher is TReflexBase {
 
     error InvalidOwner();
 
-    error InvalidInstallerModuleAddress();
-
-    error InvalidInstallerModuleId();
+    error InvalidModuleAddress();
 
     error MessageTooShort();
 
