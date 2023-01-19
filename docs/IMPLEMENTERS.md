@@ -183,9 +183,10 @@ In order to use the Reflex framework there are multiple abstract contracts one h
 pragma solidity ^0.8.13;
 
 // Vendor
-import { ReflexInstaller } from "reflex/ReflexInstaller.sol";
+import { ReflexBase } from "reflex/ReflexBase.sol";
 import { ReflexConstants } from "reflex/ReflexConstants.sol";
 import { ReflexDispatcher } from "reflex/ReflexDispatcher.sol";
+import { ReflexInstaller } from "reflex/ReflexInstaller.sol";
 import { ReflexModule } from "reflex/ReflexModule.sol";
 import { ReflexState } from "reflex/ReflexState.sol";
 
@@ -197,7 +198,11 @@ abstract contract State is ReflexState, Constants {
   // ...
 }
 
-contract Installer is ReflexInstaller, State {
+abstract contract Base is ReflexBase, State {
+  // ...
+}
+
+abstract contract Module is ReflexModule, Base {
   /**
    * @param moduleSettings_ Module settings.
    */
@@ -206,21 +211,24 @@ contract Installer is ReflexInstaller, State {
   // ...
 }
 
-contract Dispatcher is ReflexDispatcher, State {
+contract Installer is ReflexInstaller, Module {
+  /**
+   * @param moduleSettings_ Module settings.
+   */
+  constructor(ModuleSettings memory moduleSettings_) Module(moduleSettings_) {}
+
+  // ...
+}
+
+contract Dispatcher is ReflexDispatcher, Base {
   /**
    * @param owner_ Protocol owner.
    * @param installerModule_ Installer module address.
    */
-  constructor(address owner_, address installerModule_) {}
-
-  // ...
-}
-
-contract Module is ReflexModule, State {
-  /**
-   * @param moduleSettings_ Module settings.
-   */
-  constructor(ModuleSettings memory moduleSettings_) ReflexModule(moduleSettings_) {}
+  constructor(
+    address owner_,
+    address installerModule_
+  ) ReflexDispatcher(owner_, installerModule_) {}
 
   // ...
 }
@@ -232,23 +240,16 @@ As a diagram:
 ```mermaid
 graph TD
     subgraph Application [ ]
-    Dispatcher --> State
-    Installer --> State
-    Module --> State
-    State --> Constants
-    end
-
-    subgraph Framework [ ]
     Dispatcher --> ReflexDispatcher
+    Dispatcher --> Base
     Installer --> ReflexInstaller
+    Installer --> Module
     Module --> ReflexModule
-    ReflexInstaller --> ReflexModule
-    ReflexDispatcher --> ReflexBase
-    ReflexModule --> ReflexBase
-    ReflexBase --> ReflexProxy
-    ReflexBase --> ReflexState
-    ReflexState --> ReflexConstants
+    Module --> Base
+    Base --> ReflexBase
+    Base --> State
     State --> ReflexState
+    State --> Constants
     Constants --> ReflexConstants
     end
 ```
