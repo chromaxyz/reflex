@@ -2,9 +2,9 @@
 pragma solidity ^0.8.13;
 
 /**
- * @title Base Proxy Test Interface
+ * @title Reflex Proxy Test Interface
  */
-interface TBaseProxy {
+interface TReflexProxy {
     // ======
     // Errors
     // ======
@@ -13,9 +13,9 @@ interface TBaseProxy {
 }
 
 /**
- * @title Base Proxy Interface
+ * @title Reflex Proxy Interface
  */
-interface IBaseProxy is TBaseProxy {
+interface IReflexProxy is TReflexProxy {
     // =======
     // Methods
     // =======

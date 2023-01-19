@@ -2,19 +2,19 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TBaseInstaller} from "../src/interfaces/IBaseInstaller.sol";
-import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {TReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
+import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
-import {BaseFixture} from "./fixtures/BaseFixture.sol";
+import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
 // Mocks
-import {MockBaseModule} from "./mocks/MockBaseModule.sol";
+import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 
 /**
- * @title Base Installer Test
+ * @title Reflex Installer Test
  */
-contract BaseInstallerTest is TBaseInstaller, BaseFixture {
+contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // =========
     // Constants
     // =========
@@ -70,17 +70,17 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // Storage
     // =======
 
-    MockBaseModule public singleModuleV1;
-    MockBaseModule public singleModuleV2;
-    MockBaseModule public singleModuleV3;
+    MockReflexModule public singleModuleV1;
+    MockReflexModule public singleModuleV2;
+    MockReflexModule public singleModuleV3;
 
-    MockBaseModule public multiModuleV1;
-    MockBaseModule public multiModuleV2;
-    MockBaseModule public multiModuleV3;
+    MockReflexModule public multiModuleV1;
+    MockReflexModule public multiModuleV2;
+    MockReflexModule public multiModuleV3;
 
-    MockBaseModule public internalModuleV1;
-    MockBaseModule public internalModuleV2;
-    MockBaseModule public internalModuleV3;
+    MockReflexModule public internalModuleV1;
+    MockReflexModule public internalModuleV2;
+    MockReflexModule public internalModuleV3;
 
     // =====
     // Setup
@@ -95,8 +95,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         // - V3 is the next version, not upgradeable or removeable.
         // - V4 is never used, expected to throw.
 
-        singleModuleV1 = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        singleModuleV1 = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION_V1,
@@ -105,8 +105,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
             })
         );
 
-        singleModuleV2 = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        singleModuleV2 = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION_V2,
@@ -115,8 +115,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
             })
         );
 
-        singleModuleV3 = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        singleModuleV3 = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION_V3,
@@ -125,8 +125,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
             })
         );
 
-        multiModuleV1 = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        multiModuleV1 = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
                 moduleVersion: _MODULE_MULTI_VERSION_V1,
@@ -135,8 +135,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
             })
         );
 
-        multiModuleV2 = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        multiModuleV2 = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
                 moduleVersion: _MODULE_MULTI_VERSION_V2,
@@ -145,8 +145,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
             })
         );
 
-        multiModuleV3 = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        multiModuleV3 = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
                 moduleVersion: _MODULE_MULTI_VERSION_V3,
@@ -155,8 +155,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
             })
         );
 
-        internalModuleV1 = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        internalModuleV1 = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
                 moduleVersion: _MODULE_INTERNAL_VERSION_V1,
@@ -165,8 +165,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
             })
         );
 
-        internalModuleV2 = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        internalModuleV2 = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
                 moduleVersion: _MODULE_INTERNAL_VERSION_V2,
@@ -175,8 +175,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
             })
         );
 
-        internalModuleV3 = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        internalModuleV3 = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
                 moduleVersion: _MODULE_INTERNAL_VERSION_V3,
@@ -357,8 +357,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testRevertUpgradeModulesModuleNonexistent() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(
-            new MockBaseModule(
-                IBaseModule.ModuleSettings({
+            new MockReflexModule(
+                IReflexModule.ModuleSettings({
                     moduleId: 777,
                     moduleType: _MODULE_SINGLE_TYPE,
                     moduleVersion: 777,
@@ -391,8 +391,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testRevertRemoveModulesModuleNonexistent() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(
-            new MockBaseModule(
-                IBaseModule.ModuleSettings({
+            new MockReflexModule(
+                IReflexModule.ModuleSettings({
                     moduleId: 777,
                     moduleType: _MODULE_SINGLE_TYPE,
                     moduleVersion: 777,
@@ -439,7 +439,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testRevertAddModulesExistentSingleProxy() external {
         _addModule(singleModuleV1, _VALID);
 
-        _addModule(singleModuleV1, TBaseInstaller.ModuleExistent.selector);
+        _addModule(singleModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
     function testUpgradeModulesSingleProxy() external {
@@ -473,7 +473,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
 
-        _upgradeModule(singleModuleV1, TBaseInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(singleModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
     function testRevertUpgradeModulesNonUpgradeableSingleProxy() external {
@@ -482,8 +482,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         _upgradeModule(singleModuleV3, _VALID);
 
         _upgradeModule(
-            new MockBaseModule(
-                IBaseModule.ModuleSettings({
+            new MockReflexModule(
+                IReflexModule.ModuleSettings({
                     moduleId: _MODULE_SINGLE_ID,
                     moduleType: _MODULE_SINGLE_TYPE,
                     moduleVersion: _MODULE_SINGLE_VERSION_V4,
@@ -491,7 +491,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                     moduleRemoveable: _MODULE_SINGLE_REMOVEABLE_V4
                 })
             ),
-            TBaseInstaller.ModuleNotUpgradeable.selector
+            TReflexInstaller.ModuleNotUpgradeable.selector
         );
     }
 
@@ -501,8 +501,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         _upgradeModule(singleModuleV3, _VALID);
 
         _removeModule(
-            new MockBaseModule(
-                IBaseModule.ModuleSettings({
+            new MockReflexModule(
+                IReflexModule.ModuleSettings({
                     moduleId: _MODULE_SINGLE_ID,
                     moduleType: _MODULE_SINGLE_TYPE,
                     moduleVersion: _MODULE_SINGLE_VERSION_V4,
@@ -510,7 +510,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                     moduleRemoveable: _MODULE_SINGLE_REMOVEABLE_V4
                 })
             ),
-            TBaseInstaller.ModuleNotRemoveable.selector
+            TReflexInstaller.ModuleNotRemoveable.selector
         );
     }
 
@@ -531,7 +531,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testRevertAddModulesExistentMultiProxy() external {
         _addModule(multiModuleV1, _VALID);
 
-        _addModule(multiModuleV1, TBaseInstaller.ModuleExistent.selector);
+        _addModule(multiModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
     function testUpgradeModulesMultiProxy() external {
@@ -564,7 +564,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
 
-        _upgradeModule(multiModuleV1, TBaseInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(multiModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
     function testRevertUpgradeModulesNonUpgradeableMultiProxy() external {
@@ -573,8 +573,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         _upgradeModule(multiModuleV3, _VALID);
 
         _upgradeModule(
-            new MockBaseModule(
-                IBaseModule.ModuleSettings({
+            new MockReflexModule(
+                IReflexModule.ModuleSettings({
                     moduleId: _MODULE_MULTI_ID,
                     moduleType: _MODULE_MULTI_TYPE,
                     moduleVersion: _MODULE_MULTI_VERSION_V4,
@@ -582,7 +582,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                     moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V4
                 })
             ),
-            TBaseInstaller.ModuleNotUpgradeable.selector
+            TReflexInstaller.ModuleNotUpgradeable.selector
         );
     }
 
@@ -592,8 +592,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         _upgradeModule(multiModuleV3, _VALID);
 
         _removeModule(
-            new MockBaseModule(
-                IBaseModule.ModuleSettings({
+            new MockReflexModule(
+                IReflexModule.ModuleSettings({
                     moduleId: _MODULE_MULTI_ID,
                     moduleType: _MODULE_MULTI_TYPE,
                     moduleVersion: _MODULE_MULTI_VERSION_V4,
@@ -601,7 +601,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                     moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V4
                 })
             ),
-            TBaseInstaller.ModuleNotRemoveable.selector
+            TReflexInstaller.ModuleNotRemoveable.selector
         );
     }
 
@@ -618,7 +618,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     function testRevertAddModulesExistentInternal() external {
         _addModule(internalModuleV1, _VALID);
 
-        _addModule(internalModuleV1, TBaseInstaller.ModuleExistent.selector);
+        _addModule(internalModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
     function testUpgradeModulesInternal() external {
@@ -651,7 +651,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         _addModule(internalModuleV1, _VALID);
         _upgradeModule(internalModuleV2, _VALID);
 
-        _upgradeModule(internalModuleV1, TBaseInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(internalModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
     function testRevertUpgradeModulesNonUpgradeableInternal() external {
@@ -660,8 +660,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         _upgradeModule(internalModuleV3, _VALID);
 
         _upgradeModule(
-            new MockBaseModule(
-                IBaseModule.ModuleSettings({
+            new MockReflexModule(
+                IReflexModule.ModuleSettings({
                     moduleId: _MODULE_INTERNAL_ID,
                     moduleType: _MODULE_INTERNAL_TYPE,
                     moduleVersion: _MODULE_INTERNAL_VERSION_V4,
@@ -669,7 +669,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                     moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V4
                 })
             ),
-            TBaseInstaller.ModuleNotUpgradeable.selector
+            TReflexInstaller.ModuleNotUpgradeable.selector
         );
     }
 
@@ -679,8 +679,8 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         _upgradeModule(internalModuleV3, _VALID);
 
         _removeModule(
-            new MockBaseModule(
-                IBaseModule.ModuleSettings({
+            new MockReflexModule(
+                IReflexModule.ModuleSettings({
                     moduleId: _MODULE_INTERNAL_ID,
                     moduleType: _MODULE_INTERNAL_TYPE,
                     moduleVersion: _MODULE_INTERNAL_VERSION_V4,
@@ -688,7 +688,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
                     moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V4
                 })
             ),
-            TBaseInstaller.ModuleNotRemoveable.selector
+            TReflexInstaller.ModuleNotRemoveable.selector
         );
     }
 
@@ -696,7 +696,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
     // Utilities
     // =========
 
-    function _addModule(IBaseModule module_, bytes4 selector_) internal {
+    function _addModule(IReflexModule module_, bytes4 selector_) internal {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(module_);
 
@@ -710,7 +710,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         installerProxy.addModules(moduleAddresses);
     }
 
-    function _upgradeModule(IBaseModule module_, bytes4 selector_) internal {
+    function _upgradeModule(IReflexModule module_, bytes4 selector_) internal {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(module_);
 
@@ -724,7 +724,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
         installerProxy.upgradeModules(moduleAddresses);
     }
 
-    function _removeModule(IBaseModule module_, bytes4 selector_) internal {
+    function _removeModule(IReflexModule module_, bytes4 selector_) internal {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(module_);
 
@@ -732,7 +732,7 @@ contract BaseInstallerTest is TBaseInstaller, BaseFixture {
             vm.expectEmit(true, true, false, false);
             emit ModuleRemoved(module_.moduleId(), address(module_), module_.moduleVersion());
         } else {
-            vm.expectRevert(abi.encodeWithSelector(TBaseInstaller.ModuleNotRemoveable.selector, module_.moduleId()));
+            vm.expectRevert(abi.encodeWithSelector(TReflexInstaller.ModuleNotRemoveable.selector, module_.moduleId()));
         }
 
         installerProxy.removeModules(moduleAddresses);

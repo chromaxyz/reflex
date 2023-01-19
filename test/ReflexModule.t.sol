@@ -2,18 +2,18 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBaseModule, TBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IReflexModule, TReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
-import {BaseFixture} from "./fixtures/BaseFixture.sol";
+import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
 // Mocks
-import {MockBaseModule} from "./mocks/MockBaseModule.sol";
+import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 
 /**
- * @title Base Module Test
+ * @title Reflex Module Test
  */
-contract BaseModuleTest is TBaseModule, BaseFixture {
+contract ReflexModuleTest is TReflexModule, ReflexFixture {
     // =========
     // Constants
     // =========
@@ -33,8 +33,8 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
     // Storage
     // =======
 
-    MockBaseModule public module;
-    MockBaseModule public moduleProxy;
+    MockReflexModule public module;
+    MockReflexModule public moduleProxy;
 
     // =====
     // Setup
@@ -49,8 +49,8 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
     // =====
 
     function testModuleSettings() external {
-        module = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        module = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_VALID_ID,
                 moduleType: _MODULE_VALID_TYPE_SINGLE,
                 moduleVersion: _MODULE_VALID_VERSION,
@@ -71,8 +71,8 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
 
     function testRevertInvalidModuleIdZeroValue() external {
         vm.expectRevert(InvalidModuleId.selector);
-        module = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        module = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INVALID_ID,
                 moduleType: _MODULE_VALID_TYPE_SINGLE,
                 moduleVersion: _MODULE_VALID_VERSION,
@@ -84,8 +84,8 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
 
     function testRevertInvalidModuleTypeZeroValue() external {
         vm.expectRevert(InvalidModuleType.selector);
-        module = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        module = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_VALID_ID,
                 moduleType: _MODULE_INVALID_TYPE_ZERO,
                 moduleVersion: _MODULE_VALID_VERSION,
@@ -97,8 +97,8 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
 
     function testRevertInvalidModuleTypeOverflowValue() external {
         vm.expectRevert(InvalidModuleType.selector);
-        module = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        module = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_VALID_ID,
                 moduleType: _MODULE_INVALID_TYPE,
                 moduleVersion: _MODULE_VALID_VERSION,
@@ -110,8 +110,8 @@ contract BaseModuleTest is TBaseModule, BaseFixture {
 
     function testRevertInvalidModuleVersionZeroValue() external {
         vm.expectRevert(InvalidModuleVersion.selector);
-        module = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        module = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_VALID_ID,
                 moduleType: _MODULE_VALID_TYPE_SINGLE,
                 moduleVersion: _MODULE_INVALID_VERSION,

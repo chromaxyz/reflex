@@ -2,12 +2,12 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TBase, IBase} from "./IBase.sol";
+import {TReflexBase, IReflexBase} from "./IReflexBase.sol";
 
 /**
- * @title Base Dispatcher Test Interface
+ * @title Reflex Dispatcher Test Interface
  */
-interface TBaseDispatcher is TBase {
+interface TReflexDispatcher is TReflexBase {
     // ======
     // Errors
     // ======
@@ -32,9 +32,9 @@ interface TBaseDispatcher is TBase {
 }
 
 /**
- * @title Base Dispatcher Interface
+ * @title Reflex Dispatcher Interface
  */
-interface IBaseDispatcher is IBase, TBaseDispatcher {
+interface IReflexDispatcher is IReflexBase, TReflexDispatcher {
     // =======
     // Methods
     // =======

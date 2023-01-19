@@ -30,13 +30,13 @@ log $GREEN "Creating Mythril report"
 forge build
 
 # Flatten select files
-forge flatten src/BaseProxy.sol --output flattened/BaseProxy.sol
-forge flatten test/mocks/MockBaseDispatcher.sol --output flattened/MockBaseDispatcher.sol
+forge flatten src/ReflexProxy.sol --output flattened/ReflexProxy.sol
+forge flatten test/mocks/MockReflexDispatcher.sol --output flattened/MockReflexDispatcher.sol
 forge flatten test/implementations/ImplementationDispatcher.sol --output flattened/ImplementationDispatcher.sol
 
 # Analyze flattened files
-myth -v 4 analyze flattened/BaseProxy.sol
-myth -v 4 analyze flattened/MockBaseDispatcher.sol
+myth -v 4 analyze flattened/ReflexProxy.sol
+myth -v 4 analyze flattened/MockReflexDispatcher.sol
 myth -v 4 analyze flattened/ImplementationDispatcher.sol
 
 log $GREEN "Done"

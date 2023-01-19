@@ -2,12 +2,12 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TBaseState, IBaseState} from "./IBaseState.sol";
+import {TReflexState, IReflexState} from "./IReflexState.sol";
 
 /**
- * @title Base Test Interface
+ * @title Reflex Base Test Interface
  */
-interface TBase is TBaseState {
+interface TReflexBase is TReflexState {
     // ======
     // Errors
     // ======
@@ -30,8 +30,8 @@ interface TBase is TBaseState {
 }
 
 /**
- * @title Base Interface
+ * @title Reflex Base Interface
  */
-interface IBase is IBaseState, TBase {
+interface IReflexBase is IReflexState, TReflexBase {
 
 }

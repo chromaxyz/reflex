@@ -2,9 +2,9 @@
 pragma solidity ^0.8.13;
 
 /**
- * @title Base State Test Interface
+ * @title Reflex State Test Interface
  */
-interface TBaseState {
+interface TReflexState {
     // =====
     // Types
     // =====
@@ -33,8 +33,8 @@ interface TBaseState {
 }
 
 /**
- * @title Base State Interface
+ * @title Reflex State Interface
  */
-interface IBaseState is TBaseState {
+interface IReflexState is TReflexState {
 
 }

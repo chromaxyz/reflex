@@ -2,15 +2,15 @@
 pragma solidity ^0.8.13;
 
 // Sources
-import {BaseModule} from "../../src/BaseModule.sol";
+import {ReflexModule} from "../../src/ReflexModule.sol";
 
 // Mocks
-import {MockBase} from "./MockBase.sol";
+import {MockReflexBase} from "./MockReflexBase.sol";
 
 /**
- * @title Mock Base Module
+ * @title Mock Reflex Module
  */
-contract MockBaseModule is BaseModule, MockBase {
+contract MockReflexModule is ReflexModule, MockReflexBase {
     // =====
     // Error
     // =====
@@ -26,7 +26,7 @@ contract MockBaseModule is BaseModule, MockBase {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(ModuleSettings memory moduleSettings_) BaseModule(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) ReflexModule(moduleSettings_) {}
 
     // ==========
     // Test stubs

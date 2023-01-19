@@ -2,13 +2,13 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBaseState} from "./interfaces/IBaseState.sol";
+import {IReflexState} from "./interfaces/IReflexState.sol";
 
 // Sources
-import {BaseConstants} from "./BaseConstants.sol";
+import {ReflexConstants} from "./ReflexConstants.sol";
 
 /**
- * @title Base State
+ * @title Reflex State
  * @dev Append-only extendable, only after __gap: first 50 slots (0-49) are reserved!
  *
  * @dev Storage layout:
@@ -19,10 +19,10 @@ import {BaseConstants} from "./BaseConstants.sol";
  * | _pendingOwner   | address                                             | 2    | 0      | 20    |
  * | _modules        | mapping(uint32 => address)                          | 3    | 0      | 32    |
  * | _proxies        | mapping(uint32 => address)                          | 4    | 0      | 32    |
- * | _relations      | mapping(address => struct TBaseState.TrustRelation) | 5    | 0      | 32    |
+ * | _relations      | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    |
  * | __gap           | uint256[44]                                         | 6    | 0      | 1408  |
  */
-abstract contract BaseState is IBaseState, BaseConstants {
+abstract contract ReflexState is IReflexState, ReflexConstants {
     // =======
     // Storage
     // =======

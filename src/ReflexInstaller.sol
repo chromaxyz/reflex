@@ -2,18 +2,18 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBaseInstaller} from "./interfaces/IBaseInstaller.sol";
-import {IBaseModule} from "./interfaces/IBaseModule.sol";
+import {IReflexInstaller} from "./interfaces/IReflexInstaller.sol";
+import {IReflexModule} from "./interfaces/IReflexModule.sol";
 
 // Sources
-import {BaseModule} from "./BaseModule.sol";
+import {ReflexModule} from "./ReflexModule.sol";
 
 /**
- * @title Base Installer
+ * @title Reflex Installer
  * @dev Execution takes place within the Dispatcher's storage context.
  * @dev Upgradeable, non-removeable, extendable.
  */
-abstract contract BaseInstaller is IBaseInstaller, BaseModule {
+abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     // ===========
     // Constructor
     // ===========
@@ -21,7 +21,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(ModuleSettings memory moduleSettings_) BaseModule(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) ReflexModule(moduleSettings_) {}
 
     // ============
     // View methods
@@ -96,7 +96,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
-            IBaseModule.ModuleSettings memory moduleSettings_ = IBaseModule(moduleAddress).moduleSettings();
+            IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
 
             if (_modules[moduleSettings_.moduleId] != address(0)) revert ModuleExistent(moduleSettings_.moduleId);
 
@@ -132,17 +132,17 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
 
             // Check against existing module
 
-            IBaseModule.ModuleSettings memory moduleSettings_ = IBaseModule(moduleAddress).moduleSettings();
+            IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
 
             // Verify that the module currently exists.
             if (_modules[moduleSettings_.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings_.moduleId);
 
             // Verify that current module allows for upgrades.
-            if (!IBaseModule(_modules[moduleSettings_.moduleId]).moduleUpgradeable())
+            if (!IReflexModule(_modules[moduleSettings_.moduleId]).moduleUpgradeable())
                 revert ModuleNotUpgradeable(moduleSettings_.moduleId);
 
             // Verify that the next module version is greater than the current module version.
-            if (moduleSettings_.moduleVersion <= IBaseModule(_modules[moduleSettings_.moduleId]).moduleVersion())
+            if (moduleSettings_.moduleVersion <= IReflexModule(_modules[moduleSettings_.moduleId]).moduleVersion())
                 revert ModuleInvalidVersion(moduleSettings_.moduleId);
 
             _modules[moduleSettings_.moduleId] = moduleAddress;
@@ -175,7 +175,7 @@ abstract contract BaseInstaller is IBaseInstaller, BaseModule {
         for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
-            IBaseModule.ModuleSettings memory moduleSettings_ = IBaseModule(moduleAddress).moduleSettings();
+            IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
 
             if (_modules[moduleSettings_.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings_.moduleId);
 

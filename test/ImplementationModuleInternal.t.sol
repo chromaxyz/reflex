@@ -2,13 +2,13 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
+import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {MockBaseModule} from "./mocks/MockBaseModule.sol";
+import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 import {MockImplementationInternalModule} from "./mocks/MockImplementationInternalModule.sol";
 
 /**
@@ -38,8 +38,8 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     // Storage
     // =======
 
-    MockBaseModule public singleModule;
-    MockBaseModule public singleModuleProxy;
+    MockReflexModule public singleModule;
+    MockReflexModule public singleModuleProxy;
 
     MockImplementationInternalModule public internalModule;
 
@@ -50,8 +50,8 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     function setUp() public virtual override {
         super.setUp();
 
-        singleModule = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        singleModule = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION,
@@ -61,7 +61,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
 
         internalModule = new MockImplementationInternalModule(
-            IBaseModule.ModuleSettings({
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
                 moduleVersion: _MODULE_INTERNAL_VERSION_V1,
@@ -75,7 +75,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         moduleAddresses[1] = address(internalModule);
         installerProxy.addModules(moduleAddresses);
 
-        singleModuleProxy = MockBaseModule(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID));
+        singleModuleProxy = MockReflexModule(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID));
     }
 
     // =====
@@ -156,7 +156,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
 
         internalModule = new MockImplementationInternalModule(
-            IBaseModule.ModuleSettings({
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
                 moduleVersion: _MODULE_INTERNAL_VERSION_V2,

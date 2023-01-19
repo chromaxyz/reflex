@@ -2,14 +2,14 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
-import {IBaseProxy} from "../src/interfaces/IBaseProxy.sol";
+import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {IReflexProxy} from "../src/interfaces/IReflexProxy.sol";
 
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {MockBaseModule} from "./mocks/MockBaseModule.sol";
+import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 
 /**
  * @title Implementation Module Single Proxy Test
@@ -29,8 +29,8 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     // Storage
     // =======
 
-    MockBaseModule public singleModule;
-    MockBaseModule public singleModuleProxy;
+    MockReflexModule public singleModule;
+    MockReflexModule public singleModuleProxy;
 
     // =====
     // Setup
@@ -39,8 +39,8 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     function setUp() public virtual override {
         super.setUp();
 
-        singleModule = new MockBaseModule(
-            IBaseModule.ModuleSettings({
+        singleModule = new MockReflexModule(
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION,
@@ -53,7 +53,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModule);
         installerProxy.addModules(moduleAddresses);
 
-        singleModuleProxy = MockBaseModule(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID));
+        singleModuleProxy = MockReflexModule(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID));
     }
 
     // =====
@@ -62,7 +62,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
 
     function testModuleIdToImplementation() external {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID), address(singleModule));
-        assertEq(IBaseProxy(address(singleModuleProxy)).implementation(), address(singleModule));
+        assertEq(IReflexProxy(address(singleModuleProxy)).implementation(), address(singleModule));
     }
 
     function testModuleIdToProxy() external {

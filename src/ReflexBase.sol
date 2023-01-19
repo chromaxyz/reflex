@@ -2,17 +2,17 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBase} from "./interfaces/IBase.sol";
+import {IReflexBase} from "./interfaces/IReflexBase.sol";
 
 // Sources
-import {BaseProxy} from "./BaseProxy.sol";
-import {BaseState} from "./BaseState.sol";
+import {ReflexProxy} from "./ReflexProxy.sol";
+import {ReflexState} from "./ReflexState.sol";
 
 /**
- * @title Base
+ * @title Reflex Base
  * @dev Upgradeable, extendable.
  */
-abstract contract Base is IBase, BaseState {
+abstract contract ReflexBase is IReflexBase, ReflexState {
     // =========
     // Modifiers
     // =========
@@ -57,7 +57,7 @@ abstract contract Base is IBase, BaseState {
 
         if (_proxies[moduleId_] != address(0)) return _proxies[moduleId_];
 
-        address proxyAddress = address(new BaseProxy(moduleId_));
+        address proxyAddress = address(new ReflexProxy(moduleId_));
 
         if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) _proxies[moduleId_] = proxyAddress;
 

@@ -36,7 +36,7 @@ This is the most common type of module.
 ```mermaid
 graph TD
   subgraph SingleProxy [ ]
-  BaseProxy --> Dispatcher
+  ReflexProxy --> Dispatcher
   Dispatcher --> Module["Module Implementation"]
   end
 ```
@@ -49,9 +49,9 @@ It is relatively uncommon that one needs this type of module.
 ```mermaid
 graph TD
   subgraph MultiProxy [ ]
-  Proxy1["BaseProxy"] --> Dispatcher
-  Proxy2["BaseProxy"] --> Dispatcher
-  Proxy3["BaseProxy"] --> Dispatcher
+  Proxy1["ReflexProxy"] --> Dispatcher
+  Proxy2["ReflexProxy"] --> Dispatcher
+  Proxy3["ReflexProxy"] --> Dispatcher
   Dispatcher --> Module["Module Implementation"]
   end
 ```
@@ -92,7 +92,7 @@ Proxies are non-upgradeable contracts that have two jobs:
 Although proxies themselves are non-upgradeable, they integrate with Reflex's module system, which does allow for upgrades.
 
 Modules cannot be called directly. Instead, they must be invoked through a proxy.
-By default, all proxies are implemented by the same code: [src/internals/BaseProxy.sol](../src/internals/BaseProxy.sol). This is a very simple contract that forwards its requests to the `Dispatcher`, along with the original `msg.sender`. The call is done with a normal `call()`, so the execution takes place within the `Dispatcher` contract's storage context, not the proxy's.
+By default, all proxies are implemented by the same code: [src/internals/ReflexProxy.sol](../src/internals/ReflexProxy.sol). This is a very simple contract that forwards its requests to the `Dispatcher`, along with the original `msg.sender`. The call is done with a normal `call()`, so the execution takes place within the `Dispatcher` contract's storage context, not the proxy's.
 
 Proxies contain the bare minimum amount of logic required for forwarding. This is because they are not upgradeable. They should ideally be as optimized as possible so as to minimise gas costs since many of them will be deployed.
 
@@ -118,7 +118,7 @@ In the `dispatch()` method, the `Dispatcher` contract looks up its view of `msg.
 
 The presumed proxy address is then looked up in the internal `_relations` mapping, which must exist otherwise the call is reverted. It is determined to exist by having a non-zero entry in the `moduleId` field (modules must have non-zero IDs, see section [Numerical limitations](#numerical-limitations)).
 
-The only way a proxy address can be added to internal `_relations` mapping is if the `Dispatcher` contract itself creates it (using the `_createProxy` function in [src/internals/Base.sol](../src/internals/Base.sol)).
+The only way a proxy address can be added to internal `_relations` mapping is if the `Dispatcher` contract itself creates it (using the `_createProxy` function in [src/internals/ReflexBase.sol](../src/internals/ReflexBase.sol)).
 
 In the case of a `single-proxy module`, the same storage slot in the internal `_relations` mapping will also contain an address for the module's implementation.
 
@@ -140,7 +140,7 @@ This data is then sent to the module implementation with `DELEGATECALL`, so the 
 
 The module implementation will unpack the original calldata using the solidity ABI decoder, ignoring the trailing `40 bytes`.
 
-Modules are not allowed to access `msg.sender`. Instead, they should use the `unpackMessageSender()` helper in [src/BaseModule.sol](../src/BaseModule.sol) which will retrieve the message sender from the trailing calldata. When modules need to access the proxy address, there is a composite helper `unpackProxyAddress` which will retrieve the proxy address from the trailing calldata.
+Modules are not allowed to access `msg.sender`. Instead, they should use the `unpackMessageSender()` helper in [src/ReflexModule.sol](../src/ReflexModule.sol) which will retrieve the message sender from the trailing calldata. When modules need to access the proxy address, there is a composite helper `unpackProxyAddress` which will retrieve the proxy address from the trailing calldata.
 
 ### Module => Proxy
 
@@ -183,30 +183,30 @@ In order to use the Reflex framework there are multiple abstract contracts one h
 pragma solidity ^0.8.13;
 
 // Vendor
-import { BaseInstaller } from "reflex/BaseInstaller.sol";
-import { BaseConstants } from "reflex/BaseConstants.sol";
-import { BaseDispatcher } from "reflex/BaseDispatcher.sol";
-import { BaseModule } from "reflex/BaseModule.sol";
-import { BaseState } from "reflex/BaseState.sol";
+import { ReflexInstaller } from "reflex/ReflexInstaller.sol";
+import { ReflexConstants } from "reflex/ReflexConstants.sol";
+import { ReflexDispatcher } from "reflex/ReflexDispatcher.sol";
+import { ReflexModule } from "reflex/ReflexModule.sol";
+import { ReflexState } from "reflex/ReflexState.sol";
 
-abstract contract Constants is BaseConstants {
+abstract contract Constants is ReflexConstants {
   // ...
 }
 
-abstract contract State is BaseState, Constants {
+abstract contract State is ReflexState, Constants {
   // ...
 }
 
-contract Installer is BaseInstaller, State {
+contract Installer is ReflexInstaller, State {
   /**
    * @param moduleSettings_ Module settings.
    */
-  constructor(ModuleSettings memory moduleSettings_) BaseModule(moduleSettings_) {}
+  constructor(ModuleSettings memory moduleSettings_) ReflexModule(moduleSettings_) {}
 
   // ...
 }
 
-contract Dispatcher is BaseDispatcher, State {
+contract Dispatcher is ReflexDispatcher, State {
   /**
    * @param owner_ Protocol owner.
    * @param installerModule_ Installer module address.
@@ -216,11 +216,11 @@ contract Dispatcher is BaseDispatcher, State {
   // ...
 }
 
-contract Module is BaseModule, State {
+contract Module is ReflexModule, State {
   /**
    * @param moduleSettings_ Module settings.
    */
-  constructor(ModuleSettings memory moduleSettings_) BaseModule(moduleSettings_) {}
+  constructor(ModuleSettings memory moduleSettings_) ReflexModule(moduleSettings_) {}
 
   // ...
 }
@@ -239,17 +239,17 @@ graph TD
     end
 
     subgraph Framework [ ]
-    Dispatcher --> BaseDispatcher
-    Installer --> BaseInstaller
-    Module --> BaseModule
-    BaseInstaller --> BaseModule
-    BaseDispatcher --> Base
-    BaseModule --> Base
-    Base --> BaseProxy
-    Base --> BaseState
-    BaseState --> BaseConstants
-    State --> BaseState
-    Constants --> BaseConstants
+    Dispatcher --> ReflexDispatcher
+    Installer --> ReflexInstaller
+    Module --> ReflexModule
+    ReflexInstaller --> ReflexModule
+    ReflexDispatcher --> ReflexBase
+    ReflexModule --> ReflexBase
+    ReflexBase --> ReflexProxy
+    ReflexBase --> ReflexState
+    ReflexState --> ReflexConstants
+    State --> ReflexState
+    Constants --> ReflexConstants
     end
 ```
 

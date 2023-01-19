@@ -2,17 +2,17 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBaseDispatcher} from "./interfaces/IBaseDispatcher.sol";
-import {IBaseInstaller} from "./interfaces/IBaseInstaller.sol";
+import {IReflexDispatcher} from "./interfaces/IReflexDispatcher.sol";
+import {IReflexInstaller} from "./interfaces/IReflexInstaller.sol";
 
 // Sources
-import {Base} from "./Base.sol";
+import {ReflexBase} from "./ReflexBase.sol";
 
 /**
- * @title Base Dispatcher
+ * @title Reflex Dispatcher
  * @dev Non-upgradeable, extendable.
  */
-abstract contract BaseDispatcher is IBaseDispatcher, Base {
+abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
     // ===========
     // Constructor
     // ===========
@@ -26,7 +26,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
 
         if (owner_ == address(0)) revert InvalidOwner();
         if (installerModule_ == address(0)) revert InvalidInstallerModuleAddress();
-        if (IBaseInstaller(installerModule_).moduleId() != _MODULE_ID_INSTALLER) revert InvalidInstallerModuleId();
+        if (IReflexInstaller(installerModule_).moduleId() != _MODULE_ID_INSTALLER) revert InvalidInstallerModuleId();
 
         _owner = owner_;
 
@@ -38,7 +38,7 @@ abstract contract BaseDispatcher is IBaseDispatcher, Base {
         _relations[installerProxy].moduleImplementation = installerModule_;
 
         emit OwnershipTransferred(address(0), owner_);
-        emit ModuleAdded(_MODULE_ID_INSTALLER, installerModule_, IBaseInstaller(installerModule_).moduleVersion());
+        emit ModuleAdded(_MODULE_ID_INSTALLER, installerModule_, IReflexInstaller(installerModule_).moduleVersion());
     }
 
     // ============

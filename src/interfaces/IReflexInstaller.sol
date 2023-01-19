@@ -2,12 +2,12 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TBaseModule, IBaseModule} from "./IBaseModule.sol";
+import {TReflexModule, IReflexModule} from "./IReflexModule.sol";
 
 /**
- * @title Base Installer Test Interface
+ * @title Reflex Installer Test Interface
  */
-interface TBaseInstaller is TBaseModule {
+interface TReflexInstaller is TReflexModule {
     // ======
     // Errors
     // ======
@@ -44,9 +44,9 @@ interface TBaseInstaller is TBaseModule {
 }
 
 /**
- * @title Base Installer Interface
+ * @title Reflex Installer Interface
  */
-interface IBaseInstaller is IBaseModule, TBaseInstaller {
+interface IReflexInstaller is IReflexModule, TReflexInstaller {
     // =======
     // Methods
     // =======

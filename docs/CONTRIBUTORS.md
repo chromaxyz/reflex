@@ -41,7 +41,7 @@ import { Test } from "forge-std/Test.sol";
 
 ## File naming
 
-- Abstract core modules that are meant to be inherited by implementers **must** be prefixed by `Base`.
+- Abstract core modules that are meant to be inherited by implementers **must** be prefixed by `Reflex`.
 
 ## Compiler
 

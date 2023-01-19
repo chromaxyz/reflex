@@ -2,8 +2,8 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IBaseModule} from "../src/interfaces/IBaseModule.sol";
-import {IBaseProxy} from "../src/interfaces/IBaseProxy.sol";
+import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {IReflexProxy} from "../src/interfaces/IReflexProxy.sol";
 
 // Implementations
 import {ImplementationERC20} from "./implementations/abstracts/ImplementationERC20.sol";
@@ -72,7 +72,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         super.setUp();
 
         singleModule = new MockImplementationERC20Hub(
-            IBaseModule.ModuleSettings({
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION,
@@ -82,7 +82,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
 
         multiModuleV1 = new MockImplementationERC20(
-            IBaseModule.ModuleSettings({
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
                 moduleVersion: _MODULE_MULTI_VERSION_V1,
@@ -92,7 +92,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
 
         multiModuleV2 = new MockImplementationERC20(
-            IBaseModule.ModuleSettings({
+            IReflexModule.ModuleSettings({
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
                 moduleVersion: _MODULE_MULTI_VERSION_V2,
@@ -161,9 +161,9 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
 
     function testModuleIdToImplementation() external {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID), address(multiModuleV1));
-        assertEq(IBaseProxy(address(multiModuleProxyA)).implementation(), address(multiModuleV1));
-        assertEq(IBaseProxy(address(multiModuleProxyB)).implementation(), address(multiModuleV1));
-        assertEq(IBaseProxy(address(multiModuleProxyC)).implementation(), address(multiModuleV1));
+        assertEq(IReflexProxy(address(multiModuleProxyA)).implementation(), address(multiModuleV1));
+        assertEq(IReflexProxy(address(multiModuleProxyB)).implementation(), address(multiModuleV1));
+        assertEq(IReflexProxy(address(multiModuleProxyC)).implementation(), address(multiModuleV1));
     }
 
     function testModuleIdToProxy() external {
