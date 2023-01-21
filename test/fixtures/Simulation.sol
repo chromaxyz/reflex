@@ -2,6 +2,8 @@
 pragma solidity ^0.8.13;
 
 // Vendor
+import {console2} from "forge-std/console2.sol";
+import {StdAssertions} from "forge-std/StdAssertions.sol";
 import {stdJson} from "forge-std/StdJson.sol";
 import {Vm} from "forge-std/Vm.sol";
 
@@ -40,7 +42,7 @@ abstract contract Action {
     }
 }
 
-contract Simulation {
+contract Simulation is StdAssertions {
     using stdJson for string;
 
     // =========
@@ -48,6 +50,8 @@ contract Simulation {
     // =========
 
     Vm private constant vm = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
+
+    uint256 TIME_PER_BLOCK = 12 seconds;
 
     // ======
     // Errors
@@ -64,7 +68,8 @@ contract Simulation {
     // =======
 
     struct Log {
-        uint256 timestamp;
+        uint256 blockTimestamp;
+        uint256 blockNumber;
         string message;
     }
 
@@ -121,8 +126,8 @@ contract Simulation {
         _endTimestamp = _actions[_actions.length - 1].timestamp() + _simulationTimestepPadding;
 
         // Snapshot the initial state of the simulation.
-        vm.warp(block.timestamp);
-        _logs.push(Log({timestamp: block.timestamp, message: "start"}));
+        _warpBlock(block.timestamp);
+        _logs.push(Log({blockTimestamp: block.timestamp, blockNumber: block.number, message: "start"}));
 
         while (true) {
             // Calculate when the next snapshot will be taken.
@@ -145,40 +150,56 @@ contract Simulation {
                 if (nextAction_.timestamp() > nextTimestamp_) break;
 
                 // Perform the action and take a snapshot of the state afterwards.
-                vm.warp(nextAction_.timestamp());
+                _warpBlock(nextAction_.timestamp());
                 nextAction_.act();
-                _logs.push(Log({timestamp: block.timestamp, message: nextAction_.description()}));
+                _logs.push(
+                    Log({
+                        blockTimestamp: block.timestamp,
+                        blockNumber: block.number,
+                        message: nextAction_.description()
+                    })
+                );
 
                 // Increment the counter to point to the next action.
                 ++_actionIndex;
             }
 
             // Warp to timestamp.
-            vm.warp(nextTimestamp_);
-            _logs.push(Log({timestamp: nextTimestamp_, message: "snapshot"}));
+            _warpBlock(nextTimestamp_);
+            _logs.push(Log({blockTimestamp: nextTimestamp_, blockNumber: block.number, message: "snapshot"}));
 
             // If we are at the end, terminate the simulation.
             if (block.timestamp == _endTimestamp) break;
         }
 
         // Snapshot the final state of the simulation.
-        vm.warp(block.timestamp);
-        _logs.push(Log({timestamp: block.timestamp, message: "end"}));
+        _warpBlock(block.timestamp);
+        _logs.push(Log({blockTimestamp: block.timestamp, blockNumber: block.number, message: "end"}));
 
         // Collect all logs and encode.
         bytes[] memory logs = new bytes[](_logs.length);
 
         for (uint256 i = 0; i < _logs.length; i++) {
-            logs[i] = abi.encode(_logs[i].timestamp, _logs[i].message);
+            logs[i] = abi.encode(_logs[i].blockTimestamp, _logs[i].blockNumber, _logs[i].message);
         }
 
         // Encoding:
         // - `uint256` timestamp
         // - `string` message
-        vm.serializeString("encoding", "encoding", "(uint256,string)");
+        vm.serializeString("encoding", "encoding", "(uint256,uint256,string)");
         string memory output = vm.serializeBytes("encoding", "logs", logs);
 
         // Write to disk.
         output.write(_filePath);
+    }
+
+    // =========
+    // Utilities
+    // =========
+
+    function _warpBlock(uint256 timestamp_) internal {
+        assertGe(timestamp_, block.timestamp);
+        vm.roll(block.number + ((timestamp_ - block.timestamp) / TIME_PER_BLOCK));
+        vm.warp(timestamp_);
     }
 }
