@@ -77,18 +77,19 @@ contract Logger {
     // Public methods
     // ==============
 
-    function log(string memory key, string memory value) external {
-        _logs.push(Log({key: key, value: value}));
+    function log(string memory key_, string memory value_) external {
+        _logs.push(Log({key: key_, value: value_}));
     }
 
-    function write() external {
+    function write(string memory header_) external {
         bytes[] memory logs = new bytes[](_logs.length);
 
         for (uint256 i = 0; i < _logs.length; i++) {
             logs[i] = abi.encodePacked(_logs[i].key, _logs[i].value);
         }
 
-        string memory output = vm.serializeBytes("logs", "logs", logs);
+        vm.serializeString("header", "header", header_);
+        string memory output = vm.serializeBytes("header", "logs", logs);
         output.write(_filePath);
     }
 }
@@ -192,7 +193,7 @@ contract Simulation {
 
         // Store all logs permanently.
         for (uint256 i = 0; i < _loggers.length; i++) {
-            _loggers[i].write();
+            _loggers[i].write("(uint256,address)");
         }
     }
 
