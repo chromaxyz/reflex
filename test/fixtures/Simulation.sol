@@ -145,11 +145,12 @@ contract Simulation is StdAssertions {
             }
         }
 
+        // Register padded final timestamp for simulation termination.
         _endTimestamp = _actions[_actions.length - 1].timestamp() + _simulationTimestepPadding;
 
         // Snapshot the initial state of the simulation.
         _warpBlock(block.timestamp);
-        _logs.push(Log({blockTimestamp: block.timestamp, blockNumber: block.number, message: "start"}));
+        _writeLog("start");
 
         console2.log("Starting timestamp:", block.timestamp, "@ block", block.number);
 
@@ -176,13 +177,7 @@ contract Simulation is StdAssertions {
                 // Perform the action and take a snapshot of the state afterwards.
                 _warpBlock(nextAction_.timestamp());
                 nextAction_.act();
-                _logs.push(
-                    Log({
-                        blockTimestamp: block.timestamp,
-                        blockNumber: block.number,
-                        message: nextAction_.description()
-                    })
-                );
+                _writeLog(nextAction_.description());
 
                 // Increment the counter to point to the next action.
                 ++_actionIndex;
@@ -190,7 +185,7 @@ contract Simulation is StdAssertions {
 
             // Warp to timestamp.
             _warpBlock(nextTimestamp_);
-            _logs.push(Log({blockTimestamp: nextTimestamp_, blockNumber: block.number, message: "snapshot"}));
+            _writeLog("snapshot");
 
             // If we are at the end, terminate the simulation.
             if (block.timestamp == _endTimestamp) break;
@@ -198,7 +193,7 @@ contract Simulation is StdAssertions {
 
         // Snapshot the final state of the simulation.
         _warpBlock(block.timestamp);
-        _logs.push(Log({blockTimestamp: block.timestamp, blockNumber: block.number, message: "end"}));
+        _writeLog("end");
 
         // Collect all logs and encode.
         bytes[] memory logs = new bytes[](_logs.length);
@@ -217,7 +212,6 @@ contract Simulation is StdAssertions {
         string memory output = vm.serializeBytes("encoding", "logs", logs);
 
         console2.log("Ending timestamp:", block.timestamp, "@ block", block.number);
-
         console2.log("Finished running", _actions.length, "actions");
 
         // Write to disk.
@@ -228,6 +222,10 @@ contract Simulation is StdAssertions {
     // =========
     // Utilities
     // =========
+
+    function _writeLog(string memory message_) internal {
+        _logs.push(Log({blockTimestamp: block.timestamp, blockNumber: block.number, message: message_}));
+    }
 
     function _warpBlock(uint256 timestamp_) internal {
         assertGe(timestamp_, block.timestamp);
