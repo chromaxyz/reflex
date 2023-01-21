@@ -212,23 +212,23 @@ contract Simulation {
     // Utilities
     // =========
 
-    function _castUInt256toString(uint256 value) internal pure returns (string memory str) {
+    function _castUInt256toString(uint256 value_) internal pure returns (string memory str_) {
         /// @solidity memory-safe-assembly
         assembly {
             let ptr := add(mload(0x40), 160)
             mstore(0x40, ptr)
-            str := sub(ptr, 32)
-            mstore(str, 0)
+            str_ := sub(ptr, 32)
+            mstore(str_, 0)
 
-            let end := str
+            let end := str_
 
             for {
-                let temp := value
+                let temp := value_
             } 1 {
 
             } {
-                str := sub(str, 1)
-                mstore8(str, add(48, mod(temp, 10)))
+                str_ := sub(str_, 1)
+                mstore8(str_, add(48, mod(temp, 10)))
                 temp := div(temp, 10)
 
                 if iszero(temp) {
@@ -236,9 +236,9 @@ contract Simulation {
                 }
             }
 
-            let length := sub(end, str)
-            str := sub(str, 32)
-            mstore(str, length)
+            let length := sub(end, str_)
+            str_ := sub(str_, 32)
+            mstore(str_, length)
         }
     }
 }
