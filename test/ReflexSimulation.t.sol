@@ -5,7 +5,7 @@ pragma solidity ^0.8.13;
 import {Harness} from "./fixtures/Harness.sol";
 import {Action, Simulation} from "./fixtures/Simulation.sol";
 
-contract RAction is Action {
+contract ReflexAction is Action {
     constructor(uint256 timestamp_, string memory description_) Action(timestamp_, description_) {}
 
     function act() external override {}
@@ -26,12 +26,6 @@ contract ReflexSimulation is Harness {
         super.setUp();
 
         simulation = new Simulation("simulations/simulation.json", 1 days, 0);
-
-        Action[] memory actions = new Action[](3);
-        actions[0] = new RAction(block.timestamp + 10 days, "first action");
-        actions[1] = new RAction(block.timestamp + 20 days, "second action");
-        actions[2] = new RAction(block.timestamp + 30 days, "third action");
-        simulation.add(actions);
     }
 
     // =====
@@ -39,6 +33,12 @@ contract ReflexSimulation is Harness {
     // =====
 
     function testSimulation() external {
+        Action[] memory actions = new Action[](3);
+        actions[0] = new ReflexAction(block.timestamp + 10 days, "first action");
+        actions[1] = new ReflexAction(block.timestamp + 20 days, "second action");
+        actions[2] = new ReflexAction(block.timestamp + 30 days, "third action");
+        simulation.add(actions);
+
         simulation.run();
     }
 }
