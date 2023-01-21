@@ -54,8 +54,8 @@ contract Logger {
     // =======
 
     struct Log {
-        string key;
-        string value;
+        uint256 timestamp;
+        string message;
     }
 
     // =======
@@ -77,15 +77,15 @@ contract Logger {
     // Public methods
     // ==============
 
-    function log(string memory key_, string memory value_) external {
-        _logs.push(Log({key: key_, value: value_}));
+    function log(uint256 timestamp_, string memory message_) external {
+        _logs.push(Log({timestamp: timestamp_, message: message_}));
     }
 
     function write(string memory header_) external {
         bytes[] memory logs = new bytes[](_logs.length);
 
         for (uint256 i = 0; i < _logs.length; i++) {
-            logs[i] = abi.encodePacked(_logs[i].key, _logs[i].value);
+            logs[i] = abi.encode(_logs[i].timestamp, _logs[i].message);
         }
 
         vm.serializeString("header", "header", header_);
@@ -148,11 +148,11 @@ contract Simulation {
             }
         }
 
-        _endTimestamp = _actions[_actions.length - 1].timestamp() + 1 days;
+        _endTimestamp = _actions[_actions.length - 1].timestamp();
 
         // Snapshot the initial state of the simulation.
         vm.warp(block.timestamp);
-        _writeLog("");
+        _writeLog("start");
 
         while (true) {
             // Calculate when the next snapshot will be taken.
@@ -183,17 +183,21 @@ contract Simulation {
                 ++_actionIndex;
             }
 
-            // Take the snapshot.
-            vm.warp(nextTimestamp_);
-            _writeLog("");
-
             // If we are at the end, terminate the simulation.
-            if (block.timestamp == _endTimestamp) break;
+            if (block.timestamp == _endTimestamp) {
+                // Take the snapshot.
+                vm.warp(nextTimestamp_);
+                _writeLog("end");
+                break;
+            }
         }
 
         // Store all logs permanently.
         for (uint256 i = 0; i < _loggers.length; i++) {
-            _loggers[i].write("(uint256,address)");
+            // Header:
+            // - `uint256` timestamp
+            // - `string` message
+            _loggers[i].write("(uint256,string)");
         }
     }
 
@@ -201,44 +205,9 @@ contract Simulation {
     // Utilities
     // =========
 
-    function _writeLog(string memory log_) internal {
+    function _writeLog(string memory message_) internal {
         for (uint256 i = 0; i < _loggers.length; i++) {
-            _loggers[i].log(_castUInt256toString(_logCounter), log_);
-            _logCounter++;
-        }
-    }
-
-    // =========
-    // Utilities
-    // =========
-
-    function _castUInt256toString(uint256 value_) internal pure returns (string memory str_) {
-        /// @solidity memory-safe-assembly
-        assembly {
-            let ptr := add(mload(0x40), 160)
-            mstore(0x40, ptr)
-            str_ := sub(ptr, 32)
-            mstore(str_, 0)
-
-            let end := str_
-
-            for {
-                let temp := value_
-            } 1 {
-
-            } {
-                str_ := sub(str_, 1)
-                mstore8(str_, add(48, mod(temp, 10)))
-                temp := div(temp, 10)
-
-                if iszero(temp) {
-                    break
-                }
-            }
-
-            let length := sub(end, str_)
-            str_ := sub(str_, 32)
-            mstore(str_, length)
+            _loggers[i].log(block.timestamp, message_);
         }
     }
 }

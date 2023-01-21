@@ -30,11 +30,11 @@ contract ReflexSimulation is Harness {
         logger = new Logger("simulations/simulation.json");
         simulation.registerLogger(logger);
 
-        RAction action = new RAction(block.timestamp, "foo bar");
-
-        simulation.addAction(action);
-
-        // simulation.addAction();
+        Action[] memory actions = new Action[](3);
+        actions[0] = new RAction(block.timestamp + 1 days, "first action");
+        actions[1] = new RAction(block.timestamp + 2 days, "second action");
+        actions[2] = new RAction(block.timestamp + 3 days, "third action");
+        simulation.addActions(actions);
     }
 
     // =====
