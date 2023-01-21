@@ -93,6 +93,7 @@ contract Simulation is CommonBase, StdAssertions {
     // Storage
     // =======
 
+    string internal _description;
     string internal _filePath;
     uint256 internal _simulationTimestep;
     uint256 internal _simulationTimePadding;
@@ -108,18 +109,27 @@ contract Simulation is CommonBase, StdAssertions {
     // ===========
 
     /**
-
+     * @param description_ Simulation description.
      * @param filePath_ Path to output file.
      * @param simulationTimestep_ Timestep per cycle.
      * @param simulationTimePadding_ Time padded at the end of the simulation.
      */
-    constructor(string memory filePath_, uint256 simulationTimestep_, uint256 simulationTimePadding_) {
+    constructor(
+        string memory description_,
+        string memory filePath_,
+        uint256 simulationTimestep_,
+        uint256 simulationTimePadding_
+    ) {
+        if (bytes(description_).length == 0) revert NoDescription();
         if (bytes(filePath_).length == 0) revert NoFilePath();
         if (simulationTimestep_ == 0) revert InvalidTimestep();
 
+        _description = description_;
         _filePath = filePath_;
         _simulationTimestep = simulationTimestep_;
         _simulationTimePadding = simulationTimePadding_;
+
+        console2.log(description_, "\n");
     }
 
     // ==============
@@ -211,15 +221,17 @@ contract Simulation is CommonBase, StdAssertions {
         // - message: `string`
         vm.serializeString("encoding", "encoding", "(uint256,uint256,string)");
         vm.serializeString("encoding", "header", "blockTimestamp,blockNumber,message");
+        vm.serializeString("encoding", "description", _description);
         string memory output = vm.serializeBytes("encoding", "logs", logs);
 
+        console2.log("Serialized", _logs.length, "log entries");
         console2.log("Ending timestamp:", block.timestamp, "@ block", block.number);
         console2.log("Finished running", _actions.length, "actions");
 
         // Write to disk.
         vm.writeJson(output, _filePath);
 
-        console2.log("Wrote log to:", _filePath, _logs.length, "entries");
+        console2.log("Wrote log to:", _filePath);
     }
 
     // =========

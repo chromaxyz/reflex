@@ -11,6 +11,14 @@ contract ReflexAction is Action {
     function act() external override {}
 }
 
+// TODO: helper for setting up state
+// - fork a block
+// - deployed contracts
+// - initialize users with token balances
+// - initialize protocol with token balances
+// - ability to replay a simulation
+// - ability to transform the encoded output json to a non encoded csv file
+
 contract ReflexSimulation is Harness {
     // =======
     // Storage
@@ -25,7 +33,7 @@ contract ReflexSimulation is Harness {
     function setUp() public virtual override {
         super.setUp();
 
-        simulation = new Simulation("simulations/simulation.json", 1 days, 0);
+        simulation = new Simulation("Reflex#Simulacra >> borrow actions", "simulations/simulation.json", 1 days, 0);
     }
 
     // =====
