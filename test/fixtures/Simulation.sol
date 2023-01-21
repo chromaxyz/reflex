@@ -111,7 +111,6 @@ contract Simulation {
     // Storage
     // =======
 
-    uint256 internal _logCounter;
     uint256 internal _actionIndex;
     uint256 internal _endTimestamp;
 
