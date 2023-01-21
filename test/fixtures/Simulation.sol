@@ -2,10 +2,14 @@
 pragma solidity ^0.8.13;
 
 // Vendor
+import {CommonBase} from "forge-std/Base.sol";
 import {console2} from "forge-std/console2.sol";
 import {StdAssertions} from "forge-std/StdAssertions.sol";
 import {Vm} from "forge-std/Vm.sol";
 
+/**
+ * @title Action
+ */
 abstract contract Action {
     // =======
     // Storage
@@ -52,16 +56,11 @@ abstract contract Action {
 }
 
 /**
+ * @title Simulation
  * @author `Simulation` as a concept has been inspired by: Compound V2 (https://github.com/compound-finance/compound-protocol/tree/master/scenario)
  * @author `Simulation` has been inspired by: Maple Core V2 (https://github.com/maple-labs/maple-core-v2/blob/aebc14ba7704da31cae8c7fe0c06d6a3396a600a/contracts/PoolSimulation.sol)
  */
-contract Simulation is StdAssertions {
-    // ======
-    // Cheats
-    // ======
-
-    Vm private constant vm = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
-
+contract Simulation is CommonBase, StdAssertions {
     // =========
     // Constants
     // =========
@@ -94,7 +93,7 @@ contract Simulation is StdAssertions {
 
     string internal _filePath;
     uint256 internal _simulationTimestep;
-    uint256 internal _simulationTimestepPadding;
+    uint256 internal _simulationTimePadding;
 
     Action[] internal _actions;
     Log[] internal _logs;
@@ -109,15 +108,15 @@ contract Simulation is StdAssertions {
     /**
      * @param filePath_ Path to output file.
      * @param simulationTimestep_ Timestep per cycle.
-     * @param simulationTimestepPadding_ Time padding at the end of the simulation.
+     * @param simulationTimePadding_ Time padded at the end of the simulation.
      */
-    constructor(string memory filePath_, uint256 simulationTimestep_, uint256 simulationTimestepPadding_) {
+    constructor(string memory filePath_, uint256 simulationTimestep_, uint256 simulationTimePadding_) {
         if (bytes(filePath_).length == 0) revert NoFilePath();
         if (simulationTimestep_ == 0) revert InvalidTimestep();
 
         _filePath = filePath_;
         _simulationTimestep = simulationTimestep_;
-        _simulationTimestepPadding = simulationTimestepPadding_;
+        _simulationTimePadding = simulationTimePadding_;
     }
 
     // ==============
@@ -146,7 +145,7 @@ contract Simulation is StdAssertions {
         }
 
         // Register padded final timestamp for simulation termination.
-        _endTimestamp = _actions[_actions.length - 1].timestamp() + _simulationTimestepPadding;
+        _endTimestamp = _actions[_actions.length - 1].timestamp() + _simulationTimePadding;
 
         // Snapshot the initial state of the simulation.
         _warpBlock(block.timestamp);
