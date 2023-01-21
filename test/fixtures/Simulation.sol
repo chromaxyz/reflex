@@ -40,7 +40,7 @@ abstract contract Action {
     }
 }
 
-contract Logger {
+contract Simulation {
     using stdJson for string;
 
     // =========
@@ -48,6 +48,14 @@ contract Logger {
     // =========
 
     Vm private constant vm = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
+
+    // ======
+    // Errors
+    // ======
+
+    error NoFilePath();
+
+    error NoActions();
 
     // =======
     // Structs
@@ -62,72 +70,27 @@ contract Logger {
     // Storage
     // =======
 
+    string internal _filePath;
+
+    Action[] internal _actions;
     Log[] internal _logs;
-    string internal _filePath = "";
+
+    uint256 internal _actionIndex;
+    uint256 internal _endTimestamp;
 
     // ===========
     // Constructor
     // ===========
 
     constructor(string memory filePath_) {
+        if (bytes(filePath_).length == 0) revert NoFilePath();
+
         _filePath = filePath_;
     }
 
     // ==============
     // Public methods
     // ==============
-
-    function log(uint256 timestamp_, string memory message_) external {
-        _logs.push(Log({timestamp: timestamp_, message: message_}));
-    }
-
-    function write(string memory header_) external {
-        bytes[] memory logs = new bytes[](_logs.length);
-
-        for (uint256 i = 0; i < _logs.length; i++) {
-            logs[i] = abi.encode(_logs[i].timestamp, _logs[i].message);
-        }
-
-        vm.serializeString("header", "header", header_);
-        string memory output = vm.serializeBytes("header", "logs", logs);
-        output.write(_filePath);
-    }
-}
-
-contract Simulation {
-    // =========
-    // Constants
-    // =========
-
-    Vm private constant vm = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
-
-    // ======
-    // Errors
-    // ======
-
-    error NoActions();
-
-    // =======
-    // Storage
-    // =======
-
-    uint256 internal _actionIndex;
-    uint256 internal _endTimestamp;
-
-    Action[] internal _actions;
-    Logger[] internal _loggers;
-
-    // ==============
-    // Public methods
-    // ==============
-
-    function registerLogger(Logger logger_) external {
-        _loggers.push(logger_);
-    }
-
-    function addAction(Action action_) external {
-        _actions.push(action_);
-    }
 
     function addActions(Action[] memory actions_) external {
         for (uint256 i = 0; i < actions_.length; ++i) {
@@ -147,11 +110,11 @@ contract Simulation {
             }
         }
 
-        _endTimestamp = _actions[_actions.length - 1].timestamp();
+        _endTimestamp = _actions[_actions.length - 1].timestamp() + 10 days;
 
         // Snapshot the initial state of the simulation.
         vm.warp(block.timestamp);
-        _writeLog("start");
+        _logs.push(Log({timestamp: block.timestamp, message: "start"}));
 
         while (true) {
             // Calculate when the next snapshot will be taken.
@@ -176,37 +139,32 @@ contract Simulation {
                 // Perform the action and take a snapshot of the state afterwards.
                 vm.warp(nextAction_.timestamp());
                 nextAction_.act();
-                _writeLog(nextAction_.description());
+                _logs.push(Log({timestamp: block.timestamp, message: nextAction_.description()}));
 
                 // Increment the counter to point to the next action.
                 ++_actionIndex;
             }
 
+            // Take the snapshot.
+            vm.warp(nextTimestamp_);
+            _logs.push(Log({timestamp: block.timestamp, message: "snapshot"}));
+
             // If we are at the end, terminate the simulation.
-            if (block.timestamp == _endTimestamp) {
-                // Take the snapshot.
-                vm.warp(nextTimestamp_);
-                _writeLog("end");
-                break;
-            }
+            if (block.timestamp == _endTimestamp) break;
         }
 
         // Store all logs permanently.
-        for (uint256 i = 0; i < _loggers.length; i++) {
-            // Header:
-            // - `uint256` timestamp
-            // - `string` message
-            _loggers[i].write("(uint256,string)");
-        }
-    }
+        // Header:
+        // - `uint256` timestamp
+        // - `string` message
+        bytes[] memory logs = new bytes[](_logs.length);
 
-    // =========
-    // Utilities
-    // =========
-
-    function _writeLog(string memory message_) internal {
-        for (uint256 i = 0; i < _loggers.length; i++) {
-            _loggers[i].log(block.timestamp, message_);
+        for (uint256 i = 0; i < _logs.length; i++) {
+            logs[i] = abi.encode(_logs[i].timestamp, _logs[i].message);
         }
+
+        vm.serializeString("header", "header", "(uint256,string)");
+        string memory output = vm.serializeBytes("header", "logs", logs);
+        output.write(_filePath);
     }
 }

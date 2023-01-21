@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 // Fixtures
 import {Harness} from "./fixtures/Harness.sol";
-import {Action, Logger, Simulation} from "./fixtures/Simulation.sol";
+import {Action, Simulation} from "./fixtures/Simulation.sol";
 
 contract RAction is Action {
     constructor(uint256 timestamp_, string memory description_) Action(timestamp_, description_) {}
@@ -17,7 +17,6 @@ contract ReflexSimulation is Harness {
     // =======
 
     Simulation public simulation;
-    Logger public logger;
 
     // =====
     // Setup
@@ -26,9 +25,7 @@ contract ReflexSimulation is Harness {
     function setUp() public virtual override {
         super.setUp();
 
-        simulation = new Simulation();
-        logger = new Logger("simulations/simulation.json");
-        simulation.registerLogger(logger);
+        simulation = new Simulation("simulations/simulation.json");
 
         Action[] memory actions = new Action[](3);
         actions[0] = new RAction(block.timestamp + 1 days, "first action");
