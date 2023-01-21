@@ -71,6 +71,8 @@ contract Simulation is CommonBase, StdAssertions {
     // Errors
     // ======
 
+    error NoDescription();
+
     error NoFilePath();
 
     error InvalidTimestep();
@@ -106,6 +108,7 @@ contract Simulation is CommonBase, StdAssertions {
     // ===========
 
     /**
+
      * @param filePath_ Path to output file.
      * @param simulationTimestep_ Timestep per cycle.
      * @param simulationTimePadding_ Time padded at the end of the simulation.
@@ -215,7 +218,8 @@ contract Simulation is CommonBase, StdAssertions {
 
         // Write to disk.
         vm.writeJson(output, _filePath);
-        console2.log("Wrote log to:", _filePath);
+
+        console2.log("Wrote log to:", _filePath, _logs.length, "entries");
     }
 
     // =========
