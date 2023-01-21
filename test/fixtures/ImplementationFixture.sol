@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 // Vendor
 import {stdError} from "forge-std/StdError.sol";
-import {Vm} from "forge-std/Vm.sol";
+import {VmSafe} from "forge-std/Vm.sol";
 
 // Sources
 import {ReflexConstants} from "../../src/ReflexConstants.sol";
@@ -135,7 +135,7 @@ abstract contract ImplementationFixture is ReflexConstants, Harness {
 
         proxy_.testProxyLog0Topic(message_);
 
-        Vm.Log[] memory entries = vm.getRecordedLogs();
+        VmSafe.Log[] memory entries = vm.getRecordedLogs();
 
         assertEq(entries.length, 1);
         assertEq(entries[0].topics.length, 0);

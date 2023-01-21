@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Vendor
-import {Vm} from "forge-std/Vm.sol";
+import {VmSafe} from "forge-std/Vm.sol";
 
 // Interfaces
 import {TReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
@@ -71,7 +71,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
 
         address installerProxy = dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER);
 
-        Vm.Log[] memory entries = vm.getRecordedLogs();
+        VmSafe.Log[] memory entries = vm.getRecordedLogs();
 
         // 3 logs are expected to be emitted.
         assertEq(entries.length, 3);
