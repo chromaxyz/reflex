@@ -55,6 +55,8 @@ contract Simulation {
 
     error NoFilePath();
 
+    error InvalidTimestep();
+
     error NoActions();
 
     // =======
@@ -72,6 +74,9 @@ contract Simulation {
 
     string internal _filePath;
 
+    uint256 internal _simulationTimestep;
+    uint256 internal _simulationTimestepPadding;
+
     Action[] internal _actions;
     Log[] internal _logs;
 
@@ -82,23 +87,26 @@ contract Simulation {
     // Constructor
     // ===========
 
-    constructor(string memory filePath_) {
+    constructor(string memory filePath_, uint256 simulationTimestep_, uint256 simulationTimestepPadding_) {
         if (bytes(filePath_).length == 0) revert NoFilePath();
+        if (simulationTimestep_ == 0) revert InvalidTimestep();
 
         _filePath = filePath_;
+        _simulationTimestep = simulationTimestep_;
+        _simulationTimestepPadding = simulationTimestepPadding_;
     }
 
     // ==============
     // Public methods
     // ==============
 
-    function addActions(Action[] memory actions_) external {
+    function add(Action[] memory actions_) external {
         for (uint256 i = 0; i < actions_.length; ++i) {
             _actions.push(actions_[i]);
         }
     }
 
-    function runSimulation(uint256 timestep_) external {
+    function run() external {
         // Sort all actions based on their timestamp.
         if (_actions.length == 0) revert NoActions();
 
@@ -110,7 +118,7 @@ contract Simulation {
             }
         }
 
-        _endTimestamp = _actions[_actions.length - 1].timestamp() + 10 days;
+        _endTimestamp = _actions[_actions.length - 1].timestamp() + _simulationTimestepPadding;
 
         // Snapshot the initial state of the simulation.
         vm.warp(block.timestamp);
@@ -118,7 +126,7 @@ contract Simulation {
 
         while (true) {
             // Calculate when the next snapshot will be taken.
-            uint256 nextTimestamp_ = block.timestamp + timestep_;
+            uint256 nextTimestamp_ = block.timestamp + _simulationTimestep;
 
             // Round down the timestamp to the end of the simulation if it exceeds it.
             if (nextTimestamp_ > _endTimestamp) nextTimestamp_ = _endTimestamp;
@@ -145,26 +153,32 @@ contract Simulation {
                 ++_actionIndex;
             }
 
-            // Take the snapshot.
+            // Warp to timestamp.
             vm.warp(nextTimestamp_);
-            _logs.push(Log({timestamp: block.timestamp, message: "snapshot"}));
+            _logs.push(Log({timestamp: nextTimestamp_, message: "snapshot"}));
 
             // If we are at the end, terminate the simulation.
             if (block.timestamp == _endTimestamp) break;
         }
 
-        // Store all logs permanently.
-        // Header:
-        // - `uint256` timestamp
-        // - `string` message
+        // Snapshot the final state of the simulation.
+        vm.warp(block.timestamp);
+        _logs.push(Log({timestamp: block.timestamp, message: "end"}));
+
+        // Collect all logs and encode.
         bytes[] memory logs = new bytes[](_logs.length);
 
         for (uint256 i = 0; i < _logs.length; i++) {
             logs[i] = abi.encode(_logs[i].timestamp, _logs[i].message);
         }
 
-        vm.serializeString("header", "header", "(uint256,string)");
-        string memory output = vm.serializeBytes("header", "logs", logs);
+        // Encoding:
+        // - `uint256` timestamp
+        // - `string` message
+        vm.serializeString("encoding", "encoding", "(uint256,string)");
+        string memory output = vm.serializeBytes("encoding", "logs", logs);
+
+        // Write to disk.
         output.write(_filePath);
     }
 }

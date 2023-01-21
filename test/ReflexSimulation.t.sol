@@ -25,13 +25,13 @@ contract ReflexSimulation is Harness {
     function setUp() public virtual override {
         super.setUp();
 
-        simulation = new Simulation("simulations/simulation.json");
+        simulation = new Simulation("simulations/simulation.json", 1 days, 0);
 
         Action[] memory actions = new Action[](3);
-        actions[0] = new RAction(block.timestamp + 1 days, "first action");
-        actions[1] = new RAction(block.timestamp + 2 days, "second action");
-        actions[2] = new RAction(block.timestamp + 3 days, "third action");
-        simulation.addActions(actions);
+        actions[0] = new RAction(block.timestamp + 10 days, "first action");
+        actions[1] = new RAction(block.timestamp + 20 days, "second action");
+        actions[2] = new RAction(block.timestamp + 30 days, "third action");
+        simulation.add(actions);
     }
 
     // =====
@@ -39,6 +39,6 @@ contract ReflexSimulation is Harness {
     // =====
 
     function testSimulation() external {
-        simulation.runSimulation(1 days);
+        simulation.run();
     }
 }
