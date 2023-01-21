@@ -2,9 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Vendor
-import {console2} from "forge-std/console2.sol";
 import {StdAssertions} from "forge-std/StdAssertions.sol";
-import {stdJson} from "forge-std/StdJson.sol";
 import {Vm} from "forge-std/Vm.sol";
 
 abstract contract Action {
@@ -43,15 +41,17 @@ abstract contract Action {
 }
 
 contract Simulation is StdAssertions {
-    using stdJson for string;
+    // ======
+    // Cheats
+    // ======
+
+    Vm private constant vm = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
 
     // =========
     // Constants
     // =========
 
-    Vm private constant vm = Vm(address(uint160(uint256(keccak256("hevm cheat code")))));
-
-    uint256 TIME_PER_BLOCK = 12 seconds;
+    uint256 private constant _TIME_PER_BLOCK = 12 seconds;
 
     // ======
     // Errors
@@ -179,18 +179,21 @@ contract Simulation is StdAssertions {
         // Collect all logs and encode.
         bytes[] memory logs = new bytes[](_logs.length);
 
+        // Write logs to serializable structure.
         for (uint256 i = 0; i < _logs.length; i++) {
             logs[i] = abi.encode(_logs[i].blockTimestamp, _logs[i].blockNumber, _logs[i].message);
         }
 
         // Encoding:
-        // - `uint256` timestamp
-        // - `string` message
+        // - blockTimestamp: `uint256`
+        // - blockNumber: `uint256`
+        // - message: `string`
         vm.serializeString("encoding", "encoding", "(uint256,uint256,string)");
+        vm.serializeString("encoding", "header", "blockTimestamp,blockNumber,message");
         string memory output = vm.serializeBytes("encoding", "logs", logs);
 
         // Write to disk.
-        output.write(_filePath);
+        vm.writeJson(output, _filePath);
     }
 
     // =========
@@ -199,7 +202,7 @@ contract Simulation is StdAssertions {
 
     function _warpBlock(uint256 timestamp_) internal {
         assertGe(timestamp_, block.timestamp);
-        vm.roll(block.number + ((timestamp_ - block.timestamp) / TIME_PER_BLOCK));
+        vm.roll(block.number + ((timestamp_ - block.timestamp) / _TIME_PER_BLOCK));
         vm.warp(timestamp_);
     }
 }
