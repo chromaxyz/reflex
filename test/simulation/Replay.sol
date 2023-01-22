@@ -34,6 +34,9 @@ contract Replay is CommonBase {
         _filename = filename_;
     }
 
+    /**
+     * @dev Run the replay.
+     */
     function run() external view {
         string memory simulation = vm.readFile(string.concat("simulations/", _filename, ".json"));
         string memory description = abi.decode(vm.parseJson(simulation, "description"), (string));

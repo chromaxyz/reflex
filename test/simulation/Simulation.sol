@@ -61,18 +61,33 @@ abstract contract Simulation is CommonBase, StdAssertions {
     // Public methods
     // ==============
 
+    /**
+     * @dev Ran at the start of the simulation.
+     */
     function start() public virtual {}
 
+    /**
+     * @dev Ran at the end of the simulation.
+     */
     function end() public virtual {}
 
+    /**
+     * @dev Ran on every timestep iteration.
+     */
     function snapshot() public virtual {}
 
+    /**
+     * @dev Add action to simulation to execute.
+     */
     function add(Action[] memory actions_) external {
         for (uint256 i = 0; i < actions_.length; ++i) {
             _actions.push(actions_[i]);
         }
     }
 
+    /**
+     * @dev Run the simulation.
+     */
     function run() external {
         console2.log(_description, "\n");
 

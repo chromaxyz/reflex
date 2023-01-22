@@ -25,6 +25,7 @@ contract Logger {
     // =======
 
     Log[] internal _logs;
+
     string internal _filename;
 
     // ===========
@@ -44,10 +45,16 @@ contract Logger {
     // Public methods
     // ==============
 
+    /**
+     * @dev Returns the filename to which the log will be written.
+     */
     function filename() public view returns (string memory) {
         return _filename;
     }
 
+    /**
+     * @dev Returns all logs captured until now.
+     */
     function logs() public view returns (Log[] memory) {
         return _logs;
     }
@@ -56,6 +63,9 @@ contract Logger {
     // Utilities
     // =========
 
+    /**
+     * @dev Write to logs.
+     */
     function writeLog(string memory message_) public {
         _logs.push(Log({blockTimestamp: block.timestamp, message: message_}));
     }
