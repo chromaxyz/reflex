@@ -3,28 +3,57 @@ pragma solidity ^0.8.13;
 
 // Fixtures
 import {Harness} from "./fixtures/Harness.sol";
-import {Action, Simulation} from "./fixtures/Simulation.sol";
 
-contract ReflexAction is Action {
-    constructor(uint256 timestamp_, string memory description_) Action(timestamp_, description_) {}
+// Simulation
+import {Action} from "./simulation/Action.sol";
+import {Logger} from "./simulation/Logger.sol";
+import {Replay} from "./simulation/Replay.sol";
+import {Simulation} from "./simulation/Simulation.sol";
 
-    function act() external override {}
+contract BorrowSimulation is Simulation {
+    constructor(
+        Logger logger_,
+        string memory description_,
+        uint256 timestep_
+    ) Simulation(logger_, description_, timestep_) {}
+
+    function start() public override {
+        _logger.writeLog("start!");
+    }
+
+    function end() public override {
+        _logger.writeLog("end!");
+    }
+
+    function snapshot() public override {
+        _logger.writeLog("snapshot!");
+    }
 }
 
-// TODO: helper for setting up state
-// - fork a block
-// - deployed contracts
-// - initialize users with token balances
-// - initialize protocol with token balances
-// - ability to replay a simulation
-// - ability to transform the encoded output json to a non encoded csv file
+contract BorrowAction is Action {
+    constructor(
+        Logger logger_,
+        uint256 timestamp_,
+        string memory description_
+    ) Action(logger_, timestamp_, description_) {}
+
+    function run() external override {
+        _logger.writeLog("foo bar foo");
+    }
+}
 
 contract ReflexSimulation is Harness {
     // =======
     // Storage
     // =======
 
-    Simulation public simulation;
+    Logger public logger;
+
+    BorrowAction public borrowAction1;
+    BorrowAction public borrowAction2;
+    BorrowAction public borrowAction3;
+
+    BorrowSimulation public borrowSimulation;
 
     // =====
     // Setup
@@ -33,7 +62,13 @@ contract ReflexSimulation is Harness {
     function setUp() public virtual override {
         super.setUp();
 
-        simulation = new Simulation("Reflex#Simulacra >> borrow actions", "simulations/simulation.json", 1 days, 0);
+        logger = new Logger("simulation");
+
+        borrowAction1 = new BorrowAction(logger, block.timestamp + 10 days, "first action");
+        borrowAction2 = new BorrowAction(logger, block.timestamp + 20 days, "second action");
+        borrowAction3 = new BorrowAction(logger, block.timestamp + 30 days, "third action");
+
+        borrowSimulation = new BorrowSimulation(logger, "Reflex#Simulacra >> borrow actions", 1 days);
     }
 
     // =====
@@ -42,11 +77,17 @@ contract ReflexSimulation is Harness {
 
     function testSimulation() external {
         Action[] memory actions = new Action[](3);
-        actions[0] = new ReflexAction(block.timestamp + 10 days, "first action");
-        actions[1] = new ReflexAction(block.timestamp + 20 days, "second action");
-        actions[2] = new ReflexAction(block.timestamp + 30 days, "third action");
-        simulation.add(actions);
+        actions[0] = borrowAction1;
+        actions[1] = borrowAction2;
+        actions[2] = borrowAction3;
+        borrowSimulation.add(actions);
 
-        simulation.run();
+        borrowSimulation.run();
+    }
+
+    function testReplay() external {
+        Replay replay = new Replay("simulation");
+
+        replay.run();
     }
 }
