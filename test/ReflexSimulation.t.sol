@@ -4,11 +4,8 @@ pragma solidity ^0.8.13;
 // Fixtures
 import {Harness} from "./fixtures/Harness.sol";
 
-// Simulation
-import {Action} from "./simulation/Action.sol";
-import {Logger} from "./simulation/Logger.sol";
-import {Replay} from "./simulation/Replay.sol";
-import {Simulation} from "./simulation/Simulation.sol";
+// Fixtures
+import {Action, Logger, Replay, Simulation} from "./fixtures/Simulation.sol";
 
 contract BorrowSimulation is Simulation {
     constructor(
@@ -33,12 +30,16 @@ contract BorrowSimulation is Simulation {
 contract BorrowAction is Action {
     constructor(
         Logger logger_,
-        uint256 timestamp_,
-        string memory description_
-    ) Action(logger_, timestamp_, description_) {}
+        string memory description_,
+        uint256 timestamp_
+    ) Action(logger_, description_, timestamp_) {}
 
     function run() external override {
-        _logger.writeLog("foo bar foo");
+        _logger.writeLog(string.concat(_description, ": foo bar foo 1"));
+        _logger.writeLog(string.concat(_description, ": foo bar foo 2"));
+        _logger.writeLog(string.concat(_description, ": foo bar foo 3"));
+        _logger.writeLog(string.concat(_description, ": foo bar foo 4"));
+        _logger.writeLog(string.concat(_description, ": foo bar foo 5"));
     }
 }
 
@@ -64,9 +65,9 @@ contract ReflexSimulation is Harness {
 
         logger = new Logger("simulation");
 
-        borrowAction1 = new BorrowAction(logger, block.timestamp + 10 days, "first action");
-        borrowAction2 = new BorrowAction(logger, block.timestamp + 20 days, "second action");
-        borrowAction3 = new BorrowAction(logger, block.timestamp + 30 days, "third action");
+        borrowAction1 = new BorrowAction(logger, "first action", block.timestamp + 10 days);
+        borrowAction2 = new BorrowAction(logger, "second action", block.timestamp + 20 days);
+        borrowAction3 = new BorrowAction(logger, "third action", block.timestamp + 30 days);
 
         borrowSimulation = new BorrowSimulation(logger, "Reflex#Simulacra >> borrow actions", 1 days);
     }

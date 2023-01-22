@@ -7,9 +7,140 @@ import {console2} from "forge-std/console2.sol";
 import {StdAssertions} from "forge-std/StdAssertions.sol";
 import {Vm} from "forge-std/Vm.sol";
 
-// Simulation
-import {Action} from "./Action.sol";
-import {Logger} from "./Logger.sol";
+/**
+ * @title Logger
+ */
+contract Logger {
+    // ======
+    // Errors
+    // ======
+
+    error NoFilename();
+
+    // =======
+    // Structs
+    // =======
+
+    struct Log {
+        uint256 blockTimestamp;
+        string message;
+    }
+
+    // =======
+    // Storage
+    // =======
+
+    Log[] internal _logs;
+
+    string internal _fileName;
+
+    // ===========
+    // Constructor
+    // ===========
+
+    /**
+     * @param fileName_ File name of file to write to.
+     */
+    constructor(string memory fileName_) {
+        if (bytes(fileName_).length == 0) revert NoFilename();
+
+        _fileName = fileName_;
+    }
+
+    // ==============
+    // Public methods
+    // ==============
+
+    /**
+     * @dev Returns the file name to which the log will be written.
+     */
+    function fileName() public view returns (string memory) {
+        return _fileName;
+    }
+
+    /**
+     * @dev Returns all logs captured until now.
+     */
+    function logs() public view returns (Log[] memory) {
+        return _logs;
+    }
+
+    // =========
+    // Utilities
+    // =========
+
+    /**
+     * @dev Write to logs.
+     */
+    function writeLog(string memory message_) external {
+        _logs.push(Log({blockTimestamp: block.timestamp, message: message_}));
+    }
+}
+
+/**
+ * @title Action
+ */
+abstract contract Action {
+    // ======
+    // Errors
+    // ======
+
+    error NoDescription();
+
+    error NoLogger();
+
+    error InvalidTimestamp();
+
+    // =======
+    // Storage
+    // =======
+
+    Logger internal _logger;
+    string internal _description;
+    uint256 internal _timestamp;
+
+    // ===========
+    // Constructor
+    // ===========
+
+    /**
+     * @param logger_ Action logger.
+     * @param description_ Description of the action.
+     * @param timestamp_ Timestamp of the action.
+     */
+    constructor(Logger logger_, string memory description_, uint256 timestamp_) {
+        if (address(logger_) == address(0)) revert NoLogger();
+        if (bytes(description_).length == 0) revert NoDescription();
+        if (timestamp_ == 0) revert InvalidTimestamp();
+
+        _logger = logger_;
+        _description = description_;
+        _timestamp = timestamp_;
+    }
+
+    // ==============
+    // Public methods
+    // ==============
+
+    /**
+     * @dev Performs the action.
+     */
+    function run() external virtual;
+
+    /**
+     * @dev Returns a description of what the action does (used for logging purposes).
+     */
+    function description() external view returns (string memory description_) {
+        return _description;
+    }
+
+    /**
+     * @dev Defines at which time during the simulation this action should be performed.
+     */
+    function timestamp() external view returns (uint256 timestamp_) {
+        return _timestamp;
+    }
+}
 
 /**
  * @title Simulation
@@ -21,6 +152,8 @@ abstract contract Simulation is CommonBase, StdAssertions {
 
     error NoDescription();
 
+    error NoLogger();
+
     error InvalidTimestep();
 
     error NoActions();
@@ -30,11 +163,10 @@ abstract contract Simulation is CommonBase, StdAssertions {
     // =======
 
     Logger internal _logger;
-    Action[] internal _actions;
-
     string internal _description;
     uint256 internal _timestep;
 
+    Action[] internal _actions;
     uint256 internal _actionIndex;
     uint256 internal _endTimestamp;
 
@@ -49,6 +181,7 @@ abstract contract Simulation is CommonBase, StdAssertions {
 
      */
     constructor(Logger logger_, string memory description_, uint256 timestep_) {
+        if (address(logger_) == address(0)) revert NoLogger();
         if (bytes(description_).length == 0) revert NoDescription();
         if (timestep_ == 0) revert InvalidTimestep();
 
@@ -166,7 +299,7 @@ abstract contract Simulation is CommonBase, StdAssertions {
             logs[i] = abi.encode(_logger.logs()[i].blockTimestamp, _logger.logs()[i].message);
         }
 
-        vm.serializeString("simulation", "encoding", "(uint256,uint256,string)");
+        vm.serializeString("simulation", "encoding", "(uint256,string)");
         vm.serializeString("simulation", "header", "blockTimestamp,message");
         vm.serializeString("simulation", "description", _description);
 
@@ -180,8 +313,62 @@ abstract contract Simulation is CommonBase, StdAssertions {
         console2.log("Finished running", _actions.length, "actions");
 
         // Write to disk.
-        vm.writeJson(output, string.concat("simulations/", _logger.filename(), ".json"));
+        vm.writeJson(output, string.concat("simulations/", _logger.fileName(), ".json"));
 
-        console2.log("Wrote log to:", string.concat("simulations/", _logger.filename(), ".json"));
+        console2.log("Wrote log to:", string.concat("simulations/", _logger.fileName(), ".json"));
+    }
+}
+
+/**
+ * @title Replay
+ */
+contract Replay is CommonBase {
+    // ======
+    // Errors
+    // ======
+
+    error NoFileName();
+
+    // =======
+    // Storage
+    // =======
+
+    string internal _fileName;
+
+    // ===========
+    // Constructor
+    // ===========
+
+    /**
+     * @param fileName_ File name of file to read from.
+     */
+    constructor(string memory fileName_) {
+        if (bytes(fileName_).length == 0) revert NoFileName();
+
+        _fileName = fileName_;
+    }
+
+    /**
+     * @dev Run the replay.
+     */
+    function run() external view {
+        string memory simulation = vm.readFile(string.concat("simulations/", _fileName, ".json"));
+        string memory description = abi.decode(vm.parseJson(simulation, "description"), (string));
+        bytes[] memory logs = abi.decode(vm.parseJson(simulation, "logs"), (bytes[]));
+
+        console2.log(description, "\n");
+
+        // Read logs from serialized structure.
+        for (uint256 i = 0; i < logs.length; i++) {
+            (uint256 blockTimestamp, string memory message) = abi.decode(
+                logs[i],
+                // Encoding:
+                // - blockTimestamp: `uint256`
+                // - message: `string`
+                (uint256, string)
+            );
+
+            console2.log(message, "@", blockTimestamp);
+        }
     }
 }
