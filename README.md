@@ -24,6 +24,9 @@ A Solidity framework for upgradeable modularized applications.
 - [Contracts](#contracts)
 - [Install](#install)
 - [Usage](#usage)
+  - [Install Commands](#install-commands)
+  - [Build Commands](#build-commands)
+  - [Test Commands](#test-commands)
 - [Safety](#safety)
 - [Contributing](#contributing)
 - [Acknowledgements](#acknowledgements)
@@ -90,7 +93,49 @@ TODO: ADD LINK
 
 ## Usage
 
+Reflex includes a suite of fuzzing and invariant tests written in Solidity with Foundry.
+
 Please refer to the [IMPLEMENTERS](docs/IMPLEMENTERS.md) guide for an in-depth breakdown of the framework.
+
+To install Foundry:
+
+```sh
+curl -L https://foundry.paradigm.xyz | bash
+```
+
+This will download foundryup. To start Foundry, run:
+
+```sh
+foundryup
+```
+
+For convenience we use a [Makefile](/Makefile) for running different tasks.
+
+### Install Commands
+
+| Command                  | Action                    |
+| ------------------------ | ------------------------- |
+| `make` or `make install` | Install all dependencies. |
+
+### Build Commands
+
+| Command                      | Action                                                                |
+| ---------------------------- | --------------------------------------------------------------------- |
+| `make build`                 | Compile all contracts in the repo with the `default` profile.         |
+| `make build-min-solc`        | Compile all contracts in the repo with the `min-solc` profile.        |
+| `make build-via-ir`          | Compile all contracts in the repo with the `via-ir` profile.          |
+| `make build-min-solc-via-ir` | Compile all contracts in the repo with the `min-solc-via-ir` profile. |
+| `make clean`                 | Delete cached files.                                                  |
+
+### Test Commands
+
+| Command                     | Action                                            |
+| --------------------------- | ------------------------------------------------- |
+| `make test`                 | Run all tests.                                    |
+| `make test-intense`         | Run all tests with the `intense` profile.         |
+| `make test-min-solc`        | Run all tests with the `min-solc` profile.        |
+| `make test-via-ir`          | Run all tests with the `via-ir` profile.          |
+| `make test-min-solc-via-ir` | Run all tests with the `min-solc-via-ir` profile. |
 
 ## Safety
 
