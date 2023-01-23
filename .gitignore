@@ -83,6 +83,9 @@ lcov.info
 .gas-snapshot
 .gas-snapshot-*
 
+# Simulations
+/simulations/*.csv
+
 # Scripts
 docs/REENTRANCY_LAYOUT.temp.md
 docs/STORAGE_LAYOUT.temp.md

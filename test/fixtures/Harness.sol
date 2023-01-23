@@ -6,14 +6,17 @@ import {InvariantTest} from "forge-std/InvariantTest.sol";
 import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
 
+// Fixtures
+import {Users} from "./Users.sol";
+
 /**
  * @title Harness
  * @dev A rigorous testing and invariant harness.
  * @author `Users` has been modified from: PRBTest (https://github.com/PaulRBerg/prb-math/blob/main/test/BaseTest.t.sol)
  * @author `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/main/src/test/utils/DSTestPlus.sol)
- * @author `BrualizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol)
+ * @author `BrutalizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol)
  */
-abstract contract Harness is InvariantTest, Test {
+abstract contract Harness is Users, InvariantTest, Test {
     // ======
     // Errors
     // ======
@@ -31,25 +34,8 @@ abstract contract Harness is InvariantTest, Test {
     error InsufficientMemoryAllocation();
 
     // =======
-    // Structs
-    // =======
-
-    struct Users {
-        // solhint-disable-next-line var-name-mixedcase
-        address payable Alice;
-        // solhint-disable-next-line var-name-mixedcase
-        address payable Bob;
-        // solhint-disable-next-line var-name-mixedcase
-        address payable Caroll;
-        // solhint-disable-next-line var-name-mixedcase
-        address payable Dave;
-    }
-
-    // =======
     // Storage
     // =======
-
-    Users internal _users;
 
     string internal _gasLabel;
     uint256 internal _gasStart;
@@ -128,7 +114,9 @@ abstract contract Harness is InvariantTest, Test {
     // Setup
     // =====
 
-    function setUp() public virtual {
+    function setUp() public virtual override {
+        super.setUp();
+
         address brutalizedAddress = _brutalizedAddress(address(0));
         bool brutalizedAddressIsBrutalized;
 
@@ -138,26 +126,6 @@ abstract contract Harness is InvariantTest, Test {
         }
 
         if (!brutalizedAddressIsBrutalized) revert FailedSetup();
-
-        _users = Users({
-            Alice: _createUser("Alice"),
-            Bob: _createUser("Bob"),
-            Caroll: _createUser("Caroll"),
-            Dave: _createUser("Dave")
-        });
-    }
-
-    // =========
-    // Utilities
-    // =========
-
-    /**
-     * @dev Create user address from user label.
-     */
-    function _createUser(string memory label_) internal returns (address payable user) {
-        user = payable(address(uint160(uint256(keccak256(abi.encodePacked(label_))))));
-        vm.label(user, label_);
-        vm.deal(user, 100e18);
     }
 
     /**

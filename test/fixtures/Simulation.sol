@@ -183,6 +183,8 @@ contract Logger is CommonBase, StdAssertions {
         for (uint256 line = 0; line < table.length; line++) {
             vm.writeLine(_filePath, _generateTableLineFromArray(_table[line]));
         }
+
+        console2.log("Wrote table to:", _filePath);
     }
 
     // ================
@@ -431,6 +433,7 @@ abstract contract Simulation is CommonBase, StdAssertions {
         // Snapshot the final state of the simulation.
         vm.warp(block.timestamp);
         end();
+        console2.log("Ending timestamp @", block.timestamp);
 
         // Write to disk
         _logger.writeFile();
