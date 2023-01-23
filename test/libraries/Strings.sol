@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 /**
  * @dev String library.
- * @author `toString` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/src/utils/LibString.sol)
+ * @author `toString` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/src/utils/LibString.sol) (MIT)
  */
 library Strings {
     /**
