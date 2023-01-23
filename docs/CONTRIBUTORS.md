@@ -65,20 +65,44 @@ foundryup
 
 For convenience we use a [Makefile](/Makefile) for running different tasks.
 
-To install dependencies:
+### Install Commands
 
-```sh
-make install
-```
+| Command                  | Action                    |
+| ------------------------ | ------------------------- |
+| `make` or `make install` | Install all dependencies. |
 
-To build:
+### Build Commands
 
-```sh
-make build
-```
+| Command                      | Action                                                                |
+| ---------------------------- | --------------------------------------------------------------------- |
+| `make build`                 | Compile all contracts in the repo with the `default` profile.         |
+| `make build-min-solc`        | Compile all contracts in the repo with the `min-solc` profile.        |
+| `make build-via-ir`          | Compile all contracts in the repo with the `via-ir` profile.          |
+| `make build-min-solc-via-ir` | Compile all contracts in the repo with the `min-solc-via-ir` profile. |
+| `make clean`                 | Delete cached files.                                                  |
 
-To test:
+### Test Commands
 
-```sh
-make test
-```
+| Command                     | Action                                            |
+| --------------------------- | ------------------------------------------------- |
+| `make test`                 | Run all tests.                                    |
+| `make test-intense`         | Run all tests with the `intense` profile.         |
+| `make test-min-solc`        | Run all tests with the `min-solc` profile.        |
+| `make test-via-ir`          | Run all tests with the `via-ir` profile.          |
+| `make test-min-solc-via-ir` | Run all tests with the `min-solc-via-ir` profile. |
+
+### Snapshot Commands
+
+| Command                         | Action                                           |
+| ------------------------------- | ------------------------------------------------ |
+| `make snapshot`                 | Run snapshot.                                    |
+| `make snapshot-min-solc`        | Run snapshot with the `min-solc` profile.        |
+| `make snapshot-via-ir`          | Run snapshot with the `via-ir` profile.          |
+| `make snapshot-min-solc-via-ir` | Run snapshot with the `min-solc-via-ir` profile. |
+
+### Linter Commands
+
+| Command           | Action                |
+| ----------------- | --------------------- |
+| `make lint-check` | Run the lint checker. |
+| `make lint-fix`   | Run the lint fixer.   |
