@@ -113,9 +113,7 @@ abstract contract Harness is Users, InvariantTest, Test {
     // Setup
     // =====
 
-    function setUp() public virtual override {
-        super.setUp();
-
+    function setUp() public virtual {
         address brutalizedAddress = _brutalizedAddress(address(0));
         bool brutalizedAddressIsBrutalized;
 

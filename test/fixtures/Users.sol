@@ -31,11 +31,11 @@ abstract contract Users is CommonBase {
 
     UserAddresses internal _users;
 
-    // =====
-    // Setup
-    // =====
+    // ===========
+    // Constructor
+    // ===========
 
-    function setUp() public virtual {
+    constructor() {
         _users = UserAddresses({
             Alice: _createUser("Alice"),
             Bob: _createUser("Bob"),

@@ -5,6 +5,9 @@ pragma solidity ^0.8.13;
 import {CommonBase} from "forge-std/Base.sol";
 import {console2} from "forge-std/console2.sol";
 
+// Fixtures
+import {Users} from "./Users.sol";
+
 // Libraries
 import {Strings} from "../libraries/Strings.sol";
 
@@ -277,7 +280,7 @@ contract Logger is CommonBase {
  * @dev Abstract action to execute in the simulation.
  * @author `Action` has been inspired by: Maple V2 Core (https://github.com/maple-labs/maple-core-v2/blob/25bca5b7a698235c612695e86d349c4e765ce6be/contracts/actions/Action.sol) (AGPL-3.0-only)
  */
-abstract contract Action {
+abstract contract Action is Users {
     // ======
     // Errors
     // ======
@@ -345,7 +348,7 @@ abstract contract Action {
  * @author `Simulation` has been inspired by: Maple V2 Core (https://github.com/maple-labs/maple-core-v2/blob/aebc14ba7704da31cae8c7fe0c06d6a3396a600a/contracts/PoolSimulation.sol) (AGPL-3.0-only)
  * @author `Simulation` has been inspired by: Maple V2 Core (https://github.com/maple-labs/maple-core-v2/blob/aebc14ba7704da31cae8c7fe0c06d6a3396a600a/contracts/ActionHandler.sol) (AGPL-3.0-only)
  */
-abstract contract Simulation is CommonBase {
+abstract contract Simulation is CommonBase, Users {
     // =========
     // Constants
     // =========

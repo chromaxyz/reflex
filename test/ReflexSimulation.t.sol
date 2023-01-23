@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+import {console2} from "forge-std/console2.sol";
+
 // Fixtures
 import {Harness} from "./fixtures/Harness.sol";
 import {Action, Logger, Simulation} from "./fixtures/Simulation.sol";
