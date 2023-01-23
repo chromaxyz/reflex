@@ -114,9 +114,6 @@ The contracts and tests were inspired by or directly modified from many sources,
 
 - [Euler](https://github.com/euler-xyz/euler-contracts) - `GPL-2.0-or-later`
 - [EIP-2535: Diamonds, Multi-Facet Proxy](https://eips.ethereum.org/EIPS/eip-2535) - `CC0`
-- [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts) - `MIT`
-- [Solmate](https://github.com/transmissions11/solmate) - `AGPL-3.0-only`
-- [Solady](https://github.com/Vectorized/solady) - `MIT`
 
 ## License
 
