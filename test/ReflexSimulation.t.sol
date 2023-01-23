@@ -3,8 +3,6 @@ pragma solidity ^0.8.13;
 
 // Fixtures
 import {Harness} from "./fixtures/Harness.sol";
-
-// Fixtures
 import {Action, Logger, Simulation} from "./fixtures/Simulation.sol";
 
 // Libraries
@@ -83,6 +81,8 @@ contract ReflexSimulation is Harness {
     BorrowAction public borrowAction1;
     BorrowAction public borrowAction2;
     BorrowAction public borrowAction3;
+    BorrowAction public borrowAction4;
+    BorrowAction public borrowAction5;
 
     BorrowSimulation public borrowSimulation;
 
@@ -95,11 +95,13 @@ contract ReflexSimulation is Harness {
 
         logger = new Logger("simulations/example.csv");
 
-        borrowAction1 = new BorrowAction(logger, "first action", block.timestamp + 10 days);
-        borrowAction2 = new BorrowAction(logger, "second action", block.timestamp + 20 days);
-        borrowAction3 = new BorrowAction(logger, "third action", block.timestamp + 30 days);
+        borrowAction1 = new BorrowAction(logger, "first action", block.timestamp);
+        borrowAction2 = new BorrowAction(logger, "second action", block.timestamp);
+        borrowAction3 = new BorrowAction(logger, "third action", block.timestamp + 10 days);
+        borrowAction4 = new BorrowAction(logger, "fourth action", block.timestamp + 20 days);
+        borrowAction5 = new BorrowAction(logger, "fifth action", block.timestamp + 30 days);
 
-        borrowSimulation = new BorrowSimulation(logger, "Reflex#Simulacra >> borrow actions", 1 days);
+        borrowSimulation = new BorrowSimulation(logger, "Reflex#Example >> example actions", 1 days);
     }
 
     // =====
@@ -107,10 +109,12 @@ contract ReflexSimulation is Harness {
     // =====
 
     function testSimulation() external {
-        Action[] memory actions = new Action[](3);
+        Action[] memory actions = new Action[](5);
         actions[0] = borrowAction1;
         actions[1] = borrowAction2;
         actions[2] = borrowAction3;
+        actions[3] = borrowAction4;
+        actions[4] = borrowAction5;
         borrowSimulation.add(actions);
 
         borrowSimulation.run();

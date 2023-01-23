@@ -117,6 +117,7 @@ The contracts and tests were inspired by or directly modified from many sources,
 - [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts) - `MIT`
 - [Solmate](https://github.com/transmissions11/solmate) - `AGPL-3.0-only`
 - [Solady](https://github.com/Vectorized/solady) - `MIT`
+- [Maple V2](https://github.com/maple-labs/maple-core-v2/tree/25bca5b7a698235c612695e86d349c4e765ce6be) - `AGPL-3.0-only`
 
 ## License
 

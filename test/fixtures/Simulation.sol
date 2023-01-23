@@ -5,10 +5,16 @@ pragma solidity ^0.8.13;
 import {CommonBase} from "forge-std/Base.sol";
 import {console2} from "forge-std/console2.sol";
 
+// Libraries
+import {Strings} from "../libraries/Strings.sol";
+
 /**
  * @title Logger
+ * @author `Logger` has been inspired by: Maple Labs (https://github.com/maple-labs/contract-test-utils/blob/f5e9765e66e7f81158aadde194a95aec4f7747ec/contracts/csv.sol)
  */
 contract Logger is CommonBase {
+    using Strings for uint256;
+
     // ======
     // Errors
     // ======
@@ -235,7 +241,7 @@ contract Logger is CommonBase {
             vm.writeLine(_filePath, line);
         }
 
-        console2.log("Wrote table to:", _filePath);
+        console2.log(string.concat("Wrote table to: ", _filePath, " (", _table.length.toString(), " entries)"));
     }
 
     // ================
@@ -267,6 +273,7 @@ contract Logger is CommonBase {
 
 /**
  * @title Action
+ * @author `Action` has been inspired by: Maple Labs (https://github.com/maple-labs/maple-core-v2/blob/25bca5b7a698235c612695e86d349c4e765ce6be/contracts/actions/Action.sol)
  */
 abstract contract Action {
     // ======
@@ -332,6 +339,8 @@ abstract contract Action {
 
 /**
  * @title Simulation
+ * @author `Simulation` has been inspired by: Maple Labs (https://github.com/maple-labs/maple-core-v2/blob/aebc14ba7704da31cae8c7fe0c06d6a3396a600a/contracts/PoolSimulation.sol)
+ * @author `Simulation` has been inspired by: Maple Labs (https://github.com/maple-labs/maple-core-v2/blob/aebc14ba7704da31cae8c7fe0c06d6a3396a600a/contracts/ActionHandler.sol)
  */
 abstract contract Simulation is CommonBase {
     // =========
@@ -348,7 +357,7 @@ abstract contract Simulation is CommonBase {
 
     error NoLogger();
 
-    error InvalidTimestep();
+    error InvalidTimeStep();
 
     error InvalidTimestamp();
 
@@ -360,10 +369,11 @@ abstract contract Simulation is CommonBase {
 
     Logger internal _logger;
     string internal _description;
-    uint256 internal _timestep;
+    uint256 internal _timeStep;
 
     Action[] internal _actions;
     uint256 internal _actionIndex;
+    uint256 internal _startTimestamp;
     uint256 internal _endTimestamp;
 
     // ===========
@@ -373,17 +383,17 @@ abstract contract Simulation is CommonBase {
     /**
      * @param logger_ Simulation logger.
      * @param description_ Simulation description.
-     * @param timestep_ Timestep per cycle.
+     * @param timeStep_ Time step per cycle.
 
      */
-    constructor(Logger logger_, string memory description_, uint256 timestep_) {
+    constructor(Logger logger_, string memory description_, uint256 timeStep_) {
         if (address(logger_) == address(0)) revert NoLogger();
         if (bytes(description_).length == 0) revert NoDescription();
-        if (timestep_ == 0) revert InvalidTimestep();
+        if (timeStep_ == 0) revert InvalidTimeStep();
 
         _logger = logger_;
         _description = description_;
-        _timestep = timestep_;
+        _timeStep = timeStep_;
     }
 
     // ==============
@@ -420,11 +430,12 @@ abstract contract Simulation is CommonBase {
     function run() external {
         console2.log(_description, "\n");
 
-        // Sort all actions based on their timestamp.
+        // Early exit if no actions were registered.
         if (_actions.length == 0) revert NoActions();
 
-        console2.log("Running", _actions.length, "actions with timestep:", _timestep);
+        console2.log("Running", _actions.length, "actions with timestep @", _timeStep);
 
+        // Sort all actions based on their timestamp.
         for (uint256 i = 0; i < _actions.length - 1; ++i) {
             for (uint256 j = 0; j < _actions.length - 1 - i; ++j) {
                 if (_actions[j].timestamp() > _actions[j + 1].timestamp()) {
@@ -433,18 +444,23 @@ abstract contract Simulation is CommonBase {
             }
         }
 
-        // Register final timestamp for simulation termination.
-        _endTimestamp = _actions[_actions.length - 1].timestamp();
+        // Register start timestamp with negative time step padding if enough space.
+        _startTimestamp = _actions[0].timestamp() > _timeStep ? _actions[0].timestamp() - _timeStep : block.timestamp;
+
+        // Register end timestamp with positive time step padding.
+        _endTimestamp = _actions[_actions.length - 1].timestamp() + _timeStep;
+
+        // Warp to block.
+        _warpBlock(_startTimestamp);
 
         // Snapshot the initial state of the simulation.
-        _warpBlock(block.timestamp);
         start();
 
         console2.log("Starting timestamp @", block.timestamp);
 
         while (true) {
             // Calculate when the next snapshot will be taken.
-            uint256 nextTimestamp_ = block.timestamp + _timestep;
+            uint256 nextTimestamp_ = block.timestamp + _timeStep;
 
             // Round down the timestamp to the end of the simulation if it exceeds it.
             if (nextTimestamp_ > _endTimestamp) nextTimestamp_ = _endTimestamp;
@@ -473,7 +489,7 @@ abstract contract Simulation is CommonBase {
                 ++_actionIndex;
             }
 
-            // Warp to timestamp.
+            // Warp to block.
             _warpBlock(nextTimestamp_);
 
             // Capture state snapshot.
@@ -483,9 +499,12 @@ abstract contract Simulation is CommonBase {
             if (block.timestamp == _endTimestamp) break;
         }
 
-        // Snapshot the final state of the simulation.
+        // Warp to final block.
         _warpBlock(block.timestamp);
+
+        // Snapshot the final state of the simulation.
         end();
+
         console2.log("Ending timestamp @", block.timestamp);
 
         // Write to disk.
@@ -500,6 +519,7 @@ abstract contract Simulation is CommonBase {
      * @dev Warp timestamp and roll to estimated block.
      */
     function _warpBlock(uint256 timestamp_) internal {
+        if (timestamp_ == block.timestamp) return;
         if (timestamp_ < block.timestamp) revert InvalidTimestamp();
 
         vm.roll(block.number + ((timestamp_ - block.timestamp) / _TIME_PER_BLOCK));
