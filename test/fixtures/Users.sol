@@ -2,9 +2,12 @@
 pragma solidity ^0.8.13;
 
 // Vendor
-// import {}
+import {CommonBase} from "forge-std/Base.sol";
 
-abstract contract Users {
+/**
+ * @title Users
+ */
+abstract contract Users is CommonBase {
     // =======
     // Structs
     // =======
@@ -48,7 +51,7 @@ abstract contract Users {
      */
     function _createUser(string memory label_) internal returns (address payable user) {
         user = payable(address(uint160(uint256(keccak256(abi.encodePacked(label_))))));
-        // vm.label(user, label_);
-        // vm.deal(user, 100e18);
+        vm.label(user, label_);
+        vm.deal(user, 100e18);
     }
 }

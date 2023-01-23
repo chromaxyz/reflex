@@ -18,33 +18,37 @@ contract BorrowSimulation is Simulation {
         string memory description_,
         uint256 timestep_
     ) Simulation(logger_, description_, timestep_) {
-        string[] memory header = new string[](2);
-        header[0] = "timestamp";
-        header[1] = "message";
+        string[] memory header = new string[](3);
+        header[0] = "blockTimestamp";
+        header[1] = "blockNumber";
+        header[2] = "message";
 
         _logger.addHeader(header);
     }
 
     function start() public override {
-        string[] memory row = new string[](2);
+        string[] memory row = new string[](3);
         row[0] = block.timestamp.toString();
-        row[1] = "start";
+        row[1] = block.number.toString();
+        row[2] = "start";
 
         _logger.addRow(row);
     }
 
     function end() public override {
-        string[] memory row = new string[](2);
+        string[] memory row = new string[](3);
         row[0] = block.timestamp.toString();
-        row[1] = "end";
+        row[1] = block.number.toString();
+        row[2] = "end";
 
         _logger.addRow(row);
     }
 
     function snapshot() public override {
-        string[] memory row = new string[](2);
+        string[] memory row = new string[](3);
         row[0] = block.timestamp.toString();
-        row[1] = "snapshot";
+        row[1] = block.number.toString();
+        row[2] = "snapshot";
 
         _logger.addRow(row);
     }
@@ -60,42 +64,12 @@ contract BorrowAction is Action {
     ) Action(logger_, description_, timestamp_) {}
 
     function run() external override {
-        string[] memory row = new string[](2);
+        string[] memory row = new string[](3);
         row[0] = block.timestamp.toString();
-        row[1] = _description;
+        row[1] = block.number.toString();
+        row[2] = _description;
 
         _logger.addRow(row);
-    }
-
-    // =========
-    // Utilities
-    // =========
-
-    function _castUInt256ToString(uint256 input_) internal pure returns (string memory output_) {
-        if (input_ == 0) return "0";
-
-        uint256 j = input_;
-        uint256 length;
-
-        while (j != 0) {
-            length++;
-            j /= 10;
-        }
-
-        bytes memory output = new bytes(length);
-        uint256 k = length;
-
-        while (input_ != 0) {
-            k = k - 1;
-
-            uint8 temp = (48 + uint8(input_ - (input_ / 10) * 10));
-            bytes1 b1 = bytes1(temp);
-
-            output[k] = b1;
-            input_ /= 10;
-        }
-
-        return string(output);
     }
 }
 
@@ -119,7 +93,7 @@ contract ReflexSimulation is Harness {
     function setUp() public virtual override {
         super.setUp();
 
-        logger = new Logger("simulations/team.csv");
+        logger = new Logger("simulations/example.csv");
 
         borrowAction1 = new BorrowAction(logger, "first action", block.timestamp + 10 days);
         borrowAction2 = new BorrowAction(logger, "second action", block.timestamp + 20 days);

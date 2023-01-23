@@ -4,23 +4,27 @@ pragma solidity ^0.8.13;
 // Vendor
 import {CommonBase} from "forge-std/Base.sol";
 import {console2} from "forge-std/console2.sol";
-import {StdAssertions} from "forge-std/StdAssertions.sol";
 
 /**
  * @title Logger
  */
-contract Logger is CommonBase, StdAssertions {
+contract Logger is CommonBase {
     // ======
     // Errors
     // ======
 
     error NoFilePath();
 
+    error MissingValues();
+
+    error RowLengthMismatch();
+
     // =======
     // Storage
     // =======
 
     string internal _filePath;
+
     string[][] internal _table;
 
     // ===========
@@ -40,10 +44,16 @@ contract Logger is CommonBase, StdAssertions {
     // Public methods
     // ==============
 
+    /**
+     * @dev Add header to table.
+     */
     function addHeader(string[] memory header_) external {
         _addHeader(header_);
     }
 
+    /**
+     * @dev Add header to table.
+     */
     function addHeader(string memory header1_) external {
         string[] memory row = new string[](1);
         row[0] = header1_;
@@ -51,6 +61,9 @@ contract Logger is CommonBase, StdAssertions {
         _addHeader(row);
     }
 
+    /**
+     * @dev Add header to table.
+     */
     function addHeader(string memory header1_, string memory header2_) external {
         string[] memory row = new string[](2);
         row[0] = header1_;
@@ -59,6 +72,9 @@ contract Logger is CommonBase, StdAssertions {
         _addHeader(row);
     }
 
+    /**
+     * @dev Add header to table.
+     */
     function addHeader(string memory header1_, string memory header2_, string memory header3_) external {
         string[] memory row = new string[](3);
         row[0] = header1_;
@@ -68,6 +84,9 @@ contract Logger is CommonBase, StdAssertions {
         _addHeader(row);
     }
 
+    /**
+     * @dev Add header to table.
+     */
     function addHeader(
         string memory header1_,
         string memory header2_,
@@ -83,6 +102,9 @@ contract Logger is CommonBase, StdAssertions {
         _addHeader(row);
     }
 
+    /**
+     * @dev Add header to table.
+     */
     function addHeader(
         string memory header1_,
         string memory header2_,
@@ -100,16 +122,22 @@ contract Logger is CommonBase, StdAssertions {
         _addHeader(row);
     }
 
+    /**
+     * @dev Add row to table.
+     */
     function addRow(string[] memory row_) external {
-        assertTrue(_table.length > 0);
-        assertTrue(_table[0].length == row_.length);
+        if (_table.length == 0) revert MissingValues();
+        if (_table[0].length != row_.length) revert RowLengthMismatch();
 
         _addRow(row_);
     }
 
+    /**
+     * @dev Add row to table.
+     */
     function addRow(string memory cell1_) external {
-        assertTrue(_table.length > 0);
-        assertTrue(_table[0].length == 1);
+        if (_table.length == 0) revert MissingValues();
+        if (_table[0].length != 1) revert RowLengthMismatch();
 
         string[] memory row = new string[](1);
         row[0] = cell1_;
@@ -117,9 +145,12 @@ contract Logger is CommonBase, StdAssertions {
         _addRow(row);
     }
 
+    /**
+     * @dev Add row to table.
+     */
     function addRow(string memory cell1_, string memory cell2_) external {
-        assertTrue(_table.length > 0);
-        assertTrue(_table[0].length == 2);
+        if (_table.length == 0) revert MissingValues();
+        if (_table[0].length != 2) revert RowLengthMismatch();
 
         string[] memory row = new string[](2);
         row[0] = cell1_;
@@ -128,9 +159,12 @@ contract Logger is CommonBase, StdAssertions {
         _addRow(row);
     }
 
+    /**
+     * @dev Add row to table.
+     */
     function addRow(string memory cell1_, string memory cell2_, string memory cell3_) external {
-        assertTrue(_table.length > 0);
-        assertTrue(_table[0].length == 3);
+        if (_table.length == 0) revert MissingValues();
+        if (_table[0].length != 3) revert RowLengthMismatch();
 
         string[] memory row = new string[](3);
         row[0] = cell1_;
@@ -140,9 +174,12 @@ contract Logger is CommonBase, StdAssertions {
         _addRow(row);
     }
 
+    /**
+     * @dev Add row to table.
+     */
     function addRow(string memory cell1_, string memory cell2_, string memory cell3_, string memory cell4_) external {
-        assertTrue(_table.length > 0);
-        assertTrue(_table[0].length == 4);
+        if (_table.length == 0) revert MissingValues();
+        if (_table[0].length != 4) revert RowLengthMismatch();
 
         string[] memory row = new string[](4);
         row[0] = cell1_;
@@ -153,6 +190,9 @@ contract Logger is CommonBase, StdAssertions {
         _addRow(row);
     }
 
+    /**
+     * @dev Add row to table.
+     */
     function addRow(
         string memory cell1_,
         string memory cell2_,
@@ -160,8 +200,8 @@ contract Logger is CommonBase, StdAssertions {
         string memory cell4_,
         string memory cell5_
     ) external {
-        assertTrue(_table.length > 0);
-        assertTrue(_table[0].length == 5);
+        if (_table.length == 0) revert MissingValues();
+        if (_table[0].length != 5) revert RowLengthMismatch();
 
         string[] memory row = new string[](5);
         row[0] = cell1_;
@@ -173,15 +213,26 @@ contract Logger is CommonBase, StdAssertions {
         _addRow(row);
     }
 
+    /**
+     * @dev Write file to disk.
+     */
     function writeFile() external {
         try vm.readLine(_filePath) {
             vm.removeFile(_filePath);
         } catch {}
 
-        string[][] storage table = _table;
+        string memory line;
 
-        for (uint256 line = 0; line < table.length; line++) {
-            vm.writeLine(_filePath, _generateTableLineFromArray(_table[line]));
+        for (uint256 i = 0; i < _table.length; i++) {
+            for (uint256 j = 0; j < _table[i].length; j++) {
+                if (j == 0) {
+                    line = _table[i][j];
+                } else {
+                    line = string(abi.encodePacked(line, ",", _table[i][j]));
+                }
+            }
+
+            vm.writeLine(_filePath, line);
         }
 
         console2.log("Wrote table to:", _filePath);
@@ -191,32 +242,26 @@ contract Logger is CommonBase, StdAssertions {
     // Internal methods
     // ================
 
+    /**
+     * @dev Add header to table.
+     */
     function _addHeader(string[] memory header_) internal {
         delete _table;
 
         _addRow(header_);
     }
 
+    /**
+     * @dev Add row to table.
+     */
     function _addRow(string[] memory row_) internal {
-        assertTrue(_validateAllRowCellsHaveValues(row_));
-
-        _table.push(row_);
-    }
-
-    function _generateTableLineFromArray(string[] memory array_) internal pure returns (string memory line_) {
-        for (uint256 i = 0; i < array_.length; i++) {
-            line_ = i == 0 ? array_[i] : string(abi.encodePacked(line_, ",", array_[i]));
-        }
-    }
-
-    function _validateAllRowCellsHaveValues(string[] memory row_) internal pure returns (bool allHaveValues_) {
         for (uint256 i = 0; i < row_.length; i++) {
             string memory cell = row_[i];
 
-            if (bytes(cell).length == 0) return false;
+            if (bytes(cell).length == 0) revert MissingValues();
         }
 
-        return true;
+        _table.push(row_);
     }
 }
 
@@ -288,7 +333,13 @@ abstract contract Action {
 /**
  * @title Simulation
  */
-abstract contract Simulation is CommonBase, StdAssertions {
+abstract contract Simulation is CommonBase {
+    // =========
+    // Constants
+    // =========
+
+    uint256 private constant _TIME_PER_BLOCK = 12 seconds;
+
     // ======
     // Errors
     // ======
@@ -298,6 +349,8 @@ abstract contract Simulation is CommonBase, StdAssertions {
     error NoLogger();
 
     error InvalidTimestep();
+
+    error InvalidTimestamp();
 
     error NoActions();
 
@@ -384,7 +437,7 @@ abstract contract Simulation is CommonBase, StdAssertions {
         _endTimestamp = _actions[_actions.length - 1].timestamp();
 
         // Snapshot the initial state of the simulation.
-        vm.warp(block.timestamp);
+        _warpBlock(block.timestamp);
         start();
 
         console2.log("Starting timestamp @", block.timestamp);
@@ -410,7 +463,7 @@ abstract contract Simulation is CommonBase, StdAssertions {
                 if (nextAction_.timestamp() > nextTimestamp_) break;
 
                 // Warp to the action timestamp.
-                vm.warp(nextAction_.timestamp());
+                _warpBlock(nextAction_.timestamp());
 
                 // Perform the action.
                 console2.log("Running", nextAction_.description(), "@", block.timestamp);
@@ -421,7 +474,7 @@ abstract contract Simulation is CommonBase, StdAssertions {
             }
 
             // Warp to timestamp.
-            vm.warp(nextTimestamp_);
+            _warpBlock(nextTimestamp_);
 
             // Capture state snapshot.
             snapshot();
@@ -431,11 +484,25 @@ abstract contract Simulation is CommonBase, StdAssertions {
         }
 
         // Snapshot the final state of the simulation.
-        vm.warp(block.timestamp);
+        _warpBlock(block.timestamp);
         end();
         console2.log("Ending timestamp @", block.timestamp);
 
-        // Write to disk
+        // Write to disk.
         _logger.writeFile();
+    }
+
+    // =========
+    // Utilities
+    // =========
+
+    /**
+     * @dev Warp timestamp and roll to estimated block.
+     */
+    function _warpBlock(uint256 timestamp_) internal {
+        if (timestamp_ < block.timestamp) revert InvalidTimestamp();
+
+        vm.roll(block.number + ((timestamp_ - block.timestamp) / _TIME_PER_BLOCK));
+        vm.warp(timestamp_);
     }
 }
