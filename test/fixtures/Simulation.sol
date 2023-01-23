@@ -10,6 +10,7 @@ import {Strings} from "../libraries/Strings.sol";
 
 /**
  * @title Logger
+ * @dev Logger for writing simulation output data to a CSV file.
  * @author `Logger` has been inspired by: Maple Labs (https://github.com/maple-labs/contract-test-utils/blob/f5e9765e66e7f81158aadde194a95aec4f7747ec/contracts/csv.sol) (AGPL-3.0-only)
  */
 contract Logger is CommonBase {
@@ -273,6 +274,7 @@ contract Logger is CommonBase {
 
 /**
  * @title Action
+ * @dev Abstract action to execute in the simulation.
  * @author `Action` has been inspired by: Maple Labs (https://github.com/maple-labs/maple-core-v2/blob/25bca5b7a698235c612695e86d349c4e765ce6be/contracts/actions/Action.sol) (AGPL-3.0-only)
  */
 abstract contract Action {
@@ -339,6 +341,7 @@ abstract contract Action {
 
 /**
  * @title Simulation
+ * @dev Abstract simulation to execute a series of actions in chronological order by timestamp.
  * @author `Simulation` has been inspired by: Maple Labs (https://github.com/maple-labs/maple-core-v2/blob/aebc14ba7704da31cae8c7fe0c06d6a3396a600a/contracts/PoolSimulation.sol) (AGPL-3.0-only)
  * @author `Simulation` has been inspired by: Maple Labs (https://github.com/maple-labs/maple-core-v2/blob/aebc14ba7704da31cae8c7fe0c06d6a3396a600a/contracts/ActionHandler.sol) (AGPL-3.0-only)
  */
