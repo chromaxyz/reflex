@@ -119,13 +119,13 @@ For convenience we use a [Makefile](/Makefile) for running different tasks.
 
 ### Build Commands
 
-| Command                      | Action                                                                |
-| ---------------------------- | --------------------------------------------------------------------- |
-| `make build`                 | Compile all contracts in the repo with the `default` profile.         |
-| `make build-min-solc`        | Compile all contracts in the repo with the `min-solc` profile.        |
-| `make build-via-ir`          | Compile all contracts in the repo with the `via-ir` profile.          |
-| `make build-min-solc-via-ir` | Compile all contracts in the repo with the `min-solc-via-ir` profile. |
-| `make clean`                 | Delete cached files.                                                  |
+| Command                      | Action                                                    |
+| ---------------------------- | --------------------------------------------------------- |
+| `make build`                 | Compile all contracts with the `default` profile.         |
+| `make build-min-solc`        | Compile all contracts with the `min-solc` profile.        |
+| `make build-via-ir`          | Compile all contracts with the `via-ir` profile.          |
+| `make build-min-solc-via-ir` | Compile all contracts with the `min-solc-via-ir` profile. |
+| `make clean`                 | Delete cached files.                                      |
 
 ### Test Commands
 
