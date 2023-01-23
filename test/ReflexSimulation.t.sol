@@ -5,7 +5,7 @@ pragma solidity ^0.8.13;
 import {Harness} from "./fixtures/Harness.sol";
 
 // Fixtures
-import {Action, Logger, Replay, Simulation} from "./fixtures/Simulation.sol";
+import {Action, Logger, Simulation} from "./fixtures/Simulation.sol";
 
 contract BorrowSimulation is Simulation {
     constructor(
@@ -15,15 +15,15 @@ contract BorrowSimulation is Simulation {
     ) Simulation(logger_, description_, timestep_) {}
 
     function start() public override {
-        _logger.writeLog("start!");
+        // _logger.writeLog("start!");
     }
 
     function end() public override {
-        _logger.writeLog("end!");
+        // _logger.writeLog("end!");
     }
 
     function snapshot() public override {
-        _logger.writeLog("snapshot!");
+        // _logger.writeLog("snapshot!");
     }
 }
 
@@ -35,11 +35,11 @@ contract BorrowAction is Action {
     ) Action(logger_, description_, timestamp_) {}
 
     function run() external override {
-        _logger.writeLog(string.concat(_description, ": foo bar foo 1"));
-        _logger.writeLog(string.concat(_description, ": foo bar foo 2"));
-        _logger.writeLog(string.concat(_description, ": foo bar foo 3"));
-        _logger.writeLog(string.concat(_description, ": foo bar foo 4"));
-        _logger.writeLog(string.concat(_description, ": foo bar foo 5"));
+        // _logger.writeLog(string.concat(_description, ": foo bar foo 1"));
+        // _logger.writeLog(string.concat(_description, ": foo bar foo 2"));
+        // _logger.writeLog(string.concat(_description, ": foo bar foo 3"));
+        // _logger.writeLog(string.concat(_description, ": foo bar foo 4"));
+        // _logger.writeLog(string.concat(_description, ": foo bar foo 5"));
     }
 }
 
@@ -84,11 +84,5 @@ contract ReflexSimulation is Harness {
         borrowSimulation.add(actions);
 
         borrowSimulation.run();
-    }
-
-    function testReplay() external {
-        Replay replay = new Replay("simulation");
-
-        replay.run();
     }
 }

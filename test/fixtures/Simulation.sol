@@ -5,75 +5,216 @@ pragma solidity ^0.8.13;
 import {CommonBase} from "forge-std/Base.sol";
 import {console2} from "forge-std/console2.sol";
 import {StdAssertions} from "forge-std/StdAssertions.sol";
-import {Vm} from "forge-std/Vm.sol";
 
 /**
  * @title Logger
  */
-contract Logger {
+contract Logger is CommonBase, StdAssertions {
     // ======
     // Errors
     // ======
 
-    error NoFilename();
-
-    // =======
-    // Structs
-    // =======
-
-    struct Log {
-        uint256 blockTimestamp;
-        string message;
-    }
+    error NoFilePath();
 
     // =======
     // Storage
     // =======
 
-    Log[] internal _logs;
-
-    string internal _fileName;
+    string internal _filePath;
+    string[][] internal _table;
 
     // ===========
     // Constructor
     // ===========
 
     /**
-     * @param fileName_ File name of file to write to.
+     * @param filePath_ File path of file to write to.
      */
-    constructor(string memory fileName_) {
-        if (bytes(fileName_).length == 0) revert NoFilename();
+    constructor(string memory filePath_) {
+        if (bytes(filePath_).length == 0) revert NoFilePath();
 
-        _fileName = fileName_;
+        _filePath = filePath_;
     }
 
     // ==============
     // Public methods
     // ==============
 
-    /**
-     * @dev Returns the file name to which the log will be written.
-     */
-    function fileName() public view returns (string memory) {
-        return _fileName;
+    function addHeader(string[] memory header_) external {
+        _addHeader(header_);
     }
 
-    /**
-     * @dev Returns all logs captured until now.
-     */
-    function logs() public view returns (Log[] memory) {
-        return _logs;
+    function addHeader(string memory header1_) external {
+        string[] memory row = new string[](1);
+        row[0] = header1_;
+
+        _addHeader(row);
     }
 
-    // =========
-    // Utilities
-    // =========
+    function addHeader(string memory header1_, string memory header2_) external {
+        string[] memory row = new string[](2);
+        row[0] = header1_;
+        row[1] = header2_;
 
-    /**
-     * @dev Write to logs.
-     */
-    function writeLog(string memory message_) external {
-        _logs.push(Log({blockTimestamp: block.timestamp, message: message_}));
+        _addHeader(row);
+    }
+
+    function addHeader(string memory header1_, string memory header2_, string memory header3_) external {
+        string[] memory row = new string[](3);
+        row[0] = header1_;
+        row[1] = header2_;
+        row[2] = header3_;
+
+        _addHeader(row);
+    }
+
+    function addHeader(
+        string memory header1_,
+        string memory header2_,
+        string memory header3_,
+        string memory header4_
+    ) external {
+        string[] memory row = new string[](4);
+        row[0] = header1_;
+        row[1] = header2_;
+        row[2] = header3_;
+        row[3] = header4_;
+
+        _addHeader(row);
+    }
+
+    function addHeader(
+        string memory header1_,
+        string memory header2_,
+        string memory header3_,
+        string memory header4_,
+        string memory header5_
+    ) external {
+        string[] memory row = new string[](5);
+        row[0] = header1_;
+        row[1] = header2_;
+        row[2] = header3_;
+        row[3] = header4_;
+        row[4] = header5_;
+
+        _addHeader(row);
+    }
+
+    function addRow(string[] memory row_) external {
+        assertTrue(_table.length > 0);
+        assertTrue(_table[0].length == row_.length);
+
+        _addRow(row_);
+    }
+
+    function addRow(string memory cell1_) external {
+        assertTrue(_table.length > 0);
+        assertTrue(_table[0].length == 1);
+
+        string[] memory row = new string[](1);
+        row[0] = cell1_;
+
+        _addRow(row);
+    }
+
+    function addRow(string memory cell1_, string memory cell2_) external {
+        assertTrue(_table.length > 0);
+        assertTrue(_table[0].length == 2);
+
+        string[] memory row = new string[](2);
+        row[0] = cell1_;
+        row[1] = cell2_;
+
+        _addRow(row);
+    }
+
+    function addRow(string memory cell1_, string memory cell2_, string memory cell3_) external {
+        assertTrue(_table.length > 0);
+        assertTrue(_table[0].length == 3);
+
+        string[] memory row = new string[](3);
+        row[0] = cell1_;
+        row[1] = cell2_;
+        row[2] = cell3_;
+
+        _addRow(row);
+    }
+
+    function addRow(string memory cell1_, string memory cell2_, string memory cell3_, string memory cell4_) external {
+        assertTrue(_table.length > 0);
+        assertTrue(_table[0].length == 4);
+
+        string[] memory row = new string[](4);
+        row[0] = cell1_;
+        row[1] = cell2_;
+        row[2] = cell3_;
+        row[3] = cell4_;
+
+        _addRow(row);
+    }
+
+    function addRow(
+        string memory cell1_,
+        string memory cell2_,
+        string memory cell3_,
+        string memory cell4_,
+        string memory cell5_
+    ) external {
+        assertTrue(_table.length > 0);
+        assertTrue(_table[0].length == 5);
+
+        string[] memory row = new string[](5);
+        row[0] = cell1_;
+        row[1] = cell2_;
+        row[2] = cell3_;
+        row[3] = cell4_;
+        row[4] = cell5_;
+
+        _addRow(row);
+    }
+
+    function writeFile() external {
+        try vm.readLine(_filePath) {
+            vm.removeFile(_filePath);
+        } catch {}
+
+        string[][] storage table = _table;
+
+        for (uint256 line = 0; line < table.length; line++) {
+            vm.writeLine(_filePath, _generateTableLineFromArray(_table[line]));
+        }
+    }
+
+    // ================
+    // Internal methods
+    // ================
+
+    function _addHeader(string[] memory header_) internal {
+        delete _table;
+
+        _addRow(header_);
+    }
+
+    function _addRow(string[] memory row_) internal {
+        assertTrue(_validateAllRowCellsHaveValues(row_));
+
+        _table.push(row_);
+    }
+
+    function _generateTableLineFromArray(string[] memory array_) internal pure returns (string memory line_) {
+        for (uint256 i = 0; i < array_.length; i++) {
+            line_ = i == 0 ? array_[i] : string(abi.encodePacked(line_, ",", array_[i]));
+        }
+    }
+
+    function _validateAllRowCellsHaveValues(string[] memory row_) internal pure returns (bool allHaveValues_) {
+        for (uint256 i = 0; i < row_.length; i++) {
+            string memory cell = row_[i];
+
+            if (bytes(cell).length == 0) return false;
+        }
+
+        return true;
     }
 }
 
@@ -291,84 +432,7 @@ abstract contract Simulation is CommonBase, StdAssertions {
         vm.warp(block.timestamp);
         end();
 
-        // Collect all logs and encode.
-        bytes[] memory logs = new bytes[](_logger.logs().length);
-
-        // Write logs to serializable structure.
-        for (uint256 i = 0; i < _logger.logs().length; i++) {
-            logs[i] = abi.encode(_logger.logs()[i].blockTimestamp, _logger.logs()[i].message);
-        }
-
-        vm.serializeString("simulation", "encoding", "(uint256,string)");
-        vm.serializeString("simulation", "header", "blockTimestamp,message");
-        vm.serializeString("simulation", "description", _description);
-
-        // Encoding:
-        // - blockTimestamp: `uint256`
-        // - message: `string`
-        string memory output = vm.serializeBytes("simulation", "logs", logs);
-
-        console2.log("Serialized", _logger.logs().length, "log entries");
-        console2.log("Ending timestamp @", block.timestamp);
-        console2.log("Finished running", _actions.length, "actions");
-
-        // Write to disk.
-        vm.writeJson(output, string.concat("simulations/", _logger.fileName(), ".json"));
-
-        console2.log("Wrote log to:", string.concat("simulations/", _logger.fileName(), ".json"));
-    }
-}
-
-/**
- * @title Replay
- */
-contract Replay is CommonBase {
-    // ======
-    // Errors
-    // ======
-
-    error NoFileName();
-
-    // =======
-    // Storage
-    // =======
-
-    string internal _fileName;
-
-    // ===========
-    // Constructor
-    // ===========
-
-    /**
-     * @param fileName_ File name of file to read from.
-     */
-    constructor(string memory fileName_) {
-        if (bytes(fileName_).length == 0) revert NoFileName();
-
-        _fileName = fileName_;
-    }
-
-    /**
-     * @dev Run the replay.
-     */
-    function run() external view {
-        string memory simulation = vm.readFile(string.concat("simulations/", _fileName, ".json"));
-        string memory description = abi.decode(vm.parseJson(simulation, "description"), (string));
-        bytes[] memory logs = abi.decode(vm.parseJson(simulation, "logs"), (bytes[]));
-
-        console2.log(description, "\n");
-
-        // Read logs from serialized structure.
-        for (uint256 i = 0; i < logs.length; i++) {
-            (uint256 blockTimestamp, string memory message) = abi.decode(
-                logs[i],
-                // Encoding:
-                // - blockTimestamp: `uint256`
-                // - message: `string`
-                (uint256, string)
-            );
-
-            console2.log(message, "@", blockTimestamp);
-        }
+        // Write to disk
+        _logger.writeFile();
     }
 }
