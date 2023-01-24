@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Vendor
+import {console2} from "forge-std/console2.sol";
 import {InvariantTest} from "forge-std/InvariantTest.sol";
 import {stdError} from "forge-std/StdError.sol";
 
@@ -9,7 +10,7 @@ import {stdError} from "forge-std/StdError.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
-import {UnboundedHandler} from "./fixtures/InvariantHarness.sol";
+import {BoundedHandler, UnboundedHandler} from "./fixtures/InvariantHarness.sol";
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
@@ -47,8 +48,6 @@ contract ImplementationERC20Test is ImplementationFixture {
     MockImplementationERC20 public tokenProxy;
 
     IImplementationERC20HandlerLike public tokenInvariant;
-
-    // InvariantImplementationERC20 public invariant;
 
     // =====
     // Setup
@@ -94,7 +93,7 @@ contract ImplementationERC20Test is ImplementationFixture {
             )
         );
 
-        tokenInvariant = IImplementationERC20HandlerLike(new BoundedImplementationERC20Handler(tokenProxy));
+        tokenInvariant = IImplementationERC20HandlerLike(address(new BoundedImplementationERC20Handler(tokenProxy)));
 
         targetContract(address(tokenInvariant));
 
@@ -116,6 +115,22 @@ contract ImplementationERC20Test is ImplementationFixture {
 
     function invariantBalanceSum() public {
         assertEq(tokenProxy.totalSupply(), tokenInvariant.sum());
+    }
+
+    function invariantLogDump() public {
+        console2.log("\nCall Summary\n");
+
+        console2.log("unbounded.mint", tokenInvariant.getCallCount("unbounded.mint"));
+        console2.log("unbounded.burn", tokenInvariant.getCallCount("unbounded.burn"));
+        console2.log("unbounded.approve", tokenInvariant.getCallCount("unbounded.approve"));
+        console2.log("unbounded.transfer", tokenInvariant.getCallCount("unbounded.transfer"));
+        console2.log("unbounded.transferFrom", tokenInvariant.getCallCount("unbounded.transferFrom"));
+
+        console2.log("bounded.mint", tokenInvariant.getCallCount("bounded.mint"));
+        console2.log("bounded.burn", tokenInvariant.getCallCount("bounded.burn"));
+        console2.log("bounded.approve", tokenInvariant.getCallCount("bounded.approve"));
+        console2.log("bounded.transfer", tokenInvariant.getCallCount("bounded.transfer"));
+        console2.log("bounded.transferFrom", tokenInvariant.getCallCount("bounded.transferFrom"));
     }
 
     // =====
@@ -352,6 +367,8 @@ contract ImplementationERC20Test is ImplementationFixture {
  * @title Implementation ERC20 Handler Interface
  */
 interface IImplementationERC20HandlerLike {
+    function getCallCount(bytes32 message) external returns (uint256);
+
     function sum() external returns (uint256);
 
     function mint(address from, uint256 amount) external;
@@ -368,7 +385,7 @@ interface IImplementationERC20HandlerLike {
 /**
  * @title Unbounded Implementation ERC20 Handler
  */
-contract UnboundedImplementationERC20Handler is IImplementationERC20HandlerLike, UnboundedHandler {
+contract UnboundedImplementationERC20Handler is UnboundedHandler {
     // =======
     // Storage
     // =======
@@ -390,33 +407,33 @@ contract UnboundedImplementationERC20Handler is IImplementationERC20HandlerLike,
     // ==========
 
     function mint(address from_, uint256 amount_) public virtual {
-        callCounters["unbounded.mint"]++;
+        increaseCallCount("unbounded.mint");
 
         token.mint(from_, amount_);
         sum += amount_;
     }
 
     function burn(address from_, uint256 amount_) public virtual {
-        callCounters["unbounded.burn"]++;
+        increaseCallCount("unbounded.burn");
 
         token.burn(from_, amount_);
         sum -= amount_;
     }
 
     function approve(address to_, uint256 amount_) public virtual {
-        callCounters["unbounded.approve"]++;
+        increaseCallCount("unbounded.approve");
 
         token.approve(to_, amount_);
     }
 
     function transferFrom(address from_, address to_, uint256 amount_) public virtual {
-        callCounters["unbounded.transferFrom"]++;
+        increaseCallCount("unbounded.transferFrom");
 
         token.transferFrom(from_, to_, amount_);
     }
 
     function transfer(address to_, uint256 amount_) public virtual {
-        callCounters["unbounded.transfer"]++;
+        increaseCallCount("unbounded.transfer");
 
         token.transfer(to_, amount_);
     }
@@ -425,7 +442,7 @@ contract UnboundedImplementationERC20Handler is IImplementationERC20HandlerLike,
 /**
  * @title Bounded Implementation ERC20 Handler
  */
-contract BoundedImplementationERC20Handler is UnboundedImplementationERC20Handler {
+contract BoundedImplementationERC20Handler is UnboundedImplementationERC20Handler, BoundedHandler {
     // ===========
     // Constructor
     // ===========
@@ -437,31 +454,31 @@ contract BoundedImplementationERC20Handler is UnboundedImplementationERC20Handle
     // ==========
 
     function mint(address from_, uint256 amount_) public override {
-        callCounters["bounded.mint"]++;
+        increaseCallCount("bounded.mint");
 
         super.mint(from_, amount_);
     }
 
     function burn(address from_, uint256 amount_) public override {
-        callCounters["bounded.burn"]++;
+        increaseCallCount("bounded.burn");
 
         super.burn(from_, amount_);
     }
 
     function approve(address to_, uint256 amount_) public override {
-        callCounters["bounded.approve"]++;
+        increaseCallCount("bounded.approve");
 
         super.approve(to_, amount_);
     }
 
     function transferFrom(address from_, address to_, uint256 amount_) public override {
-        callCounters["bounded.transferFrom"]++;
+        increaseCallCount("bounded.transferFrom");
 
         super.transferFrom(from_, to_, amount_);
     }
 
     function transfer(address to_, uint256 amount_) public override {
-        callCounters["bounded.transfer"]++;
+        increaseCallCount("bounded.transfer");
 
         super.transfer(to_, amount_);
     }

@@ -13,9 +13,18 @@ libs = ["node_modules", "lib"]
 runs = 256
 
 [profile.default.invariant]
+runs = 200
+depth = 250
+verbosity = 5
+fail_on_revert = false
+
+# ==================
+# Profile: `explore`
+# ==================
+[profile.explore.invariant]
 runs = 10
 depth = 100
-fail_on_revert = false
+fail_on_revert = true
 
 # ==================
 # Profile: `intense`

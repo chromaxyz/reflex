@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Vendor
+import {console2} from "forge-std/console2.sol";
 import {InvariantTest} from "forge-std/InvariantTest.sol";
 import {StdUtils} from "forge-std/StdUtils.sol";
 import {Test} from "forge-std/Test.sol";
@@ -64,5 +65,26 @@ abstract contract UnboundedHandler is Users, StdUtils {
     // Storage
     // =======
 
-    mapping(bytes32 => uint256) public callCounters;
+    mapping(bytes32 => uint256) internal _callCounters;
+
+    // ==============
+    // Public methods
+    // ==============
+
+    function increaseCallCount(bytes32 message_) public virtual {
+        _callCounters[message_]++;
+    }
+
+    function getCallCount(bytes32 message_) public view virtual returns (uint256) {
+        return _callCounters[message_];
+    }
+}
+
+/**
+ * @title Bounded Handler
+ * @dev Abstract bounded handler to inherit in invariant tests.
+ * @dev Reverts on failure.
+ */
+abstract contract BoundedHandler is UnboundedHandler {
+
 }
