@@ -2,18 +2,18 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexProxy} from "../src/interfaces/IReflexProxy.sol";
+import {TReflexProxy} from "../../src/interfaces/IReflexProxy.sol";
 
 // Sources
-import {ReflexProxy} from "../src/ReflexProxy.sol";
+import {ReflexProxy} from "../../src/ReflexProxy.sol";
 
 // Fixtures
-import {Harness} from "./fixtures/Harness.sol";
+import {TestHarness} from "../fixtures/TestHarness.sol";
 
 /**
  * @title Reflex Proxy Test
  */
-contract ReflexProxyTest is TReflexProxy, Harness {
+contract ReflexProxyTest is TReflexProxy, TestHarness {
     // =========
     // Constants
     // =========

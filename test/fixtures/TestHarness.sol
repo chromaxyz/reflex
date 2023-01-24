@@ -2,20 +2,19 @@
 pragma solidity ^0.8.13;
 
 // Vendor
-import {InvariantTest} from "forge-std/InvariantTest.sol";
-import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
+import {Test} from "forge-std/Test.sol";
 
 // Fixtures
 import {Users} from "./Users.sol";
 
 /**
- * @title Harness
- * @dev A rigorous testing and invariant harness.
+ * @title Test Harness
+ * @dev A rigorous testing harness.
  * @author `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/main/src/test/utils/DSTestPlus.sol) (AGPL-3.0-only)
  * @author `BrutalizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol) (MIT)
  */
-abstract contract Harness is Users, InvariantTest, Test {
+abstract contract TestHarness is Users, Test {
     // ======
     // Errors
     // ======
@@ -109,6 +108,12 @@ abstract contract Harness is Users, InvariantTest, Test {
         _checkMemory();
     }
 
+    // ===========
+    // Constructor
+    // ===========
+
+    constructor() {}
+
     // =====
     // Setup
     // =====
@@ -124,6 +129,10 @@ abstract contract Harness is Users, InvariantTest, Test {
 
         if (!brutalizedAddressIsBrutalized) revert FailedSetup();
     }
+
+    // ================
+    // Internal methods
+    // ================
 
     /**
      * @dev Start a gas capture log.

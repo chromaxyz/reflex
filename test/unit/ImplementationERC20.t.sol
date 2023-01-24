@@ -2,25 +2,26 @@
 pragma solidity ^0.8.13;
 
 // Vendor
+import {InvariantTest} from "forge-std/InvariantTest.sol";
 import {stdError} from "forge-std/StdError.sol";
 
 // Interfaces
-import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Implementations
-import {ImplementationERC20} from "./implementations/abstracts/ImplementationERC20.sol";
+import {ImplementationERC20} from "../implementations/abstracts/ImplementationERC20.sol";
 
 // Fixtures
-import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
+import {ImplementationFixture} from "../fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
-import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
+import {MockImplementationERC20} from "../mocks/MockImplementationERC20.sol";
+import {MockImplementationERC20Hub} from "../mocks/MockImplementationERC20Hub.sol";
 
 /**
  * @title Implementation ERC20 Test
  */
-contract ImplementationERC20Test is ImplementationFixture {
+contract ImplementationERC20Test is ImplementationFixture, InvariantTest {
     // =========
     // Constants
     // =========
@@ -45,8 +46,6 @@ contract ImplementationERC20Test is ImplementationFixture {
 
     MockImplementationERC20 public token;
     MockImplementationERC20 public tokenProxy;
-
-    InvariantBalanceSum public tokenBalanceSum;
 
     // =====
     // Setup
@@ -91,24 +90,6 @@ contract ImplementationERC20Test is ImplementationFixture {
                 _TOKEN_MODULE_DECIMALS
             )
         );
-
-        tokenBalanceSum = new InvariantBalanceSum(tokenProxy);
-
-        targetContract(address(tokenBalanceSum));
-    }
-
-    // ==========
-    // Invariants
-    // ==========
-
-    function invariantMetadata() external {
-        assertEq(tokenProxy.name(), _TOKEN_MODULE_NAME);
-        assertEq(tokenProxy.symbol(), _TOKEN_MODULE_SYMBOL);
-        assertEq(tokenProxy.decimals(), _TOKEN_MODULE_DECIMALS);
-    }
-
-    function invariantBalanceSum() external {
-        assertEq(tokenProxy.totalSupply(), tokenBalanceSum.sum());
     }
 
     // =====
@@ -334,48 +315,5 @@ contract ImplementationERC20Test is ImplementationFixture {
             mstore(ptr, message)
             log3(ptr, messageLength, topic1, topic2, topic3)
         }
-    }
-}
-
-contract InvariantBalanceSum {
-    // =======
-    // Storage
-    // =======
-
-    MockImplementationERC20 public token;
-    uint256 public sum;
-
-    // ===========
-    // Constructor
-    // ===========
-
-    constructor(MockImplementationERC20 _token) {
-        token = _token;
-    }
-
-    // ==========
-    // Test stubs
-    // ==========
-
-    function mint(address from, uint256 amount) external {
-        token.mint(from, amount);
-        sum += amount;
-    }
-
-    function burn(address from, uint256 amount) external {
-        token.burn(from, amount);
-        sum -= amount;
-    }
-
-    function approve(address to, uint256 amount) external {
-        token.approve(to, amount);
-    }
-
-    function transferFrom(address from, address to, uint256 amount) external {
-        token.transferFrom(from, to, amount);
-    }
-
-    function transfer(address to, uint256 amount) external {
-        token.transfer(to, amount);
     }
 }

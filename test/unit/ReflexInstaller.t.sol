@@ -2,14 +2,14 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
-import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {TReflexInstaller} from "../../src/interfaces/IReflexInstaller.sol";
+import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Fixtures
-import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
+import {ReflexFixture} from "../fixtures/ReflexFixture.sol";
 
 // Mocks
-import {MockReflexModule} from "./mocks/MockReflexModule.sol";
+import {MockReflexModule} from "../mocks/MockReflexModule.sol";
 
 /**
  * @title Reflex Installer Test

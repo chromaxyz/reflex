@@ -2,14 +2,14 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Fixtures
-import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
+import {ImplementationFixture} from "../fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {MockReflexModule} from "./mocks/MockReflexModule.sol";
-import {MockImplementationInternalModule} from "./mocks/MockImplementationInternalModule.sol";
+import {MockReflexModule} from "../mocks/MockReflexModule.sol";
+import {MockImplementationInternalModule} from "../mocks/MockImplementationInternalModule.sol";
 
 /**
  * @title Implementation Module Internal Test

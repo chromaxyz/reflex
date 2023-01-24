@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Vendors
+// Vendor
 import {stdStorageSafe, StdStorage} from "forge-std/StdStorage.sol";
 
 // Fixtures
-import {Harness} from "./fixtures/Harness.sol";
+import {TestHarness} from "../fixtures/TestHarness.sol";
 
 // Mocks
-import {MockImplementationState} from "./mocks/MockImplementationState.sol";
+import {MockImplementationState} from "../mocks/MockImplementationState.sol";
 
 /**
  * @title Implementation State Test
@@ -31,7 +31,7 @@ import {MockImplementationState} from "./mocks/MockImplementationState.sol";
  * | _implementationState5   | mapping(address => uint256)                           | 54   | 0      | 32    |
  * | _tokens                 | mapping(address => struct ImplementationState.Token)  | 55   | 0      | 32    |
  */
-contract ImplementationStateTest is Harness {
+contract ImplementationStateTest is TestHarness {
     using stdStorageSafe for StdStorage;
 
     // =======
