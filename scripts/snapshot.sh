@@ -31,7 +31,7 @@ done
 # Set Foundry profile
 export FOUNDRY_PROFILE=$PROFILE
 
-log $GREEN "Creating snapshot with profile: $FOUNDRY_PROFILE"
+log $GREEN "Creating snapshot with profile: $PROFILE"
 
 if [ -z "$TEST" ];
 then

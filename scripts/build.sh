@@ -29,7 +29,7 @@ done
 # Set Foundry profile
 export FOUNDRY_PROFILE=$PROFILE
 
-log $GREEN "Building with profile: $FOUNDRY_PROFILE"
+log $GREEN "Building with profile: $PROFILE"
 
 forge build --sizes
 

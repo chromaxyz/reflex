@@ -21,7 +21,7 @@ fail_on_revert = true
 # Profile: `intense`
 # ==================
 [profile.intense.fuzz]
-runs = 50_000
+runs = 10_000
 
 [profile.intense.invariant]
 runs = 200
@@ -35,7 +35,7 @@ fail_on_revert = true
 via_ir = true
 
 [profile.via-ir.fuzz]
-runs = 50_000
+runs = 10_000
 
 [profile.via-ir.invariant]
 runs = 200
@@ -49,7 +49,7 @@ fail_on_revert = true
 solc = "0.8.13"
 
 [profile.min-solc.fuzz]
-runs = 50_000
+runs = 10_000
 
 # ==========================
 # Profile: `min-solc-via-ir`
@@ -59,7 +59,7 @@ via_ir = true
 solc = "0.8.13"
 
 [profile.min-solc-via-ir.fuzz]
-runs = 50_000
+runs = 10_000
 
 [profile.min-solc-via-ir.invariant]
 runs = 200

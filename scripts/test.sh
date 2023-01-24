@@ -31,7 +31,7 @@ done
 # Set Foundry profile
 export FOUNDRY_PROFILE=$PROFILE
 
-log $GREEN "Running tests with profile: $FOUNDRY_PROFILE"
+log $GREEN "Running tests with profile: $PROFILE"
 
 if [ -z "$TEST" ];
 then
