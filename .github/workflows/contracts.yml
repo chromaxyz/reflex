@@ -44,8 +44,8 @@ jobs:
       - name: Run Forge build with ${{ matrix.profile }} profile
         run: |
           forge --version
-          FOUNDRY_PROFILE=${{ matrix.profile }} make build
+          PROFILE=${{ matrix.profile }} make build
 
       - name: Run Forge tests with ${{ matrix.profile }} profile
         run: |
-          FOUNDRY_PROFILE=${{ matrix.profile }} make test
+          PROFILE=${{ matrix.profile }} make test

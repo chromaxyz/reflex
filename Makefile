@@ -3,6 +3,8 @@
 
 # Include .env file and export its variables
 -include .env
+
+# Profiles: `default`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`
 PROFILE?=default
 
 # Setup
@@ -10,6 +12,7 @@ install:;
 	forge install
 	npm install
 
+# Update
 update:;
 	forge update
 
@@ -18,20 +21,6 @@ clean:; forge clean
 
 # Build
 build:; ./scripts/build.sh -p $(PROFILE)
-
-# Test profiles
-# - default
-# - intense
-# - min-solc
-# - via-ir
-# - min-solc-via-ir
-
-# Test types
-# - Unit
-# - Differential
-# - Fuzz
-# - Invariant
-# - Simulation
 
 # Test
 test:; ./scripts/test.sh -p $(PROFILE)
