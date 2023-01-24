@@ -38,12 +38,15 @@ mkdir -p \
 
 # Generate reports
 for FILEPATH in src/*.sol; do
-  FILENAME=${FILEPATH##*"src/"}
+  FILENAME_WITH_EXTENSION=${FILEPATH##*"src/"}
+  FILENAME=${FILENAME_WITH_EXTENSION%%.*}.md
+
   echo $FILENAME
-  slither $FILEPATH --print contract-summary --disable-color 2> reports/slither/contract-summary/${FILENAME%%.*}.md
-  slither $FILEPATH --print function-summary 2> reports/slither/function-summary/${FILENAME%%.*}.md
-  slither $FILEPATH --print vars-and-auth 2> reports/slither/vars-and-auth/${FILENAME%%.*}.md
-  slither $FILEPATH --print variable-order 2> reports/slither/storage-layout/${FILENAME%%.*}.md
+
+  slither $FILEPATH --print contract-summary --disable-color 2> reports/slither/contract-summary/$FILENAME
+  slither $FILEPATH --print function-summary 2> reports/slither/function-summary/$FILENAME
+  slither $FILEPATH --print vars-and-auth 2> reports/slither/vars-and-auth/$FILENAME
+  slither $FILEPATH --print variable-order 2> reports/slither/storage-layout/$FILENAME
 done
 
 log $GREEN "Done"
