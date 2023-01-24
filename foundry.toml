@@ -6,7 +6,6 @@ optimizer_runs = 10_000
 auto_detect_solc = false
 verbosity = 3
 libs = ["node_modules", "lib"]
-fs_permissions = [{ access = "read-write", path = "./simulations" }]
 
 [profile.default.fuzz]
 runs = 256

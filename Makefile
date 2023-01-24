@@ -27,7 +27,6 @@ test:; ./scripts/test.sh -p $(PROFILE)
 test-unit:; ./scripts/test.sh -t testUnit -p $(PROFILE)
 test-fuzz:; ./scripts/test.sh -t testFuzz -p $(PROFILE)
 test-invariant:; ./scripts/test.sh -d test/invariant -p $(PROFILE)
-test-simulation:; ./scripts/test.sh -d test/simulation -p $(PROFILE)
 
 # Snapshot
 snapshot:; ./scripts/snapshot.sh -p $(PROFILE)
