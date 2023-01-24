@@ -348,6 +348,9 @@ contract ImplementationERC20Test is ImplementationFixture {
 // Invariant handlers
 // ==================
 
+/**
+ * @title Implementation ERC20 Handler Interface
+ */
 interface IImplementationERC20HandlerLike {
     function sum() external returns (uint256);
 
@@ -362,6 +365,9 @@ interface IImplementationERC20HandlerLike {
     function transfer(address to, uint256 amount) external;
 }
 
+/**
+ * @title Unbounded Implementation ERC20 Handler
+ */
 contract UnboundedImplementationERC20Handler is IImplementationERC20HandlerLike, UnboundedHandler {
     // =======
     // Storage
@@ -416,6 +422,9 @@ contract UnboundedImplementationERC20Handler is IImplementationERC20HandlerLike,
     }
 }
 
+/**
+ * @title Bounded Implementation ERC20 Handler
+ */
 contract BoundedImplementationERC20Handler is UnboundedImplementationERC20Handler {
     // ===========
     // Constructor
