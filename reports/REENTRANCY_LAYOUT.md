@@ -229,7 +229,7 @@
 
 ```
 
-**ImplementationDispatcher**
+**MockImplementationDispatcher**
 
 ```json
 
