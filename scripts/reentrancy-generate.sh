@@ -57,7 +57,7 @@ do
   echo -e "\`\`\`" >> "$FILENAME"
 done
 
-# Run prettier so diff works properly.
+# Run prettier so diff works properly
 npx prettier --write "$FILENAME"
 
 log $GREEN "Done"

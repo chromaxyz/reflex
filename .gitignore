@@ -76,6 +76,9 @@ xcuserdata/
 lcov.info
 /reports/coverage/
 
+# Slither
+/reports/slither/
+
 # Visualizer
 *.dot
 
