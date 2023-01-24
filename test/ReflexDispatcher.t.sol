@@ -5,15 +5,15 @@ pragma solidity ^0.8.13;
 import {VmSafe} from "forge-std/Vm.sol";
 
 // Interfaces
-import {TReflexDispatcher} from "../../src/interfaces/IReflexDispatcher.sol";
-import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
+import {TReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
+import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
-import {ReflexFixture} from "../fixtures/ReflexFixture.sol";
+import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
 // Mocks
-import {MockReflexDispatcher} from "../mocks/MockReflexDispatcher.sol";
-import {MockReflexModule} from "../mocks/MockReflexModule.sol";
+import {MockReflexDispatcher} from "./mocks/MockReflexDispatcher.sol";
+import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 
 /**
  * @title Reflex Dispatcher Test
@@ -31,22 +31,22 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
     // Tests
     // =====
 
-    function testRevertInvalidOwnerZeroAddress() external {
+    function testUnitRevertInvalidOwnerZeroAddress() external {
         vm.expectRevert(InvalidOwner.selector);
         new MockReflexDispatcher(address(0), address(installer));
     }
 
-    function testRevertInvalidInstallerZeroAddress() external {
+    function testUnitRevertInvalidInstallerZeroAddress() external {
         vm.expectRevert(InvalidModuleAddress.selector);
         new MockReflexDispatcher(address(this), address(0));
     }
 
-    function testRevertInvalidInstallerModuleIdSentinel() external {
+    function testUnitRevertInvalidInstallerModuleIdSentinel() external {
         vm.expectRevert();
         new MockReflexDispatcher(address(this), address(_users.Alice));
     }
 
-    function testRevertInvalidInstallerModuleId(uint32 moduleId_) external {
+    function testFuzzRevertInvalidInstallerModuleId(uint32 moduleId_) external {
         vm.assume(moduleId_ != 0);
         vm.assume(moduleId_ != _MODULE_ID_INSTALLER);
 
@@ -64,7 +64,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
         new MockReflexDispatcher(address(this), address(module));
     }
 
-    function testLogEmittanceUponConstruction() external {
+    function testUnitLogEmittanceUponConstruction() external {
         vm.recordLogs();
 
         MockReflexDispatcher dispatcher = new MockReflexDispatcher(address(this), address(installer));
@@ -102,16 +102,16 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
         assertEq(entries[2].emitter, address(dispatcher));
     }
 
-    function testInstallerConfiguration() external {
+    function testUnitInstallerConfiguration() external {
         assertEq(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER), address(installerProxy));
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installer));
     }
 
-    function testGetOwnerThroughInstallerProxy() external {
+    function testUnitGetOwnerThroughInstallerProxy() external {
         assertEq(installerProxy.owner(), address(this));
     }
 
-    function testUpdateOwnerThroughInstallerProxy() external {
+    function testUnitUpdateOwnerThroughInstallerProxy() external {
         assertEq(installerProxy.owner(), address(this));
         assertEq(installerProxy.pendingOwner(), address(0));
 
@@ -130,12 +130,12 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
         vm.stopPrank();
     }
 
-    function testRevertDispatchCalledNotTrusted() external {
+    function testUnitRevertDispatchCalledNotTrusted() external {
         vm.expectRevert(CallerNotTrusted.selector);
         dispatcher.dispatch();
     }
 
-    function testRevertDispatchMessageTooShort() external {
+    function testUnitRevertDispatchMessageTooShort() external {
         vm.prank(address(installerProxy));
         vm.expectRevert(MessageTooShort.selector);
         dispatcher.dispatch();

@@ -19,30 +19,18 @@ function log () {
 }
 
 # Variables
-while getopts d:p:t: flag
+while getopts p: flag
 do
     case "${flag}" in
-        d) DIRECTORY=${OPTARG};;
         p) PROFILE=${OPTARG};;
-        t) TEST=${OPTARG};;
     esac
 done
 
 # Set Foundry profile
 export FOUNDRY_PROFILE=$PROFILE
 
-log $GREEN "Running tests with profile: $FOUNDRY_PROFILE"
+log $GREEN "Building with profile: $FOUNDRY_PROFILE"
 
-if [ -z "$TEST" ];
-then
-    if [ -z "$DIRECTORY" ];
-    then
-        forge test;
-    else
-        forge test --match-path "$DIRECTORY/*.t.sol";
-    fi
-else
-    forge test --match "$TEST";
-fi
+forge build --sizes
 
 log $GREEN "Done"

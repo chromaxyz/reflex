@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Implementations
-import {ImplementationState} from "./ImplementationState.sol";
-
 // Mocks
-import {MockReflexModule} from "../mocks/MockReflexModule.sol";
+import {ImplementationState} from "./abstracts/ImplementationState.sol";
+import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
- * @title Implementation Module
+ * @title Mock Implementation Module
  */
-contract ImplementationModule is MockReflexModule, ImplementationState {
+contract MockImplementationModule is MockReflexModule, ImplementationState {
     // ===========
     // Constructor
     // ===========

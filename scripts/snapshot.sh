@@ -31,18 +31,18 @@ done
 # Set Foundry profile
 export FOUNDRY_PROFILE=$PROFILE
 
-log $GREEN "Running tests with profile: $FOUNDRY_PROFILE"
+log $GREEN "Running snapshot with profile: $FOUNDRY_PROFILE"
 
 if [ -z "$TEST" ];
 then
     if [ -z "$DIRECTORY" ];
     then
-        forge test;
+        forge snapshot --snap .gas-snapshot-$PROFILE;
     else
-        forge test --match-path "$DIRECTORY/*.t.sol";
+        forge snapshot --match-path "$DIRECTORY/*.t.sol" --snap .gas-snapshot-$PROFILE;
     fi
 else
-    forge test --match "$TEST";
+    forge snapshot --match "$TEST" --snap .gas-snapshot-$PROFILE;
 fi
 
 log $GREEN "Done"

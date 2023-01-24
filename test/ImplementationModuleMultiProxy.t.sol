@@ -2,18 +2,16 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
-import {IReflexProxy} from "../../src/interfaces/IReflexProxy.sol";
-
-// Implementations
-import {ImplementationERC20} from "../implementations/abstracts/ImplementationERC20.sol";
+import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {IReflexProxy} from "../src/interfaces/IReflexProxy.sol";
 
 // Fixtures
-import {ImplementationFixture} from "../fixtures/ImplementationFixture.sol";
+import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {MockImplementationERC20} from "../mocks/MockImplementationERC20.sol";
-import {MockImplementationERC20Hub} from "../mocks/MockImplementationERC20Hub.sol";
+import {ImplementationERC20} from "./mocks/abstracts/ImplementationERC20.sol";
+import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
+import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
 
 /**
  * @title Implementation Module Multi Proxy Test
@@ -141,18 +139,18 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     // Tests
     // =====
 
-    function testModuleIdToImplementation() external {
+    function testUnitModuleIdToImplementation() external {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID), address(multiModuleV1));
         assertEq(IReflexProxy(address(multiModuleProxyA)).implementation(), address(multiModuleV1));
         assertEq(IReflexProxy(address(multiModuleProxyB)).implementation(), address(multiModuleV1));
         assertEq(IReflexProxy(address(multiModuleProxyC)).implementation(), address(multiModuleV1));
     }
 
-    function testModuleIdToProxy() external {
+    function testUnitModuleIdToProxy() external {
         assertEq(dispatcher.moduleIdToProxy(_MODULE_MULTI_ID), address(0));
     }
 
-    function testModuleSettings() external {
+    function testUnitModuleSettings() external {
         _testModuleConfiguration(
             multiModuleV1,
             _MODULE_MULTI_ID,
@@ -172,7 +170,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
     }
 
-    function testUpgradeMultiProxySingleImplementation() external {
+    function testUnitUpgradeMultiProxySingleImplementation() external {
         _testModuleConfiguration(
             multiModuleProxyA,
             _MODULE_MULTI_ID,
@@ -232,79 +230,79 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
     }
 
-    function testProxySentinelFallback() external {
+    function testUnitProxySentinelFallback() external {
         _testProxySentinelFallback(multiModuleProxyA);
         _testProxySentinelFallback(multiModuleProxyB);
         _testProxySentinelFallback(multiModuleProxyC);
     }
 
-    function testRevertBytesCustomError(uint256 code_, string memory message_) external {
+    function testFuzzRevertBytesCustomError(uint256 code_, string memory message_) external {
         _testRevertBytesCustomError(multiModuleProxyA, code_, message_);
         _testRevertBytesCustomError(multiModuleProxyB, code_, message_);
         _testRevertBytesCustomError(multiModuleProxyC, code_, message_);
     }
 
-    function testRevertBytesPanicAssert() external {
+    function testUnitRevertBytesPanicAssert() external {
         _testRevertBytesPanicAssert(multiModuleProxyA);
         _testRevertBytesPanicAssert(multiModuleProxyB);
         _testRevertBytesPanicAssert(multiModuleProxyC);
     }
 
-    function testRevertBytesPanicDivideByZero() external {
+    function testUnitRevertBytesPanicDivideByZero() external {
         _testRevertBytesPanicDivideByZero(multiModuleProxyA);
         _testRevertBytesPanicDivideByZero(multiModuleProxyB);
         _testRevertBytesPanicDivideByZero(multiModuleProxyC);
     }
 
-    function testRevertBytesPanicArithmaticOverflow() external {
+    function testUnitRevertBytesPanicArithmaticOverflow() external {
         _testRevertBytesPanicArithmaticOverflow(multiModuleProxyA);
         _testRevertBytesPanicArithmaticOverflow(multiModuleProxyB);
         _testRevertBytesPanicArithmaticOverflow(multiModuleProxyC);
     }
 
-    function testRevertBytesPanicArithmaticUnderflow() external {
+    function testUnitRevertBytesPanicArithmaticUnderflow() external {
         _testRevertBytesPanicArithmaticUnderflow(multiModuleProxyA);
         _testRevertBytesPanicArithmaticUnderflow(multiModuleProxyB);
         _testRevertBytesPanicArithmaticUnderflow(multiModuleProxyC);
     }
 
-    function testProxyLog0Topic(bytes memory message_) external {
+    function testFuzzProxyLog0Topic(bytes memory message_) external {
         _testProxyLog0Topic(multiModuleProxyA, message_);
         _testProxyLog0Topic(multiModuleProxyB, message_);
         _testProxyLog0Topic(multiModuleProxyC, message_);
     }
 
-    function testProxyLog1Topic(bytes memory message_) external {
+    function testFuzzProxyLog1Topic(bytes memory message_) external {
         _testProxyLog1Topic(multiModuleProxyA, message_);
         _testProxyLog1Topic(multiModuleProxyB, message_);
         _testProxyLog1Topic(multiModuleProxyC, message_);
     }
 
-    function testProxyLog2Topic(bytes memory message_) external {
+    function testFuzzProxyLog2Topic(bytes memory message_) external {
         _testProxyLog2Topic(multiModuleProxyA, message_);
         _testProxyLog2Topic(multiModuleProxyB, message_);
         _testProxyLog2Topic(multiModuleProxyC, message_);
     }
 
-    function testProxyLog3Topic(bytes memory message_) external {
+    function testFuzzProxyLog3Topic(bytes memory message_) external {
         _testProxyLog3Topic(multiModuleProxyA, message_);
         _testProxyLog3Topic(multiModuleProxyB, message_);
         _testProxyLog3Topic(multiModuleProxyC, message_);
     }
 
-    function testProxyLog4Topic(bytes memory message_) external {
+    function testFuzzProxyLog4Topic(bytes memory message_) external {
         _testProxyLog4Topic(multiModuleProxyA, message_);
         _testProxyLog4Topic(multiModuleProxyB, message_);
         _testProxyLog4Topic(multiModuleProxyC, message_);
     }
 
-    function testRevertProxyLogOutOfBounds(bytes memory message_) external {
+    function testFuzzRevertProxyLogOutOfBounds(bytes memory message_) external {
         _testRevertProxyLogOutOfBounds(multiModuleProxyA, message_);
         _testRevertProxyLogOutOfBounds(multiModuleProxyB, message_);
         _testRevertProxyLogOutOfBounds(multiModuleProxyC, message_);
     }
 
-    function testUnpackMessageSender() external {
+    function testUnitUnpackMessageSender() external {
         vm.startPrank(_users.Alice);
         _testUnpackMessageSender(multiModuleProxyA, _users.Alice);
         _testUnpackMessageSender(multiModuleProxyB, _users.Alice);
@@ -312,13 +310,13 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         vm.stopPrank();
     }
 
-    function testUnpackProxyAddress() external {
+    function testUnitUnpackProxyAddress() external {
         _testUnpackProxyAddress(multiModuleProxyA);
         _testUnpackProxyAddress(multiModuleProxyB);
         _testUnpackProxyAddress(multiModuleProxyC);
     }
 
-    function testUnpackTrailingParameters() external {
+    function testUnitUnpackTrailingParameters() external {
         vm.startPrank(_users.Alice);
         _testUnpackTrailingParameters(multiModuleProxyA, _users.Alice);
         _testUnpackTrailingParameters(multiModuleProxyB, _users.Alice);

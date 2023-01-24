@@ -44,9 +44,9 @@ abstract contract Users is CommonBase {
         });
     }
 
-    // =========
-    // Utilities
-    // =========
+    // ================
+    // Internal methods
+    // ================
 
     /**
      * @dev Create user address from user label.

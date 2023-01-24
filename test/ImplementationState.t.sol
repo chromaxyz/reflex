@@ -5,10 +5,10 @@ pragma solidity ^0.8.13;
 import {stdStorageSafe, StdStorage} from "forge-std/StdStorage.sol";
 
 // Fixtures
-import {TestHarness} from "../fixtures/TestHarness.sol";
+import {TestHarness} from "./fixtures/TestHarness.sol";
 
 // Mocks
-import {MockImplementationState} from "../mocks/MockImplementationState.sol";
+import {MockImplementationState} from "./mocks/MockImplementationState.sol";
 
 /**
  * @title Implementation State Test
@@ -54,7 +54,7 @@ contract ImplementationStateTest is TestHarness {
     // Tests
     // =====
 
-    function testVerifyStorageSlots(
+    function testFuzzVerifyStorageSlots(
         bytes32 message_,
         uint256 number_,
         address location_,
@@ -154,9 +154,9 @@ contract ImplementationStateTest is TestHarness {
         assertEq((reads[0]), keccak256(abi.encode(tokenB_, uint256(55))));
     }
 
-    // =========
-    // Utilities
-    // =========
+    // ================
+    // Internal methods
+    // ================
 
     /**
      * @dev Cast bool to uint8.

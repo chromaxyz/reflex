@@ -2,10 +2,10 @@
 pragma solidity ^0.8.13;
 
 // Sources
-import {ReflexState} from "../../src/ReflexState.sol";
+import {ReflexState} from "../../../src/ReflexState.sol";
 
 /**
- * @title Implementation State
+ * @title Mock Implementation State
  *
  * @dev Storage layout:
  * | Name                    | Type                                                  | Slot | Offset | Bytes |

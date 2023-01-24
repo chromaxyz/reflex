@@ -517,9 +517,9 @@ abstract contract SimulationHarness is CommonBase, Users {
         _logger.writeFile();
     }
 
-    // =========
-    // Utilities
-    // =========
+    // ================
+    // Internal methods
+    // ================
 
     /**
      * @dev Warp timestamp and roll to estimated block.

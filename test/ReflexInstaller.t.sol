@@ -2,14 +2,14 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexInstaller} from "../../src/interfaces/IReflexInstaller.sol";
-import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
+import {TReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
+import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
-import {ReflexFixture} from "../fixtures/ReflexFixture.sol";
+import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
 // Mocks
-import {MockReflexModule} from "../mocks/MockReflexModule.sol";
+import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 
 /**
  * @title Reflex Installer Test
@@ -190,7 +190,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // Tests
     // =====
 
-    function testModuleSettings() external {
+    function testUnitModuleSettings() external {
         _testModuleConfiguration(
             singleModuleV1,
             _MODULE_SINGLE_ID,
@@ -277,7 +277,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // Ownership tests
     // ===============
 
-    function testTransferOwnership() external {
+    function testUnitTransferOwnership() external {
         vm.expectEmit(true, false, false, false);
         emit OwnershipTransferStarted(address(this), _users.Alice);
         installerProxy.transferOwnership(_users.Alice);
@@ -286,7 +286,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(installerProxy.pendingOwner(), _users.Alice);
     }
 
-    function testAcceptOwnership() external {
+    function testUnitAcceptOwnership() external {
         assertEq(installerProxy.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
@@ -308,7 +308,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(installerProxy.pendingOwner(), address(0));
     }
 
-    function testRevertTransferOwnershipNotPendingOwner() external {
+    function testUnitRevertTransferOwnershipNotPendingOwner() external {
         assertEq(installerProxy.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
@@ -329,7 +329,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(installerProxy.pendingOwner(), _users.Alice);
     }
 
-    function testRevertTransferOwnershipZeroAddress() external {
+    function testUnitRevertTransferOwnershipZeroAddress() external {
         vm.expectRevert(ZeroAddress.selector);
         installerProxy.transferOwnership(address(0));
     }
@@ -338,7 +338,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // General module tests
     // ====================
 
-    function testRevertAddNonContract() external {
+    function testUnitRevertAddNonContract() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(1);
 
@@ -346,7 +346,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         installerProxy.addModules(moduleAddresses);
     }
 
-    function testRevertNonModuleIdContract() external {
+    function testUnitRevertNonModuleIdContract() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(dispatcher);
 
@@ -354,7 +354,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         installerProxy.addModules(moduleAddresses);
     }
 
-    function testRevertUpgradeModulesModuleNonexistent() external {
+    function testUnitRevertUpgradeModulesModuleNonexistent() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(
             new MockReflexModule(
@@ -372,7 +372,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         installerProxy.upgradeModules(moduleAddresses);
     }
 
-    function testRevertUpgradeModulesNonContract() external {
+    function testUnitRevertUpgradeModulesNonContract() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(1);
 
@@ -380,7 +380,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         installerProxy.upgradeModules(moduleAddresses);
     }
 
-    function testRevertUpgradeModulesNonModuleIdContract() external {
+    function testUnitRevertUpgradeModulesNonModuleIdContract() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(dispatcher);
 
@@ -388,7 +388,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         installerProxy.upgradeModules(moduleAddresses);
     }
 
-    function testRevertRemoveModulesModuleNonexistent() external {
+    function testUnitRevertRemoveModulesModuleNonexistent() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(
             new MockReflexModule(
@@ -406,7 +406,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         installerProxy.removeModules(moduleAddresses);
     }
 
-    function testRevertRemoveModulesNonContract() external {
+    function testUnitRevertRemoveModulesNonContract() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(1);
 
@@ -414,7 +414,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         installerProxy.removeModules(moduleAddresses);
     }
 
-    function testRevertRemoveModulesNonModuleIdContract() external {
+    function testUnitRevertRemoveModulesNonModuleIdContract() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(dispatcher);
 
@@ -426,7 +426,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // Single-proxy module tests
     // =========================
 
-    function testAddModulesSingleProxy() public {
+    function testUnitAddModulesSingleProxy() public {
         _addModule(singleModuleV1, _VALID);
 
         address singleModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID);
@@ -436,14 +436,14 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertTrue(singleModuleProxyV1 != address(0));
     }
 
-    function testRevertAddModulesExistentSingleProxy() external {
+    function testUnitRevertAddModulesExistentSingleProxy() external {
         _addModule(singleModuleV1, _VALID);
 
         _addModule(singleModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
-    function testUpgradeModulesSingleProxy() external {
-        testAddModulesSingleProxy();
+    function testUnitUpgradeModulesSingleProxy() external {
+        testUnitAddModulesSingleProxy();
 
         address singleModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID);
         address singleModuleProxyV1 = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
@@ -458,25 +458,25 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(singleModuleImplementationV2, address(singleModuleV2));
     }
 
-    function testRemoveModulesSingleProxy() external {
-        testAddModulesSingleProxy();
+    function testUnitRemoveModulesSingleProxy() external {
+        testUnitAddModulesSingleProxy();
 
         _removeModule(singleModuleV1, _VALID);
 
         assertEq(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID), address(0));
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID), address(0));
 
-        testAddModulesSingleProxy();
+        testUnitAddModulesSingleProxy();
     }
 
-    function testRevertUpgradeInvalidVersionSingleProxy() external {
+    function testUnitRevertUpgradeInvalidVersionSingleProxy() external {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
 
         _upgradeModule(singleModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
-    function testRevertUpgradeModulesNonUpgradeableSingleProxy() external {
+    function testUnitRevertUpgradeModulesNonUpgradeableSingleProxy() external {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
         _upgradeModule(singleModuleV3, _VALID);
@@ -495,7 +495,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         );
     }
 
-    function testRevertUpgradeModulesNonRemoveableSingleProxy() external {
+    function testUnitRevertUpgradeModulesNonRemoveableSingleProxy() external {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
         _upgradeModule(singleModuleV3, _VALID);
@@ -518,7 +518,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // Multi-proxy module tests
     // ========================
 
-    function testAddModulesMultiProxy() public {
+    function testUnitAddModulesMultiProxy() public {
         _addModule(multiModuleV1, _VALID);
 
         address multiModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID);
@@ -528,14 +528,14 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(multiModuleProxyV1, address(0));
     }
 
-    function testRevertAddModulesExistentMultiProxy() external {
+    function testUnitRevertAddModulesExistentMultiProxy() external {
         _addModule(multiModuleV1, _VALID);
 
         _addModule(multiModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
-    function testUpgradeModulesMultiProxy() external {
-        testAddModulesMultiProxy();
+    function testUnitUpgradeModulesMultiProxy() external {
+        testUnitAddModulesMultiProxy();
 
         address multiModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID);
 
@@ -549,25 +549,25 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(multiModuleImplementationV2, address(multiModuleV2));
     }
 
-    function testRemoveModulesMultiProxy() external {
-        testAddModulesMultiProxy();
+    function testUnitRemoveModulesMultiProxy() external {
+        testUnitAddModulesMultiProxy();
 
         _removeModule(multiModuleV1, _VALID);
 
         assertEq(dispatcher.moduleIdToProxy(_MODULE_MULTI_ID), address(0));
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID), address(0));
 
-        testAddModulesMultiProxy();
+        testUnitAddModulesMultiProxy();
     }
 
-    function testRevertUpgradeInvalidVersionMultiProxy() external {
+    function testUnitRevertUpgradeInvalidVersionMultiProxy() external {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
 
         _upgradeModule(multiModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
-    function testRevertUpgradeModulesNonUpgradeableMultiProxy() external {
+    function testUnitRevertUpgradeModulesNonUpgradeableMultiProxy() external {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
         _upgradeModule(multiModuleV3, _VALID);
@@ -586,7 +586,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         );
     }
 
-    function testRevertUpgradeModulesNonRemoveableMultiProxy() external {
+    function testUnitRevertUpgradeModulesNonRemoveableMultiProxy() external {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
         _upgradeModule(multiModuleV3, _VALID);
@@ -605,7 +605,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         );
     }
 
-    function testAddModulesInternal() public {
+    function testUnitAddModulesInternal() public {
         _addModule(internalModuleV1, _VALID);
 
         address internalModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID);
@@ -615,14 +615,14 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(internalModuleProxyV1, address(0));
     }
 
-    function testRevertAddModulesExistentInternal() external {
+    function testUnitRevertAddModulesExistentInternal() external {
         _addModule(internalModuleV1, _VALID);
 
         _addModule(internalModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
-    function testUpgradeModulesInternal() external {
-        testAddModulesInternal();
+    function testUnitUpgradeModulesInternal() external {
+        testUnitAddModulesInternal();
 
         address internalModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID);
 
@@ -636,25 +636,25 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(internalModuleImplementationV2, address(internalModuleV2));
     }
 
-    function testRemoveModulesInternal() external {
-        testAddModulesInternal();
+    function testUnitRemoveModulesInternal() external {
+        testUnitAddModulesInternal();
 
         _removeModule(internalModuleV1, _VALID);
 
         assertEq(dispatcher.moduleIdToProxy(_MODULE_INTERNAL_ID), address(0));
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID), address(0));
 
-        testAddModulesInternal();
+        testUnitAddModulesInternal();
     }
 
-    function testRevertUpgradeInvalidVersionInternal() external {
+    function testUnitRevertUpgradeInvalidVersionInternal() external {
         _addModule(internalModuleV1, _VALID);
         _upgradeModule(internalModuleV2, _VALID);
 
         _upgradeModule(internalModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
-    function testRevertUpgradeModulesNonUpgradeableInternal() external {
+    function testUnitRevertUpgradeModulesNonUpgradeableInternal() external {
         _addModule(internalModuleV1, _VALID);
         _upgradeModule(internalModuleV2, _VALID);
         _upgradeModule(internalModuleV3, _VALID);
@@ -673,7 +673,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         );
     }
 
-    function testRevertUpgradeModulesNonRemoveableInternal() external {
+    function testUnitRevertUpgradeModulesNonRemoveableInternal() external {
         _addModule(internalModuleV1, _VALID);
         _upgradeModule(internalModuleV2, _VALID);
         _upgradeModule(internalModuleV3, _VALID);
@@ -692,9 +692,9 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         );
     }
 
-    // =========
-    // Utilities
-    // =========
+    // ================
+    // Internal methods
+    // ================
 
     function _addModule(IReflexModule module_, bytes4 selector_) internal {
         address[] memory moduleAddresses = new address[](1);
