@@ -1,8 +1,10 @@
-# See more config options https://github.com/foundry-rs/foundry/tree/master/config
+# ==================
+# Profile: `default`
+# ==================
 [profile.default]
 solc = "0.8.17"
 optimizer = true
-optimizer_runs = 10_000
+optimizer_runs = 200
 auto_detect_solc = false
 verbosity = 3
 libs = ["node_modules", "lib"]
@@ -11,37 +13,55 @@ libs = ["node_modules", "lib"]
 runs = 256
 
 [profile.default.invariant]
-call_override = false
 runs = 10
-depth = 50
+depth = 100
 fail_on_revert = true
 
-[profile.no_revert.invariant]
+# ==================
+# Profile: `intense`
+# ==================
+[profile.intense.fuzz]
+runs = 50_000
 
-[profile.allow_revert.invariant]
-fail_on_revert = false
+[profile.intense.invariant]
+runs = 200
+depth = 250
+fail_on_revert = true
 
+# =================
+# Profile: `via-ir`
+# =================
 [profile.via-ir]
 via_ir = true
 
+[profile.via-ir.fuzz]
+runs = 50_000
+
+[profile.via-ir.invariant]
+runs = 200
+depth = 250
+fail_on_revert = true
+
+# ===================
+# Profile: `min-solc`
+# ===================
 [profile.min-solc]
 solc = "0.8.13"
 
+[profile.min-solc.fuzz]
+runs = 50_000
+
+# ==========================
+# Profile: `min-solc-via-ir`
+# ==========================
 [profile.min-solc-via-ir]
 via_ir = true
 solc = "0.8.13"
 
-[profile.via-ir.fuzz]
-runs = 10_000
-
-[profile.min-solc.fuzz]
-runs = 10_000
-
 [profile.min-solc-via-ir.fuzz]
-runs = 10_000
+runs = 50_000
 
-[profile.intense.fuzz]
-runs = 10_000
-
-[profile.intense.invariant]
-runs = 5_000
+[profile.min-solc-via-ir.invariant]
+runs = 200
+depth = 250
+fail_on_revert = true
