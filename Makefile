@@ -4,7 +4,7 @@
 # Include .env file and export its variables
 -include .env
 
-# Profiles: `default`, `explore`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`
+# Profiles: `default`, `bounded`, `unbounded`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`
 PROFILE?=default
 
 # Setup

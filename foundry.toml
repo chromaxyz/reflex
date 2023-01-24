@@ -1,3 +1,6 @@
+#
+# Profiles: `default`, `bounded`, `unbounded`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`
+#
 # ==================
 # Profile: `default`
 # ==================
@@ -13,18 +16,31 @@ libs = ["node_modules", "lib"]
 runs = 256
 
 [profile.default.invariant]
-runs = 200
-depth = 250
-verbosity = 5
+runs = 10
+depth = 100
 fail_on_revert = false
 
 # ==================
-# Profile: `explore`
+# Profile: `bounded`
 # ==================
-[profile.explore.invariant]
-runs = 10
-depth = 100
+[profile.bounded]
+verbosity = 5
+
+[profile.bounded.invariant]
+runs = 200
+depth = 250
 fail_on_revert = true
+
+# ====================
+# Profile: `unbounded`
+# ====================
+[profile.unbounded]
+verbosity = 5
+
+[profile.unbounded.invariant]
+runs = 200
+depth = 250
+fail_on_revert = false
 
 # ==================
 # Profile: `intense`

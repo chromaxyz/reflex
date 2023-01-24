@@ -35,6 +35,8 @@ abstract contract TestHarness is Users, Test {
     // Storage
     // =======
 
+    string internal _profile;
+
     string internal _gasLabel;
     uint256 internal _gasStart;
     uint256 internal _gasUsed;
@@ -112,7 +114,9 @@ abstract contract TestHarness is Users, Test {
     // Constructor
     // ===========
 
-    constructor() {}
+    constructor() {
+        _profile = vm.envString("FOUNDRY_PROFILE");
+    }
 
     // =====
     // Setup
@@ -133,6 +137,13 @@ abstract contract TestHarness is Users, Test {
     // ================
     // Internal methods
     // ================
+
+    /**
+     * @dev Check if the profile is active.
+     */
+    function _isProfile(string memory profile_) internal view returns (bool) {
+        return (keccak256(abi.encodePacked((_profile))) == keccak256(abi.encodePacked((profile_))));
+    }
 
     /**
      * @dev Start a gas capture log.

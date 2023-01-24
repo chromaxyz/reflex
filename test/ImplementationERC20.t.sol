@@ -93,6 +93,8 @@ contract ImplementationERC20Test is ImplementationFixture {
             )
         );
 
+        // TODO: add both unbounded (returns) and bounded (reverts) invariant campaign
+
         tokenInvariant = IImplementationERC20HandlerLike(address(new BoundedImplementationERC20Handler(tokenProxy)));
 
         targetContract(address(tokenInvariant));
