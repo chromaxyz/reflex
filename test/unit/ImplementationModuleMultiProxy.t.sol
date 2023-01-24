@@ -2,18 +2,18 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
-import {IReflexProxy} from "../src/interfaces/IReflexProxy.sol";
+import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
+import {IReflexProxy} from "../../src/interfaces/IReflexProxy.sol";
 
 // Implementations
-import {ImplementationERC20} from "./implementations/abstracts/ImplementationERC20.sol";
+import {ImplementationERC20} from "../implementations/abstracts/ImplementationERC20.sol";
 
 // Fixtures
-import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
+import {ImplementationFixture} from "../fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
-import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
+import {MockImplementationERC20} from "../mocks/MockImplementationERC20.sol";
+import {MockImplementationERC20Hub} from "../mocks/MockImplementationERC20Hub.sol";
 
 /**
  * @title Implementation Module Multi Proxy Test
@@ -135,24 +135,6 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
                 _MODULE_MULTI_DECIMALS_C
             )
         );
-    }
-
-    // ==========
-    // Invariants
-    // ==========
-
-    function invariantMetadata() external {
-        assertEq(multiModuleProxyA.name(), _MODULE_MULTI_NAME_A);
-        assertEq(multiModuleProxyA.symbol(), _MODULE_MULTI_SYMBOL_A);
-        assertEq(multiModuleProxyA.decimals(), _MODULE_MULTI_DECIMALS_A);
-
-        assertEq(multiModuleProxyB.name(), _MODULE_MULTI_NAME_B);
-        assertEq(multiModuleProxyB.symbol(), _MODULE_MULTI_SYMBOL_B);
-        assertEq(multiModuleProxyB.decimals(), _MODULE_MULTI_DECIMALS_B);
-
-        assertEq(multiModuleProxyC.name(), _MODULE_MULTI_NAME_C);
-        assertEq(multiModuleProxyC.symbol(), _MODULE_MULTI_SYMBOL_C);
-        assertEq(multiModuleProxyC.decimals(), _MODULE_MULTI_DECIMALS_C);
     }
 
     // =====

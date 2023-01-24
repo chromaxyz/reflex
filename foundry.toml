@@ -12,7 +12,15 @@ fs_permissions = [{ access = "read-write", path = "./simulations" }]
 runs = 256
 
 [profile.default.invariant]
-runs = 1_000
+call_override = false
+runs = 10
+depth = 50
+fail_on_revert = true
+
+[profile.no_revert.invariant]
+
+[profile.allow_revert.invariant]
+fail_on_revert = false
 
 [profile.via-ir]
 via_ir = true

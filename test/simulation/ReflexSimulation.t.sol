@@ -4,20 +4,20 @@ pragma solidity ^0.8.13;
 import {console2} from "forge-std/console2.sol";
 
 // Fixtures
-import {Harness} from "./fixtures/Harness.sol";
-import {Action, Logger, Simulation} from "./fixtures/Simulation.sol";
+import {TestHarness} from "../fixtures/TestHarness.sol";
+import {Action, Logger, SimulationHarness} from "../fixtures/SimulationHarness.sol";
 
 // Libraries
-import {Strings} from "./libraries/Strings.sol";
+import {Strings} from "../libraries/Strings.sol";
 
-contract BorrowSimulation is Simulation {
+contract BorrowSimulation is SimulationHarness {
     using Strings for uint256;
 
     constructor(
         Logger logger_,
         string memory description_,
         uint256 timestep_
-    ) Simulation(logger_, description_, timestep_) {
+    ) SimulationHarness(logger_, description_, timestep_) {
         string[] memory header = new string[](3);
         header[0] = "blockTimestamp";
         header[1] = "blockNumber";
@@ -73,7 +73,7 @@ contract BorrowAction is Action {
     }
 }
 
-contract ReflexSimulation is Harness {
+contract ReflexSimulation is TestHarness {
     // =======
     // Storage
     // =======
@@ -110,7 +110,7 @@ contract ReflexSimulation is Harness {
     // Tests
     // =====
 
-    function testSimulation() external {
+    function testSimulationBorrow() external {
         Action[] memory actions = new Action[](5);
         actions[0] = borrowAction1;
         actions[1] = borrowAction2;

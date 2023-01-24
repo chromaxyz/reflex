@@ -2,13 +2,13 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexBase} from "../src/interfaces/IReflexBase.sol";
+import {TReflexBase} from "../../src/interfaces/IReflexBase.sol";
 
 // Fixtures
-import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
+import {ReflexFixture} from "../fixtures/ReflexFixture.sol";
 
 // Mocks
-import {MockReflexBase, ReentrancyAttack} from "./mocks/MockReflexBase.sol";
+import {MockReflexBase, ReentrancyAttack} from "../mocks/MockReflexBase.sol";
 
 /**
  * @title Reflex Base Test

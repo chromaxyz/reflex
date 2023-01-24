@@ -343,12 +343,12 @@ abstract contract Action is Users {
 }
 
 /**
- * @title Simulation
- * @dev Abstract simulation to execute a series of actions in chronological order by timestamp.
+ * @title Simulation Harness
+ * @dev Abstract simulation harness to execute a series of actions in chronological order by timestamp.
  * @author `Simulation` has been inspired by: Maple V2 Core (https://github.com/maple-labs/maple-core-v2/blob/aebc14ba7704da31cae8c7fe0c06d6a3396a600a/contracts/PoolSimulation.sol) (AGPL-3.0-only)
  * @author `Simulation` has been inspired by: Maple V2 Core (https://github.com/maple-labs/maple-core-v2/blob/aebc14ba7704da31cae8c7fe0c06d6a3396a600a/contracts/ActionHandler.sol) (AGPL-3.0-only)
  */
-abstract contract Simulation is CommonBase, Users {
+abstract contract SimulationHarness is CommonBase, Users {
     // =========
     // Constants
     // =========

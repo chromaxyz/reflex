@@ -5,15 +5,15 @@ pragma solidity ^0.8.13;
 import {VmSafe} from "forge-std/Vm.sol";
 
 // Interfaces
-import {TReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
-import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {TReflexDispatcher} from "../../src/interfaces/IReflexDispatcher.sol";
+import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Fixtures
-import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
+import {ReflexFixture} from "../fixtures/ReflexFixture.sol";
 
 // Mocks
-import {MockReflexDispatcher} from "./mocks/MockReflexDispatcher.sol";
-import {MockReflexModule} from "./mocks/MockReflexModule.sol";
+import {MockReflexDispatcher} from "../mocks/MockReflexDispatcher.sol";
+import {MockReflexModule} from "../mocks/MockReflexModule.sol";
 
 /**
  * @title Reflex Dispatcher Test
