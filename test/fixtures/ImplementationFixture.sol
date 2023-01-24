@@ -12,6 +12,7 @@ import {ReflexConstants} from "../../src/ReflexConstants.sol";
 import {IReflexModule, TReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Fixtures
+import {InvariantHarness} from "./InvariantHarness.sol";
 import {TestHarness} from "./TestHarness.sol";
 
 // Mocks
@@ -22,7 +23,7 @@ import {MockReflexModule, ICustomError} from "../mocks/MockReflexModule.sol";
 /**
  * @title Implementation Fixture
  */
-abstract contract ImplementationFixture is ReflexConstants, TestHarness {
+abstract contract ImplementationFixture is ReflexConstants, InvariantHarness, TestHarness {
     // =======
     // Storage
     // =======
@@ -36,7 +37,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
     // Setup
     // =====
 
-    function setUp() public virtual override {
+    function setUp() public virtual override(InvariantHarness, TestHarness) {
         super.setUp();
 
         installer = new MockImplementationInstaller(

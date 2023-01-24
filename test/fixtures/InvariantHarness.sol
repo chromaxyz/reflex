@@ -31,6 +31,14 @@ abstract contract InvariantHarness is Users, Test, InvariantTest {
         _;
     }
 
+    // =====
+    // Setup
+    // =====
+
+    function setUp() public virtual {
+        _currentTimestamp = block.timestamp;
+    }
+
     // ==============
     // Public methods
     // ==============
@@ -56,16 +64,5 @@ abstract contract UnboundedHandler is Users, StdUtils {
     // Storage
     // =======
 
-    uint256 public callCount;
-
     mapping(bytes32 => uint256) public callCounters;
-}
-
-/**
- * @title Bounded Handler
- * @dev Abstract bounded handler to inherit in invariant tests.
- * @dev Reverts on failure.
- */
-abstract contract BoundedHandler is UnboundedHandler {
-
 }

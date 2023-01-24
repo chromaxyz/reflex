@@ -9,6 +9,7 @@ import {stdError} from "forge-std/StdError.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
+import {UnboundedHandler} from "./fixtures/InvariantHarness.sol";
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
@@ -19,7 +20,7 @@ import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol
 /**
  * @title Implementation ERC20 Test
  */
-contract ImplementationERC20Test is ImplementationFixture, InvariantTest {
+contract ImplementationERC20Test is ImplementationFixture {
     // =========
     // Constants
     // =========
@@ -44,6 +45,10 @@ contract ImplementationERC20Test is ImplementationFixture, InvariantTest {
 
     MockImplementationERC20 public token;
     MockImplementationERC20 public tokenProxy;
+
+    IImplementationERC20HandlerLike public tokenInvariant;
+
+    // InvariantImplementationERC20 public invariant;
 
     // =====
     // Setup
@@ -88,6 +93,29 @@ contract ImplementationERC20Test is ImplementationFixture, InvariantTest {
                 _TOKEN_MODULE_DECIMALS
             )
         );
+
+        tokenInvariant = IImplementationERC20HandlerLike(new BoundedImplementationERC20Handler(tokenProxy));
+
+        targetContract(address(tokenInvariant));
+
+        excludeContract(address(tokenHub));
+        excludeContract(address(token));
+        excludeContract(address(tokenHubProxy));
+        excludeContract(address(tokenProxy));
+    }
+
+    // ==========
+    // Invariants
+    // ==========
+
+    function invariantMetadata() public {
+        assertEq(tokenProxy.name(), _TOKEN_MODULE_NAME);
+        assertEq(tokenProxy.symbol(), _TOKEN_MODULE_SYMBOL);
+        assertEq(tokenProxy.decimals(), _TOKEN_MODULE_DECIMALS);
+    }
+
+    function invariantBalanceSum() public {
+        assertEq(tokenProxy.totalSupply(), tokenInvariant.sum());
     }
 
     // =====
@@ -313,5 +341,119 @@ contract ImplementationERC20Test is ImplementationFixture, InvariantTest {
             mstore(ptr, message)
             log3(ptr, messageLength, topic1, topic2, topic3)
         }
+    }
+}
+
+// ==================
+// Invariant handlers
+// ==================
+
+interface IImplementationERC20HandlerLike {
+    function sum() external returns (uint256);
+
+    function mint(address from, uint256 amount) external;
+
+    function burn(address from, uint256 amount) external;
+
+    function approve(address to, uint256 amount) external;
+
+    function transferFrom(address from, address to, uint256 amount) external;
+
+    function transfer(address to, uint256 amount) external;
+}
+
+contract UnboundedImplementationERC20Handler is IImplementationERC20HandlerLike, UnboundedHandler {
+    // =======
+    // Storage
+    // =======
+
+    MockImplementationERC20 public token;
+
+    uint256 public sum;
+
+    // ===========
+    // Constructor
+    // ===========
+
+    constructor(MockImplementationERC20 token_) {
+        token = token_;
+    }
+
+    // ==========
+    // Test stubs
+    // ==========
+
+    function mint(address from_, uint256 amount_) public virtual {
+        callCounters["unbounded.mint"]++;
+
+        token.mint(from_, amount_);
+        sum += amount_;
+    }
+
+    function burn(address from_, uint256 amount_) public virtual {
+        callCounters["unbounded.burn"]++;
+
+        token.burn(from_, amount_);
+        sum -= amount_;
+    }
+
+    function approve(address to_, uint256 amount_) public virtual {
+        callCounters["unbounded.approve"]++;
+
+        token.approve(to_, amount_);
+    }
+
+    function transferFrom(address from_, address to_, uint256 amount_) public virtual {
+        callCounters["unbounded.transferFrom"]++;
+
+        token.transferFrom(from_, to_, amount_);
+    }
+
+    function transfer(address to_, uint256 amount_) public virtual {
+        callCounters["unbounded.transfer"]++;
+
+        token.transfer(to_, amount_);
+    }
+}
+
+contract BoundedImplementationERC20Handler is UnboundedImplementationERC20Handler {
+    // ===========
+    // Constructor
+    // ===========
+
+    constructor(MockImplementationERC20 token_) UnboundedImplementationERC20Handler(token_) {}
+
+    // ==========
+    // Test stubs
+    // ==========
+
+    function mint(address from_, uint256 amount_) public override {
+        callCounters["bounded.mint"]++;
+
+        super.mint(from_, amount_);
+    }
+
+    function burn(address from_, uint256 amount_) public override {
+        callCounters["bounded.burn"]++;
+
+        super.burn(from_, amount_);
+    }
+
+    function approve(address to_, uint256 amount_) public override {
+        callCounters["bounded.approve"]++;
+
+        super.approve(to_, amount_);
+    }
+
+    function transferFrom(address from_, address to_, uint256 amount_) public override {
+        callCounters["bounded.transferFrom"]++;
+
+        super.transferFrom(from_, to_, amount_);
+    }
+
+    function transfer(address to_, uint256 amount_) public override {
+        callCounters["bounded.transfer"]++;
+
+        super.transfer(to_, amount_);
     }
 }

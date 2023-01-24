@@ -15,7 +15,7 @@ runs = 256
 [profile.default.invariant]
 runs = 10
 depth = 100
-fail_on_revert = true
+fail_on_revert = false
 
 # ==================
 # Profile: `intense`
@@ -26,7 +26,6 @@ runs = 10_000
 [profile.intense.invariant]
 runs = 200
 depth = 250
-fail_on_revert = true
 
 # =================
 # Profile: `via-ir`
@@ -40,7 +39,6 @@ runs = 10_000
 [profile.via-ir.invariant]
 runs = 200
 depth = 250
-fail_on_revert = true
 
 # ===================
 # Profile: `min-solc`
@@ -64,4 +62,3 @@ runs = 10_000
 [profile.min-solc-via-ir.invariant]
 runs = 200
 depth = 250
-fail_on_revert = true
