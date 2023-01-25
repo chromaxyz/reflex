@@ -21,9 +21,9 @@ function log () {
 # Variables
 while getopts p: flag
 do
-    case "${flag}" in
-        p) PROFILE=${OPTARG};;
-    esac
+  case "${flag}" in
+    p) PROFILE=${OPTARG};;
+  esac
 done
 
 # Set Foundry profile

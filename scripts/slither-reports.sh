@@ -32,34 +32,7 @@ rm -rf reports/slither
 # Output reports
 mkdir -p \
   reports/slither/call-graph \
-  reports/slither/inheritance-graph \
-  reports/slither/contract-summary \
-  reports/slither/function-summary \
-  reports/slither/vars-and-auth \
-  reports/slither/storage-layout
-
-# Printers
-# - cfg
-# - constructor-calls
-# - contract-summary ✓
-# - data-dependency
-# - declaration
-# - dominator
-# - echidna
-# - function-id
-# - function-summary ✓
-# - modifiers
-# - call-graph ✓
-# - evm
-# - human-summary
-# - inheritance
-# - inheritance-graph ✓
-# - slithir
-# - slithir-ssa
-# - pausable
-# - vars-and-auth ✓
-# - require
-# - variable-order ✓
+  reports/slither/inheritance-graph
 
 # Generate reports
 for FILEPATH in src/*.sol; do
@@ -73,11 +46,6 @@ for FILEPATH in src/*.sol; do
 
   slither $FILEPATH --print call-graph
   mv src/$FILENAME_WITH_EXTENSION.*.call-graph.dot reports/slither/call-graph/
-
-  slither $FILEPATH --print contract-summary --disable-color 2> reports/slither/contract-summary/$FILENAME
-  slither $FILEPATH --print function-summary 2> reports/slither/function-summary/$FILENAME
-  slither $FILEPATH --print vars-and-auth 2> reports/slither/vars-and-auth/$FILENAME
-  slither $FILEPATH --print variable-order 2> reports/slither/storage-layout/$FILENAME
 done
 
 log $GREEN "Done"

@@ -21,11 +21,11 @@ function log () {
 # Variables
 while getopts d:p:t: flag
 do
-    case "${flag}" in
-        d) DIRECTORY=${OPTARG};;
-        p) PROFILE=${OPTARG};;
-        t) TEST=${OPTARG};;
-    esac
+  case "${flag}" in
+    d) DIRECTORY=${OPTARG};;
+    p) PROFILE=${OPTARG};;
+    t) TEST=${OPTARG};;
+  esac
 done
 
 # Set Foundry profile
@@ -33,16 +33,14 @@ export FOUNDRY_PROFILE=$PROFILE
 
 log $GREEN "Running tests with profile: $PROFILE"
 
-if [ -z "$TEST" ];
-then
-    if [ -z "$DIRECTORY" ];
-    then
-        forge test;
-    else
-        forge test --match-path "$DIRECTORY/*.t.sol";
-    fi
+if [ -z "$TEST" ]; then
+  if [ -z "$DIRECTORY" ]; then
+    forge test;
+  else
+    forge test --match-path "$DIRECTORY/*.t.sol";
+  fi
 else
-    forge test --match "$TEST";
+  forge test --match "$TEST";
 fi
 
 log $GREEN "Done"
