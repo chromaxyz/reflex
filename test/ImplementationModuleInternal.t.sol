@@ -8,7 +8,7 @@ import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {MockReflexModule} from "./mocks/MockReflexModule.sol";
+import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 import {MockImplementationInternalModule} from "./mocks/MockImplementationInternalModule.sol";
 
 /**
@@ -38,10 +38,11 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     // Storage
     // =======
 
-    MockReflexModule public singleModule;
-    MockReflexModule public singleModuleProxy;
+    MockImplementationModule public singleModule;
+    MockImplementationModule public singleModuleProxy;
 
-    MockImplementationInternalModule public internalModule;
+    MockImplementationInternalModule public internalModuleV1;
+    MockImplementationInternalModule public internalModuleV2;
 
     // =====
     // Setup
@@ -50,7 +51,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     function setUp() public virtual override {
         super.setUp();
 
-        singleModule = new MockReflexModule(
+        singleModule = new MockImplementationModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
@@ -60,7 +61,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
-        internalModule = new MockImplementationInternalModule(
+        internalModuleV1 = new MockImplementationInternalModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
@@ -70,12 +71,22 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
+        internalModuleV2 = new MockImplementationInternalModule(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_INTERNAL_ID,
+                moduleType: _MODULE_INTERNAL_TYPE,
+                moduleVersion: _MODULE_INTERNAL_VERSION_V2,
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V2,
+                moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V2
+            })
+        );
+
         address[] memory moduleAddresses = new address[](2);
         moduleAddresses[0] = address(singleModule);
-        moduleAddresses[1] = address(internalModule);
+        moduleAddresses[1] = address(internalModuleV1);
         installerProxy.addModules(moduleAddresses);
 
-        singleModuleProxy = MockReflexModule(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID));
+        singleModuleProxy = MockImplementationModule(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID));
     }
 
     // =====
@@ -83,7 +94,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     // =====
 
     function testUnitModuleIdToImplementation() external {
-        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID), address(internalModule));
+        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID), address(internalModuleV1));
     }
 
     function testUnitModuleIdToProxy() external {
@@ -101,7 +112,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
 
         _testModuleConfiguration(
-            internalModule,
+            internalModuleV1,
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
             _MODULE_INTERNAL_VERSION_V1,
@@ -145,9 +156,21 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
     }
 
-    function testUnitUpgradeInternalModule() external {
+    function testFuzzUpgradeInternalModule(
+        bytes32 message_,
+        uint256 number_,
+        address location_,
+        address tokenA_,
+        address tokenB_,
+        bool flag_
+    ) external BrutalizeMemory {
+        singleModuleProxy.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+
+        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+
         _testModuleConfiguration(
-            internalModule,
+            internalModuleV1,
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
             _MODULE_INTERNAL_VERSION_V1,
@@ -155,48 +178,47 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             _MODULE_INTERNAL_REMOVEABLE_V1
         );
 
-        internalModule = new MockImplementationInternalModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_INTERNAL_ID,
-                moduleType: _MODULE_INTERNAL_TYPE,
-                moduleVersion: _MODULE_INTERNAL_VERSION_V2,
-                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V2,
-                moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V2
-            })
-        );
-
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(internalModule);
+        moduleAddresses[0] = address(internalModuleV2);
         installerProxy.upgradeModules(moduleAddresses);
 
         _testModuleConfiguration(
-            internalModule,
+            internalModuleV2,
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
             _MODULE_INTERNAL_VERSION_V2,
             _MODULE_INTERNAL_UPGRADEABLE_V2,
             _MODULE_INTERNAL_REMOVEABLE_V2
         );
+
+        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
     }
 
-    function testUnitRemoveInternalModule() external {
-        _testModuleConfiguration(
-            internalModule,
-            _MODULE_INTERNAL_ID,
-            _MODULE_INTERNAL_TYPE,
-            _MODULE_INTERNAL_VERSION_V1,
-            _MODULE_INTERNAL_UPGRADEABLE_V1,
-            _MODULE_INTERNAL_REMOVEABLE_V1
-        );
+    function testFuzzRemoveInternalModule(
+        bytes32 message_,
+        uint256 number_,
+        address location_,
+        address tokenA_,
+        address tokenB_,
+        bool flag_
+    ) external BrutalizeMemory {
+        singleModuleProxy.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+
+        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
 
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(internalModule);
+        moduleAddresses[0] = address(internalModuleV1);
         installerProxy.removeModules(moduleAddresses);
 
-        internalModule = MockImplementationInternalModule(
+        internalModuleV1 = MockImplementationInternalModule(
             dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID)
         );
 
-        assertEq(address(internalModule), address(0));
+        assertEq(address(internalModuleV1), address(0));
+
+        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
     }
 }

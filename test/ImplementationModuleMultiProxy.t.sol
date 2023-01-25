@@ -188,7 +188,21 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
     }
 
-    function testUnitUpgradeMultiProxySingleImplementation() external {
+    function testFuzzUpgradeMultiProxy(
+        bytes32 message_,
+        uint256 number_,
+        address location_,
+        address tokenA_,
+        address tokenB_,
+        bool flag_
+    ) external BrutalizeMemory {
+        multiModuleProxyA.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+
+        multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyB.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyC.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+
         _testModuleConfiguration(
             multiModuleProxyA,
             _MODULE_MULTI_ID,
@@ -246,6 +260,46 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V2,
             _MODULE_MULTI_REMOVEABLE_V2
         );
+
+        multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyB.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyC.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+    }
+
+    function testFuzzRemoveMultiProxy(
+        bytes32 message_,
+        uint256 number_,
+        address location_,
+        address tokenA_,
+        address tokenB_,
+        bool flag_
+    ) external {
+        multiModuleProxyA.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+
+        multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyB.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyC.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(singleModule);
+        installerProxy.removeModules(moduleAddresses);
+
+        multiModuleV1 = MockImplementationERC20(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID));
+        assertEq(address(multiModuleV1), address(0));
+
+        multiModuleProxyA.mint(address(this), 1e18);
+        assertEq(multiModuleProxyA.balanceOf(address(this)), 1e18);
+
+        // // TODO: shouldn't these multi proxies revert???
+
+        // TODO: post-removal the multi proxies should not be allowed to call in
+
+        multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyB.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyC.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
     }
 
     function testUnitProxySentinelFallback() external {

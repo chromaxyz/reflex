@@ -66,13 +66,13 @@ contract ImplementationState is ReflexState {
      * @notice Implementation state 3.
      * @dev Slot 53 (20 bytes).
      */
-    address public getImplementationState3 = address(0xAAAA);
+    address public _implementationState3;
 
     /**
      * @notice Implementation state 4.
      * @dev Slot 53 (20 byte offset, 1 byte).
      */
-    bool public getImplementationState4 = true;
+    bool public _implementationState4;
 
     /**
      * @notice Implementation state 5.

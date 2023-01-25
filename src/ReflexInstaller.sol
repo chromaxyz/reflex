@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+// Vendor
+import {console2} from "forge-std/console2.sol";
+
 // Interfaces
 import {IReflexInstaller} from "./interfaces/IReflexInstaller.sol";
 import {IReflexModule} from "./interfaces/IReflexModule.sol";
@@ -173,15 +176,11 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             if (!moduleSettings_.moduleRemoveable) revert ModuleNotRemoveable(moduleSettings_.moduleId);
 
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
-                address proxyAddress = _createProxy(moduleSettings_.moduleId, moduleSettings_.moduleType);
+                address proxyAddress = _proxies[moduleSettings_.moduleId];
                 delete _relations[proxyAddress];
             }
 
-            if (
-                moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY ||
-                moduleSettings_.moduleType == _MODULE_TYPE_MULTI_PROXY
-            ) delete _proxies[moduleSettings_.moduleId];
-
+            delete _proxies[moduleSettings_.moduleId];
             delete _modules[moduleSettings_.moduleId];
 
             emit ModuleRemoved(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
