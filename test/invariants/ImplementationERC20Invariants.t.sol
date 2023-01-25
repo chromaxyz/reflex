@@ -7,11 +7,8 @@ import {console2} from "forge-std/console2.sol";
 // Fixtures
 import {InvariantTestHarness} from "../fixtures/InvariantTestHarness.sol";
 
-// Handlers
-import {IImplementationERC20HandlerLike, BoundedImplementationERC20Handler, UnboundedImplementationERC20Handler} from "./handlers/ImplementationERC20Handler.sol";
-
 // Tests
-import {ImplementationERC20Test} from "../ImplementationERC20.t.sol";
+import {IImplementationERC20HandlerLike, BoundedImplementationERC20Handler, UnboundedImplementationERC20Handler, ImplementationERC20Test} from "../ImplementationERC20.t.sol";
 
 /**
  * @title Base Invariant Test
