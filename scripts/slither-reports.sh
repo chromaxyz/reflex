@@ -31,6 +31,8 @@ rm -rf reports/slither
 
 # Output reports
 mkdir -p \
+  reports/slither/call-graph \
+  reports/slither/inheritance-graph \
   reports/slither/contract-summary \
   reports/slither/function-summary \
   reports/slither/vars-and-auth \
@@ -42,6 +44,12 @@ for FILEPATH in src/*.sol; do
   FILENAME=${FILENAME_WITH_EXTENSION%%.*}.md
 
   echo $FILENAME
+
+  slither $FILEPATH --print inheritance-graph
+  mv src/$FILENAME_WITH_EXTENSION.inheritance-graph.dot reports/slither/inheritance-graph/
+
+  slither $FILEPATH --print call-graph
+  mv src/$FILENAME_WITH_EXTENSION.*.call-graph.dot reports/slither/call-graph/
 
   slither $FILEPATH --print contract-summary --disable-color 2> reports/slither/contract-summary/$FILENAME
   slither $FILEPATH --print function-summary 2> reports/slither/function-summary/$FILENAME
