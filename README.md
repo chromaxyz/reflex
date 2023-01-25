@@ -119,7 +119,7 @@ For convenience we use a [Makefile](/Makefile) for running different tasks.
 
 ### Build Commands
 
-Profiles: `default`, `min-solc`, `via-ir`, `min-solc-via-ir`.
+Build profiles: `default`, `min-solc`, `via-ir`, `min-solc-via-ir`.
 
 Usage: `PROFILE=default make build`.
 
@@ -130,16 +130,18 @@ Usage: `PROFILE=default make build`.
 
 ### Test Commands
 
-Profiles: `default`, `bounded`, `unbounded`, `intense`.
+Build profiles: `default`, `min-solc`, `via-ir`, `min-solc-via-ir`.
+
+Test profiles: `default`, `intense`, `bounded`, `unbounded`.
 
 Usage: `PROFILE=default make test`.
 
-| Command                                    | Action                   |
-| ------------------------------------------ | ------------------------ |
-| `make test` or `PROFILE=default make test` | Run all tests.           |
-| `make test-unit`                           | Run all unit tests.      |
-| `make test-fuzz`                           | Run all fuzz tests.      |
-| `make test-invariant`                      | Run all invariant tests. |
+| Command                                                        | Action                                              |
+| -------------------------------------------------------------- | --------------------------------------------------- |
+| `make test` or `PROFILE=default make test`                     | Run all tests with the `default` profile.           |
+| `make test-unit` or `PROFILE=default make test-unit`           | Run all unit tests with the `default` profile.      |
+| `make test-fuzz` or `PROFILE=default make test-fuzz`           | Run all fuzz tests with the `default` profile.      |
+| `make test-invariant` or `PROFILE=default make test-invariant` | Run all invariant tests with the `default` profile. |
 
 ## Safety
 
