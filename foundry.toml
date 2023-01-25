@@ -23,9 +23,6 @@ fail_on_revert = false
 # ==================
 # Profile: `bounded`
 # ==================
-[profile.bounded]
-verbosity = 5
-
 [profile.bounded.invariant]
 runs = 200
 depth = 250
@@ -34,9 +31,6 @@ fail_on_revert = true
 # ====================
 # Profile: `unbounded`
 # ====================
-[profile.unbounded]
-verbosity = 5
-
 [profile.unbounded.invariant]
 runs = 200
 depth = 250
