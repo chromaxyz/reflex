@@ -115,7 +115,7 @@ abstract contract TestHarness is Users, Test {
     // ===========
 
     constructor() {
-        _profile = vm.envString("FOUNDRY_PROFILE");
+        _profile = vm.envOr("FOUNDRY_PROFILE", string("default"));
     }
 
     // =====
