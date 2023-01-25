@@ -32,7 +32,7 @@ test-invariant:; ./scripts/test.sh -c Bounded -p $(PROFILE)
 else ifeq ($(PROFILE),unbounded)
 test-invariant:; ./scripts/test.sh -c Unbounded -p $(PROFILE)
 else
-test-invariant:; ./scripts/test.sh -d test/invariants -p $(PROFILE)
+test-invariant:; ./scripts/test.sh -t invariant -p $(PROFILE)
 endif
 
 # Snapshot
