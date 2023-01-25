@@ -4,13 +4,13 @@ pragma solidity ^0.8.13;
 // Sources
 import {ReflexDispatcher} from "../../src/ReflexDispatcher.sol";
 
-// Implementations
-import {ImplementationState} from "./ImplementationState.sol";
+// Mocks
+import {ImplementationState} from "./abstracts/ImplementationState.sol";
 
 /**
- * @title Implementation Dispatcher
+ * @title Mock Implementation Dispatcher
  */
-contract ImplementationDispatcher is ReflexDispatcher, ImplementationState {
+contract MockImplementationDispatcher is ReflexDispatcher, ImplementationState {
     // ===========
     // Constructor
     // ===========

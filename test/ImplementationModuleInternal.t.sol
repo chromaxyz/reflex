@@ -82,15 +82,15 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     // Tests
     // =====
 
-    function testModuleIdToImplementation() external {
+    function testUnitModuleIdToImplementation() external {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID), address(internalModule));
     }
 
-    function testModuleIdToProxy() external {
+    function testUnitModuleIdToProxy() external {
         assertEq(dispatcher.moduleIdToProxy(_MODULE_INTERNAL_ID), address(0));
     }
 
-    function testModuleSettings() external {
+    function testUnitModuleSettings() external {
         _testModuleConfiguration(
             singleModule,
             _MODULE_SINGLE_ID,
@@ -110,7 +110,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
     }
 
-    function testCallInternalModule(uint256 number_) external {
+    function testFuzzCallInternalModule(uint256 number_) external {
         uint256 value = abi.decode(
             singleModuleProxy.callInternalModule(
                 _MODULE_INTERNAL_ID,
@@ -137,7 +137,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         assertEq(value, number_);
     }
 
-    function testRevertInvalidCallInternalModule() external {
+    function testUnitRevertInvalidCallInternalModule() external {
         vm.expectRevert();
         singleModuleProxy.callInternalModule(
             _MODULE_INTERNAL_ID,
@@ -145,7 +145,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
     }
 
-    function testUpgradeInternalModule() external {
+    function testUnitUpgradeInternalModule() external {
         _testModuleConfiguration(
             internalModule,
             _MODULE_INTERNAL_ID,
@@ -179,7 +179,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
     }
 
-    function testRemoveInternalModule() external {
+    function testUnitRemoveInternalModule() external {
         _testModuleConfiguration(
             internalModule,
             _MODULE_INTERNAL_ID,

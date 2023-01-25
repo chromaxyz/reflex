@@ -12,7 +12,7 @@ import {MockReflexInstaller} from "../mocks/MockReflexInstaller.sol";
 import {MockReflexDispatcher} from "../mocks/MockReflexDispatcher.sol";
 
 // Fixtures
-import {Harness} from "./Harness.sol";
+import {TestHarness} from "./TestHarness.sol";
 
 // Script
 import {DeployConstants} from "../../script/Deploy.s.sol";
@@ -20,7 +20,7 @@ import {DeployConstants} from "../../script/Deploy.s.sol";
 /**
  * @title Reflex Fixture
  */
-abstract contract ReflexFixture is ReflexConstants, DeployConstants, Harness {
+abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness {
     // =======
     // Storage
     // =======
@@ -50,9 +50,9 @@ abstract contract ReflexFixture is ReflexConstants, DeployConstants, Harness {
         installerProxy = MockReflexInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
     }
 
-    // =========
-    // Utilities
-    // =========
+    // ================
+    // Internal methods
+    // ================
 
     function _testModuleConfiguration(
         IReflexModule module_,

@@ -4,32 +4,39 @@
 # Include .env file and export its variables
 -include .env
 
+# Profiles: `default`, `bounded`, `unbounded`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`
+PROFILE?=default
+
 # Setup
 install:;
 	forge install
 	npm install
 
+# Update
+update:;
+	forge update
+
 # Clean
 clean:; forge clean
 
 # Build
-build:; forge build --sizes
-build-min-solc:; FOUNDRY_PROFILE=min-solc forge build --sizes
-build-via-ir:; FOUNDRY_PROFILE=via-ir forge build --sizes
-build-min-solc-via-ir:; FOUNDRY_PROFILE=min-solc-via-ir forge build --sizes
+build:; ./scripts/build.sh -p $(PROFILE)
 
 # Test
-test:; forge test
-test-intense:; FOUNDRY_PROFILE=intense forge test
-test-min-solc:; FOUNDRY_PROFILE=min-solc forge test
-test-via-ir:; FOUNDRY_PROFILE=via-ir forge test
-test-min-solc-via-ir:; FOUNDRY_PROFILE=min-solc-via-ir forge test
+test:; ./scripts/test.sh -p $(PROFILE)
+test-unit:; ./scripts/test.sh -t testUnit -p $(PROFILE)
+test-fuzz:; ./scripts/test.sh -t testFuzz -p $(PROFILE)
+
+ifeq ($(PROFILE),bounded)
+test-invariant:; ./scripts/test.sh -c Bounded -p $(PROFILE)
+else ifeq ($(PROFILE),unbounded)
+test-invariant:; ./scripts/test.sh -c Unbounded -p $(PROFILE)
+else
+test-invariant:; ./scripts/test.sh -t invariant -p $(PROFILE)
+endif
 
 # Snapshot
-snapshot:; forge snapshot --snap .gas-snapshot
-snapshot-min-solc:; FOUNDRY_PROFILE=min-solc forge snapshot --snap .gas-snapshot-min-solc
-snapshot-via-ir:; FOUNDRY_PROFILE=via-ir forge snapshot --snap .gas-snapshot-via-ir
-snapshot-min-solc-via-ir:; FOUNDRY_PROFILE=min-solc-via-ir forge snapshot --snap .gas-snapshot-min-solc-via-ir
+snapshot:; ./scripts/snapshot.sh -p $(PROFILE)
 
 # Linting
 lint-check:; npm run lint:check

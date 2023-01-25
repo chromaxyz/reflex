@@ -21,7 +21,7 @@ function log () {
 log $GREEN "Creating storage overview from contracts"
 
 # Variables
-CONTRACTS="ReflexBase ReflexConstants ReflexDispatcher ReflexInstaller ReflexModule ReflexProxy ReflexState ImplementationDispatcher"
+CONTRACTS="ReflexBase ReflexConstants ReflexDispatcher ReflexInstaller ReflexModule ReflexProxy ReflexState MockImplementationDispatcher"
 FILENAME=reports/STORAGE_LAYOUT.md
 
 # Remove previous storage layout

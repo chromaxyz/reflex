@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Exit if anything fails
-set -euo pipefail
+set -eo pipefail
 
 # Change directory to project root
 SCRIPT_PATH="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
@@ -18,13 +18,19 @@ function log () {
   echo -e "\033[0m"
 }
 
-log $GREEN "Creating selector from \"$1\" signature"
+# Variables
+while getopts p: flag
+do
+  case "${flag}" in
+    p) PROFILE=${OPTARG};;
+  esac
+done
 
-# Check for arguments passed
-if [ $# -eq 0 ]; then
-  echo "Please supply signature."
-fi
+# Set Foundry profile
+export FOUNDRY_PROFILE=$PROFILE
 
-cast sig $1
+log $GREEN "Building with profile: $PROFILE"
+
+forge build --sizes
 
 log $GREEN "Done"

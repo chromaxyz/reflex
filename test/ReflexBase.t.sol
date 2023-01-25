@@ -39,29 +39,29 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
     // Tests
     // =====
 
-    function testRevertCreateProxyInvalidModuleId() external {
+    function testUnitRevertCreateProxyInvalidModuleId() external {
         vm.expectRevert(InvalidModuleId.selector);
         base.createProxy(uint32(0), uint16(0));
     }
 
-    function testRevertCreateProxyInvalidModuleType() external {
+    function testUnitRevertCreateProxyInvalidModuleType() external {
         vm.expectRevert(InvalidModuleType.selector);
         base.createProxy(uint32(1), uint16(0));
     }
 
-    function testRevertCreateProxyInternalModule() external {
+    function testUnitRevertCreateProxyInternalModule() external {
         vm.expectRevert(InternalModule.selector);
         base.createProxy(102, _MODULE_TYPE_INTERNAL);
     }
 
-    function testRevertBytes(bytes memory errorMessage_) external {
+    function testFuzzRevertBytes(bytes memory errorMessage_) external {
         vm.assume(errorMessage_.length > 0);
 
         vm.expectRevert(errorMessage_);
         base.revertBytes(errorMessage_);
     }
 
-    function testRevertBytesEmptyError() external {
+    function testUnitRevertBytesEmptyError() external {
         vm.expectRevert(EmptyError.selector);
         base.revertBytes("");
     }
@@ -70,7 +70,7 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
     // Reentrancy guard tests
     // ======================
 
-    function testGuardedCheckLocked() external {
+    function testUnitGuardedCheckLocked() external {
         assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
 
         base.guardedCheckLocked();
@@ -78,7 +78,7 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
         assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
     }
 
-    function testUnguardedCheckUnlocked() external {
+    function testUnitUnguardedCheckUnlocked() external {
         assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
 
         base.unguardedCheckUnlocked();
@@ -86,7 +86,7 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
         assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
     }
 
-    function testNonReentrantMethodCanBeCalled() external {
+    function testUnitNonReentrantMethodCanBeCalled() external {
         assertEq(base.reentrancyCounter(), 0);
 
         base.callback();
@@ -94,17 +94,17 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
         assertEq(base.reentrancyCounter(), 1);
     }
 
-    function testRevertRemoteCallback() external {
+    function testUnitRevertRemoteCallback() external {
         vm.expectRevert(ReentrancyAttack.ReentrancyAttackFailed.selector);
         base.countAndCall(reentrancyAttack);
     }
 
-    function testRevertRecursiveDirectCall() external {
+    function testUnitRevertRecursiveDirectCall() external {
         vm.expectRevert(Reentrancy.selector);
         base.countDirectRecursive(10);
     }
 
-    function testRevertRecursiveIndirectCall() external {
+    function testUnitRevertRecursiveIndirectCall() external {
         vm.expectRevert(Reentrancy.selector);
         base.countIndirectRecursive(10);
     }

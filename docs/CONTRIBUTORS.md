@@ -73,32 +73,37 @@ For convenience we use a [Makefile](/Makefile) for running different tasks.
 
 ### Build Commands
 
-| Command                      | Action                                                                |
-| ---------------------------- | --------------------------------------------------------------------- |
-| `make build`                 | Compile all contracts in the repo with the `default` profile.         |
-| `make build-min-solc`        | Compile all contracts in the repo with the `min-solc` profile.        |
-| `make build-via-ir`          | Compile all contracts in the repo with the `via-ir` profile.          |
-| `make build-min-solc-via-ir` | Compile all contracts in the repo with the `min-solc-via-ir` profile. |
-| `make clean`                 | Delete cached files.                                                  |
+Profiles: `default`, `min-solc`, `via-ir`, `min-solc-via-ir`.
+
+Usage: `PROFILE=default make build`.
+
+| Command                                      | Action                                            |
+| -------------------------------------------- | ------------------------------------------------- |
+| `make build` or `PROFILE=default make build` | Compile all contracts with the `default` profile. |
+| `make clean`                                 | Delete all cached build files.                    |
 
 ### Test Commands
 
-| Command                     | Action                                            |
-| --------------------------- | ------------------------------------------------- |
-| `make test`                 | Run all tests.                                    |
-| `make test-intense`         | Run all tests with the `intense` profile.         |
-| `make test-min-solc`        | Run all tests with the `min-solc` profile.        |
-| `make test-via-ir`          | Run all tests with the `via-ir` profile.          |
-| `make test-min-solc-via-ir` | Run all tests with the `min-solc-via-ir` profile. |
+Profiles: `default`, `bounded`, `unbounded`, `intense`.
+
+Usage: `PROFILE=default make test`.
+
+| Command                                    | Action                   |
+| ------------------------------------------ | ------------------------ |
+| `make test` or `PROFILE=default make test` | Run all tests.           |
+| `make test-unit`                           | Run all unit tests.      |
+| `make test-fuzz`                           | Run all fuzz tests.      |
+| `make test-invariant`                      | Run all invariant tests. |
 
 ### Snapshot Commands
 
-| Command                         | Action                                           |
-| ------------------------------- | ------------------------------------------------ |
-| `make snapshot`                 | Run snapshot.                                    |
-| `make snapshot-min-solc`        | Run snapshot with the `min-solc` profile.        |
-| `make snapshot-via-ir`          | Run snapshot with the `via-ir` profile.          |
-| `make snapshot-min-solc-via-ir` | Run snapshot with the `min-solc-via-ir` profile. |
+Profiles: `default`, `bounded`, `unbounded`, `intense`.
+
+Usage: `PROFILE=default make snapshot`.
+
+| Command                                            | Action        |
+| -------------------------------------------------- | ------------- |
+| `make snapshot` or `PROFILE=default make snapshot` | Run snapshot. |
 
 ### Linter Commands
 

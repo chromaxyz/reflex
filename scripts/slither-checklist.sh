@@ -24,23 +24,24 @@ if ! [ -x "$(command -v slither)" ]; then
   exit 1
 fi
 
-log $GREEN "Creating Slither report"
+log $GREEN "Creating Slither checklist"
 
 # Variables
-FILENAME=reports/SLITHER_REPORT.md
+CHECKLIST_FILENAME=reports/SLITHER_CHECKLIST.md
 
-# Remove previous report.
-rm -f "$FILENAME"
+# Remove previous checklist
+rm -f "$CHECKLIST_FILENAME"
 
+# Output checklist
 slither . \
   --filter-path "node_modules|lib|test|script" \
   --exclude "solc-version" \
   --markdown-root "../" \
   --checklist \
   --solc-remaps '$(cat remappings.txt)' \
-  > "$FILENAME"
+  > "$CHECKLIST_FILENAME"
 
-# Run prettier.
-npx prettier --write "$FILENAME"
+# Run prettier
+npx prettier --write "$CHECKLIST_FILENAME"
 
 log $GREEN "Done"

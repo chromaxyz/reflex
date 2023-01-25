@@ -2,18 +2,18 @@
 pragma solidity ^0.8.13;
 
 // Vendor
+import {console2} from "forge-std/console2.sol";
 import {stdError} from "forge-std/StdError.sol";
 
 // Interfaces
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
-// Implementations
-import {ImplementationERC20} from "./implementations/abstracts/ImplementationERC20.sol";
-
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
+import {InvariantTestHarness, BoundedHandler, UnboundedHandler} from "./fixtures/InvariantTestHarness.sol";
 
 // Mocks
+import {ImplementationERC20} from "./mocks/abstracts/ImplementationERC20.sol";
 import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
 import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
 
@@ -25,16 +25,16 @@ contract ImplementationERC20Test is ImplementationFixture {
     // Constants
     // =========
 
-    uint32 internal constant _TOKEN_HUB_MODULE_ID = 100;
-    uint16 internal constant _TOKEN_HUB_MODULE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
-    uint16 internal constant _TOKEN_HUB_MODULE_VERSION = 1;
+    uint32 public constant _TOKEN_HUB_MODULE_ID = 100;
+    uint16 public constant _TOKEN_HUB_MODULE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
+    uint16 public constant _TOKEN_HUB_MODULE_VERSION = 1;
 
-    uint32 internal constant _TOKEN_MODULE_ID = 101;
-    uint16 internal constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_PROXY;
-    uint16 internal constant _TOKEN_MODULE_VERSION = 1;
-    string internal constant _TOKEN_MODULE_NAME = "TOKEN A";
-    string internal constant _TOKEN_MODULE_SYMBOL = "TKNA";
-    uint8 internal constant _TOKEN_MODULE_DECIMALS = 18;
+    uint32 public constant _TOKEN_MODULE_ID = 101;
+    uint16 public constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_PROXY;
+    uint16 public constant _TOKEN_MODULE_VERSION = 1;
+    string public constant _TOKEN_MODULE_NAME = "TOKEN A";
+    string public constant _TOKEN_MODULE_SYMBOL = "TKNA";
+    uint8 public constant _TOKEN_MODULE_DECIMALS = 18;
 
     // =======
     // Storage
@@ -45,8 +45,6 @@ contract ImplementationERC20Test is ImplementationFixture {
 
     MockImplementationERC20 public token;
     MockImplementationERC20 public tokenProxy;
-
-    InvariantBalanceSum public tokenBalanceSum;
 
     // =====
     // Setup
@@ -91,44 +89,26 @@ contract ImplementationERC20Test is ImplementationFixture {
                 _TOKEN_MODULE_DECIMALS
             )
         );
-
-        tokenBalanceSum = new InvariantBalanceSum(tokenProxy);
-
-        targetContract(address(tokenBalanceSum));
-    }
-
-    // ==========
-    // Invariants
-    // ==========
-
-    function invariantMetadata() external {
-        assertEq(tokenProxy.name(), _TOKEN_MODULE_NAME);
-        assertEq(tokenProxy.symbol(), _TOKEN_MODULE_SYMBOL);
-        assertEq(tokenProxy.decimals(), _TOKEN_MODULE_DECIMALS);
-    }
-
-    function invariantBalanceSum() external {
-        assertEq(tokenProxy.totalSupply(), tokenBalanceSum.sum());
     }
 
     // =====
     // Tests
     // =====
 
-    function testMetadata() external {
+    function testUnitMetadata() external {
         assertEq(tokenProxy.name(), _TOKEN_MODULE_NAME);
         assertEq(tokenProxy.symbol(), _TOKEN_MODULE_SYMBOL);
         assertEq(tokenProxy.decimals(), _TOKEN_MODULE_DECIMALS);
     }
 
-    function testMint(uint256 amount_) external {
+    function testFuzzMint(uint256 amount_) external {
         tokenProxy.mint(_users.Alice, amount_);
 
         assertEq(tokenProxy.totalSupply(), amount_);
         assertEq(tokenProxy.balanceOf(_users.Alice), amount_);
     }
 
-    function testBurn(uint256 mintAmount_, uint256 burnAmount_) external {
+    function testFuzzBurn(uint256 mintAmount_, uint256 burnAmount_) external {
         vm.assume(mintAmount_ > burnAmount_);
 
         tokenProxy.mint(_users.Alice, mintAmount_);
@@ -138,12 +118,12 @@ contract ImplementationERC20Test is ImplementationFixture {
         assertEq(tokenProxy.balanceOf(_users.Alice), mintAmount_ - burnAmount_);
     }
 
-    function testApprove(uint256 amount_) external {
+    function testFuzzApprove(uint256 amount_) external {
         assertTrue(tokenProxy.approve(_users.Alice, amount_));
         assertEq(tokenProxy.allowance(address(this), _users.Alice), amount_);
     }
 
-    function testTransfer(uint256 amount_) external {
+    function testFuzzTransfer(uint256 amount_) external {
         tokenProxy.mint(address(this), amount_);
 
         assertTrue(tokenProxy.transfer(_users.Alice, amount_));
@@ -152,7 +132,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         assertEq(tokenProxy.balanceOf(_users.Alice), amount_);
     }
 
-    function testTransferFrom(uint256 amount_) external {
+    function testFuzzTransferFrom(uint256 amount_) external {
         vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
         tokenProxy.mint(_users.Alice, amount_);
@@ -167,7 +147,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         assertEq(tokenProxy.balanceOf(_users.Bob), amount_);
     }
 
-    function testInfiniteApproveTransferFrom(uint256 amount_) external {
+    function testFuzzInfiniteApproveTransferFrom(uint256 amount_) external {
         vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
         tokenProxy.mint(_users.Alice, amount_);
@@ -182,7 +162,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         assertEq(tokenProxy.balanceOf(_users.Bob), amount_);
     }
 
-    function testRevertTransferInsufficientBalance(uint256 amount_) external {
+    function testFuzzRevertTransferInsufficientBalance(uint256 amount_) external {
         vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
         tokenProxy.mint(address(this), amount_ - 1);
@@ -191,7 +171,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         tokenProxy.transfer(_users.Alice, amount_);
     }
 
-    function testRevertTransferFromInsufficientAllowance(uint256 amount_) external {
+    function testFuzzRevertTransferFromInsufficientAllowance(uint256 amount_) external {
         vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
         tokenProxy.mint(_users.Alice, amount_);
@@ -203,7 +183,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         tokenProxy.transferFrom(_users.Alice, _users.Bob, amount_);
     }
 
-    function testRevertTransferFromInsufficientBalance(uint256 amount_) external {
+    function testFuzzRevertTransferFromInsufficientBalance(uint256 amount_) external {
         vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
         tokenProxy.mint(_users.Alice, amount_ - 1);
@@ -215,7 +195,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         tokenProxy.transferFrom(_users.Alice, _users.Bob, amount_);
     }
 
-    function testRevertBurnInsufficientBalance(address to_, uint256 mintAmount_, uint256 burnAmount_) external {
+    function testFuzzRevertBurnInsufficientBalance(address to_, uint256 mintAmount_, uint256 burnAmount_) external {
         vm.assume(burnAmount_ > mintAmount_);
 
         tokenProxy.mint(to_, mintAmount_);
@@ -224,7 +204,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         tokenProxy.burn(to_, burnAmount_);
     }
 
-    function testMintBurn(uint256 amount_) external {
+    function testFuzzMintBurn(uint256 amount_) external {
         _expectEmitTransfer(address(tokenProxy), address(0), _users.Alice, amount_);
         tokenProxy.mint(_users.Alice, amount_);
 
@@ -238,7 +218,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         assertEq(tokenProxy.totalSupply(), 0);
     }
 
-    function testApproveTransfer(uint256 amount_) external {
+    function testFuzzApproveTransfer(uint256 amount_) external {
         _expectEmitTransfer(address(tokenProxy), address(0), _users.Alice, amount_);
         tokenProxy.mint(_users.Alice, amount_);
 
@@ -260,7 +240,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         vm.stopPrank();
     }
 
-    function testApproveTransferFrom(uint256 amount_) external {
+    function testFuzzApproveTransferFrom(uint256 amount_) external {
         _expectEmitTransfer(address(tokenProxy), address(0), _users.Alice, amount_);
         tokenProxy.mint(_users.Alice, amount_);
 
@@ -282,7 +262,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         vm.stopPrank();
     }
 
-    function testRevertFailedProxyLog() external {
+    function testFuzzRevertFailedProxyLog() external {
         vm.expectRevert(ImplementationERC20.ProxyEventEmittanceFailed.selector);
         tokenProxy.emitTransferEvent(address(dispatcher), address(0), address(0), 100e18);
 
@@ -290,9 +270,9 @@ contract ImplementationERC20Test is ImplementationFixture {
         tokenProxy.emitApprovalEvent(address(dispatcher), address(0), address(0), 100e18);
     }
 
-    // =========
-    // Utilities
-    // =========
+    // ================
+    // Internal methods
+    // ================
 
     function _expectEmitTransfer(
         address emitter_,
@@ -337,45 +317,307 @@ contract ImplementationERC20Test is ImplementationFixture {
     }
 }
 
-contract InvariantBalanceSum {
+// ==================
+// Invariant handlers
+// ==================
+
+/**
+ * @title Invariant Handler Interface
+ */
+interface IInvariantHandler {
+    function getCallCount(bytes32 message) external returns (uint256);
+
+    function sum() external returns (uint256);
+
+    function mint(address from, uint256 amount) external;
+
+    function burn(address from, uint256 amount) external;
+
+    function approve(address to, uint256 amount) external;
+
+    function transferFrom(address from, address to, uint256 amount) external;
+
+    function transfer(address to, uint256 amount) external;
+}
+
+/**
+ * @title Unbounded Invariant Handler
+ */
+contract UnboundedInvariantHandler is UnboundedHandler {
     // =======
     // Storage
     // =======
 
     MockImplementationERC20 public token;
+
     uint256 public sum;
 
     // ===========
     // Constructor
     // ===========
 
-    constructor(MockImplementationERC20 _token) {
-        token = _token;
+    constructor(MockImplementationERC20 token_) {
+        token = token_;
     }
 
     // ==========
     // Test stubs
     // ==========
 
-    function mint(address from, uint256 amount) external {
-        token.mint(from, amount);
-        sum += amount;
+    function mint(address from_, uint256 amount_) public virtual {
+        increaseCallCount("unbounded.mint");
+
+        token.mint(from_, amount_);
+        sum += amount_;
     }
 
-    function burn(address from, uint256 amount) external {
-        token.burn(from, amount);
-        sum -= amount;
+    function burn(address from_, uint256 amount_) public virtual {
+        increaseCallCount("unbounded.burn");
+
+        token.burn(from_, amount_);
+        sum -= amount_;
     }
 
-    function approve(address to, uint256 amount) external {
-        token.approve(to, amount);
+    function approve(address to_, uint256 amount_) public virtual {
+        increaseCallCount("unbounded.approve");
+
+        token.approve(to_, amount_);
     }
 
-    function transferFrom(address from, address to, uint256 amount) external {
-        token.transferFrom(from, to, amount);
+    function transferFrom(address from_, address to_, uint256 amount_) public virtual {
+        increaseCallCount("unbounded.transferFrom");
+
+        token.transferFrom(from_, to_, amount_);
     }
 
-    function transfer(address to, uint256 amount) external {
-        token.transfer(to, amount);
+    function transfer(address to_, uint256 amount_) public virtual {
+        increaseCallCount("unbounded.transfer");
+
+        token.transfer(to_, amount_);
+    }
+}
+
+/**
+ * @title Bounded Invariant Handler
+ */
+contract BoundedInvariantHandler is UnboundedInvariantHandler, BoundedHandler {
+    // ===========
+    // Constructor
+    // ===========
+
+    constructor(MockImplementationERC20 token_) UnboundedInvariantHandler(token_) {}
+
+    // ==========
+    // Test stubs
+    // ==========
+
+    function mint(address from_, uint256 amount_) public override {
+        if (type(uint256).max - token.totalSupply() == 0) return;
+
+        uint256 boundAmount = bound(amount_, 0, type(uint256).max - token.totalSupply());
+
+        increaseCallCount("bounded.mint");
+
+        super.mint(from_, boundAmount);
+    }
+
+    function burn(address from_, uint256 amount_) public override {
+        if (amount_ >= token.balanceOf(from_)) {
+            mint(from_, amount_);
+        }
+
+        if (amount_ >= token.allowance(from_, address(this))) {
+            vm.startPrank(from_);
+            approve(address(this), amount_);
+            vm.stopPrank();
+        }
+
+        uint256 boundAmount = bound(amount_, 0, token.balanceOf(from_));
+
+        increaseCallCount("bounded.burn");
+
+        super.burn(from_, boundAmount);
+    }
+
+    function approve(address to_, uint256 amount_) public override {
+        increaseCallCount("bounded.approve");
+
+        super.approve(to_, amount_);
+    }
+
+    function transferFrom(address from_, address to_, uint256 amount_) public override {
+        if (amount_ >= token.balanceOf(from_)) {
+            mint(from_, amount_);
+        }
+
+        if (amount_ >= token.allowance(from_, address(this))) {
+            vm.startPrank(from_);
+            approve(address(this), amount_);
+            vm.stopPrank();
+        }
+
+        if (amount_ >= token.allowance(from_, to_)) {
+            vm.startPrank(from_);
+            approve(to_, amount_);
+            vm.stopPrank();
+        }
+
+        uint256 boundAmount = bound(amount_, 0, token.balanceOf(from_));
+
+        increaseCallCount("bounded.transferFrom");
+
+        super.transferFrom(from_, to_, boundAmount);
+    }
+
+    function transfer(address to_, uint256 amount_) public override {
+        vm.startPrank(msg.sender);
+
+        if (amount_ >= token.balanceOf(msg.sender)) {
+            mint(msg.sender, amount_);
+        }
+
+        if (amount_ >= token.allowance(msg.sender, address(this))) {
+            approve(address(this), amount_);
+        }
+
+        if (amount_ >= token.allowance(msg.sender, to_)) {
+            approve(to_, amount_);
+        }
+
+        uint256 boundAmount = bound(amount_, 0, token.balanceOf(msg.sender));
+
+        increaseCallCount("bounded.transfer");
+
+        super.transfer(to_, boundAmount);
+
+        vm.stopPrank();
+    }
+}
+
+// ===============
+// Invariant tests
+// ===============
+
+/**
+ * @title Base Invariant Test
+ */
+contract BaseInvariantTest is InvariantTestHarness {
+    // =======
+    // Storage
+    // =======
+
+    ImplementationERC20Test public base;
+    IInvariantHandler public handler;
+
+    // =====
+    // Setup
+    // =====
+
+    function setUp() public virtual override {
+        super.setUp();
+
+        base = new ImplementationERC20Test();
+        base.setUp();
+    }
+
+    // ==========
+    // Invariants
+    // ==========
+
+    function _invariantA() internal {
+        assertEq(base.tokenProxy().name(), base._TOKEN_MODULE_NAME());
+        assertEq(base.tokenProxy().symbol(), base._TOKEN_MODULE_SYMBOL());
+        assertEq(base.tokenProxy().decimals(), base._TOKEN_MODULE_DECIMALS());
+    }
+
+    function _invariantB() internal {
+        assertEq(base.tokenProxy().totalSupply(), handler.sum());
+    }
+
+    function _createLog() public {
+        console2.log("\nCall Summary\n");
+
+        console2.log("unbounded.mint", handler.getCallCount("unbounded.mint"));
+        console2.log("unbounded.burn", handler.getCallCount("unbounded.burn"));
+        console2.log("unbounded.approve", handler.getCallCount("unbounded.approve"));
+        console2.log("unbounded.transfer", handler.getCallCount("unbounded.transfer"));
+        console2.log("unbounded.transferFrom", handler.getCallCount("unbounded.transferFrom"));
+
+        console2.log("bounded.mint", handler.getCallCount("bounded.mint"));
+        console2.log("bounded.burn", handler.getCallCount("bounded.burn"));
+        console2.log("bounded.approve", handler.getCallCount("bounded.approve"));
+        console2.log("bounded.transfer", handler.getCallCount("bounded.transfer"));
+        console2.log("bounded.transferFrom", handler.getCallCount("bounded.transferFrom"));
+    }
+}
+
+/**
+ * @title Unbounded Invariant Test
+ */
+contract UnboundedInvariantTest is BaseInvariantTest {
+    // =====
+    // Setup
+    // =====
+
+    function setUp() public virtual override {
+        super.setUp();
+
+        handler = IInvariantHandler(address(new UnboundedInvariantHandler(base.tokenProxy())));
+
+        targetContract(address(handler));
+    }
+
+    // ===============
+    // Invariant stubs
+    // ===============
+
+    function invariantA() external {
+        _invariantA();
+    }
+
+    function invariantB() external {
+        _invariantB();
+    }
+
+    function invariantCreateLog() external {
+        _createLog();
+    }
+}
+
+/**
+ * @title Bounded Invariant Test
+ */
+contract BoundedInvariantTest is BaseInvariantTest {
+    // =====
+    // Setup
+    // =====
+
+    function setUp() public virtual override {
+        super.setUp();
+
+        handler = IInvariantHandler(address(new BoundedInvariantHandler(base.tokenProxy())));
+
+        targetContract(address(handler));
+
+        targetSender(_users.Alice);
+        targetSender(_users.Bob);
+        targetSender(_users.Caroll);
+        targetSender(_users.Dave);
+    }
+
+    // ===============
+    // Invariant stubs
+    // ===============
+
+    function invariantA() external {
+        _invariantA();
+    }
+
+    function invariantB() external {
+        _invariantB();
+    }
+
+    function invariantDumpLog() external {
+        _createLog();
     }
 }

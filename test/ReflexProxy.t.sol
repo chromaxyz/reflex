@@ -8,12 +8,12 @@ import {TReflexProxy} from "../src/interfaces/IReflexProxy.sol";
 import {ReflexProxy} from "../src/ReflexProxy.sol";
 
 // Fixtures
-import {Harness} from "./fixtures/Harness.sol";
+import {TestHarness} from "./fixtures/TestHarness.sol";
 
 /**
  * @title Reflex Proxy Test
  */
-contract ReflexProxyTest is TReflexProxy, Harness {
+contract ReflexProxyTest is TReflexProxy, TestHarness {
     // =========
     // Constants
     // =========
@@ -40,16 +40,16 @@ contract ReflexProxyTest is TReflexProxy, Harness {
     // Tests
     // =====
 
-    function testRevertInvalidModuleId() external {
+    function testUnitRevertInvalidModuleId() external {
         vm.expectRevert(InvalidModuleId.selector);
         new ReflexProxy(0);
     }
 
-    function testResolveInvalidImplementationToZeroAddress() external {
+    function testUnitResolveInvalidImplementationToZeroAddress() external {
         assertEq(proxy.implementation(), address(0));
     }
 
-    function testSentinelSideEffectsDelegateCall(bytes memory data_) public BrutalizeMemory {
+    function testFuzzSentinelSideEffectsDelegateCall(bytes memory data_) public BrutalizeMemory {
         // This should never happen in any actual deployments.
         vm.startPrank(address(0));
 

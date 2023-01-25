@@ -1,8 +1,13 @@
-# See more config options https://github.com/foundry-rs/foundry/tree/master/config
+#
+# Profiles: `default`, `bounded`, `unbounded`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`
+#
+# ==================
+# Profile: `default`
+# ==================
 [profile.default]
 solc = "0.8.17"
 optimizer = true
-optimizer_runs = 10_000
+optimizer_runs = 200
 auto_detect_solc = false
 verbosity = 3
 libs = ["node_modules", "lib"]
@@ -11,29 +16,70 @@ libs = ["node_modules", "lib"]
 runs = 256
 
 [profile.default.invariant]
-runs = 1_000
+runs = 10
+depth = 100
+fail_on_revert = false
 
-[profile.via-ir]
-via_ir = true
+# ==================
+# Profile: `bounded`
+# ==================
+[profile.bounded.invariant]
+verbosity = 5
+runs = 200
+depth = 250
+fail_on_revert = true
 
-[profile.min-solc]
-solc = "0.8.13"
+# ====================
+# Profile: `unbounded`
+# ====================
+[profile.unbounded.invariant]
+verbosity = 5
+runs = 200
+depth = 250
+fail_on_revert = false
 
-[profile.min-solc-via-ir]
-via_ir = true
-solc = "0.8.13"
-
-[profile.via-ir.fuzz]
-runs = 10_000
-
-[profile.min-solc.fuzz]
-runs = 10_000
-
-[profile.min-solc-via-ir.fuzz]
-runs = 10_000
-
+# ==================
+# Profile: `intense`
+# ==================
 [profile.intense.fuzz]
 runs = 10_000
 
 [profile.intense.invariant]
-runs = 5_000
+runs = 200
+depth = 250
+
+# =================
+# Profile: `via-ir`
+# =================
+[profile.via-ir]
+via_ir = true
+
+[profile.via-ir.fuzz]
+runs = 10_000
+
+[profile.via-ir.invariant]
+runs = 200
+depth = 250
+
+# ===================
+# Profile: `min-solc`
+# ===================
+[profile.min-solc]
+solc = "0.8.13"
+
+[profile.min-solc.fuzz]
+runs = 10_000
+
+# ==========================
+# Profile: `min-solc-via-ir`
+# ==========================
+[profile.min-solc-via-ir]
+via_ir = true
+solc = "0.8.13"
+
+[profile.min-solc-via-ir.fuzz]
+runs = 10_000
+
+[profile.min-solc-via-ir.invariant]
+runs = 200
+depth = 250

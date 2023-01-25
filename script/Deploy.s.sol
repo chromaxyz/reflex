@@ -10,10 +10,10 @@ import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 // Sources
 import {ReflexConstants} from "../src/ReflexConstants.sol";
 
-// Implementations
-import {ImplementationDispatcher} from "../test/implementations/ImplementationDispatcher.sol";
-import {ImplementationInstaller} from "../test/implementations/ImplementationInstaller.sol";
-import {ImplementationModule} from "../test/implementations/ImplementationModule.sol";
+// Mocks
+import {MockImplementationDispatcher} from "../test/mocks/MockImplementationDispatcher.sol";
+import {MockImplementationInstaller} from "../test/mocks/MockImplementationInstaller.sol";
+import {MockImplementationModule} from "../test/mocks/MockImplementationModule.sol";
 
 /**
  * @title Deploy Constants
@@ -52,11 +52,11 @@ contract DeployScript is Script, DeployConstants {
     // Storage
     // =======
 
-    ImplementationInstaller public installerImplementation;
-    ImplementationInstaller public installerProxy;
-    ImplementationDispatcher public dispatcher;
-    ImplementationModule public exampleModuleImplementation;
-    ImplementationModule public exampleModuleProxy;
+    MockImplementationInstaller public installerImplementation;
+    MockImplementationInstaller public installerProxy;
+    MockImplementationDispatcher public dispatcher;
+    MockImplementationModule public exampleModuleImplementation;
+    MockImplementationModule public exampleModuleProxy;
 
     // ===
     // Run
@@ -65,7 +65,7 @@ contract DeployScript is Script, DeployConstants {
     function run() external {
         vm.startBroadcast();
 
-        installerImplementation = new ImplementationInstaller(
+        installerImplementation = new MockImplementationInstaller(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INSTALLER,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
@@ -75,11 +75,11 @@ contract DeployScript is Script, DeployConstants {
             })
         );
 
-        dispatcher = new ImplementationDispatcher(msg.sender, address(installerImplementation));
+        dispatcher = new MockImplementationDispatcher(msg.sender, address(installerImplementation));
 
-        installerProxy = ImplementationInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
+        installerProxy = MockImplementationInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
 
-        exampleModuleImplementation = new ImplementationModule(
+        exampleModuleImplementation = new MockImplementationModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_EXAMPLE,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
@@ -95,6 +95,6 @@ contract DeployScript is Script, DeployConstants {
 
         vm.stopBroadcast();
 
-        exampleModuleProxy = ImplementationModule(dispatcher.moduleIdToProxy(_MODULE_ID_EXAMPLE));
+        exampleModuleProxy = MockImplementationModule(dispatcher.moduleIdToProxy(_MODULE_ID_EXAMPLE));
     }
 }

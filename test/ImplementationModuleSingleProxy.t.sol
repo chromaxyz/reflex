@@ -60,16 +60,16 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     // Tests
     // =====
 
-    function testModuleIdToImplementation() external {
+    function testUnitModuleIdToImplementation() external {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID), address(singleModule));
         assertEq(IReflexProxy(address(singleModuleProxy)).implementation(), address(singleModule));
     }
 
-    function testModuleIdToProxy() external {
+    function testUnitModuleIdToProxy() external {
         assertTrue(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID) != address(0));
     }
 
-    function testModuleSettings() external {
+    function testUnitModuleSettings() external {
         _testModuleConfiguration(
             singleModule,
             _MODULE_SINGLE_ID,
@@ -89,65 +89,65 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         );
     }
 
-    function testProxySentinelFallback() external {
+    function testUnitProxySentinelFallback() external {
         _testProxySentinelFallback(singleModuleProxy);
     }
 
-    function testRevertBytesCustomError(uint256 code_, string memory message_) external {
+    function testFuzzRevertBytesCustomError(uint256 code_, string memory message_) external {
         _testRevertBytesCustomError(singleModuleProxy, code_, message_);
     }
 
-    function testRevertBytesPanicAssert() external {
+    function testUnitRevertBytesPanicAssert() external {
         _testRevertBytesPanicAssert(singleModuleProxy);
     }
 
-    function testRevertBytesPanicDivideByZero() external {
+    function testUnitRevertBytesPanicDivideByZero() external {
         _testRevertBytesPanicDivideByZero(singleModuleProxy);
     }
 
-    function testRevertBytesPanicArithmaticOverflow() external {
+    function testUnitRevertBytesPanicArithmaticOverflow() external {
         _testRevertBytesPanicArithmaticOverflow(singleModuleProxy);
     }
 
-    function testRevertBytesPanicArithmaticUnderflow() external {
+    function testUnitRevertBytesPanicArithmaticUnderflow() external {
         _testRevertBytesPanicArithmaticUnderflow(singleModuleProxy);
     }
 
-    function testProxyLog0Topic(bytes memory message_) external {
+    function testFuzzProxyLog0Topic(bytes memory message_) external {
         _testProxyLog0Topic(singleModuleProxy, message_);
     }
 
-    function testProxyLog1Topic(bytes memory message_) external {
+    function testFuzzProxyLog1Topic(bytes memory message_) external {
         _testProxyLog1Topic(singleModuleProxy, message_);
     }
 
-    function testProxyLog2Topic(bytes memory message_) external {
+    function testFuzzProxyLog2Topic(bytes memory message_) external {
         _testProxyLog2Topic(singleModuleProxy, message_);
     }
 
-    function testProxyLog3Topic(bytes memory message_) external {
+    function testFuzzProxyLog3Topic(bytes memory message_) external {
         _testProxyLog3Topic(singleModuleProxy, message_);
     }
 
-    function testProxyLog4Topic(bytes memory message_) external {
+    function testFuzzProxyLog4Topic(bytes memory message_) external {
         _testProxyLog4Topic(singleModuleProxy, message_);
     }
 
-    function testRevertProxyLogOutOfBounds(bytes memory message_) external {
+    function testFuzzRevertProxyLogOutOfBounds(bytes memory message_) external {
         _testRevertProxyLogOutOfBounds(singleModuleProxy, message_);
     }
 
-    function testUnpackMessageSender() external {
+    function testUnitUnpackMessageSender() external {
         vm.startPrank(_users.Alice);
         _testUnpackMessageSender(singleModuleProxy, _users.Alice);
         vm.stopPrank();
     }
 
-    function testUnpackProxyAddress() external {
+    function testUnitUnpackProxyAddress() external {
         _testUnpackProxyAddress(singleModuleProxy);
     }
 
-    function testUnpackTrailingParameters() external {
+    function testUnitUnpackTrailingParameters() external {
         vm.startPrank(_users.Alice);
         _testUnpackTrailingParameters(singleModuleProxy, _users.Alice);
         vm.stopPrank();

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Vendors
+// Vendor
 import {stdStorageSafe, StdStorage} from "forge-std/StdStorage.sol";
 
 // Fixtures
-import {Harness} from "./fixtures/Harness.sol";
+import {TestHarness} from "./fixtures/TestHarness.sol";
 
 // Mocks
 import {MockImplementationState} from "./mocks/MockImplementationState.sol";
@@ -31,7 +31,7 @@ import {MockImplementationState} from "./mocks/MockImplementationState.sol";
  * | _implementationState5   | mapping(address => uint256)                           | 54   | 0      | 32    |
  * | _tokens                 | mapping(address => struct ImplementationState.Token)  | 55   | 0      | 32    |
  */
-contract ImplementationStateTest is Harness {
+contract ImplementationStateTest is TestHarness {
     using stdStorageSafe for StdStorage;
 
     // =======
@@ -54,7 +54,7 @@ contract ImplementationStateTest is Harness {
     // Tests
     // =====
 
-    function testVerifyStorageSlots(
+    function testFuzzVerifyStorageSlots(
         bytes32 message_,
         uint256 number_,
         address location_,
@@ -154,9 +154,9 @@ contract ImplementationStateTest is Harness {
         assertEq((reads[0]), keccak256(abi.encode(tokenB_, uint256(55))));
     }
 
-    // =========
-    // Utilities
-    // =========
+    // ================
+    // Internal methods
+    // ================
 
     /**
      * @dev Cast bool to uint8.
