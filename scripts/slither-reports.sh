@@ -38,6 +38,29 @@ mkdir -p \
   reports/slither/vars-and-auth \
   reports/slither/storage-layout
 
+# Printers
+# - cfg
+# - constructor-calls
+# - contract-summary ✓
+# - data-dependency
+# - declaration
+# - dominator
+# - echidna
+# - function-id
+# - function-summary ✓
+# - modifiers
+# - call-graph ✓
+# - evm
+# - human-summary
+# - inheritance
+# - inheritance-graph ✓
+# - slithir
+# - slithir-ssa
+# - pausable
+# - vars-and-auth ✓
+# - require
+# - variable-order ✓
+
 # Generate reports
 for FILEPATH in src/*.sol; do
   FILENAME_WITH_EXTENSION=${FILEPATH##*"src/"}
