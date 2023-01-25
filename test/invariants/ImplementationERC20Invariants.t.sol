@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+// Vendor
+import {console2} from "forge-std/console2.sol";
+
 // Fixtures
 import {InvariantTestHarness} from "../fixtures/InvariantTestHarness.sol";
 
@@ -37,6 +40,22 @@ contract BaseInvariantTest is InvariantTestHarness {
     function _invariantB() internal {
         assertEq(base.tokenProxy().totalSupply(), handler.sum());
     }
+
+    function _createLog() public {
+        console2.log("\nCall Summary\n");
+
+        console2.log("unbounded.mint", handler.getCallCount("unbounded.mint"));
+        console2.log("unbounded.burn", handler.getCallCount("unbounded.burn"));
+        console2.log("unbounded.approve", handler.getCallCount("unbounded.approve"));
+        console2.log("unbounded.transfer", handler.getCallCount("unbounded.transfer"));
+        console2.log("unbounded.transferFrom", handler.getCallCount("unbounded.transferFrom"));
+
+        console2.log("bounded.mint", handler.getCallCount("bounded.mint"));
+        console2.log("bounded.burn", handler.getCallCount("bounded.burn"));
+        console2.log("bounded.approve", handler.getCallCount("bounded.approve"));
+        console2.log("bounded.transfer", handler.getCallCount("bounded.transfer"));
+        console2.log("bounded.transferFrom", handler.getCallCount("bounded.transferFrom"));
+    }
 }
 
 /**
@@ -45,6 +64,8 @@ contract BaseInvariantTest is InvariantTestHarness {
 contract UnboundedInvariantTest is BaseInvariantTest {
     function setUp() public virtual override {
         super.setUp();
+
+        console2.log(address(base.tokenProxy()));
 
         handler = IImplementationERC20HandlerLike(address(new UnboundedImplementationERC20Handler(base.tokenProxy())));
 
@@ -58,6 +79,10 @@ contract UnboundedInvariantTest is BaseInvariantTest {
     function invariantB() external {
         _invariantB();
     }
+
+    function invariantCreateLog() external {
+        _createLog();
+    }
 }
 
 /**
@@ -70,6 +95,11 @@ contract BoundedInvariantTest is BaseInvariantTest {
         handler = IImplementationERC20HandlerLike(address(new BoundedImplementationERC20Handler(base.tokenProxy())));
 
         targetContract(address(handler));
+
+        targetSender(_users.Alice);
+        targetSender(_users.Bob);
+        targetSender(_users.Caroll);
+        targetSender(_users.Dave);
     }
 
     function invariantA() external {
@@ -78,5 +108,9 @@ contract BoundedInvariantTest is BaseInvariantTest {
 
     function invariantB() external {
         _invariantB();
+    }
+
+    function invariantDumpLog() external {
+        _createLog();
     }
 }
