@@ -322,9 +322,9 @@ contract ImplementationERC20Test is ImplementationFixture {
 // ==================
 
 /**
- * @title Implementation ERC20 Handler Interface
+ * @title Invariant Handler Interface
  */
-interface IImplementationERC20HandlerLike {
+interface IInvariantHandler {
     function getCallCount(bytes32 message) external returns (uint256);
 
     function sum() external returns (uint256);
@@ -341,9 +341,9 @@ interface IImplementationERC20HandlerLike {
 }
 
 /**
- * @title Unbounded Implementation ERC20 Handler
+ * @title Unbounded Invariant Handler
  */
-contract UnboundedImplementationERC20Handler is UnboundedHandler {
+contract UnboundedInvariantHandler is UnboundedHandler {
     // =======
     // Storage
     // =======
@@ -398,14 +398,14 @@ contract UnboundedImplementationERC20Handler is UnboundedHandler {
 }
 
 /**
- * @title Bounded Implementation ERC20 Handler
+ * @title Bounded Invariant Handler
  */
-contract BoundedImplementationERC20Handler is UnboundedImplementationERC20Handler, BoundedHandler {
+contract BoundedInvariantHandler is UnboundedInvariantHandler, BoundedHandler {
     // ===========
     // Constructor
     // ===========
 
-    constructor(MockImplementationERC20 token_) UnboundedImplementationERC20Handler(token_) {}
+    constructor(MockImplementationERC20 token_) UnboundedInvariantHandler(token_) {}
 
     // ==========
     // Test stubs
@@ -502,8 +502,16 @@ contract BoundedImplementationERC20Handler is UnboundedImplementationERC20Handle
  * @title Base Invariant Test
  */
 contract BaseInvariantTest is InvariantTestHarness {
+    // =======
+    // Storage
+    // =======
+
     ImplementationERC20Test public base;
-    IImplementationERC20HandlerLike public handler;
+    IInvariantHandler public handler;
+
+    // =====
+    // Setup
+    // =====
 
     function setUp() public virtual override {
         super.setUp();
@@ -547,13 +555,21 @@ contract BaseInvariantTest is InvariantTestHarness {
  * @title Unbounded Invariant Test
  */
 contract UnboundedInvariantTest is BaseInvariantTest {
+    // =====
+    // Setup
+    // =====
+
     function setUp() public virtual override {
         super.setUp();
 
-        handler = IImplementationERC20HandlerLike(address(new UnboundedImplementationERC20Handler(base.tokenProxy())));
+        handler = IInvariantHandler(address(new UnboundedInvariantHandler(base.tokenProxy())));
 
         targetContract(address(handler));
     }
+
+    // ===============
+    // Invariant stubs
+    // ===============
 
     function invariantA() external {
         _invariantA();
@@ -572,10 +588,14 @@ contract UnboundedInvariantTest is BaseInvariantTest {
  * @title Bounded Invariant Test
  */
 contract BoundedInvariantTest is BaseInvariantTest {
+    // =====
+    // Setup
+    // =====
+
     function setUp() public virtual override {
         super.setUp();
 
-        handler = IImplementationERC20HandlerLike(address(new BoundedImplementationERC20Handler(base.tokenProxy())));
+        handler = IInvariantHandler(address(new BoundedInvariantHandler(base.tokenProxy())));
 
         targetContract(address(handler));
 
@@ -584,6 +604,10 @@ contract BoundedInvariantTest is BaseInvariantTest {
         targetSender(_users.Caroll);
         targetSender(_users.Dave);
     }
+
+    // ===============
+    // Invariant stubs
+    // ===============
 
     function invariantA() external {
         _invariantA();
