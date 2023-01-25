@@ -10,7 +10,6 @@ import {stdError} from "forge-std/StdError.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
-import {BoundedHandler, UnboundedHandler} from "./fixtures/InvariantHarness.sol";
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
@@ -26,16 +25,16 @@ contract ImplementationERC20Test is ImplementationFixture {
     // Constants
     // =========
 
-    uint32 internal constant _TOKEN_HUB_MODULE_ID = 100;
-    uint16 internal constant _TOKEN_HUB_MODULE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
-    uint16 internal constant _TOKEN_HUB_MODULE_VERSION = 1;
+    uint32 public constant _TOKEN_HUB_MODULE_ID = 100;
+    uint16 public constant _TOKEN_HUB_MODULE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
+    uint16 public constant _TOKEN_HUB_MODULE_VERSION = 1;
 
-    uint32 internal constant _TOKEN_MODULE_ID = 101;
-    uint16 internal constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_PROXY;
-    uint16 internal constant _TOKEN_MODULE_VERSION = 1;
-    string internal constant _TOKEN_MODULE_NAME = "TOKEN A";
-    string internal constant _TOKEN_MODULE_SYMBOL = "TKNA";
-    uint8 internal constant _TOKEN_MODULE_DECIMALS = 18;
+    uint32 public constant _TOKEN_MODULE_ID = 101;
+    uint16 public constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_PROXY;
+    uint16 public constant _TOKEN_MODULE_VERSION = 1;
+    string public constant _TOKEN_MODULE_NAME = "TOKEN A";
+    string public constant _TOKEN_MODULE_SYMBOL = "TKNA";
+    uint8 public constant _TOKEN_MODULE_DECIMALS = 18;
 
     // =======
     // Storage

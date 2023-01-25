@@ -19,12 +19,13 @@ function log () {
 }
 
 # Variables
-while getopts d:p:t: flag
+while getopts d:p:t:c: flag
 do
   case "${flag}" in
     d) DIRECTORY=${OPTARG};;
     p) PROFILE=${OPTARG};;
     t) TEST=${OPTARG};;
+    c) CONTRACT=${OPTARG};;
   esac
 done
 
@@ -33,14 +34,18 @@ export FOUNDRY_PROFILE=$PROFILE
 
 log $GREEN "Running tests with profile: $PROFILE"
 
-if [ -z "$TEST" ]; then
-  if [ -z "$DIRECTORY" ]; then
-    forge test;
+if [ -z "$CONTRACT" ]; then
+  if [ -z "$TEST" ]; then
+    if [ -z "$DIRECTORY" ]; then
+      forge test;
+    else
+      forge test --match-path "$DIRECTORY/*.t.sol";
+    fi
   else
-    forge test --match-path "$DIRECTORY/*.t.sol";
+    forge test --match "$TEST";
   fi
 else
-  forge test --match "$TEST";
+  forge test --match-contract "$CONTRACT";
 fi
 
 log $GREEN "Done"

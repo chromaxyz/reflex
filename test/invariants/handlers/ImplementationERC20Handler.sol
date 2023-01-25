@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Fixtures
-import {BoundedHandler, UnboundedHandler} from "../../fixtures/InvariantHarness.sol";
+import {BoundedHandler, UnboundedHandler} from "../../fixtures/InvariantTestHarness.sol";
 
 // Mocks
 import {MockImplementationERC20} from "../../mocks/MockImplementationERC20.sol";
@@ -10,36 +10,6 @@ import {MockImplementationERC20} from "../../mocks/MockImplementationERC20.sol";
 // ==================
 // Invariant handlers
 // ==================
-
-// // ==========
-// // Invariants
-// // ==========
-
-// function invariantMetadata() public {
-//     assertEq(tokenProxy.name(), _TOKEN_MODULE_NAME);
-//     assertEq(tokenProxy.symbol(), _TOKEN_MODULE_SYMBOL);
-//     assertEq(tokenProxy.decimals(), _TOKEN_MODULE_DECIMALS);
-// }
-
-// function invariantBalanceSum() public {
-//     assertEq(tokenProxy.totalSupply(), tokenInvariant.sum());
-// }
-
-// function invariantLogDump() public {
-//     console2.log("\nCall Summary\n");
-
-//     console2.log("unbounded.mint", tokenInvariant.getCallCount("unbounded.mint"));
-//     console2.log("unbounded.burn", tokenInvariant.getCallCount("unbounded.burn"));
-//     console2.log("unbounded.approve", tokenInvariant.getCallCount("unbounded.approve"));
-//     console2.log("unbounded.transfer", tokenInvariant.getCallCount("unbounded.transfer"));
-//     console2.log("unbounded.transferFrom", tokenInvariant.getCallCount("unbounded.transferFrom"));
-
-//     console2.log("bounded.mint", tokenInvariant.getCallCount("bounded.mint"));
-//     console2.log("bounded.burn", tokenInvariant.getCallCount("bounded.burn"));
-//     console2.log("bounded.approve", tokenInvariant.getCallCount("bounded.approve"));
-//     console2.log("bounded.transfer", tokenInvariant.getCallCount("bounded.transfer"));
-//     console2.log("bounded.transferFrom", tokenInvariant.getCallCount("bounded.transferFrom"));
-// }
 
 /**
  * @title Implementation ERC20 Handler Interface

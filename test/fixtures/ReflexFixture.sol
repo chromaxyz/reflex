@@ -12,7 +12,6 @@ import {MockReflexInstaller} from "../mocks/MockReflexInstaller.sol";
 import {MockReflexDispatcher} from "../mocks/MockReflexDispatcher.sol";
 
 // Fixtures
-import {InvariantHarness} from "./InvariantHarness.sol";
 import {TestHarness} from "./TestHarness.sol";
 
 // Script
@@ -21,7 +20,7 @@ import {DeployConstants} from "../../script/Deploy.s.sol";
 /**
  * @title Reflex Fixture
  */
-abstract contract ReflexFixture is ReflexConstants, DeployConstants, InvariantHarness, TestHarness {
+abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness {
     // =======
     // Storage
     // =======
@@ -35,7 +34,7 @@ abstract contract ReflexFixture is ReflexConstants, DeployConstants, InvariantHa
     // Setup
     // =====
 
-    function setUp() public virtual override(InvariantHarness, TestHarness) {
+    function setUp() public virtual override {
         super.setUp();
 
         installer = new MockReflexInstaller(

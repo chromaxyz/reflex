@@ -11,10 +11,10 @@ import {Test} from "forge-std/Test.sol";
 import {Users} from "./Users.sol";
 
 /**
- * @title Invariant Harness
+ * @title Invariant Test Harness
  * @dev A rigorous invariant harness.
  */
-abstract contract InvariantHarness is Users, Test, InvariantTest {
+abstract contract InvariantTestHarness is Users, Test, InvariantTest {
     // =======
     // Storage
     // =======
