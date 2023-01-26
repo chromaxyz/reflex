@@ -5,7 +5,7 @@ Contributions to Reflex are welcome by anyone interested in writing more tests, 
 When making a pull request, ensure that:
 
 - All tests pass.
-- Code coverage remains at 100% (`scripts/coverage.sh`).
+- Code coverage remains at 100%, run [`scripts/coverage.sh`](../scripts/coverage.sh).
 - All new code adheres to the style guide:
   - All lint checks pass.
   - Code is thoroughly commented with natspec where relevant.
