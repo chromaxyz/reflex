@@ -13,7 +13,7 @@ For highlighting external methods not marked as `nonReentrant()`:
 - [scripts/reentrancy-check.sh](../scripts/reentrancy-check.sh)
 - [scripts/reentrancy-generate.sh](../scripts/reentrancy-generate.sh)
 
-Please note that this is not fool-proof and it is **HIGHLY** recommend you write your own integration, migration and compatibility tests.
+Please note that this is not fool-proof and it is **REQUIRED** one writes their own integration, migration and compatibility tests.
 
 ## Adding modules
 
@@ -23,15 +23,22 @@ Make sure to not introduce any new storage variables inside of the module itself
 
 Ask oneself:
 
-- Am I adding a new module or upgrading a module?
-- Which module id am I going to use?
-- Which module type am I going to use?
-- Which module version am I going to use?
-- Should the module be able to be upgraded?
-- Should the module be able to be deprecated? If so, it must be upgradeable.
-- Is my storage layout still compatible?
+- [ ] Am I adding a new module or upgrading a module?
+
+Module id `1` is reserved for the `Installer`.
+
+- [ ] Which module id am I going to use?
+
+It is most common that you will use `single-proxy` modules.
+
+- [ ] Which module type am I going to use?
 
 It is best practice to use `1` as your first module version for a new module.
+
+- [ ] Which module version am I going to use?
+- [ ] Should the module be able to be upgraded?
+- [ ] Should the module be able to be deprecated? If so, it must be upgradeable.
+- [ ] Is my storage layout still compatible?
 
 In order to add one or more modules call `addModules()` on the `Installer`'s proxy.
 If your module is of the type `single-proxy` the proxy will be created for you.
@@ -44,14 +51,15 @@ Make sure to not introduce any new storage variables inside of the module itself
 
 Ask oneself:
 
-- Am I adding a new module or upgrading a module?
-- Which next module version am I going to use?
-- Should the module be able to be upgraded?
-- Should the module be able to be deprecated? If so, it must be upgradeable.
-- Is my storage layout still compatible?
+- [ ] Am I adding a new module or upgrading a module?
 
-It is best practice to increment by `1` when updating the version for a new module.
 The new module version must **ALWAYS** be greater than the current module version.
+It is best practice to increment by `1` when updating the version for a new module.
+
+- [ ] Which next module version am I going to use?
+- [ ] Should the module be able to be upgraded?
+- [ ] Should the module be able to be deprecated? If so, it must be upgradeable.
+- [ ] Is my storage layout still compatible?
 
 In order to upgrade one or more modules call `upgradeModules()` on the `Installer`'s proxy.
 
@@ -68,8 +76,12 @@ The new module version must **ALWAYS** be greater than the current module versio
 
 Ask oneself:
 
-- Which next module version am I going to use?
-- Have I marked the module as non-upgradeable?
-- Is my storage layout still compatible?
+- [ ] Which next module version am I going to use?
+
+The new module version must **ALWAYS** be greater than the current module version.
+It is best practice to increment by `1` when updating the version for a new module.
+
+- [ ] Have I marked the module as non-upgradeable?
+- [ ] Is my storage layout still compatible?
 
 In order to deprecate one or more modules call `upgradeModules()` on the `Installer`'s proxy.

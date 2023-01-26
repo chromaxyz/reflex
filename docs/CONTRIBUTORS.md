@@ -45,7 +45,7 @@ import { Test } from "forge-std/Test.sol";
 
 ## Compiler
 
-Make sure your PR's are compilable with the default profile and the profiles `intense`, `min-solc`, `via-ir` and `min-solc-via-ir`.
+Make sure your PR's are compilable with the `default` profile and the profiles `min-solc`, `via-ir` and `min-solc-via-ir`.
 
 ## Tests
 
