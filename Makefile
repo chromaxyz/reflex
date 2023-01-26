@@ -36,7 +36,7 @@ test-invariant:; ./scripts/test.sh -t invariant -p $(PROFILE)
 endif
 
 # Snapshot
-snapshot:; ./scripts/snapshot.sh -p $(PROFILE)
+snapshot:; ./scripts/snapshot.sh -t testGas -p $(PROFILE)
 
 # Linting
 lint-check:; npm run lint:check

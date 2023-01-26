@@ -6,7 +6,7 @@ import {ImplementationState} from "./abstracts/ImplementationState.sol";
 import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
- * @title Mock ImplementationDeprecated Module
+ * @title Mock Implementation Deprecated Module
  */
 contract MockImplementationDeprecatedModule is MockReflexModule, ImplementationState {
     // ===========

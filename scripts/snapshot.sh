@@ -42,7 +42,7 @@ then
         forge snapshot --match-path "$DIRECTORY/*.t.sol" --snap .gas-snapshot-$PROFILE;
     fi
 else
-    forge snapshot --match "$TEST" --snap .gas-snapshot-$PROFILE;
+    forge snapshot --match "$TEST" --snap .gas-snapshot-$PROFILE -vvvvv;
 fi
 
 log $GREEN "Done"
