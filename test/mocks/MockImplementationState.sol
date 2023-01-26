@@ -19,6 +19,10 @@ contract MockImplementationState is ImplementationState, StdAssertions, CommonBa
     // Test stubs
     // ==========
 
+    function setStorageSlot(bytes32 message_) public {
+        setImplementationState0(message_);
+    }
+
     function setStorageSlots(
         bytes32 message_,
         uint256 number_,
@@ -38,6 +42,16 @@ contract MockImplementationState is ImplementationState, StdAssertions, CommonBa
         setToken(tokenB_, "Token B", "TKNB", 18);
     }
 
+    function verifyStorageSlot(bytes32 message_) public {
+        /**
+         * | Name                    | Type                                                 | Slot | Offset | Bytes |
+         * |-------------------------|------------------------------------------------------|------|--------|-------|
+         * | _implementationState0   | bytes32                                              | 50   | 0      | 32    |
+         */
+        assertEq(stdstore.target(address(this)).sig("getImplementationState0()").find(), 50);
+        assertEq(stdstore.target(address(this)).sig("getImplementationState0()").read_bytes32(), message_);
+    }
+
     function verifyStorageSlots(
         bytes32 message_,
         uint256 number_,
@@ -45,7 +59,7 @@ contract MockImplementationState is ImplementationState, StdAssertions, CommonBa
         address tokenA_,
         address tokenB_,
         bool flag_
-    ) public returns (bool) {
+    ) public {
         /**
          * | Name                    | Type                                                 | Slot | Offset | Bytes |
          * |-------------------------|------------------------------------------------------|------|--------|-------|
@@ -126,8 +140,6 @@ contract MockImplementationState is ImplementationState, StdAssertions, CommonBa
         getToken(tokenB_, address(this));
         (reads, ) = vm.accesses(address(this));
         assertEq((reads[0]), keccak256(abi.encode(tokenB_, uint256(55))));
-
-        return true;
     }
 
     function getImplementationState0() public view returns (bytes32) {

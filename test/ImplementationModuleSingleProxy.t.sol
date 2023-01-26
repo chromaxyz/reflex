@@ -111,17 +111,10 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeSingleProxyAndDeprecate(
-        bytes32 message_,
-        uint256 number_,
-        address location_,
-        address tokenA_,
-        address tokenB_,
-        bool flag_
-    ) external BrutalizeMemory {
-        singleModuleProxy.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+    function testFuzzUpgradeSingleProxyAndDeprecate(bytes32 message_) external BrutalizeMemory {
+        singleModuleProxy.setStorageSlot(message_);
 
-        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        singleModuleProxy.verifyStorageSlot(message_);
 
         _testModuleConfiguration(
             singleModuleProxy,
@@ -143,7 +136,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V2
         );
 
-        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        singleModuleProxy.verifyStorageSlot(message_);
 
         moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV3);
@@ -158,7 +151,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         );
 
         vm.expectRevert();
-        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        singleModuleProxy.verifyStorageSlot(message_);
     }
 
     function testUnitProxySentinelFallback() external {

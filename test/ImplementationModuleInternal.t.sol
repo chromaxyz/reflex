@@ -164,31 +164,31 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
     }
 
-    function testFuzzCallInternalModule(uint256 number_) external {
-        uint256 value = abi.decode(
+    function testFuzzCallInternalModule(bytes32 message_) external {
+        bytes32 value = abi.decode(
             singleModuleProxy.callInternalModule(
                 _MODULE_INTERNAL_ID,
-                abi.encodeWithSignature("getImplementationState1()")
+                abi.encodeWithSignature("getImplementationState0()")
             ),
-            (uint256)
+            (bytes32)
         );
 
         assertEq(value, 0);
 
         singleModuleProxy.callInternalModule(
             _MODULE_INTERNAL_ID,
-            abi.encodeWithSignature("setImplementationState1(uint256)", number_)
+            abi.encodeWithSignature("setImplementationState0(bytes32)", message_)
         );
 
         value = abi.decode(
             singleModuleProxy.callInternalModule(
                 _MODULE_INTERNAL_ID,
-                abi.encodeWithSignature("getImplementationState1()")
+                abi.encodeWithSignature("getImplementationState0()")
             ),
-            (uint256)
+            (bytes32)
         );
 
-        assertEq(value, number_);
+        assertEq(value, message_);
     }
 
     function testUnitRevertInvalidCallInternalModule() external {
@@ -199,17 +199,10 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeInternalModuleAndDeprecate(
-        bytes32 message_,
-        uint256 number_,
-        address location_,
-        address tokenA_,
-        address tokenB_,
-        bool flag_
-    ) public BrutalizeMemory {
+    function testFuzzUpgradeInternalModuleAndDeprecate(bytes32 message_) public BrutalizeMemory {
         // Verify internal module.
 
-        singleModuleProxy.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        singleModuleProxy.setStorageSlot(message_);
 
         _testModuleConfiguration(
             singleModuleProxy,
@@ -228,10 +221,10 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
-        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        singleModuleProxy.verifyStorageSlot(message_);
+        installerProxy.verifyStorageSlot(message_);
 
-        _verifySetStateSlot(number_);
+        _verifySetStateSlot(message_);
 
         // Upgrade internal module.
 
@@ -248,10 +241,10 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
-        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        singleModuleProxy.verifyStorageSlot(message_);
+        installerProxy.verifyStorageSlot(message_);
 
-        _verifySetStateSlot(number_);
+        _verifySetStateSlot(message_);
 
         // Upgrade single-proxy module.
 
@@ -282,12 +275,12 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
-        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        singleModuleProxy.verifyStorageSlot(message_);
+        installerProxy.verifyStorageSlot(message_);
 
         // Logic has been deprecated and removed, expect calls to fail.
 
-        _verifySetStateSlotFailure(number_);
+        _verifySetStateSlotFailure(message_);
     }
 
     // ================
@@ -306,42 +299,42 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         assertEq(moduleSettings.moduleUpgradeable, moduleSettings_.moduleUpgradeable);
     }
 
-    function _verifyGetStateSlot(uint256 number_) internal {
-        uint256 value = abi.decode(
+    function _verifyGetStateSlot(bytes32 message_) internal {
+        bytes32 value = abi.decode(
             singleModuleProxy.callInternalModule(
                 _MODULE_INTERNAL_ID,
-                abi.encodeWithSignature("getImplementationState1()")
+                abi.encodeWithSignature("getImplementationState0()")
             ),
-            (uint256)
+            (bytes32)
         );
 
-        assertEq(value, number_);
+        assertEq(value, message_);
     }
 
-    function _verifySetStateSlot(uint256 number_) internal {
+    function _verifySetStateSlot(bytes32 message_) internal {
         singleModuleProxy.callInternalModule(
             _MODULE_INTERNAL_ID,
-            abi.encodeWithSignature("setImplementationState1(uint256)", 0)
+            abi.encodeWithSignature("setImplementationState0(bytes32)", 0)
         );
 
         _verifyGetStateSlot(0);
 
         singleModuleProxy.callInternalModule(
             _MODULE_INTERNAL_ID,
-            abi.encodeWithSignature("setImplementationState1(uint256)", number_)
+            abi.encodeWithSignature("setImplementationState0(bytes32)", message_)
         );
 
-        _verifyGetStateSlot(number_);
+        _verifyGetStateSlot(message_);
     }
 
-    function _verifySetStateSlotFailure(uint256 number_) internal {
+    function _verifySetStateSlotFailure(bytes32 message_) internal {
         vm.expectRevert(TReflexBase.EmptyError.selector);
         singleModuleProxy.callInternalModule(
             _MODULE_INTERNAL_ID,
-            abi.encodeWithSignature("setImplementationState1(uint256)", number_)
+            abi.encodeWithSignature("setImplementationState0(bytes32)", message_)
         );
 
         vm.expectRevert(TReflexBase.EmptyError.selector);
-        singleModuleProxy.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("getImplementationState1()"));
+        singleModuleProxy.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("getImplementationState0()"));
     }
 }

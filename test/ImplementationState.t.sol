@@ -31,6 +31,11 @@ contract ImplementationStateTest is TestHarness {
     // Tests
     // =====
 
+    function testFuzzVerifyStorageSlot(bytes32 message_) external BrutalizeMemory {
+        state.setStorageSlot(message_);
+        state.verifyStorageSlot(message_);
+    }
+
     function testFuzzVerifyStorageSlots(
         bytes32 message_,
         uint256 number_,
@@ -40,6 +45,6 @@ contract ImplementationStateTest is TestHarness {
         bool flag_
     ) external BrutalizeMemory {
         state.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        state.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        // state.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
     }
 }

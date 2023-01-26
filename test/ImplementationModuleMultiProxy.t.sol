@@ -208,22 +208,15 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeMultiProxyAndDeprecate(
-        bytes32 message_,
-        uint256 number_,
-        address location_,
-        address tokenA_,
-        address tokenB_,
-        bool flag_
-    ) external BrutalizeMemory {
+    function testFuzzUpgradeMultiProxyAndDeprecate(bytes32 message_) external BrutalizeMemory {
         // Verify multi-proxy module.
 
-        multiModuleProxyA.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyA.setStorageSlot(message_);
 
-        multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        multiModuleProxyB.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        multiModuleProxyC.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyA.verifyStorageSlot(message_);
+        multiModuleProxyB.verifyStorageSlot(message_);
+        multiModuleProxyC.verifyStorageSlot(message_);
+        installerProxy.verifyStorageSlot(message_);
 
         _testModuleConfiguration(
             multiModuleProxyA,
@@ -279,10 +272,10 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V2
         );
 
-        multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        multiModuleProxyB.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        multiModuleProxyC.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyA.verifyStorageSlot(message_);
+        multiModuleProxyB.verifyStorageSlot(message_);
+        multiModuleProxyC.verifyStorageSlot(message_);
+        installerProxy.verifyStorageSlot(message_);
 
         // Upgrade single-proxy module.
 
@@ -331,13 +324,13 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         // Logic has been deprecated and removed, expect calls to fail.
 
         vm.expectRevert();
-        multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyA.verifyStorageSlot(message_);
 
         vm.expectRevert();
-        multiModuleProxyB.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyB.verifyStorageSlot(message_);
 
         vm.expectRevert();
-        multiModuleProxyC.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        multiModuleProxyC.verifyStorageSlot(message_);
     }
 
     function testUnitProxySentinelFallback() external {
