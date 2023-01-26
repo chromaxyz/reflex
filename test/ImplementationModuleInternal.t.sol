@@ -23,7 +23,6 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
     uint16 internal constant _MODULE_SINGLE_VERSION = 1;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE = true;
-    bool internal constant _MODULE_SINGLE_REMOVEABLE = true;
 
     uint32 internal constant _MODULE_INTERNAL_ID = 101;
     uint16 internal constant _MODULE_INTERNAL_TYPE = _MODULE_TYPE_INTERNAL;
@@ -31,8 +30,6 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     uint16 internal constant _MODULE_INTERNAL_VERSION_V2 = 2;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V2 = false;
-    bool internal constant _MODULE_INTERNAL_REMOVEABLE_V1 = true;
-    bool internal constant _MODULE_INTERNAL_REMOVEABLE_V2 = false;
 
     // =======
     // Storage
@@ -56,8 +53,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE,
-                moduleRemoveable: _MODULE_SINGLE_REMOVEABLE
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE
             })
         );
 
@@ -66,8 +62,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
                 moduleVersion: _MODULE_INTERNAL_VERSION_V1,
-                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V1,
-                moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V1
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V1
             })
         );
 
@@ -76,8 +71,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
                 moduleVersion: _MODULE_INTERNAL_VERSION_V2,
-                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V2,
-                moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V2
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V2
             })
         );
 
@@ -107,8 +101,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION,
-            _MODULE_SINGLE_UPGRADEABLE,
-            _MODULE_SINGLE_REMOVEABLE
+            _MODULE_SINGLE_UPGRADEABLE
         );
 
         _testModuleConfiguration(
@@ -116,8 +109,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
             _MODULE_INTERNAL_VERSION_V1,
-            _MODULE_INTERNAL_UPGRADEABLE_V1,
-            _MODULE_INTERNAL_REMOVEABLE_V1
+            _MODULE_INTERNAL_UPGRADEABLE_V1
         );
     }
 
@@ -174,8 +166,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
             _MODULE_INTERNAL_VERSION_V1,
-            _MODULE_INTERNAL_UPGRADEABLE_V1,
-            _MODULE_INTERNAL_REMOVEABLE_V1
+            _MODULE_INTERNAL_UPGRADEABLE_V1
         );
 
         address[] memory moduleAddresses = new address[](1);
@@ -187,36 +178,8 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
             _MODULE_INTERNAL_VERSION_V2,
-            _MODULE_INTERNAL_UPGRADEABLE_V2,
-            _MODULE_INTERNAL_REMOVEABLE_V2
+            _MODULE_INTERNAL_UPGRADEABLE_V2
         );
-
-        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-    }
-
-    function testFuzzRemoveInternalModule(
-        bytes32 message_,
-        uint256 number_,
-        address location_,
-        address tokenA_,
-        address tokenB_,
-        bool flag_
-    ) external BrutalizeMemory {
-        singleModuleProxy.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-
-        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(internalModuleV1);
-        installerProxy.removeModules(moduleAddresses);
-
-        internalModuleV1 = MockImplementationInternalModule(
-            dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID)
-        );
-
-        assertEq(address(internalModuleV1), address(0));
 
         singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
         installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);

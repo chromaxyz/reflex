@@ -28,11 +28,6 @@ abstract contract DeployConstants is ReflexConstants {
      * @dev Module upgradeability setting of built-in upgradeable installer module.
      */
     bool internal constant _MODULE_UPGRADEABLE_INSTALLER = true;
-
-    /**
-     * @dev Module removeability setting of built-in upgradeable installer module.
-     */
-    bool internal constant _MODULE_REMOVEABLE_INSTALLER = false;
 }
 
 /**
@@ -46,7 +41,6 @@ contract DeployScript is Script, DeployConstants {
     uint32 internal constant _MODULE_ID_EXAMPLE = 2;
     uint32 internal constant _MODULE_VERSION_EXAMPLE = 1;
     bool internal constant _MODULE_UPGRADEABLE_EXAMPLE = true;
-    bool internal constant _MODULE_REMOVEABLE_EXAMPLE = true;
 
     // =======
     // Storage
@@ -70,8 +64,7 @@ contract DeployScript is Script, DeployConstants {
                 moduleId: _MODULE_ID_INSTALLER,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
                 moduleVersion: _MODULE_VERSION_INSTALLER,
-                moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER,
-                moduleRemoveable: _MODULE_REMOVEABLE_INSTALLER
+                moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER
             })
         );
 
@@ -84,8 +77,7 @@ contract DeployScript is Script, DeployConstants {
                 moduleId: _MODULE_ID_EXAMPLE,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
                 moduleVersion: _MODULE_VERSION_EXAMPLE,
-                moduleUpgradeable: _MODULE_UPGRADEABLE_EXAMPLE,
-                moduleRemoveable: _MODULE_REMOVEABLE_EXAMPLE
+                moduleUpgradeable: _MODULE_UPGRADEABLE_EXAMPLE
             })
         );
 

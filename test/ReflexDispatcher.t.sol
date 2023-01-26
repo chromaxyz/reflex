@@ -55,8 +55,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
                 moduleId: moduleId_,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
                 moduleVersion: _MODULE_VERSION_INSTALLER,
-                moduleUpgradeable: true,
-                moduleRemoveable: true
+                moduleUpgradeable: true
             })
         );
 

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Vendor
+import {console2} from "forge-std/console2.sol";
 import {CommonBase} from "forge-std/Base.sol";
 import {StdAssertions} from "forge-std/StdAssertions.sol";
 import {stdStorageSafe, StdStorage} from "forge-std/StdStorage.sol";
@@ -45,7 +46,7 @@ contract MockImplementationState is ImplementationState, StdAssertions, CommonBa
         address tokenA_,
         address tokenB_,
         bool flag_
-    ) public {
+    ) public returns (bool) {
         /**
          * | Name                    | Type                                                 | Slot | Offset | Bytes |
          * |-------------------------|------------------------------------------------------|------|--------|-------|
@@ -126,6 +127,8 @@ contract MockImplementationState is ImplementationState, StdAssertions, CommonBa
         getToken(tokenB_, address(this));
         (reads, ) = vm.accesses(address(this));
         assertEq((reads[0]), keccak256(abi.encode(tokenB_, uint256(55))));
+
+        return true;
     }
 
     function getImplementationState0() public view returns (bytes32) {

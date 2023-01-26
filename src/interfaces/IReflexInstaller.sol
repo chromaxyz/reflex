@@ -18,8 +18,6 @@ interface TReflexInstaller is TReflexModule {
 
     error ModuleNonexistent(uint32 moduleId_);
 
-    error ModuleNotRemoveable(uint32 moduleId_);
-
     error ModuleNotUpgradeable(uint32 moduleId_);
 
     error ZeroAddress();
@@ -58,8 +56,6 @@ interface IReflexInstaller is IReflexModule, TReflexInstaller {
     function owner() external view returns (address);
 
     function pendingOwner() external view returns (address);
-
-    function removeModules(address[] memory moduleAddresses_) external;
 
     function transferOwnership(address newOwner_) external;
 

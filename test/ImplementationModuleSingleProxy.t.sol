@@ -26,8 +26,6 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V2 = false;
-    bool internal constant _MODULE_SINGLE_REMOVEABLE_V1 = true;
-    bool internal constant _MODULE_SINGLE_REMOVEABLE_V2 = false;
 
     // =======
     // Storage
@@ -49,8 +47,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION_V1,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V1,
-                moduleRemoveable: _MODULE_SINGLE_REMOVEABLE_V1
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V1
             })
         );
 
@@ -59,8 +56,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION_V2,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V2,
-                moduleRemoveable: _MODULE_SINGLE_REMOVEABLE_V2
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V2
             })
         );
 
@@ -90,8 +86,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1,
-            _MODULE_SINGLE_REMOVEABLE_V1
+            _MODULE_SINGLE_UPGRADEABLE_V1
         );
 
         _testModuleConfiguration(
@@ -99,8 +94,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1,
-            _MODULE_SINGLE_REMOVEABLE_V1
+            _MODULE_SINGLE_UPGRADEABLE_V1
         );
     }
 
@@ -113,6 +107,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         bool flag_
     ) external BrutalizeMemory {
         singleModuleProxy.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+
         singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
 
         _testModuleConfiguration(
@@ -120,8 +115,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1,
-            _MODULE_SINGLE_REMOVEABLE_V1
+            _MODULE_SINGLE_UPGRADEABLE_V1
         );
 
         address[] memory moduleAddresses = new address[](1);
@@ -133,37 +127,10 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V2,
-            _MODULE_SINGLE_UPGRADEABLE_V2,
-            _MODULE_SINGLE_REMOVEABLE_V2
+            _MODULE_SINGLE_UPGRADEABLE_V2
         );
 
         singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-    }
-
-    function testFuzzRemoveSingleProxy(
-        bytes32 message_,
-        uint256 number_,
-        address location_,
-        address tokenA_,
-        address tokenB_,
-        bool flag_
-    ) external BrutalizeMemory {
-        singleModuleProxy.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-
-        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(singleModuleV1);
-        installerProxy.removeModules(moduleAddresses);
-
-        singleModuleV1 = MockImplementationModule(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID));
-        assertEq(address(singleModuleV1), address(0));
-
-        vm.expectRevert(TReflexDispatcher.CallerNotTrusted.selector);
-        singleModuleProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-
-        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
     }
 
     function testUnitProxySentinelFallback() external {

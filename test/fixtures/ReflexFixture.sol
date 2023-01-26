@@ -42,8 +42,7 @@ abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness
                 moduleId: _MODULE_ID_INSTALLER,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
                 moduleVersion: _MODULE_VERSION_INSTALLER,
-                moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER,
-                moduleRemoveable: _MODULE_REMOVEABLE_INSTALLER
+                moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER
             })
         );
         dispatcher = new MockReflexDispatcher(address(this), address(installer));
@@ -59,8 +58,7 @@ abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness
         uint32 moduleId_,
         uint16 moduleType_,
         uint32 moduleVersion_,
-        bool moduleUpgradeable_,
-        bool moduleRemoveable_
+        bool moduleUpgradeable_
     ) internal {
         IReflexModule.ModuleSettings memory moduleSettings = module_.moduleSettings();
 
@@ -72,7 +70,5 @@ abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness
         assertEq(module_.moduleVersion(), moduleVersion_);
         assertEq(moduleSettings.moduleUpgradeable, moduleUpgradeable_);
         assertEq(module_.moduleUpgradeable(), moduleUpgradeable_);
-        assertEq(moduleSettings.moduleRemoveable, moduleRemoveable_);
-        assertEq(module_.moduleRemoveable(), moduleRemoveable_);
     }
 }

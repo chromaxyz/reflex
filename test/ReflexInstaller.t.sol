@@ -31,10 +31,6 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V2 = true;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V3 = false;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V4 = false;
-    bool internal constant _MODULE_SINGLE_REMOVEABLE_V1 = true;
-    bool internal constant _MODULE_SINGLE_REMOVEABLE_V2 = true;
-    bool internal constant _MODULE_SINGLE_REMOVEABLE_V3 = false;
-    bool internal constant _MODULE_SINGLE_REMOVEABLE_V4 = false;
 
     uint32 internal constant _MODULE_MULTI_ID = 101;
     uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_PROXY;
@@ -46,10 +42,6 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V2 = true;
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V3 = false;
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V4 = false;
-    bool internal constant _MODULE_MULTI_REMOVEABLE_V1 = true;
-    bool internal constant _MODULE_MULTI_REMOVEABLE_V2 = true;
-    bool internal constant _MODULE_MULTI_REMOVEABLE_V3 = false;
-    bool internal constant _MODULE_MULTI_REMOVEABLE_V4 = false;
 
     uint32 internal constant _MODULE_INTERNAL_ID = 102;
     uint16 internal constant _MODULE_INTERNAL_TYPE = _MODULE_TYPE_INTERNAL;
@@ -61,10 +53,6 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V2 = true;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V3 = false;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V4 = false;
-    bool internal constant _MODULE_INTERNAL_REMOVEABLE_V1 = true;
-    bool internal constant _MODULE_INTERNAL_REMOVEABLE_V2 = true;
-    bool internal constant _MODULE_INTERNAL_REMOVEABLE_V3 = false;
-    bool internal constant _MODULE_INTERNAL_REMOVEABLE_V4 = false;
 
     // =======
     // Storage
@@ -91,8 +79,8 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
 
         // Scenario:
         // - V1 is the initial module.
-        // - V2 is the next version, still upgradeable and removeable.
-        // - V3 is the next version, not upgradeable or removeable.
+        // - V2 is the next version, still upgradeable.
+        // - V3 is the next version, not upgradeable.
         // - V4 is never used, expected to throw.
 
         singleModuleV1 = new MockReflexModule(
@@ -100,8 +88,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION_V1,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V1,
-                moduleRemoveable: _MODULE_SINGLE_REMOVEABLE_V1
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V1
             })
         );
 
@@ -110,8 +97,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION_V2,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V2,
-                moduleRemoveable: _MODULE_SINGLE_REMOVEABLE_V2
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V2
             })
         );
 
@@ -120,8 +106,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION_V3,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V3,
-                moduleRemoveable: _MODULE_SINGLE_REMOVEABLE_V3
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V3
             })
         );
 
@@ -130,8 +115,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
                 moduleVersion: _MODULE_MULTI_VERSION_V1,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V1,
-                moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V1
+                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V1
             })
         );
 
@@ -140,8 +124,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
                 moduleVersion: _MODULE_MULTI_VERSION_V2,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V2,
-                moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V2
+                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V2
             })
         );
 
@@ -150,8 +133,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
                 moduleVersion: _MODULE_MULTI_VERSION_V3,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V3,
-                moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V3
+                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V3
             })
         );
 
@@ -160,8 +142,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
                 moduleVersion: _MODULE_INTERNAL_VERSION_V1,
-                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V1,
-                moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V1
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V1
             })
         );
 
@@ -170,8 +151,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
                 moduleVersion: _MODULE_INTERNAL_VERSION_V2,
-                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V2,
-                moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V2
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V2
             })
         );
 
@@ -180,8 +160,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
                 moduleVersion: _MODULE_INTERNAL_VERSION_V3,
-                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V3,
-                moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V3
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V3
             })
         );
     }
@@ -196,8 +175,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1,
-            _MODULE_SINGLE_REMOVEABLE_V1
+            _MODULE_SINGLE_UPGRADEABLE_V1
         );
 
         _testModuleConfiguration(
@@ -205,8 +183,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V2,
-            _MODULE_SINGLE_UPGRADEABLE_V2,
-            _MODULE_SINGLE_REMOVEABLE_V2
+            _MODULE_SINGLE_UPGRADEABLE_V2
         );
 
         _testModuleConfiguration(
@@ -214,8 +191,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V3,
-            _MODULE_SINGLE_UPGRADEABLE_V3,
-            _MODULE_SINGLE_REMOVEABLE_V3
+            _MODULE_SINGLE_UPGRADEABLE_V3
         );
 
         _testModuleConfiguration(
@@ -223,8 +199,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V1,
-            _MODULE_MULTI_UPGRADEABLE_V1,
-            _MODULE_MULTI_REMOVEABLE_V1
+            _MODULE_MULTI_UPGRADEABLE_V1
         );
 
         _testModuleConfiguration(
@@ -232,8 +207,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V2,
-            _MODULE_MULTI_UPGRADEABLE_V2,
-            _MODULE_MULTI_REMOVEABLE_V2
+            _MODULE_MULTI_UPGRADEABLE_V2
         );
 
         _testModuleConfiguration(
@@ -241,8 +215,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V3,
-            _MODULE_MULTI_UPGRADEABLE_V3,
-            _MODULE_MULTI_REMOVEABLE_V3
+            _MODULE_MULTI_UPGRADEABLE_V3
         );
 
         _testModuleConfiguration(
@@ -250,8 +223,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
             _MODULE_INTERNAL_VERSION_V1,
-            _MODULE_INTERNAL_UPGRADEABLE_V1,
-            _MODULE_INTERNAL_REMOVEABLE_V1
+            _MODULE_INTERNAL_UPGRADEABLE_V1
         );
 
         _testModuleConfiguration(
@@ -259,8 +231,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
             _MODULE_INTERNAL_VERSION_V2,
-            _MODULE_INTERNAL_UPGRADEABLE_V2,
-            _MODULE_INTERNAL_REMOVEABLE_V2
+            _MODULE_INTERNAL_UPGRADEABLE_V2
         );
 
         _testModuleConfiguration(
@@ -268,8 +239,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
             _MODULE_INTERNAL_VERSION_V3,
-            _MODULE_INTERNAL_UPGRADEABLE_V3,
-            _MODULE_INTERNAL_REMOVEABLE_V3
+            _MODULE_INTERNAL_UPGRADEABLE_V3
         );
     }
 
@@ -362,8 +332,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                     moduleId: 777,
                     moduleType: _MODULE_SINGLE_TYPE,
                     moduleVersion: 777,
-                    moduleUpgradeable: true,
-                    moduleRemoveable: true
+                    moduleUpgradeable: true
                 })
             )
         );
@@ -386,40 +355,6 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
 
         vm.expectRevert();
         installerProxy.upgradeModules(moduleAddresses);
-    }
-
-    function testUnitRevertRemoveModulesModuleNonexistent() external {
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(
-            new MockReflexModule(
-                IReflexModule.ModuleSettings({
-                    moduleId: 777,
-                    moduleType: _MODULE_SINGLE_TYPE,
-                    moduleVersion: 777,
-                    moduleUpgradeable: true,
-                    moduleRemoveable: true
-                })
-            )
-        );
-
-        vm.expectRevert(abi.encodeWithSelector(ModuleNonexistent.selector, 777));
-        installerProxy.removeModules(moduleAddresses);
-    }
-
-    function testUnitRevertRemoveModulesNonContract() external {
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(1);
-
-        vm.expectRevert();
-        installerProxy.removeModules(moduleAddresses);
-    }
-
-    function testUnitRevertRemoveModulesNonModuleIdContract() external {
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(dispatcher);
-
-        vm.expectRevert();
-        installerProxy.removeModules(moduleAddresses);
     }
 
     // =========================
@@ -458,17 +393,6 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(singleModuleImplementationV2, address(singleModuleV2));
     }
 
-    function testUnitRemoveModulesSingleProxy() external {
-        testUnitAddModulesSingleProxy();
-
-        _removeModule(singleModuleV1, _VALID);
-
-        assertEq(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID), address(0));
-        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID), address(0));
-
-        testUnitAddModulesSingleProxy();
-    }
-
     function testUnitRevertUpgradeInvalidVersionSingleProxy() external {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
@@ -487,30 +411,10 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                     moduleId: _MODULE_SINGLE_ID,
                     moduleType: _MODULE_SINGLE_TYPE,
                     moduleVersion: _MODULE_SINGLE_VERSION_V4,
-                    moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V4,
-                    moduleRemoveable: _MODULE_SINGLE_REMOVEABLE_V4
+                    moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V4
                 })
             ),
             TReflexInstaller.ModuleNotUpgradeable.selector
-        );
-    }
-
-    function testUnitRevertUpgradeModulesNonRemoveableSingleProxy() external {
-        _addModule(singleModuleV1, _VALID);
-        _upgradeModule(singleModuleV2, _VALID);
-        _upgradeModule(singleModuleV3, _VALID);
-
-        _removeModule(
-            new MockReflexModule(
-                IReflexModule.ModuleSettings({
-                    moduleId: _MODULE_SINGLE_ID,
-                    moduleType: _MODULE_SINGLE_TYPE,
-                    moduleVersion: _MODULE_SINGLE_VERSION_V4,
-                    moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V4,
-                    moduleRemoveable: _MODULE_SINGLE_REMOVEABLE_V4
-                })
-            ),
-            TReflexInstaller.ModuleNotRemoveable.selector
         );
     }
 
@@ -549,17 +453,6 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(multiModuleImplementationV2, address(multiModuleV2));
     }
 
-    function testUnitRemoveModulesMultiProxy() external {
-        testUnitAddModulesMultiProxy();
-
-        _removeModule(multiModuleV1, _VALID);
-
-        assertEq(dispatcher.moduleIdToProxy(_MODULE_MULTI_ID), address(0));
-        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID), address(0));
-
-        testUnitAddModulesMultiProxy();
-    }
-
     function testUnitRevertUpgradeInvalidVersionMultiProxy() external {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
@@ -578,30 +471,10 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                     moduleId: _MODULE_MULTI_ID,
                     moduleType: _MODULE_MULTI_TYPE,
                     moduleVersion: _MODULE_MULTI_VERSION_V4,
-                    moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V4,
-                    moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V4
+                    moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V4
                 })
             ),
             TReflexInstaller.ModuleNotUpgradeable.selector
-        );
-    }
-
-    function testUnitRevertUpgradeModulesNonRemoveableMultiProxy() external {
-        _addModule(multiModuleV1, _VALID);
-        _upgradeModule(multiModuleV2, _VALID);
-        _upgradeModule(multiModuleV3, _VALID);
-
-        _removeModule(
-            new MockReflexModule(
-                IReflexModule.ModuleSettings({
-                    moduleId: _MODULE_MULTI_ID,
-                    moduleType: _MODULE_MULTI_TYPE,
-                    moduleVersion: _MODULE_MULTI_VERSION_V4,
-                    moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V4,
-                    moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V4
-                })
-            ),
-            TReflexInstaller.ModuleNotRemoveable.selector
         );
     }
 
@@ -636,17 +509,6 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(internalModuleImplementationV2, address(internalModuleV2));
     }
 
-    function testUnitRemoveModulesInternal() external {
-        testUnitAddModulesInternal();
-
-        _removeModule(internalModuleV1, _VALID);
-
-        assertEq(dispatcher.moduleIdToProxy(_MODULE_INTERNAL_ID), address(0));
-        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID), address(0));
-
-        testUnitAddModulesInternal();
-    }
-
     function testUnitRevertUpgradeInvalidVersionInternal() external {
         _addModule(internalModuleV1, _VALID);
         _upgradeModule(internalModuleV2, _VALID);
@@ -665,30 +527,10 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                     moduleId: _MODULE_INTERNAL_ID,
                     moduleType: _MODULE_INTERNAL_TYPE,
                     moduleVersion: _MODULE_INTERNAL_VERSION_V4,
-                    moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V4,
-                    moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V4
+                    moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V4
                 })
             ),
             TReflexInstaller.ModuleNotUpgradeable.selector
-        );
-    }
-
-    function testUnitRevertUpgradeModulesNonRemoveableInternal() external {
-        _addModule(internalModuleV1, _VALID);
-        _upgradeModule(internalModuleV2, _VALID);
-        _upgradeModule(internalModuleV3, _VALID);
-
-        _removeModule(
-            new MockReflexModule(
-                IReflexModule.ModuleSettings({
-                    moduleId: _MODULE_INTERNAL_ID,
-                    moduleType: _MODULE_INTERNAL_TYPE,
-                    moduleVersion: _MODULE_INTERNAL_VERSION_V4,
-                    moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V4,
-                    moduleRemoveable: _MODULE_INTERNAL_REMOVEABLE_V4
-                })
-            ),
-            TReflexInstaller.ModuleNotRemoveable.selector
         );
     }
 
@@ -722,19 +564,5 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         }
 
         installerProxy.upgradeModules(moduleAddresses);
-    }
-
-    function _removeModule(IReflexModule module_, bytes4 selector_) internal {
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(module_);
-
-        if (selector_ == _VALID) {
-            vm.expectEmit(true, true, false, false);
-            emit ModuleRemoved(module_.moduleId(), address(module_), module_.moduleVersion());
-        } else {
-            vm.expectRevert(abi.encodeWithSelector(TReflexInstaller.ModuleNotRemoveable.selector, module_.moduleId()));
-        }
-
-        installerProxy.removeModules(moduleAddresses);
     }
 }

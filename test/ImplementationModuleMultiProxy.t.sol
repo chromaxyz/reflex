@@ -29,7 +29,6 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
     uint16 internal constant _MODULE_SINGLE_VERSION = 1;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE = true;
-    bool internal constant _MODULE_SINGLE_REMOVEABLE = true;
 
     uint32 internal constant _MODULE_MULTI_ID = 101;
     uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_PROXY;
@@ -37,8 +36,6 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     uint16 internal constant _MODULE_MULTI_VERSION_V2 = 2;
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V2 = false;
-    bool internal constant _MODULE_MULTI_REMOVEABLE_V1 = true;
-    bool internal constant _MODULE_MULTI_REMOVEABLE_V2 = false;
 
     string internal constant _MODULE_MULTI_NAME_A = "TOKEN A";
     string internal constant _MODULE_MULTI_SYMBOL_A = "TKNA";
@@ -51,6 +48,8 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     string internal constant _MODULE_MULTI_NAME_C = "TOKEN C";
     string internal constant _MODULE_MULTI_SYMBOL_C = "TKNC";
     uint8 internal constant _MODULE_MULTI_DECIMALS_C = 8;
+
+    uint256 internal constant _TOKEN_MINT_AMOUNT = 100e18;
 
     // =======
     // Storage
@@ -78,8 +77,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE,
-                moduleRemoveable: _MODULE_SINGLE_REMOVEABLE
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE
             })
         );
 
@@ -88,8 +86,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
                 moduleVersion: _MODULE_MULTI_VERSION_V1,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V1,
-                moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V1
+                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V1
             })
         );
 
@@ -98,8 +95,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
                 moduleVersion: _MODULE_MULTI_VERSION_V2,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V2,
-                moduleRemoveable: _MODULE_MULTI_REMOVEABLE_V2
+                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V2
             })
         );
 
@@ -178,8 +174,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V1,
-            _MODULE_MULTI_UPGRADEABLE_V1,
-            _MODULE_MULTI_REMOVEABLE_V1
+            _MODULE_MULTI_UPGRADEABLE_V1
         );
 
         _testModuleConfiguration(
@@ -187,8 +182,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V2,
-            _MODULE_MULTI_UPGRADEABLE_V2,
-            _MODULE_MULTI_REMOVEABLE_V2
+            _MODULE_MULTI_UPGRADEABLE_V2
         );
     }
 
@@ -212,8 +206,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V1,
-            _MODULE_MULTI_UPGRADEABLE_V1,
-            _MODULE_MULTI_REMOVEABLE_V1
+            _MODULE_MULTI_UPGRADEABLE_V1
         );
 
         _testModuleConfiguration(
@@ -221,8 +214,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V1,
-            _MODULE_MULTI_UPGRADEABLE_V1,
-            _MODULE_MULTI_REMOVEABLE_V1
+            _MODULE_MULTI_UPGRADEABLE_V1
         );
 
         _testModuleConfiguration(
@@ -230,8 +222,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V1,
-            _MODULE_MULTI_UPGRADEABLE_V1,
-            _MODULE_MULTI_REMOVEABLE_V1
+            _MODULE_MULTI_UPGRADEABLE_V1
         );
 
         address[] memory moduleAddresses = new address[](1);
@@ -243,8 +234,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V2,
-            _MODULE_MULTI_UPGRADEABLE_V2,
-            _MODULE_MULTI_REMOVEABLE_V2
+            _MODULE_MULTI_UPGRADEABLE_V2
         );
 
         _testModuleConfiguration(
@@ -252,8 +242,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V2,
-            _MODULE_MULTI_UPGRADEABLE_V2,
-            _MODULE_MULTI_REMOVEABLE_V2
+            _MODULE_MULTI_UPGRADEABLE_V2
         );
 
         _testModuleConfiguration(
@@ -261,68 +250,13 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V2,
-            _MODULE_MULTI_UPGRADEABLE_V2,
-            _MODULE_MULTI_REMOVEABLE_V2
+            _MODULE_MULTI_UPGRADEABLE_V2
         );
 
         multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
         multiModuleProxyB.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
         multiModuleProxyC.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
         installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-    }
-
-    function testFuzzRemoveMultiProxy(
-        bytes32 message_,
-        uint256 number_,
-        address location_,
-        address tokenA_,
-        address tokenB_,
-        bool flag_
-    ) external {
-        multiModuleProxyA.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-
-        multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        multiModuleProxyB.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        multiModuleProxyC.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-
-        MockImplementationERC20 preMultiModuleProxyA = multiModuleProxyA;
-        MockImplementationERC20 preMultiModuleProxyB = multiModuleProxyB;
-        MockImplementationERC20 preMultiModuleProxyC = multiModuleProxyC;
-
-        address[] memory moduleAddresses = new address[](2);
-        moduleAddresses[0] = address(singleModule);
-        moduleAddresses[1] = address(multiModuleV1);
-        installerProxy.removeModules(moduleAddresses);
-
-        singleModule = MockImplementationERC20Hub(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID));
-        assertEq(address(singleModule), address(0));
-
-        multiModuleV1 = MockImplementationERC20(dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID));
-        assertEq(address(multiModuleV1), address(0));
-
-        assertEq(address(multiModuleProxyA), address(preMultiModuleProxyA));
-        assertEq(address(multiModuleProxyB), address(preMultiModuleProxyB));
-        assertEq(address(multiModuleProxyC), address(preMultiModuleProxyC));
-
-        // (, , , uint256 totalSupply, uint256 balanceOf) = multiModuleProxyA.getToken(
-        //     address(multiModuleProxyA),
-        //     address(this)
-        // );
-
-        // console2.log(totalSupply, balanceOf);
-
-        // vm.expectRevert(TReflexDispatcher.CallerNotTrusted.selector);
-        // multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-
-        // // TODO: shouldn't these multi proxies revert???
-
-        // TODO: post-removal the multi proxies should not be allowed to call in
-
-        // multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        // multiModuleProxyB.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        // multiModuleProxyC.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        // installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
     }
 
     function testUnitProxySentinelFallback() external {

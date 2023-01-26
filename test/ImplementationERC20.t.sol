@@ -58,8 +58,7 @@ contract ImplementationERC20Test is ImplementationFixture {
                 moduleId: _TOKEN_HUB_MODULE_ID,
                 moduleType: _TOKEN_HUB_MODULE_TYPE,
                 moduleVersion: _TOKEN_HUB_MODULE_VERSION,
-                moduleUpgradeable: true,
-                moduleRemoveable: true
+                moduleUpgradeable: true
             })
         );
 
@@ -68,8 +67,7 @@ contract ImplementationERC20Test is ImplementationFixture {
                 moduleId: _TOKEN_MODULE_ID,
                 moduleType: _TOKEN_MODULE_TYPE,
                 moduleVersion: _TOKEN_MODULE_VERSION,
-                moduleUpgradeable: true,
-                moduleRemoveable: true
+                moduleUpgradeable: true
             })
         );
 

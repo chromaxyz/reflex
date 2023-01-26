@@ -14,7 +14,7 @@ import {ReflexModule} from "./ReflexModule.sol";
 /**
  * @title Reflex Installer
  * @dev Execution takes place within the Dispatcher's storage context.
- * @dev Upgradeable, non-removeable, extendable.
+ * @dev Upgradeable, extendable.
  */
 abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     // ============
@@ -147,45 +147,6 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             }
 
             emit ModuleUpgraded(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
-
-            unchecked {
-                ++i;
-            }
-        }
-    }
-
-    /**
-     * @notice Remove modules
-     * @param moduleAddresses_ List of modules to remove.
-     *
-     * Requirements:
-     *
-     * - The caller must be the current owner.
-     * - Cannot be re-entered.
-     */
-    function removeModules(address[] memory moduleAddresses_) external virtual override onlyOwner nonReentrant {
-        uint256 moduleAddressLength = moduleAddresses_.length;
-
-        for (uint256 i = 0; i < moduleAddressLength; ) {
-            address moduleAddress = moduleAddresses_[i];
-
-            IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
-
-            if (_modules[moduleSettings_.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings_.moduleId);
-
-            if (!moduleSettings_.moduleRemoveable) revert ModuleNotRemoveable(moduleSettings_.moduleId);
-
-            if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
-                address proxyAddress = _proxies[moduleSettings_.moduleId];
-                _relations[proxyAddress].moduleId = 0;
-                _relations[proxyAddress].moduleType = 0;
-                _relations[proxyAddress].moduleImplementation = address(0);
-            }
-
-            _proxies[moduleSettings_.moduleId] = address(0);
-            _modules[moduleSettings_.moduleId] = address(0);
-
-            emit ModuleRemoved(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
 
             unchecked {
                 ++i;

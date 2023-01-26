@@ -22,7 +22,6 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
     uint16 internal constant _MODULE_VALID_TYPE_SINGLE = _MODULE_TYPE_SINGLE_PROXY;
     uint16 internal constant _MODULE_VALID_VERSION = 1;
     bool internal constant _MODULE_VALID_UPGRADEABLE = true;
-    bool internal constant _MODULE_VALID_REMOVEABLE = true;
 
     uint32 internal constant _MODULE_INVALID_ID = 0;
     uint16 internal constant _MODULE_INVALID_TYPE = 777;
@@ -54,8 +53,7 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
                 moduleId: _MODULE_VALID_ID,
                 moduleType: _MODULE_VALID_TYPE_SINGLE,
                 moduleVersion: _MODULE_VALID_VERSION,
-                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
-                moduleRemoveable: _MODULE_VALID_REMOVEABLE
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE
             })
         );
 
@@ -64,8 +62,7 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
             _MODULE_VALID_ID,
             _MODULE_VALID_TYPE_SINGLE,
             _MODULE_VALID_VERSION,
-            _MODULE_VALID_UPGRADEABLE,
-            _MODULE_VALID_REMOVEABLE
+            _MODULE_VALID_UPGRADEABLE
         );
     }
 
@@ -76,8 +73,7 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
                 moduleId: _MODULE_INVALID_ID,
                 moduleType: _MODULE_VALID_TYPE_SINGLE,
                 moduleVersion: _MODULE_VALID_VERSION,
-                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
-                moduleRemoveable: _MODULE_VALID_REMOVEABLE
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE
             })
         );
     }
@@ -89,8 +85,7 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
                 moduleId: _MODULE_VALID_ID,
                 moduleType: _MODULE_INVALID_TYPE_ZERO,
                 moduleVersion: _MODULE_VALID_VERSION,
-                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
-                moduleRemoveable: _MODULE_VALID_REMOVEABLE
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE
             })
         );
     }
@@ -102,8 +97,7 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
                 moduleId: _MODULE_VALID_ID,
                 moduleType: _MODULE_INVALID_TYPE,
                 moduleVersion: _MODULE_VALID_VERSION,
-                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
-                moduleRemoveable: _MODULE_VALID_REMOVEABLE
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE
             })
         );
     }
@@ -115,8 +109,7 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
                 moduleId: _MODULE_VALID_ID,
                 moduleType: _MODULE_VALID_TYPE_SINGLE,
                 moduleVersion: _MODULE_INVALID_VERSION,
-                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE,
-                moduleRemoveable: _MODULE_VALID_REMOVEABLE
+                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE
             })
         );
     }

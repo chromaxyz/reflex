@@ -37,11 +37,6 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
      */
     bool internal immutable _moduleUpgradeable;
 
-    /**
-     * @notice Whether the module is removeable.
-     */
-    bool internal immutable _moduleRemoveable;
-
     // =========
     // Modifiers
     // =========
@@ -74,7 +69,6 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
         _moduleType = moduleSettings_.moduleType;
         _moduleVersion = moduleSettings_.moduleVersion;
         _moduleUpgradeable = moduleSettings_.moduleUpgradeable;
-        _moduleRemoveable = moduleSettings_.moduleRemoveable;
     }
 
     // ============
@@ -114,14 +108,6 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
     }
 
     /**
-     * @notice Get whether module is removeable.
-     * @return bool Whether module is removeable.
-     */
-    function moduleRemoveable() external view virtual override returns (bool) {
-        return _moduleUpgradeable;
-    }
-
-    /**
      * @notice Get the module settings.
      * @return ModuleSettings Module settings.
      */
@@ -131,8 +117,7 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
                 moduleId: _moduleId,
                 moduleType: _moduleType,
                 moduleVersion: _moduleVersion,
-                moduleUpgradeable: _moduleUpgradeable,
-                moduleRemoveable: _moduleRemoveable
+                moduleUpgradeable: _moduleUpgradeable
             });
     }
 }
