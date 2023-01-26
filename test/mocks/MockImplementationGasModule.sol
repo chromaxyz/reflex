@@ -22,7 +22,7 @@ contract MockImplementationGasModule is MockReflexModule, ImplementationState {
     // Test stubs
     // ==========
 
-    function empty() public view {}
+    function getEmpty() public view {}
 
     function getImplementationState0() public view returns (bytes32) {
         return _implementationState0;
