@@ -27,17 +27,17 @@ abstract contract ReflexConstants {
     /**
      * @dev Modules that have a single proxy to a single implementation relation.
      */
-    uint16 internal constant _MODULE_TYPE_SINGLE_PROXY = 1;
+    uint256 internal constant _MODULE_TYPE_SINGLE_PROXY = 1;
 
     /**
      * @dev Modules that have a multiple proxies to a single implementation relation.
      */
-    uint16 internal constant _MODULE_TYPE_MULTI_PROXY = 2;
+    uint256 internal constant _MODULE_TYPE_MULTI_PROXY = 2;
 
     /**
      * @dev Modules that are available internally, called internally and don't have any public-facing proxies.
      */
-    uint16 internal constant _MODULE_TYPE_INTERNAL = 3;
+    uint256 internal constant _MODULE_TYPE_INTERNAL = 3;
 
     // =======
     // Modules
@@ -46,5 +46,5 @@ abstract contract ReflexConstants {
     /**
      * @dev Module id of built-in upgradeable installer module.
      */
-    uint32 internal constant _MODULE_ID_INSTALLER = 1;
+    uint256 internal constant _MODULE_ID_INSTALLER = 1;
 }

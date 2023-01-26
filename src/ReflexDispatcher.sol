@@ -48,7 +48,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
      * @param moduleId_ Module id.
      * @return address Module implementation address.
      */
-    function moduleIdToModuleImplementation(uint32 moduleId_) external view virtual override returns (address) {
+    function moduleIdToModuleImplementation(uint256 moduleId_) external view virtual override returns (address) {
         return _modules[moduleId_];
     }
 
@@ -57,7 +57,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
      * @param moduleId_ Module id.
      * @return address Proxy address.
      */
-    function moduleIdToProxy(uint32 moduleId_) external view virtual override returns (address) {
+    function moduleIdToProxy(uint256 moduleId_) external view virtual override returns (address) {
         return _proxies[moduleId_];
     }
 
@@ -69,7 +69,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
      * @notice Dispatch call to module implementation.
      */
     function dispatch() external virtual override reentrancyAllowed {
-        uint32 moduleId = _relations[msg.sender].moduleId;
+        uint256 moduleId = _relations[msg.sender].moduleId;
         address moduleImplementation = _relations[msg.sender].moduleImplementation;
 
         if (moduleId == 0) revert CallerNotTrusted();

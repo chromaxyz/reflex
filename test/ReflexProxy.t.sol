@@ -18,7 +18,7 @@ contract ReflexProxyTest is TReflexProxy, TestHarness {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_VALID_ID = 100;
+    uint256 internal constant _MODULE_VALID_ID = 100;
 
     // =======
     // Storage

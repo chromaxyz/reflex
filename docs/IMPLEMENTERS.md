@@ -267,19 +267,19 @@ Prior to adding, upgrading or removing a module make sure to go through the [CHE
 - Module id:
 
   - One per module
-  - Type: `uint32`
-  - Range: `(min: 0, reserved: ∈[0 .. 1], available: ∈[2 .. 4294967295])`
+  - Type: `uint256`
+  - Range: `(min: 0, reserved: ∈[0 .. 1], available: ∈[2 .. 2**256-1])`
 
 - Module type:
 
   - One per module type
-  - Type: `uint16`
-  - Range: `(min: 0, reserved: ∈[0 .. 2], available: ∈[3 .. 65535])`
+  - Type: `uint256`
+  - Range: `(min: 0, reserved: ∈[0 .. 2], available: ∈[3 .. 2**256-1])`
 
 - Module version:
 
-  - Type: `uint32`
-  - Range: `(min: 0, reserved: 0, available: ∈[1 .. 4294967295])`
+  - Type: `uint256`
+  - Range: `(min: 0, reserved: 0, available: ∈[1 .. 2**256-1])`
 
 ## Known limitations
 

@@ -24,7 +24,7 @@ interface TReflexDispatcher is TReflexBase {
     // Events
     // ======
 
-    event ModuleAdded(uint32 indexed moduleId_, address indexed moduleImplementation_, uint32 indexed moduleVersion_);
+    event ModuleAdded(uint256 indexed moduleId_, address indexed moduleImplementation_, uint256 indexed moduleVersion_);
 
     event OwnershipTransferred(address indexed user_, address indexed newOwner_);
 }
@@ -37,9 +37,9 @@ interface IReflexDispatcher is IReflexBase, TReflexDispatcher {
     // Methods
     // =======
 
-    function moduleIdToModuleImplementation(uint32 moduleId_) external view returns (address);
+    function moduleIdToModuleImplementation(uint256 moduleId_) external view returns (address);
 
-    function moduleIdToProxy(uint32 moduleId_) external view returns (address);
+    function moduleIdToProxy(uint256 moduleId_) external view returns (address);
 
     function dispatch() external;
 }

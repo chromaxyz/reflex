@@ -33,15 +33,15 @@ interface IReflexModule is IReflexBase, TReflexModule {
         /**
          * @notice Module id.
          */
-        uint32 moduleId;
+        uint256 moduleId;
         /**
          * @notice Module type.
          */
-        uint16 moduleType;
+        uint256 moduleType;
         /**
          * @notice Module version.
          */
-        uint32 moduleVersion;
+        uint256 moduleVersion;
         /**
          * @notice Whether the module is upgradeable.
          */
@@ -52,13 +52,13 @@ interface IReflexModule is IReflexBase, TReflexModule {
     // Methods
     // =======
 
-    function moduleId() external view returns (uint32);
+    function moduleId() external view returns (uint256);
 
     function moduleSettings() external view returns (ModuleSettings memory);
 
-    function moduleType() external view returns (uint16);
+    function moduleType() external view returns (uint256);
 
     function moduleUpgradeable() external view returns (bool);
 
-    function moduleVersion() external view returns (uint32);
+    function moduleVersion() external view returns (uint256);
 }

@@ -58,9 +58,9 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
 
     function _testModuleConfiguration(
         MockReflexModule module_,
-        uint32 moduleId_,
-        uint16 moduleType_,
-        uint32 moduleVersion_,
+        uint256 moduleId_,
+        uint256 moduleType_,
+        uint256 moduleVersion_,
         bool moduleUpgradeable_
     ) internal {
         IReflexModule.ModuleSettings memory moduleSettings = module_.moduleSettings();

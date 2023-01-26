@@ -14,7 +14,7 @@ Impact: High
 Confidence: High
 
 - [ ] ID-0
-      [ReflexState.\_modules](../src/ReflexState.sol#L53) is never initialized. It is used in: - [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L78-L84)
+      [ReflexState.\_modules](../src/ReflexState.sol#L53) is never initialized. It is used in: - [ReflexBase.\_callInternalModule(uint256,bytes)](../src/ReflexBase.sol#L78-L84)
 
 ../src/ReflexState.sol#L53
 
@@ -94,7 +94,7 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-13
-      Low level call in [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L78-L84): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L79)
+      Low level call in [ReflexBase.\_callInternalModule(uint256,bytes)](../src/ReflexBase.sol#L78-L84): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L79)
 
 ../src/ReflexBase.sol#L78-L84
 
@@ -179,7 +179,7 @@ Impact: Informational
 Confidence: Medium
 
 - [ ] ID-28
-      Variable [ReflexModule.\_moduleType](../src/ReflexModule.sol#L28) is too similar to [ReflexBase._createProxy(uint32,uint16).moduleType_](../src/ReflexBase.sol#L53)
+      Variable [ReflexModule.\_moduleType](../src/ReflexModule.sol#L28) is too similar to [ReflexBase._createProxy(uint256,uint256).moduleType_](../src/ReflexBase.sol#L53)
 
 ../src/ReflexModule.sol#L28
 

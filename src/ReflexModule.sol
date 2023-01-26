@@ -20,17 +20,17 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
     /**
      * @notice Module id.
      */
-    uint32 internal immutable _moduleId;
+    uint256 internal immutable _moduleId;
 
     /**
      * @notice Module type.
      */
-    uint16 internal immutable _moduleType;
+    uint256 internal immutable _moduleType;
 
     /**
      * @notice Module version.
      */
-    uint32 internal immutable _moduleVersion;
+    uint256 internal immutable _moduleVersion;
 
     /**
      * @notice Whether the module is upgradeable.
@@ -77,25 +77,25 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
 
     /**
      * @notice Get module id.
-     * @return uint32 Module id.
+     * @return uint256 Module id.
      */
-    function moduleId() external view virtual override returns (uint32) {
+    function moduleId() external view virtual override returns (uint256) {
         return _moduleId;
     }
 
     /**
      * @notice Get module type.
-     * @return uint16 Module type.
+     * @return uint256 Module type.
      */
-    function moduleType() external view virtual override returns (uint16) {
+    function moduleType() external view virtual override returns (uint256) {
         return _moduleType;
     }
 
     /**
      * @notice Get module version.
-     * @return uint32 Module version.
+     * @return uint256 Module version.
      */
-    function moduleVersion() external view virtual override returns (uint32) {
+    function moduleVersion() external view virtual override returns (uint256) {
         return _moduleVersion;
     }
 

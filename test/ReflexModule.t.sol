@@ -18,15 +18,15 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_VALID_ID = 5;
-    uint16 internal constant _MODULE_VALID_TYPE_SINGLE = _MODULE_TYPE_SINGLE_PROXY;
-    uint16 internal constant _MODULE_VALID_VERSION = 1;
+    uint256 internal constant _MODULE_VALID_ID = 5;
+    uint256 internal constant _MODULE_VALID_TYPE_SINGLE = _MODULE_TYPE_SINGLE_PROXY;
+    uint256 internal constant _MODULE_VALID_VERSION = 1;
     bool internal constant _MODULE_VALID_UPGRADEABLE = true;
 
-    uint32 internal constant _MODULE_INVALID_ID = 0;
-    uint16 internal constant _MODULE_INVALID_TYPE = 777;
-    uint16 internal constant _MODULE_INVALID_TYPE_ZERO = 0;
-    uint16 internal constant _MODULE_INVALID_VERSION = 0;
+    uint256 internal constant _MODULE_INVALID_ID = 0;
+    uint256 internal constant _MODULE_INVALID_TYPE = 777;
+    uint256 internal constant _MODULE_INVALID_TYPE_ZERO = 0;
+    uint256 internal constant _MODULE_INVALID_VERSION = 0;
 
     // =======
     // Storage

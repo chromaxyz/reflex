@@ -25,13 +25,13 @@ contract ImplementationERC20Test is ImplementationFixture {
     // Constants
     // =========
 
-    uint32 public constant _TOKEN_HUB_MODULE_ID = 100;
-    uint16 public constant _TOKEN_HUB_MODULE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
-    uint16 public constant _TOKEN_HUB_MODULE_VERSION = 1;
+    uint256 public constant _TOKEN_HUB_MODULE_ID = 100;
+    uint256 public constant _TOKEN_HUB_MODULE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
+    uint256 public constant _TOKEN_HUB_MODULE_VERSION = 1;
 
-    uint32 public constant _TOKEN_MODULE_ID = 101;
-    uint16 public constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_PROXY;
-    uint16 public constant _TOKEN_MODULE_VERSION = 1;
+    uint256 public constant _TOKEN_MODULE_ID = 101;
+    uint256 public constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_PROXY;
+    uint256 public constant _TOKEN_MODULE_VERSION = 1;
     string public constant _TOKEN_MODULE_NAME = "TOKEN A";
     string public constant _TOKEN_MODULE_SYMBOL = "TKNA";
     uint8 public constant _TOKEN_MODULE_DECIMALS = 18;

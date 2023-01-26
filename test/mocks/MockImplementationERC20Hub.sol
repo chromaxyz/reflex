@@ -23,8 +23,8 @@ contract MockImplementationERC20Hub is MockReflexModule, ImplementationState {
     // ==========
 
     function addERC20(
-        uint32 moduleId_,
-        uint16 moduleType_,
+        uint256 moduleId_,
+        uint256 moduleType_,
         string memory name_,
         string memory symbol_,
         uint8 decimals_

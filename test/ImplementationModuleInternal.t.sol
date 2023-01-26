@@ -20,18 +20,18 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_SINGLE_ID = 100;
-    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
+    uint256 internal constant _MODULE_SINGLE_ID = 100;
+    uint256 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
+    uint256 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
+    uint256 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V2 = false;
 
-    uint32 internal constant _MODULE_INTERNAL_ID = 101;
-    uint16 internal constant _MODULE_INTERNAL_TYPE = _MODULE_TYPE_INTERNAL;
-    uint16 internal constant _MODULE_INTERNAL_VERSION_V1 = 1;
-    uint16 internal constant _MODULE_INTERNAL_VERSION_V2 = 2;
-    uint16 internal constant _MODULE_INTERNAL_VERSION_V3 = 3;
+    uint256 internal constant _MODULE_INTERNAL_ID = 101;
+    uint256 internal constant _MODULE_INTERNAL_TYPE = _MODULE_TYPE_INTERNAL;
+    uint256 internal constant _MODULE_INTERNAL_VERSION_V1 = 1;
+    uint256 internal constant _MODULE_INTERNAL_VERSION_V2 = 2;
+    uint256 internal constant _MODULE_INTERNAL_VERSION_V3 = 3;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V2 = true;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V3 = false;

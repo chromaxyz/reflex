@@ -23,18 +23,18 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_SINGLE_ID = 100;
-    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
+    uint256 internal constant _MODULE_SINGLE_ID = 100;
+    uint256 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
+    uint256 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
+    uint256 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V2 = false;
 
-    uint32 internal constant _MODULE_MULTI_ID = 101;
-    uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_PROXY;
-    uint16 internal constant _MODULE_MULTI_VERSION_V1 = 1;
-    uint16 internal constant _MODULE_MULTI_VERSION_V2 = 2;
-    uint16 internal constant _MODULE_MULTI_VERSION_V3 = 3;
+    uint256 internal constant _MODULE_MULTI_ID = 101;
+    uint256 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_PROXY;
+    uint256 internal constant _MODULE_MULTI_VERSION_V1 = 1;
+    uint256 internal constant _MODULE_MULTI_VERSION_V2 = 2;
+    uint256 internal constant _MODULE_MULTI_VERSION_V3 = 3;
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V2 = true;
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V3 = false;

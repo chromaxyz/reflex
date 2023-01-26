@@ -46,7 +46,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
         new MockReflexDispatcher(address(this), address(_users.Alice));
     }
 
-    function testFuzzRevertInvalidInstallerModuleId(uint32 moduleId_) external {
+    function testFuzzRevertInvalidInstallerModuleId(uint256 moduleId_) external {
         vm.assume(moduleId_ != 0);
         vm.assume(moduleId_ != _MODULE_ID_INSTALLER);
 
@@ -94,7 +94,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
         //     MockReflexInstaller(installer).moduleVersion()
         // );
         assertEq(entries[2].topics.length, 4);
-        assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint32,address,uint32)"));
+        assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint256,address,uint256)"));
         assertEq(entries[2].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
         assertEq(entries[2].topics[2], bytes32(uint256(uint160(address(installer)))));
         assertEq(entries[2].topics[3], bytes32(uint256(_MODULE_VERSION_INSTALLER)));

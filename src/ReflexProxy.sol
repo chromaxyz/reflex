@@ -15,9 +15,9 @@ contract ReflexProxy is IReflexProxy {
     // =========
 
     /**
-     * @dev `bytes4(keccak256("moduleIdToModuleImplementation(uint32)"))`.
+     * @dev `bytes4(keccak256("moduleIdToModuleImplementation(uint256)"))`.
      */
-    bytes4 private constant _MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR = 0x75ea225d;
+    bytes4 private constant _MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR = 0xb550ebbd;
 
     // ==========
     // Immutables
@@ -26,7 +26,7 @@ contract ReflexProxy is IReflexProxy {
     /**
      * @dev Same as the implementations' module id.
      */
-    uint32 internal immutable _moduleId;
+    uint256 internal immutable _moduleId;
 
     /**
      * @dev Deployer address.
@@ -40,7 +40,7 @@ contract ReflexProxy is IReflexProxy {
     /**
      * @param moduleId_ Same as the implementations' module id.
      */
-    constructor(uint32 moduleId_) {
+    constructor(uint256 moduleId_) {
         if (moduleId_ == 0) revert InvalidModuleId();
 
         _moduleId = moduleId_;

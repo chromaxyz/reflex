@@ -13,8 +13,8 @@ import {ReflexState} from "../../../src/ReflexState.sol";
  * | _reentrancyLock         | uint256                                               | 0    | 0      | 32    |
  * | _owner                  | address                                               | 1    | 0      | 20    |
  * | _pendingOwner           | address                                               | 2    | 0      | 20    |
- * | _modules                | mapping(uint32 => address)                            | 3    | 0      | 32    |
- * | _proxies                | mapping(uint32 => address)                            | 4    | 0      | 32    |
+ * | _modules                | mapping(uint256 => address)                            | 3    | 0      | 32    |
+ * | _proxies                | mapping(uint256 => address)                            | 4    | 0      | 32    |
  * | _relations              | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    |
  * | __gap                   | uint256[44]                                           | 6    | 0      | 1408  |
  * | _implementationState0   | bytes32                                               | 50   | 0      | 32    |

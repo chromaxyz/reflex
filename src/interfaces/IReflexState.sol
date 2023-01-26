@@ -18,12 +18,7 @@ interface TReflexState {
          * @notice Module id.
          * @dev 0 is untrusted.
          */
-        uint32 moduleId;
-        /**
-         * @notice Module type.
-         * @dev 0 is untrusted.
-         */
-        uint16 moduleType;
+        uint96 moduleId;
         /**
          * @notice Module implementation.
          * @dev Only non-0 for single-proxy modules.

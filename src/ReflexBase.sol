@@ -50,7 +50,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @param moduleId_ Module id.
      * @param moduleType_ Module type.
      */
-    function _createProxy(uint32 moduleId_, uint16 moduleType_) internal virtual returns (address) {
+    function _createProxy(uint256 moduleId_, uint256 moduleType_) internal virtual returns (address) {
         if (moduleId_ == 0) revert InvalidModuleId();
         if (moduleType_ == 0 || moduleType_ > _MODULE_TYPE_INTERNAL) revert InvalidModuleType();
         if (moduleType_ == _MODULE_TYPE_INTERNAL) revert InternalModule();
@@ -61,8 +61,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
 
         if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) _proxies[moduleId_] = proxyAddress;
 
-        _relations[proxyAddress].moduleId = moduleId_;
-        _relations[proxyAddress].moduleType = moduleType_;
+        _relations[proxyAddress].moduleId = uint96(moduleId_);
         _relations[proxyAddress].moduleImplementation = address(0);
 
         emit ProxyCreated(proxyAddress);
@@ -75,7 +74,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @param moduleId_ Module id.
      * @param input_ Input data.
      */
-    function _callInternalModule(uint32 moduleId_, bytes memory input_) internal returns (bytes memory) {
+    function _callInternalModule(uint256 moduleId_, bytes memory input_) internal returns (bytes memory) {
         (bool success, bytes memory result) = _modules[moduleId_].delegatecall(input_);
 
         if (!success) _revertBytes(result);
