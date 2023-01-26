@@ -17,6 +17,7 @@ import {TestHarness} from "./TestHarness.sol";
 // Mocks
 import {MockImplementationDispatcher} from "../mocks/MockImplementationDispatcher.sol";
 import {MockImplementationInstaller} from "../mocks/MockImplementationInstaller.sol";
+import {MockImplementationState} from "../mocks/MockImplementationState.sol";
 import {MockReflexModule, ICustomError} from "../mocks/MockReflexModule.sol";
 
 /**
@@ -44,8 +45,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
                 moduleId: _MODULE_ID_INSTALLER,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
                 moduleVersion: 1,
-                moduleUpgradeable: true,
-                moduleRemoveable: false
+                moduleUpgradeable: true
             })
         );
         dispatcher = new MockImplementationDispatcher(address(this), address(installer));
@@ -61,8 +61,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         uint32 moduleId_,
         uint16 moduleType_,
         uint32 moduleVersion_,
-        bool moduleUpgradeable_,
-        bool moduleRemoveable_
+        bool moduleUpgradeable_
     ) internal {
         IReflexModule.ModuleSettings memory moduleSettings = module_.moduleSettings();
 
@@ -74,8 +73,6 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         assertEq(module_.moduleVersion(), moduleVersion_);
         assertEq(moduleSettings.moduleUpgradeable, moduleUpgradeable_);
         assertEq(module_.moduleUpgradeable(), moduleUpgradeable_);
-        assertEq(moduleSettings.moduleRemoveable, moduleRemoveable_);
-        assertEq(module_.moduleRemoveable(), moduleRemoveable_);
     }
 
     function _testProxySentinelFallback(MockReflexModule proxy_) internal {

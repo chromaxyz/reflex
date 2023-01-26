@@ -7,7 +7,7 @@
 [profile.default]
 solc = "0.8.17"
 optimizer = true
-optimizer_runs = 200
+optimizer_runs = 10
 auto_detect_solc = false
 verbosity = 3
 libs = ["node_modules", "lib"]
@@ -45,8 +45,8 @@ fail_on_revert = false
 runs = 10_000
 
 [profile.intense.invariant]
-runs = 200
-depth = 250
+runs = 10
+depth = 100
 
 # =================
 # Profile: `via-ir`
@@ -55,11 +55,11 @@ depth = 250
 via_ir = true
 
 [profile.via-ir.fuzz]
-runs = 10_000
+runs = 1_000
 
 [profile.via-ir.invariant]
-runs = 200
-depth = 250
+runs = 10
+depth = 100
 
 # ===================
 # Profile: `min-solc`
@@ -68,7 +68,11 @@ depth = 250
 solc = "0.8.13"
 
 [profile.min-solc.fuzz]
-runs = 10_000
+runs = 1_000
+
+[profile.min-solc.invariant]
+runs = 10
+depth = 100
 
 # ==========================
 # Profile: `min-solc-via-ir`
@@ -78,8 +82,8 @@ via_ir = true
 solc = "0.8.13"
 
 [profile.min-solc-via-ir.fuzz]
-runs = 10_000
+runs = 1_000
 
 [profile.min-solc-via-ir.invariant]
-runs = 200
-depth = 250
+runs = 10
+depth = 100

@@ -2,13 +2,13 @@
 pragma solidity ^0.8.13;
 
 // Mocks
-import {MockImplementationState} from "./MockImplementationState.sol";
+import {ImplementationState} from "./abstracts/ImplementationState.sol";
 import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
- * @title Mock Implementation Module
+ * @title Mock ImplementationDeprecated Module
  */
-contract MockImplementationModule is MockReflexModule, MockImplementationState {
+contract MockImplementationDeprecatedModule is MockReflexModule, ImplementationState {
     // ===========
     // Constructor
     // ===========

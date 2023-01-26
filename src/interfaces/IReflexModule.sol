@@ -46,10 +46,6 @@ interface IReflexModule is IReflexBase, TReflexModule {
          * @notice Whether the module is upgradeable.
          */
         bool moduleUpgradeable;
-        /**
-         * @notice Whether the module is removeable.
-         */
-        bool moduleRemoveable;
     }
 
     // =======
@@ -57,8 +53,6 @@ interface IReflexModule is IReflexBase, TReflexModule {
     // =======
 
     function moduleId() external view returns (uint32);
-
-    function moduleRemoveable() external view returns (bool);
 
     function moduleSettings() external view returns (ModuleSettings memory);
 
