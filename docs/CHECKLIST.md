@@ -51,6 +51,7 @@ Ask oneself:
 - Is my storage layout still compatible?
 
 It is best practice to increment by `1` when updating the version for a new module.
+The new module version must **ALWAYS** be greater than the current module version.
 
 In order to upgrade one or more modules call `upgradeModules()` on the `Installer`'s proxy.
 
@@ -62,7 +63,8 @@ Prior to deprecating a module one has to deploy the deprecated module implementa
 Make sure that the module inherits the latest version of the application `State`.
 Make sure to not introduce any new storage variables inside of the module itself.
 
-It is best practice to make deprecated modules non-upgradeable.
+It is best practice to make deprecated modules **NON-UPGRADEABLE**.
+The new module version must **ALWAYS** be greater than the current module version.
 
 Ask oneself:
 
