@@ -34,8 +34,6 @@ interface TReflexInstaller is TReflexModule {
         uint32 indexed moduleVersion_
     );
 
-    event ModuleRemoved(uint32 indexed moduleId_, address indexed moduleImplementation_, uint32 indexed moduleVersion_);
-
     event OwnershipTransferStarted(address indexed previousOwner_, address indexed newOwner_);
 
     event OwnershipTransferred(address indexed previousOwner_, address indexed newOwner_);

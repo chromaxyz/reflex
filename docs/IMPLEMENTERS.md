@@ -262,17 +262,6 @@ An example of a deployment flow can be found in [`script/Deploy.s.sol`](../scrip
 
 Prior to adding, upgrading or removing a module make sure to go through the [CHECKLIST](/docs/CHECKLIST.md)
 
-### Removing modules
-
-Whilst possible it is not encouraged to remove modules as there could be potential side-effects.
-
-Ask oneself:
-
-- Is it strictly necessary to remove this module?
-- Are there possible side effects?
-
-In order to remove one or more modules call `removeModules()` on the `Installer`s proxy.
-
 ## Numerical limitations
 
 - Module id:

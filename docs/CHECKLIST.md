@@ -16,7 +16,6 @@ Ask oneself:
 - Which module type am I going to use?
 - Which module version am I going to use?
 - Should the module be able to be upgraded?
-- Should the module be able to be removed?
 - Is my storage compatible?
 
 It is best practice to use `1` as your first module version for a new module.
@@ -34,18 +33,6 @@ Ask oneself:
 - Am I adding a new module or upgrading a module?
 - Which next module version am I going to use?
 - Should the module be able to be upgraded?
-- Should the module be able to be removed?
 - Is my storage compatible?
 
 In order to upgrade one or more modules call `upgradeModules()` on the `Installer`'s proxy.
-
-### Removing modules
-
-Whilst possible it is not encouraged to remove modules as there could be potential side-effects.
-
-Ask oneself:
-
-- Is it strictly necessary to remove this module?
-- Are there possible side effects?
-
-In order to remove one or more modules call `removeModules()` on the `Installer`s proxy.

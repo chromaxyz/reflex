@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Vendor
-import {console2} from "forge-std/console2.sol";
-
 // Interfaces
 import {IReflexDispatcher} from "./interfaces/IReflexDispatcher.sol";
 import {IReflexInstaller} from "./interfaces/IReflexInstaller.sol";
@@ -89,7 +86,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
 
         // [dispatch() selector (4 bytes)][calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
-            // Remove `dispatch` selector.
+            // Remove `dispatch()` selector.
             let payloadSize := sub(calldatasize(), 0x04)
             // Copy msg.data into memory, starting at position `4`.
             calldatacopy(0x00, 0x04, payloadSize)

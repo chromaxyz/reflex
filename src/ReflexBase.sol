@@ -52,7 +52,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      */
     function _createProxy(uint32 moduleId_, uint16 moduleType_) internal virtual returns (address) {
         if (moduleId_ == 0) revert InvalidModuleId();
-        if (moduleType_ == 0 || moduleType_ > _MODULE_TYPE_INTERNAL) revert InvalidModuleType(); // TODO: remove
+        if (moduleType_ == 0 || moduleType_ > _MODULE_TYPE_INTERNAL) revert InvalidModuleType();
         if (moduleType_ == _MODULE_TYPE_INTERNAL) revert InternalModule();
 
         if (_proxies[moduleId_] != address(0)) return _proxies[moduleId_];

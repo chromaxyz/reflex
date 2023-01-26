@@ -29,24 +29,24 @@ Impact: Low
 Confidence: Medium
 
 - [ ] ID-2
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L121-L155) has external calls inside a loop: [moduleSettings*.moduleVersion <= IReflexModule(\_modules[moduleSettings*.moduleId]).moduleVersion()](../src/ReflexInstaller.sol#L139)
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L118-L152) has external calls inside a loop: [moduleSettings*.moduleVersion <= IReflexModule(\_modules[moduleSettings*.moduleId]).moduleVersion()](../src/ReflexInstaller.sol#L136)
 
-../src/ReflexInstaller.sol#L121-L155
+../src/ReflexInstaller.sol#L118-L152
 
 - [ ] ID-3
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L121-L155) has external calls inside a loop: [! IReflexModule(_modules[moduleSettings_.moduleId]).moduleUpgradeable()](../src/ReflexInstaller.sol#L135)
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L118-L152) has external calls inside a loop: [! IReflexModule(_modules[moduleSettings_.moduleId]).moduleUpgradeable()](../src/ReflexInstaller.sol#L132)
 
-../src/ReflexInstaller.sol#L121-L155
+../src/ReflexInstaller.sol#L118-L152
 
 - [ ] ID-4
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L121-L155) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L129)
+      [ReflexInstaller.addModules(address[])](../src/ReflexInstaller.sol#L84-L107) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L90)
 
-../src/ReflexInstaller.sol#L121-L155
+../src/ReflexInstaller.sol#L84-L107
 
 - [ ] ID-5
-      [ReflexInstaller.addModules(address[])](../src/ReflexInstaller.sol#L87-L110) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L93)
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L118-L152) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L126)
 
-../src/ReflexInstaller.sol#L87-L110
+../src/ReflexInstaller.sol#L118-L152
 
 ## assembly
 
@@ -54,9 +54,9 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-6
-      [ReflexDispatcher.dispatch()](../src/ReflexDispatcher.sol#L74-L122) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L91-L121)
+      [ReflexDispatcher.dispatch()](../src/ReflexDispatcher.sol#L71-L119) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L88-L118)
 
-../src/ReflexDispatcher.sol#L74-L122
+../src/ReflexDispatcher.sol#L71-L119
 
 - [ ] ID-7
       [ReflexBase.\_unpackProxyAddress()](../src/ReflexBase.sol#L101-L106) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L103-L105)
