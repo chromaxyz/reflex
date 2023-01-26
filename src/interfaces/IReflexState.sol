@@ -11,7 +11,7 @@ interface TReflexState {
 
     /**
      * @notice Trust relationship between `Proxy` and `Dispatcher`.
-     * @dev Packed slot: 4 + 2 + 20 = 26 bytes out of 32 bytes.
+     * @dev Packed slot: 4 + 20 = 24 bytes out of 32 bytes.
      */
     struct TrustRelation {
         /**
@@ -19,11 +19,6 @@ interface TReflexState {
          * @dev 0 is untrusted.
          */
         uint32 moduleId;
-        /**
-         * @notice Module type.
-         * @dev 0 is untrusted.
-         */
-        uint16 moduleType;
         /**
          * @notice Module implementation.
          * @dev Only non-0 for single-proxy modules.
