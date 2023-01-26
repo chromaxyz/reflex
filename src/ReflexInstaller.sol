@@ -177,11 +177,13 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
 
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
                 address proxyAddress = _proxies[moduleSettings_.moduleId];
-                delete _relations[proxyAddress];
+                _relations[proxyAddress].moduleId = 0;
+                _relations[proxyAddress].moduleType = 0;
+                _relations[proxyAddress].moduleImplementation = address(0);
             }
 
-            delete _proxies[moduleSettings_.moduleId];
-            delete _modules[moduleSettings_.moduleId];
+            _proxies[moduleSettings_.moduleId] = address(0);
+            _modules[moduleSettings_.moduleId] = address(0);
 
             emit ModuleRemoved(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
 

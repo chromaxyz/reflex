@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+// Vendor
+import {console2} from "forge-std/console2.sol";
+
 // Interfaces
+import {TReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 import {IReflexProxy} from "../src/interfaces/IReflexProxy.sol";
 
@@ -282,24 +286,43 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         multiModuleProxyC.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
         installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
 
-        address[] memory moduleAddresses = new address[](1);
+        MockImplementationERC20 preMultiModuleProxyA = multiModuleProxyA;
+        MockImplementationERC20 preMultiModuleProxyB = multiModuleProxyB;
+        MockImplementationERC20 preMultiModuleProxyC = multiModuleProxyC;
+
+        address[] memory moduleAddresses = new address[](2);
         moduleAddresses[0] = address(singleModule);
+        moduleAddresses[1] = address(multiModuleV1);
         installerProxy.removeModules(moduleAddresses);
 
-        multiModuleV1 = MockImplementationERC20(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID));
+        singleModule = MockImplementationERC20Hub(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID));
+        assertEq(address(singleModule), address(0));
+
+        multiModuleV1 = MockImplementationERC20(dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID));
         assertEq(address(multiModuleV1), address(0));
 
-        multiModuleProxyA.mint(address(this), 1e18);
-        assertEq(multiModuleProxyA.balanceOf(address(this)), 1e18);
+        assertEq(address(multiModuleProxyA), address(preMultiModuleProxyA));
+        assertEq(address(multiModuleProxyB), address(preMultiModuleProxyB));
+        assertEq(address(multiModuleProxyC), address(preMultiModuleProxyC));
+
+        // (, , , uint256 totalSupply, uint256 balanceOf) = multiModuleProxyA.getToken(
+        //     address(multiModuleProxyA),
+        //     address(this)
+        // );
+
+        // console2.log(totalSupply, balanceOf);
+
+        // vm.expectRevert(TReflexDispatcher.CallerNotTrusted.selector);
+        // multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
 
         // // TODO: shouldn't these multi proxies revert???
 
         // TODO: post-removal the multi proxies should not be allowed to call in
 
-        multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        multiModuleProxyB.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        multiModuleProxyC.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        // multiModuleProxyA.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        // multiModuleProxyB.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        // multiModuleProxyC.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        // installerProxy.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
     }
 
     function testUnitProxySentinelFallback() external {

@@ -118,12 +118,12 @@ contract MockImplementationState is ImplementationState, StdAssertions, CommonBa
          * | _tokens                 | mapping(address => struct ImplementationState.Token) | 55   | 0      | 32    |
          */
         vm.record();
-        getToken(tokenA_);
+        getToken(tokenA_, address(this));
         (reads, ) = vm.accesses(address(this));
         assertEq((reads[0]), keccak256(abi.encode(tokenA_, uint256(55))));
 
         vm.record();
-        getToken(tokenB_);
+        getToken(tokenB_, address(this));
         (reads, ) = vm.accesses(address(this));
         assertEq((reads[0]), keccak256(abi.encode(tokenB_, uint256(55))));
     }
@@ -177,11 +177,18 @@ contract MockImplementationState is ImplementationState, StdAssertions, CommonBa
     }
 
     function getToken(
-        address token_
-    ) public view returns (string memory name_, string memory symbol_, uint8 decimals_) {
+        address token_,
+        address user_
+    )
+        public
+        view
+        returns (string memory name_, string memory symbol_, uint8 decimals_, uint256 totalSupply_, uint256 balanceOf_)
+    {
         name_ = _tokens[token_].name;
         symbol_ = _tokens[token_].symbol;
         decimals_ = _tokens[token_].decimals;
+        totalSupply_ = _tokens[token_].totalSupply;
+        balanceOf_ = _tokens[token_].balanceOf[user_];
     }
 
     function setToken(address token_, string memory name_, string memory symbol_, uint8 decimals_) public {

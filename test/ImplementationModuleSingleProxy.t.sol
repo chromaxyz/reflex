@@ -158,7 +158,6 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         installerProxy.removeModules(moduleAddresses);
 
         singleModuleV1 = MockImplementationModule(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID));
-
         assertEq(address(singleModuleV1), address(0));
 
         vm.expectRevert(TReflexDispatcher.CallerNotTrusted.selector);
