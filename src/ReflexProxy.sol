@@ -195,9 +195,9 @@ contract ReflexProxy is IReflexProxy {
         }
     }
 
-    // ==================
-    // Fallback functions
-    // ==================
+    // ================
+    // Fallback methods
+    // ================
 
     /**
      * @dev Will run if no other function in the contract matches the call data.

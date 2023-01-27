@@ -43,6 +43,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * Requirements:
      *
      * - The caller must be the current owner.
+     * - Cannot be re-entered.
      */
     function transferOwnership(address newOwner_) external virtual override onlyOwner nonReentrant {
         if (newOwner_ == address(0)) revert ZeroAddress();
@@ -58,6 +59,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * Requirements:
      *
      * - The caller must be the pending owner.
+     * - Cannot be re-entered.
      */
     function acceptOwnership() external virtual override nonReentrant {
         address newOwner = _unpackMessageSender();
@@ -121,8 +123,6 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
         for (uint256 i = 0; i < moduleAddressLength; ) {
             address moduleAddress = moduleAddresses_[i];
 
-            // Check against existing module
-
             IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
 
             // Verify that the module currently exists.
@@ -135,6 +135,10 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             // Verify that the next module version is greater than the current module version.
             if (moduleSettings_.moduleVersion <= IReflexModule(_modules[moduleSettings_.moduleId]).moduleVersion())
                 revert ModuleInvalidVersion(moduleSettings_.moduleId);
+
+            // Verify that the next module type is the same as the current module type.
+            if (moduleSettings_.moduleType != IReflexModule(_modules[moduleSettings_.moduleId]).moduleType())
+                revert ModuleInvalidType(moduleSettings_.moduleId);
 
             _modules[moduleSettings_.moduleId] = moduleAddress;
 

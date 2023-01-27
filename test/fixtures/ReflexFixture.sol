@@ -27,7 +27,9 @@ abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness
 
     MockReflexDispatcher public dispatcher;
 
-    MockReflexInstaller public installer;
+    MockReflexInstaller public installerModuleV1;
+    MockReflexInstaller public installerModuleV2;
+
     MockReflexInstaller public installerProxy;
 
     // =====
@@ -37,15 +39,25 @@ abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness
     function setUp() public virtual override {
         super.setUp();
 
-        installer = new MockReflexInstaller(
+        installerModuleV1 = new MockReflexInstaller(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INSTALLER,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
-                moduleVersion: _MODULE_VERSION_INSTALLER,
-                moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER
+                moduleVersion: _MODULE_VERSION_INSTALLER_V1,
+                moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER_V1
             })
         );
-        dispatcher = new MockReflexDispatcher(address(this), address(installer));
+
+        installerModuleV2 = new MockReflexInstaller(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_ID_INSTALLER,
+                moduleType: _MODULE_TYPE_SINGLE_PROXY,
+                moduleVersion: _MODULE_VERSION_INSTALLER_V2,
+                moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER_V2
+            })
+        );
+
+        dispatcher = new MockReflexDispatcher(address(this), address(installerModuleV1));
         installerProxy = MockReflexInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
     }
 
