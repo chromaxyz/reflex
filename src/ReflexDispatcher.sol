@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 // Interfaces
 import {IReflexDispatcher} from "./interfaces/IReflexDispatcher.sol";
 import {IReflexInstaller} from "./interfaces/IReflexInstaller.sol";
+import {IReflexModule} from "./interfaces/IReflexModule.sol";
 
 // Sources
 import {ReflexBase} from "./ReflexBase.sol";
@@ -23,17 +24,26 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
      * @param installerModule_ Installer module address.
      */
     constructor(address owner_, address installerModule_) {
+        // Initialize the global reentrancy lock.
         _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
 
         if (owner_ == address(0)) revert InvalidOwner();
         if (installerModule_ == address(0)) revert InvalidModuleAddress();
-        if (IReflexInstaller(installerModule_).moduleId() != _MODULE_ID_INSTALLER) revert InvalidModuleId();
 
+        // Verify that the installer module configuration is as expected.
+        IReflexModule.ModuleSettings memory installerModuleSettings = IReflexInstaller(installerModule_)
+            .moduleSettings();
+
+        if (installerModuleSettings.moduleId != _MODULE_ID_INSTALLER) revert InvalidModuleId();
+        if (installerModuleSettings.moduleType != _MODULE_TYPE_SINGLE_PROXY) revert InvalidModuleType();
+
+        // Initialize the owner.
         _owner = owner_;
 
-        // Register `Installer` module.
+        // Register the built-in `Installer` module.
         _modules[_MODULE_ID_INSTALLER] = installerModule_;
 
+        // Create and register the `Installer` proxy.
         address installerProxy = address(new ReflexProxy(_MODULE_ID_INSTALLER));
         _proxies[_MODULE_ID_INSTALLER] = installerProxy;
         _relations[installerProxy].moduleId = _MODULE_ID_INSTALLER;
