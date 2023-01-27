@@ -7,6 +7,7 @@ import {IReflexInstaller} from "./interfaces/IReflexInstaller.sol";
 
 // Sources
 import {ReflexBase} from "./ReflexBase.sol";
+import {ReflexProxy} from "./ReflexProxy.sol";
 
 /**
  * @title Reflex Dispatcher
@@ -32,9 +33,13 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
 
         // Register `Installer` module.
         _modules[_MODULE_ID_INSTALLER] = installerModule_;
-        address installerProxy = _createProxy(_MODULE_ID_INSTALLER, _MODULE_TYPE_SINGLE_PROXY);
+
+        address installerProxy = address(new ReflexProxy(_MODULE_ID_INSTALLER));
+        _proxies[_MODULE_ID_INSTALLER] = installerProxy;
+        _relations[installerProxy].moduleId = _MODULE_ID_INSTALLER;
         _relations[installerProxy].moduleImplementation = installerModule_;
 
+        emit ProxyCreated(installerProxy);
         emit OwnershipTransferred(address(0), owner_);
         emit ModuleAdded(_MODULE_ID_INSTALLER, installerModule_, IReflexInstaller(installerModule_).moduleVersion());
     }
