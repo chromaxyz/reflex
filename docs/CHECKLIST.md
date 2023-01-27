@@ -52,6 +52,9 @@ Make sure to not introduce any new storage variables inside of the module itself
 Ask oneself:
 
 - [ ] Am I adding a new module or upgrading a module?
+- [ ] What is the module id of the current implementation?
+- [ ] What is the module type of the current implementation?
+- [ ] What is the module version of the current implementation?
 
 The new module version must **ALWAYS** be greater than the current module version.
 It is best practice to increment by `1` when updating the version for a new module.

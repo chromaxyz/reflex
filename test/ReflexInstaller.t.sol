@@ -411,6 +411,22 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(singleModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
+    function testUnitRevertUpgradeInvalidTypeSingleProxy() external {
+        _addModule(singleModuleV1, _VALID);
+        _upgradeModule(singleModuleV2, _VALID);
+
+        MockReflexModule singleModuleInvalidType = new MockReflexModule(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_SINGLE_ID,
+                moduleType: _MODULE_MULTI_TYPE,
+                moduleVersion: _MODULE_SINGLE_VERSION_V3,
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V3
+            })
+        );
+
+        _upgradeModule(singleModuleInvalidType, TReflexInstaller.ModuleInvalidType.selector);
+    }
+
     function testUnitRevertUpgradeModulesNonUpgradeableSingleProxy() external {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
@@ -471,6 +487,22 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(multiModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
+    function testUnitRevertUpgradeInvalidTypeMultiProxy() external {
+        _addModule(multiModuleV1, _VALID);
+        _upgradeModule(multiModuleV2, _VALID);
+
+        MockReflexModule multiModuleInvalidType = new MockReflexModule(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_MULTI_ID,
+                moduleType: _MODULE_INTERNAL_TYPE,
+                moduleVersion: _MODULE_MULTI_VERSION_V3,
+                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V3
+            })
+        );
+
+        _upgradeModule(multiModuleInvalidType, TReflexInstaller.ModuleInvalidType.selector);
+    }
+
     function testUnitRevertUpgradeModulesNonUpgradeableMultiProxy() external {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
@@ -525,6 +557,22 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(internalModuleV2, _VALID);
 
         _upgradeModule(internalModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
+    }
+
+    function testUnitRevertUpgradeInvalidTypeInternal() external {
+        _addModule(internalModuleV1, _VALID);
+        _upgradeModule(internalModuleV2, _VALID);
+
+        MockReflexModule internalModuleInvalidType = new MockReflexModule(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_INTERNAL_ID,
+                moduleType: _MODULE_SINGLE_TYPE,
+                moduleVersion: _MODULE_INTERNAL_VERSION_V3,
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V3
+            })
+        );
+
+        _upgradeModule(internalModuleInvalidType, TReflexInstaller.ModuleInvalidType.selector);
     }
 
     function testUnitRevertUpgradeModulesNonUpgradeableInternal() external {
