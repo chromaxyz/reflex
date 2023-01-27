@@ -53,7 +53,13 @@ Ask oneself:
 
 - [ ] Am I adding a new module or upgrading a module?
 - [ ] What is the module id of the current implementation?
+
+To upgrade, the new module id must **ALWAYS** be the same as the current module id.
+
 - [ ] What is the module type of the current implementation?
+
+The new module type must **ALWAYS** be the same as the current module type.
+
 - [ ] What is the module version of the current implementation?
 
 The new module version must **ALWAYS** be greater than the current module version.
