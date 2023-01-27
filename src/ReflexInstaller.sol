@@ -43,6 +43,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * Requirements:
      *
      * - The caller must be the current owner.
+     * - Cannot be re-entered.
      */
     function transferOwnership(address newOwner_) external virtual override onlyOwner nonReentrant {
         if (newOwner_ == address(0)) revert ZeroAddress();
@@ -58,6 +59,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * Requirements:
      *
      * - The caller must be the pending owner.
+     * - Cannot be re-entered.
      */
     function acceptOwnership() external virtual override nonReentrant {
         address newOwner = _unpackMessageSender();
