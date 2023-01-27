@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+// Sources
+import {ReflexModule} from "../../src/ReflexModule.sol";
+
 // Mocks
 import {ImplementationState} from "./abstracts/ImplementationState.sol";
-import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
- * @title Mock Implementation Gas Module
+ * @title Mock Reflex Module
  */
-contract MockImplementationGasModule is MockReflexModule, ImplementationState {
+contract MockReflexGasModule is ReflexModule {
     // ===========
     // Constructor
     // ===========
@@ -16,7 +18,21 @@ contract MockImplementationGasModule is MockReflexModule, ImplementationState {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(ModuleSettings memory moduleSettings_) MockReflexModule(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) ReflexModule(moduleSettings_) {}
+}
+
+/**
+ * @title Mock Implementation Gas Module
+ */
+contract MockImplementationGasModule is MockReflexGasModule, ImplementationState {
+    // ===========
+    // Constructor
+    // ===========
+
+    /**
+     * @param moduleSettings_ Module settings.
+     */
+    constructor(ModuleSettings memory moduleSettings_) MockReflexGasModule(moduleSettings_) {}
 
     // ==========
     // Test stubs
