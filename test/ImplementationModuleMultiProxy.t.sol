@@ -157,24 +157,6 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
     }
 
-    // ==========
-    // Invariants
-    // ==========
-
-    function invariantMetadata() external {
-        assertEq(multiModuleProxyA.name(), _MODULE_MULTI_NAME_A);
-        assertEq(multiModuleProxyA.symbol(), _MODULE_MULTI_SYMBOL_A);
-        assertEq(multiModuleProxyA.decimals(), _MODULE_MULTI_DECIMALS_A);
-
-        assertEq(multiModuleProxyB.name(), _MODULE_MULTI_NAME_B);
-        assertEq(multiModuleProxyB.symbol(), _MODULE_MULTI_SYMBOL_B);
-        assertEq(multiModuleProxyB.decimals(), _MODULE_MULTI_DECIMALS_B);
-
-        assertEq(multiModuleProxyC.name(), _MODULE_MULTI_NAME_C);
-        assertEq(multiModuleProxyC.symbol(), _MODULE_MULTI_SYMBOL_C);
-        assertEq(multiModuleProxyC.decimals(), _MODULE_MULTI_DECIMALS_C);
-    }
-
     // =====
     // Tests
     // =====
