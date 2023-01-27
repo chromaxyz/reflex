@@ -57,7 +57,7 @@ contract ImplementationGasTest is ImplementationFixture {
     // Tests
     // =====
 
-    // 2871 + 5230 = 8101
+    // 8244 - 143 = 8101 gas
 
     //   [13405] ImplementationGasTest::testGasProxyGetEmpty()
     //     ├─ [8244] ReflexProxy::getEmpty() [staticcall]
@@ -72,7 +72,7 @@ contract ImplementationGasTest is ImplementationFixture {
         singleModuleProxy.getEmpty();
     }
 
-    // 2874 + 5233 = 8107
+    // 30441 − 22334 = 8107 gas
 
     //   [35609] ImplementationGasTest::testGasProxySetValue()
     //     ├─ [30441] ReflexProxy::setImplementationState0(0x666f6f0000000000000000000000000000000000000000000000000000000000)
@@ -87,7 +87,7 @@ contract ImplementationGasTest is ImplementationFixture {
         singleModuleProxy.setImplementationState0("foo");
     }
 
-    // 2874 + 5233 = 8107
+    // 10400 - 2293 = 8107 gas
 
     //   [15543] ImplementationGasTest::testGasProxyGetValue()
     //     ├─ [10400] ReflexProxy::getImplementationState0() [staticcall]
