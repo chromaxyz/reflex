@@ -289,6 +289,7 @@ Prior to adding, upgrading or deprecating a module make sure to go through the [
 - Storage in the `Dispatcher` is append-only extendable but implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
 - The first `50` storage slots are reserved allowing us to add new features over time.
 - It is possible to potentially cause function selector clashes though the surface area is very small and documented.
+- Native ETH is not supported, instead users are required to wrap their ETH into WETH. This is to prevent an entire class of possible re-entrancy bugs.
 - Implementers **MUST NOT** implement an `implementation()` or `sentinel()` method in `Modules` as this causes a function selector clash in the `Proxy`.
 - Implementers **MUST NOT** implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
 - The registration of `Modules` **MUST BE** permissioned, malicious `Modules` can impact the behaviour of the entire application.
