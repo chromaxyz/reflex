@@ -76,9 +76,9 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         return _proxies[moduleId_];
     }
 
-    // ================
-    // Fallback methods
-    // ================
+    // ==============
+    // Public methods
+    // ==============
 
     /**
      * @notice Dispatch call to module implementation.

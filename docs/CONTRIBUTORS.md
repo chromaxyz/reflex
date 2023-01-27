@@ -18,7 +18,7 @@ When making a pull request, ensure that:
 ## Style guide
 
 - Comments **must** have periods after every sentence.
-- Underscore prefix are reserved for private and internal functions and variables.
+- Underscore prefix are reserved for private and internal methods and variables.
 - Underscore postfix are reserved for function arguments and return arguments.
 - Memory addresses and memory related constants should be in hexadecimal format (e.g. `0x20`).
 - While the linter is set to a maximum line length of 120, please try to keep everything, including comments to 100 characters or below.
