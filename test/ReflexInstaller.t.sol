@@ -9,6 +9,7 @@ import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
 // Mocks
+import {MockReflexInstaller} from "./mocks/MockReflexInstaller.sol";
 import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 
 /**
@@ -360,6 +361,16 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // =========================
     // Single-proxy module tests
     // =========================
+
+    function testUpgradeInstaller() public {
+        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
+        assertTrue(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER) == address(installerProxy));
+
+        _upgradeModule(installerModuleV2, _VALID);
+
+        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV2));
+        assertTrue(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER) == address(installerProxy));
+    }
 
     function testUnitAddModulesSingleProxy() public {
         _addModule(singleModuleV1, _VALID);

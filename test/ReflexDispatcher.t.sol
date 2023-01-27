@@ -33,7 +33,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
 
     function testUnitRevertInvalidOwnerZeroAddress() external {
         vm.expectRevert(InvalidOwner.selector);
-        new MockReflexDispatcher(address(0), address(installer));
+        new MockReflexDispatcher(address(0), address(installerModuleV1));
     }
 
     function testUnitRevertInvalidInstallerZeroAddress() external {
@@ -54,7 +54,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
             IReflexModule.ModuleSettings({
                 moduleId: moduleId_,
                 moduleType: _MODULE_TYPE_SINGLE_PROXY,
-                moduleVersion: _MODULE_VERSION_INSTALLER,
+                moduleVersion: _MODULE_VERSION_INSTALLER_V1,
                 moduleUpgradeable: true
             })
         );
@@ -66,7 +66,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
     function testUnitLogEmittanceUponConstruction() external {
         vm.recordLogs();
 
-        MockReflexDispatcher dispatcher = new MockReflexDispatcher(address(this), address(installer));
+        MockReflexDispatcher dispatcher = new MockReflexDispatcher(address(this), address(installerModuleV1));
 
         address installerProxy = dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER);
 
@@ -75,7 +75,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
         // 3 logs are expected to be emitted.
         assertEq(entries.length, 3);
 
-        // emit ProxyCreated(address(installer))
+        // emit ProxyCreated(address(installerModuleV1))
         assertEq(entries[0].topics.length, 2);
         assertEq(entries[0].topics[0], keccak256("ProxyCreated(address)"));
         assertEq(entries[0].topics[1], bytes32(uint256(uint160(address(installerProxy)))));
@@ -90,20 +90,20 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
 
         // emit ModuleAdded(
         //     _MODULE_ID_INSTALLER,
-        //     address(installer),
+        //     address(installerModuleV1),
         //     MockReflexInstaller(installer).moduleVersion()
         // );
         assertEq(entries[2].topics.length, 4);
         assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint32,address,uint32)"));
         assertEq(entries[2].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
-        assertEq(entries[2].topics[2], bytes32(uint256(uint160(address(installer)))));
-        assertEq(entries[2].topics[3], bytes32(uint256(_MODULE_VERSION_INSTALLER)));
+        assertEq(entries[2].topics[2], bytes32(uint256(uint160(address(installerModuleV1)))));
+        assertEq(entries[2].topics[3], bytes32(uint256(_MODULE_VERSION_INSTALLER_V1)));
         assertEq(entries[2].emitter, address(dispatcher));
     }
 
     function testUnitInstallerConfiguration() external {
         assertEq(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER), address(installerProxy));
-        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installer));
+        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
     }
 
     function testUnitGetOwnerThroughInstallerProxy() external {
