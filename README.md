@@ -35,10 +35,11 @@ A Solidity framework for upgradeable modularized applications.
 ## Traits
 
 - Provides a minimal, gas-optimized framework for building and maintaining upgradeable modularized applications.
-- Modularization prevents hitting the Spurious Dragon maximum contract size limitation of ~24.5kb.
+- Modularization prevents hitting the Spurious Dragon maximum contract size limitation of `24576` bytes.
 - Avoids function selector clashing allowing you to run multiple spec-compliant modules side-by-side.
 - Multiple module types: `single-proxy` modules, `multi-proxy` modules and `internal` modules.
 - Uses neutral language, avoids introducing new terminology.
+- Relatively minimal overhead: `~8100` gas.
 - A built-in upgradeable installer allowing you to add, upgrade and deprecate modules throughout the application lifespan.
 
 Noteably this is a so-called framework, a single well-tested audited implementation rather than a specification.

@@ -40,8 +40,6 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     // Storage
     // =======
 
-    // TODO: add test where singleModule is upgraded
-
     MockImplementationModule public singleModuleV1;
     MockImplementationModule public singleModuleV2;
     MockImplementationModule public singleModuleProxy;

@@ -260,7 +260,7 @@ An example of a deployment flow can be found in [`script/Deploy.s.sol`](../scrip
 
 ## Module deployment
 
-Prior to adding, upgrading or removing a module make sure to go through the [CHECKLIST](/docs/CHECKLIST.md)
+Prior to adding, upgrading or deprecating a module make sure to go through the [CHECKLIST](/docs/CHECKLIST.md)
 
 ## Numerical limitations
 
