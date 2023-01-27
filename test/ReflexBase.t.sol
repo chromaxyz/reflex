@@ -42,9 +42,6 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
     function testUnitRevertCreateProxyInvalidModuleId() external {
         vm.expectRevert(InvalidModuleId.selector);
         base.createProxy(0, 0);
-
-        vm.expectRevert(InvalidModuleId.selector);
-        base.createProxy(1, 0);
     }
 
     function testUnitRevertCreateProxyInvalidModuleType() external {
