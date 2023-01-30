@@ -61,7 +61,7 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
 
     /**
      * @notice Internal proxy to module relation mapping.
-     * @dev Proxy address => TrustRelation { moduleId, moduleImplementation }.
+     * @dev Proxy address => TrustRelation { moduleId, moduleType, moduleImplementation }.
      * @dev Slot 5 (32 bytes).
      */
     mapping(address => TrustRelation) internal _relations;

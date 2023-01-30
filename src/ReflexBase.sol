@@ -49,25 +49,29 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @dev Create or return proxy by module id.
      * @param moduleId_ Module id.
      * @param moduleType_ Module type.
+     * @param moduleImplementation_ Module implementation.
      */
-    function _createProxy(uint32 moduleId_, uint16 moduleType_) internal virtual returns (address) {
-        if (moduleId_ == 0) revert InvalidModuleId();
-        if (moduleType_ == 0 || moduleType_ > _MODULE_TYPE_INTERNAL) revert InvalidModuleType();
-        if (moduleType_ == _MODULE_TYPE_INTERNAL) revert InternalModule();
+    function _createProxy(
+        uint32 moduleId_,
+        uint16 moduleType_,
+        address moduleImplementation_
+    ) internal virtual returns (address proxyAddress_) {
+        if (
+            moduleType_ == _MODULE_TYPE_INTERNAL ||
+            (moduleType_ != _MODULE_TYPE_SINGLE_PROXY && moduleType_ != _MODULE_TYPE_MULTI_PROXY)
+        ) revert InvalidModuleType();
 
-        if (_proxies[moduleId_] != address(0)) return _proxies[moduleId_];
+        if (_proxies[moduleId_] != address(0)) proxyAddress_ = _proxies[moduleId_];
 
-        address proxyAddress = address(new ReflexProxy(moduleId_));
+        proxyAddress_ = address(new ReflexProxy(moduleId_));
 
-        if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) _proxies[moduleId_] = proxyAddress;
+        if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) _proxies[moduleId_] = proxyAddress_;
 
-        _relations[proxyAddress].moduleId = moduleId_;
-        _relations[proxyAddress].moduleType = moduleType_;
-        _relations[proxyAddress].moduleImplementation = address(0);
+        _relations[proxyAddress_].moduleId = moduleId_;
+        _relations[proxyAddress_].moduleType = moduleType_;
+        _relations[proxyAddress_].moduleImplementation = moduleImplementation_;
 
-        emit ProxyCreated(proxyAddress);
-
-        return proxyAddress;
+        emit ProxyCreated(proxyAddress_);
     }
 
     /**

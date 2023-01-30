@@ -91,15 +91,15 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
 
             IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
 
+            if (moduleSettings_.moduleId == 0) revert InvalidModuleId();
+            if (moduleSettings_.moduleType == 0 || moduleSettings_.moduleType > _MODULE_TYPE_INTERNAL)
+                revert InvalidModuleType();
             if (_modules[moduleSettings_.moduleId] != address(0)) revert ModuleExistent(moduleSettings_.moduleId);
 
             _modules[moduleSettings_.moduleId] = moduleAddress;
 
-            if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
-                address proxyAddress = _createProxy(moduleSettings_.moduleId, moduleSettings_.moduleType);
-                _relations[proxyAddress].moduleImplementation = moduleAddress;
-                _relations[proxyAddress].moduleType = moduleSettings_.moduleType;
-            }
+            if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY)
+                _createProxy(moduleSettings_.moduleId, moduleSettings_.moduleType, moduleAddress);
 
             emit ModuleAdded(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
 
@@ -143,11 +143,8 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
 
             _modules[moduleSettings_.moduleId] = moduleAddress;
 
-            if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
-                address proxyAddress = _createProxy(moduleSettings_.moduleId, moduleSettings_.moduleType);
-                _relations[proxyAddress].moduleImplementation = moduleAddress;
-                _relations[proxyAddress].moduleType = moduleSettings_.moduleType;
-            }
+            if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY)
+                _relations[_proxies[moduleSettings_.moduleId]].moduleImplementation = moduleAddress;
 
             emit ModuleUpgraded(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
 

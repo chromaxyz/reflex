@@ -29,7 +29,7 @@ contract MockImplementationERC20Hub is MockReflexModule, ImplementationState {
         string memory symbol_,
         uint8 decimals_
     ) external returns (address tokenProxy_) {
-        tokenProxy_ = _createProxy(moduleId_, moduleType_);
+        tokenProxy_ = _createProxy(moduleId_, moduleType_, address(0));
 
         Token storage token = _tokens[tokenProxy_];
 
