@@ -81,6 +81,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @dev Perform delegatecall to trusted internal module.
      * @param moduleId_ Module id.
      * @param input_ Input data.
+     * @return bytes Call result.
      */
     function _callInternalModule(uint32 moduleId_, bytes memory input_) internal returns (bytes memory) {
         (bool success, bytes memory result) = _modules[moduleId_].delegatecall(input_);
