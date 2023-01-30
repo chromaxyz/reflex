@@ -44,16 +44,8 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         _modules[_MODULE_ID_INSTALLER] = installerModule_;
 
         // Create and register the `Installer` proxy.
-        address installerProxy = address(new ReflexProxy(_MODULE_ID_INSTALLER));
-        _proxies[_MODULE_ID_INSTALLER] = installerProxy;
+        _createProxy(installerModuleSettings.moduleId, installerModuleSettings.moduleType, installerModule_);
 
-        _relations[installerProxy] = TrustRelation({
-            moduleId: installerModuleSettings.moduleId,
-            moduleType: installerModuleSettings.moduleType,
-            moduleImplementation: installerModule_
-        });
-
-        emit ProxyCreated(installerProxy);
         emit OwnershipTransferred(address(0), owner_);
         emit ModuleAdded(_MODULE_ID_INSTALLER, installerModule_, IReflexInstaller(installerModule_).moduleVersion());
     }

@@ -50,28 +50,31 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @param moduleId_ Module id.
      * @param moduleType_ Module type.
      * @param moduleImplementation_ Module implementation.
+     * @return address Proxy address.
      */
     function _createProxy(
         uint32 moduleId_,
         uint16 moduleType_,
         address moduleImplementation_
-    ) internal virtual returns (address proxyAddress_) {
+    ) internal virtual returns (address) {
         if (moduleType_ != _MODULE_TYPE_SINGLE_PROXY && moduleType_ != _MODULE_TYPE_MULTI_PROXY)
             revert InvalidModuleType();
 
-        if (_proxies[moduleId_] != address(0)) proxyAddress_ = _proxies[moduleId_];
+        if (_proxies[moduleId_] != address(0)) return _proxies[moduleId_];
 
-        proxyAddress_ = address(new ReflexProxy(moduleId_));
+        address proxyAddress = address(new ReflexProxy(moduleId_));
 
-        if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) _proxies[moduleId_] = proxyAddress_;
+        if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) _proxies[moduleId_] = proxyAddress;
 
-        _relations[proxyAddress_] = TrustRelation({
+        _relations[proxyAddress] = TrustRelation({
             moduleId: moduleId_,
             moduleType: moduleType_,
             moduleImplementation: moduleImplementation_
         });
 
-        emit ProxyCreated(proxyAddress_);
+        emit ProxyCreated(proxyAddress);
+
+        return proxyAddress;
     }
 
     /**
