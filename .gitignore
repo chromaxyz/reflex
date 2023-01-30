@@ -79,6 +79,9 @@ lcov.info
 # Slither
 /reports/slither/
 
+# ABI
+/reports/abi/
+
 # Visualizer
 *.dot
 

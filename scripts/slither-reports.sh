@@ -29,7 +29,7 @@ log $GREEN "Creating Slither reports"
 # Remove previous reports
 rm -rf reports/slither
 
-# Output reports
+# Create directories
 mkdir -p \
   reports/slither/call-graph \
   reports/slither/inheritance-graph

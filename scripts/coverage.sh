@@ -32,14 +32,19 @@ fi
 
 log $GREEN "Creating coverage report"
 
+# Create directory
 mkdir -p reports
 
+# Generate coverage report
 forge coverage --report lcov
 
+# Remove unnecessary traces
 lcov --remove lcov.info 'test/*' 'script/*' --output-file lcov.info --rc lcov_branch_coverage=1
 
+# Generate HTML report from coverage report
 genhtml --branch-coverage -o reports/coverage lcov.info
 
+# Serve HTML report
 http-server reports/coverage -o -c-1 -p 0
 
 log $GREEN "Done"
