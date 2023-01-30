@@ -56,10 +56,8 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         uint16 moduleType_,
         address moduleImplementation_
     ) internal virtual returns (address proxyAddress_) {
-        if (
-            moduleType_ == _MODULE_TYPE_INTERNAL ||
-            (moduleType_ != _MODULE_TYPE_SINGLE_PROXY && moduleType_ != _MODULE_TYPE_MULTI_PROXY)
-        ) revert InvalidModuleType();
+        if (moduleType_ != _MODULE_TYPE_SINGLE_PROXY && moduleType_ != _MODULE_TYPE_MULTI_PROXY)
+            revert InvalidModuleType();
 
         if (_proxies[moduleId_] != address(0)) proxyAddress_ = _proxies[moduleId_];
 
