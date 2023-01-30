@@ -98,6 +98,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
                 address proxyAddress = _createProxy(moduleSettings_.moduleId, moduleSettings_.moduleType);
                 _relations[proxyAddress].moduleImplementation = moduleAddress;
+                _relations[proxyAddress].moduleType = moduleSettings_.moduleType;
             }
 
             emit ModuleAdded(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
@@ -145,6 +146,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY) {
                 address proxyAddress = _createProxy(moduleSettings_.moduleId, moduleSettings_.moduleType);
                 _relations[proxyAddress].moduleImplementation = moduleAddress;
+                _relations[proxyAddress].moduleType = moduleSettings_.moduleType;
             }
 
             emit ModuleUpgraded(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
