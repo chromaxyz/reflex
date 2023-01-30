@@ -305,9 +305,9 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         installerProxy.transferOwnership(address(0));
     }
 
-    // ====================
-    // General module tests
-    // ====================
+    // ============
+    // Module tests
+    // ============
 
     function testUnitRevertAddNonContract() external {
         address[] memory moduleAddresses = new address[](1);
@@ -362,16 +362,6 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // Single-proxy module tests
     // =========================
 
-    function testUpgradeInstaller() public {
-        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
-        assertTrue(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER) == address(installerProxy));
-
-        _upgradeModule(installerModuleV2, _VALID);
-
-        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV2));
-        assertTrue(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER) == address(installerProxy));
-    }
-
     function testUnitAddModulesSingleProxy() public {
         _addModule(singleModuleV1, _VALID);
 
@@ -388,7 +378,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _addModule(singleModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
-    function testUnitUpgradeModulesSingleProxy() external {
+    function testUnitUpgradeModulesSingleProxy() public {
         testUnitAddModulesSingleProxy();
 
         address singleModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID);
@@ -465,7 +455,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _addModule(multiModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
-    function testUnitUpgradeModulesMultiProxy() external {
+    function testUnitUpgradeModulesMultiProxy() public {
         testUnitAddModulesMultiProxy();
 
         address multiModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID);
@@ -537,7 +527,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _addModule(internalModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
-    function testUnitUpgradeModulesInternal() external {
+    function testUnitUpgradeModulesInternal() public {
         testUnitAddModulesInternal();
 
         address internalModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID);
@@ -591,6 +581,26 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             ),
             TReflexInstaller.ModuleNotUpgradeable.selector
         );
+    }
+
+    // ===============
+    // Installer tests
+    // ===============
+
+    function testUpgradeInstaller() public {
+        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
+        assertTrue(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER) == address(installerProxy));
+
+        _upgradeModule(installerModuleV2, _VALID);
+
+        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV2));
+        assertTrue(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER) == address(installerProxy));
+
+        testUnitUpgradeModulesSingleProxy();
+
+        testUnitUpgradeModulesMultiProxy();
+
+        testUnitUpgradeModulesInternal();
     }
 
     // ================
