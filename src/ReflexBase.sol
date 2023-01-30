@@ -65,9 +65,11 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
 
         if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) _proxies[moduleId_] = proxyAddress_;
 
-        _relations[proxyAddress_].moduleId = moduleId_;
-        _relations[proxyAddress_].moduleType = moduleType_;
-        _relations[proxyAddress_].moduleImplementation = moduleImplementation_;
+        _relations[proxyAddress_] = TrustRelation({
+            moduleId: moduleId_,
+            moduleType: moduleType_,
+            moduleImplementation: moduleImplementation_
+        });
 
         emit ProxyCreated(proxyAddress_);
     }
