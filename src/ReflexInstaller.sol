@@ -91,13 +91,13 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
 
             IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
 
-            if (moduleSettings_.moduleId == 0) revert InvalidModuleId();
-            if (moduleSettings_.moduleType == 0 || moduleSettings_.moduleType > _MODULE_TYPE_INTERNAL)
-                revert InvalidModuleType();
+            // Verify that the module to add does not exist and is yet to be registered.
             if (_modules[moduleSettings_.moduleId] != address(0)) revert ModuleExistent(moduleSettings_.moduleId);
 
+            // Register the module.
             _modules[moduleSettings_.moduleId] = moduleAddress;
 
+            // Create and register the proxy for the module.
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY)
                 _createProxy(moduleSettings_.moduleId, moduleSettings_.moduleType, moduleAddress);
 
@@ -126,7 +126,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
 
             IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
 
-            // Verify that the module currently exists.
+            // Verify that the module to upgrade exists and is registered.
             if (_modules[moduleSettings_.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings_.moduleId);
 
             // Verify that current module allows for upgrades.
@@ -141,8 +141,10 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             if (moduleSettings_.moduleType != IReflexModule(_modules[moduleSettings_.moduleId]).moduleType())
                 revert ModuleInvalidType(moduleSettings_.moduleId);
 
+            // Register the module.
             _modules[moduleSettings_.moduleId] = moduleAddress;
 
+            // Update the module implementation of the module proxy.
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY)
                 _relations[_proxies[moduleSettings_.moduleId]].moduleImplementation = moduleAddress;
 
