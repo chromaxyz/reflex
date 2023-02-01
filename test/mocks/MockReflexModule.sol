@@ -181,6 +181,7 @@ contract PanicThrower {
 
     function throwPanicDivisionByZero() external pure returns (uint256) {
         uint256 x = 0;
+
         return type(uint256).max / x;
     }
 
