@@ -83,7 +83,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * - The caller must be the current owner.
      * - Cannot be re-entered.
      */
-    function addModules(address[] memory moduleAddresses_) external virtual override onlyOwner nonReentrant {
+    function addModules(address[] calldata moduleAddresses_) external virtual override onlyOwner nonReentrant {
         uint256 moduleAddressLength = moduleAddresses_.length;
 
         for (uint256 i = 0; i < moduleAddressLength; ) {
@@ -117,7 +117,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * - The caller must be the current owner.
      * - Cannot be re-entered.
      */
-    function upgradeModules(address[] memory moduleAddresses_) external virtual override onlyOwner nonReentrant {
+    function upgradeModules(address[] calldata moduleAddresses_) external virtual override onlyOwner nonReentrant {
         uint256 moduleAddressLength = moduleAddresses_.length;
 
         for (uint256 i = 0; i < moduleAddressLength; ) {
