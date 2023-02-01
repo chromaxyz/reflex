@@ -133,7 +133,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
                 revert ModuleNotUpgradeable(moduleSettings_.moduleId);
 
             // Verify that the next module version is greater than the current module version.
-            if (IReflexModule(_modules[moduleSettings_.moduleId]).moduleVersion() > moduleSettings_.moduleVersion)
+            if (moduleSettings_.moduleVersion <= IReflexModule(_modules[moduleSettings_.moduleId]).moduleVersion())
                 revert ModuleInvalidVersion(moduleSettings_.moduleId);
 
             // Verify that the next module type is the same as the current module type.
