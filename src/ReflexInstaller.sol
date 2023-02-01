@@ -83,7 +83,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * - The caller must be the current owner.
      * - Cannot be re-entered.
      */
-    function addModules(address[] memory moduleAddresses_) external virtual override onlyOwner nonReentrant {
+    function addModules(address[] calldata moduleAddresses_) external virtual override onlyOwner nonReentrant {
         uint256 moduleAddressLength = moduleAddresses_.length;
 
         for (uint256 i = 0; i < moduleAddressLength; ) {
@@ -117,7 +117,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * - The caller must be the current owner.
      * - Cannot be re-entered.
      */
-    function upgradeModules(address[] memory moduleAddresses_) external virtual override onlyOwner nonReentrant {
+    function upgradeModules(address[] calldata moduleAddresses_) external virtual override onlyOwner nonReentrant {
         uint256 moduleAddressLength = moduleAddresses_.length;
 
         for (uint256 i = 0; i < moduleAddressLength; ) {
@@ -133,7 +133,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
                 revert ModuleNotUpgradeable(moduleSettings_.moduleId);
 
             // Verify that the next module version is greater than the current module version.
-            if (moduleSettings_.moduleVersion <= IReflexModule(_modules[moduleSettings_.moduleId]).moduleVersion())
+            if (IReflexModule(_modules[moduleSettings_.moduleId]).moduleVersion() > moduleSettings_.moduleVersion)
                 revert ModuleInvalidVersion(moduleSettings_.moduleId);
 
             // Verify that the next module type is the same as the current module type.
