@@ -532,7 +532,7 @@ contract BaseInvariantTest is InvariantTestHarness {
         assertEq(base.tokenProxy().totalSupply(), handler.sum());
     }
 
-    function _createLog() public {
+    function _createLog() internal {
         console2.log("\nCall Summary\n");
 
         console2.log("unbounded.mint", handler.getCallCount("unbounded.mint"));
