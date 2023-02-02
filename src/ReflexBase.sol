@@ -49,11 +49,17 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @dev Create or return proxy by module id.
      * @param moduleId_ Module id.
      * @param moduleType_ Module type.
+     * @param moduleImplementation_ Module implementation.
+     * @return address Proxy address.
      */
-    function _createProxy(uint32 moduleId_, uint16 moduleType_) internal virtual returns (address) {
+    function _createProxy(
+        uint32 moduleId_,
+        uint16 moduleType_,
+        address moduleImplementation_
+    ) internal virtual returns (address) {
         if (moduleId_ == 0) revert InvalidModuleId();
-        if (moduleType_ == 0 || moduleType_ > _MODULE_TYPE_INTERNAL) revert InvalidModuleType();
-        if (moduleType_ == _MODULE_TYPE_INTERNAL) revert InternalModule();
+        if (moduleType_ != _MODULE_TYPE_SINGLE_PROXY && moduleType_ != _MODULE_TYPE_MULTI_PROXY)
+            revert InvalidModuleType();
 
         if (_proxies[moduleId_] != address(0)) return _proxies[moduleId_];
 
@@ -61,8 +67,11 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
 
         if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) _proxies[moduleId_] = proxyAddress;
 
-        _relations[proxyAddress].moduleId = moduleId_;
-        _relations[proxyAddress].moduleImplementation = address(0);
+        _relations[proxyAddress] = TrustRelation({
+            moduleId: moduleId_,
+            moduleType: moduleType_,
+            moduleImplementation: moduleImplementation_
+        });
 
         emit ProxyCreated(proxyAddress);
 
@@ -73,6 +82,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @dev Perform delegatecall to trusted internal module.
      * @param moduleId_ Module id.
      * @param input_ Input data.
+     * @return bytes Call result.
      */
     function _callInternalModule(uint32 moduleId_, bytes memory input_) internal returns (bytes memory) {
         (bool success, bytes memory result) = _modules[moduleId_].delegatecall(input_);

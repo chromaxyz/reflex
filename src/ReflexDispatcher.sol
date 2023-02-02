@@ -30,12 +30,11 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         if (owner_ == address(0)) revert InvalidOwner();
         if (installerModule_ == address(0)) revert InvalidModuleAddress();
 
-        // Verify that the installer module configuration is as expected.
-        IReflexModule.ModuleSettings memory installerModuleSettings = IReflexInstaller(installerModule_)
-            .moduleSettings();
+        // Verify that the `Installer` module configuration is as expected.
+        IReflexModule.ModuleSettings memory moduleSettings_ = IReflexInstaller(installerModule_).moduleSettings();
 
-        if (installerModuleSettings.moduleId != _MODULE_ID_INSTALLER) revert InvalidModuleId();
-        if (installerModuleSettings.moduleType != _MODULE_TYPE_SINGLE_PROXY) revert InvalidModuleType();
+        if (moduleSettings_.moduleId != _MODULE_ID_INSTALLER) revert InvalidModuleId();
+        if (moduleSettings_.moduleType != _MODULE_TYPE_SINGLE_PROXY) revert InvalidModuleType();
 
         // Initialize the owner.
         _owner = owner_;
@@ -44,12 +43,8 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         _modules[_MODULE_ID_INSTALLER] = installerModule_;
 
         // Create and register the `Installer` proxy.
-        address installerProxy = address(new ReflexProxy(_MODULE_ID_INSTALLER));
-        _proxies[_MODULE_ID_INSTALLER] = installerProxy;
-        _relations[installerProxy].moduleId = _MODULE_ID_INSTALLER;
-        _relations[installerProxy].moduleImplementation = installerModule_;
+        _createProxy(moduleSettings_.moduleId, moduleSettings_.moduleType, installerModule_);
 
-        emit ProxyCreated(installerProxy);
         emit OwnershipTransferred(address(0), owner_);
         emit ModuleAdded(_MODULE_ID_INSTALLER, installerModule_, IReflexInstaller(installerModule_).moduleVersion());
     }

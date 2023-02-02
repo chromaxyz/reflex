@@ -63,6 +63,20 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
         new MockReflexDispatcher(address(this), address(module));
     }
 
+    function testUnitRevertInvalidInstallerModuleType() external {
+        MockReflexModule module = new MockReflexModule(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_ID_INSTALLER,
+                moduleType: _MODULE_TYPE_MULTI_PROXY,
+                moduleVersion: _MODULE_VERSION_INSTALLER_V1,
+                moduleUpgradeable: true
+            })
+        );
+
+        vm.expectRevert(InvalidModuleType.selector);
+        new MockReflexDispatcher(address(this), address(module));
+    }
+
     function testUnitLogEmittanceUponConstruction() external {
         vm.recordLogs();
 

@@ -590,7 +590,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // Installer tests
     // ===============
 
-    function testUpgradeInstaller() public {
+    function testUnitUpgradeInstaller() external {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
         assertTrue(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER) == address(installerProxy));
 
