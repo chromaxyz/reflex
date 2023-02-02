@@ -399,6 +399,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(singleModuleV2, _VALID);
 
         _upgradeModule(singleModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(singleModuleV2, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
     function testUnitRevertUpgradeInvalidTypeSingleProxy() external {
@@ -475,6 +476,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(multiModuleV2, _VALID);
 
         _upgradeModule(multiModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(multiModuleV2, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
     function testUnitRevertUpgradeInvalidTypeMultiProxy() external {
@@ -547,6 +549,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(internalModuleV2, _VALID);
 
         _upgradeModule(internalModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(internalModuleV2, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
     function testUnitRevertUpgradeInvalidTypeInternal() external {
