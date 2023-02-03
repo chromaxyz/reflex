@@ -52,6 +52,13 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
         base.createProxy(102, _MODULE_TYPE_INTERNAL, address(0));
     }
 
+    function testFuzzEarlyReturnRegisteredModule(uint32 moduleId_) external {
+        vm.assume(moduleId_ >= 2);
+
+        base.createProxy(moduleId_, _MODULE_TYPE_SINGLE_PROXY, address(0));
+        base.createProxy(moduleId_, _MODULE_TYPE_SINGLE_PROXY, address(0));
+    }
+
     function testFuzzRevertBytes(bytes memory errorMessage_) external {
         vm.assume(errorMessage_.length > 0);
 
