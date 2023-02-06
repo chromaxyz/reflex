@@ -20,6 +20,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
 
     /**
      * @notice Returns the address of the owner.
+     * @return address Owner address.
      */
     function owner() external view virtual override returns (address) {
         return _owner;
@@ -27,6 +28,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
 
     /**
      * @notice Returns the address of the pending owner.
+     * @return address Pending owner address.
      */
     function pendingOwner() external view virtual override returns (address) {
         return _pendingOwner;

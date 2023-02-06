@@ -202,15 +202,15 @@ abstract contract TestHarness is Users, Test {
     /**
      * @dev Internal memory check.
      */
-    function _checkMemory(bytes memory s_) internal pure {
+    function _checkMemory(bytes memory data_) internal pure {
         bool notZeroRightPadded;
         bool fmpNotWordAligned;
         bool insufficientMalloc;
 
         /// @solidity memory-safe-assembly
         assembly {
-            let length := mload(s_)
-            let lastWord := mload(add(add(s_, 0x20), and(length, not(31))))
+            let length := mload(data_)
+            let lastWord := mload(add(add(data_, 0x20), and(length, not(31))))
             let remainder := and(length, 31)
             if remainder {
                 if shl(mul(8, remainder), lastWord) {
@@ -223,7 +223,7 @@ abstract contract TestHarness is Users, Test {
             mstore(mload(0x40), keccak256(0x00, 0x60))
             // Check if the memory allocated is sufficient.
             if length {
-                if gt(add(add(s_, 0x20), length), mload(0x40)) {
+                if gt(add(add(data_, 0x20), length), mload(0x40)) {
                     insufficientMalloc := 1
                 }
             }
@@ -239,7 +239,7 @@ abstract contract TestHarness is Users, Test {
     /**
      * @dev Internal memory check.
      */
-    function _checkMemory(string memory s_) internal pure {
-        _checkMemory(bytes(s_));
+    function _checkMemory(string memory data_) internal pure {
+        _checkMemory(bytes(data_));
     }
 }

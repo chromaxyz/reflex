@@ -194,6 +194,7 @@ contract ImplementationERC20Test is ImplementationFixture {
     }
 
     function testFuzzRevertBurnInsufficientBalance(address to_, uint256 mintAmount_, uint256 burnAmount_) external {
+        assumeNoPrecompiles(to_);
         vm.assume(burnAmount_ > mintAmount_);
 
         tokenProxy.mint(to_, mintAmount_);

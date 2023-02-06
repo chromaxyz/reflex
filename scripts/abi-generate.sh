@@ -32,7 +32,7 @@ mkdir -p reports/abi
 # Generate a fresh build
 forge build
 
-# Generate new storage layout
+# Generate ABIs
 for CONTRACT in ${CONTRACTS[@]}
 do
   forge inspect "$CONTRACT" abi > reports/abi/$CONTRACT.json
