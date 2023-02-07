@@ -73,7 +73,7 @@ contract ReflexProxy is IReflexProxy {
      * @dev Function selector clashing is mitigated by falling through to the fallback.
      */
     function sentinel() external virtual override {
-        // TODO: replace with better solution, preferably permanent.
+        // HACK: replace with better solution, preferably permanent.
 
         if (msg.sender == address(0)) {
             // This branch is expected to never be executed as `msg.sender` can never be 0.

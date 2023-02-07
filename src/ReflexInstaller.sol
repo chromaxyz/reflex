@@ -84,7 +84,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * - The caller must be the owner.
      * - Cannot be re-entered.
      *
-     * DANGER: Renouncing ownership will leave Reflex without an owner,
+     * NOTE: Renouncing ownership will leave Reflex without an owner,
      * thereby removing any functionality that is only available to the owner.
      * It will not be possible to call methods with the `onlyOwner` modifier anymore.
      */
