@@ -87,9 +87,9 @@ contract MockReflexBase is ReflexBase {
         return _revertBytes(errorMessage_);
     }
 
-    // ================
-    // Internal methods
-    // ================
+    // =========
+    // Utilities
+    // =========
 
     function _getCounter() internal view returns (uint256 n) {
         assembly {

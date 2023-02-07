@@ -281,9 +281,9 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         _verifySetStateSlotFailure(message_);
     }
 
-    // ================
-    // Internal methods
-    // ================
+    // =========
+    // Utilities
+    // =========
 
     function _verifyModuleConfiguration(IReflexModule.ModuleSettings memory moduleSettings_) internal {
         IReflexModule.ModuleSettings memory moduleSettings = abi.decode(

@@ -40,9 +40,9 @@ abstract contract InvariantTestHarness is Users, Test, InvariantTest {
         _currentTimestamp = block.timestamp;
     }
 
-    // ==============
-    // Public methods
-    // ==============
+    // =========
+    // Utilities
+    // =========
 
     function currentTimestamp() external view returns (uint256) {
         return _currentTimestamp;
@@ -67,9 +67,9 @@ abstract contract UnboundedHandler is Users, StdUtils {
 
     mapping(bytes32 => uint256) internal _callCounters;
 
-    // ==============
-    // Public methods
-    // ==============
+    // =========
+    // Utilities
+    // =========
 
     function increaseCallCount(bytes32 message_) public virtual {
         _callCounters[message_]++;

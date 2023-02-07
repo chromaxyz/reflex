@@ -269,9 +269,9 @@ contract ImplementationERC20Test is ImplementationFixture {
         tokenProxy.emitApprovalEvent(address(dispatcher), address(0), address(0), 100e18);
     }
 
-    // ================
-    // Internal methods
-    // ================
+    // =========
+    // Utilities
+    // =========
 
     function _expectEmitTransfer(
         address emitter_,
@@ -523,12 +523,20 @@ contract BaseInvariantTest is InvariantTestHarness {
     // Invariants
     // ==========
 
+    /**
+     * @dev Invariant:
+     * - Metadata is correctly tracked during lifespan.
+     */
     function _invariantA() internal {
         assertEq(base.tokenProxy().name(), base._TOKEN_MODULE_NAME());
         assertEq(base.tokenProxy().symbol(), base._TOKEN_MODULE_SYMBOL());
         assertEq(base.tokenProxy().decimals(), base._TOKEN_MODULE_DECIMALS());
     }
 
+    /**
+     * @dev Invariant:
+     * - Total supply is correctly tracked during lifespan.
+     */
     function _invariantB() internal {
         assertEq(base.tokenProxy().totalSupply(), handler.sum());
     }

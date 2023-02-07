@@ -134,9 +134,9 @@ abstract contract TestHarness is Users, Test {
         if (!brutalizedAddressIsBrutalized) revert FailedSetup();
     }
 
-    // ================
-    // Internal methods
-    // ================
+    // =========
+    // Utilities
+    // =========
 
     /**
      * @dev Check if the profile is active.

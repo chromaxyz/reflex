@@ -61,9 +61,9 @@ abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness
         installerProxy = MockReflexInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
     }
 
-    // ================
-    // Internal methods
-    // ================
+    // ==========
+    // Test stubs
+    // ==========
 
     function _testModuleConfiguration(
         IReflexModule module_,

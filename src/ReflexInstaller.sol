@@ -77,6 +77,25 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     }
 
     /**
+     * @notice Renounce ownership.
+     *
+     * Requirements:
+     *
+     * - The caller must be the owner.
+     * - Cannot be re-entered.
+     */
+    function renounceOwnership() external virtual override onlyOwner nonReentrant {
+        address newOwner = address(0);
+
+        delete _pendingOwner;
+
+        address previousOwner = _owner;
+        _owner = newOwner;
+
+        emit OwnershipTransferred(previousOwner, newOwner);
+    }
+
+    /**
      * @notice Add modules.
      * @param moduleAddresses_ List of modules to add.
      *

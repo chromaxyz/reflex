@@ -211,9 +211,9 @@ contract MockImplementationState is ImplementationState, StdAssertions, CommonBa
         _tokens[token_].decimals = decimals_;
     }
 
-    // ================
-    // Internal methods
-    // ================
+    // =========
+    // Utilities
+    // =========
 
     /**
      * @dev Cast bool to uint8.

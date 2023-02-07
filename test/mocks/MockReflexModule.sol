@@ -140,9 +140,9 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         return _unpackTrailingParameters();
     }
 
-    // ================
-    // Internal methods
-    // ================
+    // =========
+    // Utilities
+    // =========
 
     function _issueLogToProxy(bytes memory payload) internal {
         address proxyAddress = _unpackProxyAddress();

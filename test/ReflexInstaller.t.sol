@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
+// Vendor
+import {console2} from "forge-std/console2.sol";
+
 // Interfaces
 import {TReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
 import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
+import {InvariantTestHarness, BoundedHandler, UnboundedHandler} from "./fixtures/InvariantTestHarness.sol";
 
 // Mocks
 import {MockReflexInstaller} from "./mocks/MockReflexInstaller.sol";
@@ -248,56 +252,143 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // Ownership tests
     // ===============
 
-    function testUnitTransferOwnership() external {
-        vm.expectEmit(true, false, false, false);
-        emit OwnershipTransferStarted(address(this), _users.Alice);
-        installerProxy.transferOwnership(_users.Alice);
+    function testFuzzTransferOwnership(address user_) external {
+        vm.assume(user_ != address(0));
 
         assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), _users.Alice);
-    }
-
-    function testUnitAcceptOwnership() external {
         assertEq(installerProxy.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
-        emit OwnershipTransferStarted(address(this), _users.Alice);
-        installerProxy.transferOwnership(_users.Alice);
+        emit OwnershipTransferStarted(address(this), user_);
+        installerProxy.transferOwnership(user_);
 
         assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), _users.Alice);
+        assertEq(installerProxy.pendingOwner(), user_);
+    }
 
-        vm.startPrank(_users.Alice);
+    function testFuzzRevertTransferOwnershipNotOwner(address user_) external {
+        vm.assume(user_ != address(0) && user_ != installerProxy.owner());
+        assumeNoPrecompiles(user_);
+
+        vm.startPrank(user_);
+
+        if (user_ == address(dispatcher)) {
+            vm.expectRevert();
+            installerProxy.transferOwnership(_users.Alice);
+        } else {
+            vm.expectRevert(Unauthorized.selector);
+            installerProxy.transferOwnership(_users.Alice);
+        }
+
+        vm.stopPrank();
+    }
+
+    function testFuzzAcceptOwnership(address user_) external {
+        vm.assume(user_ != address(0));
+        assumeNoPrecompiles(user_);
+
+        assertEq(installerProxy.owner(), address(this));
+        assertEq(installerProxy.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
-        emit OwnershipTransferred(address(this), _users.Alice);
+        emit OwnershipTransferStarted(address(this), user_);
+        installerProxy.transferOwnership(user_);
+
+        assertEq(installerProxy.owner(), address(this));
+        assertEq(installerProxy.pendingOwner(), user_);
+
+        vm.startPrank(user_);
+
+        vm.expectEmit(true, false, false, false);
+        emit OwnershipTransferred(address(this), user_);
         installerProxy.acceptOwnership();
 
         vm.stopPrank();
 
-        assertEq(installerProxy.owner(), _users.Alice);
+        assertEq(installerProxy.owner(), user_);
         assertEq(installerProxy.pendingOwner(), address(0));
     }
 
-    function testUnitRevertTransferOwnershipNotPendingOwner() external {
+    function testFuzzRevertTransferOwnershipNotPendingOwner(address user_, address target_) external {
+        vm.assume(user_ != address(0) && target_ != address(0) && user_ != target_);
+        assumeNoPrecompiles(user_);
+        assumeNoPrecompiles(target_);
+
+        assertEq(installerProxy.owner(), address(this));
         assertEq(installerProxy.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
-        emit OwnershipTransferStarted(address(this), _users.Alice);
-        installerProxy.transferOwnership(_users.Alice);
+        emit OwnershipTransferStarted(address(this), target_);
+        installerProxy.transferOwnership(target_);
 
         assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), _users.Alice);
+        assertEq(installerProxy.pendingOwner(), target_);
 
-        vm.startPrank(_users.Bob);
+        vm.startPrank(user_);
 
-        vm.expectRevert(Unauthorized.selector);
-        installerProxy.acceptOwnership();
+        if (user_ == address(dispatcher)) {
+            vm.expectRevert();
+            installerProxy.acceptOwnership();
+        } else {
+            vm.expectRevert(Unauthorized.selector);
+            installerProxy.acceptOwnership();
+        }
 
         vm.stopPrank();
 
         assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), _users.Alice);
+        assertEq(installerProxy.pendingOwner(), target_);
+    }
+
+    function testUnitRenounceOwnership() external {
+        assertEq(installerProxy.owner(), address(this));
+        assertEq(installerProxy.pendingOwner(), address(0));
+
+        vm.expectEmit(true, false, false, false);
+        emit OwnershipTransferred(address(this), address(0));
+        installerProxy.renounceOwnership();
+
+        assertEq(installerProxy.owner(), address(0));
+        assertEq(installerProxy.pendingOwner(), address(0));
+    }
+
+    function testFuzzRenounceOwnershipWithPendingOwner(address user_) external {
+        vm.assume(user_ != address(0));
+        assumeNoPrecompiles(user_);
+
+        assertEq(installerProxy.owner(), address(this));
+        assertEq(installerProxy.pendingOwner(), address(0));
+
+        vm.expectEmit(true, false, false, false);
+        emit OwnershipTransferStarted(address(this), user_);
+        installerProxy.transferOwnership(user_);
+
+        assertEq(installerProxy.owner(), address(this));
+        assertEq(installerProxy.pendingOwner(), user_);
+
+        vm.expectEmit(true, false, false, false);
+        emit OwnershipTransferred(address(this), address(0));
+        installerProxy.renounceOwnership();
+
+        assertEq(installerProxy.owner(), address(0));
+        assertEq(installerProxy.pendingOwner(), address(0));
+    }
+
+    function testFuzzRevertRenounceOwnershipNotOwner(address user_) external {
+        vm.assume(user_ != address(0) && user_ != installerProxy.owner());
+        assumeNoPrecompiles(user_);
+
+        vm.startPrank(user_);
+
+        if (user_ == address(dispatcher)) {
+            vm.expectRevert();
+            installerProxy.renounceOwnership();
+        } else {
+            vm.expectRevert(Unauthorized.selector);
+            installerProxy.renounceOwnership();
+        }
+
+        vm.stopPrank();
     }
 
     function testUnitRevertTransferOwnershipZeroAddress() external {
@@ -606,9 +697,9 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         testUnitUpgradeModulesInternal();
     }
 
-    // ================
-    // Internal methods
-    // ================
+    // =========
+    // Utilities
+    // =========
 
     function _addModule(IReflexModule module_, bytes4 selector_) internal {
         address[] memory moduleAddresses = new address[](1);

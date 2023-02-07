@@ -233,10 +233,6 @@ abstract contract ImplementationERC20 is MockReflexModule, MockImplementationSta
         _emitTransferEvent(proxyAddress, from_, address(0), amount_);
     }
 
-    // ================
-    // Internal methods
-    // ================
-
     /**
      * @dev Emit `Transfer` event from the `Proxy` rather than the `Dispatcher`.
      */
