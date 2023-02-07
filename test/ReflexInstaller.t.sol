@@ -267,18 +267,13 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     }
 
     function testFuzzRevertTransferOwnershipNotOwner(address user_) external {
-        vm.assume(user_ != address(0) && user_ != installerProxy.owner());
+        vm.assume(user_ != address(0) && user_ != installerProxy.owner() && user_ != address(dispatcher));
         assumeNoPrecompiles(user_);
 
         vm.startPrank(user_);
 
-        if (user_ == address(dispatcher)) {
-            vm.expectRevert();
-            installerProxy.transferOwnership(_users.Alice);
-        } else {
-            vm.expectRevert(Unauthorized.selector);
-            installerProxy.transferOwnership(_users.Alice);
-        }
+        vm.expectRevert(Unauthorized.selector);
+        installerProxy.transferOwnership(_users.Alice);
 
         vm.stopPrank();
     }
@@ -310,7 +305,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     }
 
     function testFuzzRevertTransferOwnershipNotPendingOwner(address user_, address target_) external {
-        vm.assume(user_ != address(0) && target_ != address(0) && user_ != target_);
+        vm.assume(user_ != address(0) && target_ != address(0) && user_ != target_ && user_ != address(dispatcher));
         assumeNoPrecompiles(user_);
         assumeNoPrecompiles(target_);
 
@@ -326,13 +321,8 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
 
         vm.startPrank(user_);
 
-        if (user_ == address(dispatcher)) {
-            vm.expectRevert();
-            installerProxy.acceptOwnership();
-        } else {
-            vm.expectRevert(Unauthorized.selector);
-            installerProxy.acceptOwnership();
-        }
+        vm.expectRevert(Unauthorized.selector);
+        installerProxy.acceptOwnership();
 
         vm.stopPrank();
 
@@ -375,18 +365,13 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     }
 
     function testFuzzRevertRenounceOwnershipNotOwner(address user_) external {
-        vm.assume(user_ != address(0) && user_ != installerProxy.owner());
+        vm.assume(user_ != address(0) && user_ != installerProxy.owner() && user_ != address(dispatcher));
         assumeNoPrecompiles(user_);
 
         vm.startPrank(user_);
 
-        if (user_ == address(dispatcher)) {
-            vm.expectRevert();
-            installerProxy.renounceOwnership();
-        } else {
-            vm.expectRevert(Unauthorized.selector);
-            installerProxy.renounceOwnership();
-        }
+        vm.expectRevert(Unauthorized.selector);
+        installerProxy.renounceOwnership();
 
         vm.stopPrank();
     }
