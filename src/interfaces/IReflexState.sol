@@ -5,9 +5,9 @@ pragma solidity ^0.8.13;
  * @title Reflex State Test Interface
  */
 interface TReflexState {
-    // =====
-    // Types
-    // =====
+    // =======
+    // Structs
+    // =======
 
     /**
      * @notice Trust relationship between `Proxy` and `Dispatcher`.

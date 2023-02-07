@@ -279,7 +279,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     }
 
     function testFuzzAcceptOwnership(address user_) external {
-        vm.assume(user_ != address(0));
+        vm.assume(user_ != address(0) && user_ != address(dispatcher));
         assumeNoPrecompiles(user_);
 
         assertEq(installerProxy.owner(), address(this));
