@@ -98,6 +98,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      */
     function _unpackMessageSender() internal pure virtual returns (address messageSender_) {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
+        /// @solidity memory-safe-assembly
         assembly {
             messageSender_ := shr(0x60, calldataload(sub(calldatasize(), 40)))
         }
@@ -109,6 +110,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      */
     function _unpackProxyAddress() internal pure virtual returns (address proxyAddress_) {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
+        /// @solidity memory-safe-assembly
         assembly {
             proxyAddress_ := shr(0x60, calldataload(sub(calldatasize(), 20)))
         }
@@ -120,6 +122,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @return proxyAddress_ Proxy address.
      */
     function _unpackTrailingParameters() internal pure virtual returns (address messageSender_, address proxyAddress_) {
+        /// @solidity memory-safe-assembly
         assembly {
             // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
             messageSender_ := shr(0x60, calldataload(sub(calldatasize(), 40)))
@@ -132,6 +135,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @param errorMessage_ Error message.
      */
     function _revertBytes(bytes memory errorMessage_) internal pure {
+        /// @solidity memory-safe-assembly
         if (errorMessage_.length > 0) {
             assembly {
                 revert(add(32, errorMessage_), mload(errorMessage_))

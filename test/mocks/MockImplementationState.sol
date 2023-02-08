@@ -219,6 +219,7 @@ contract MockImplementationState is ImplementationState, StdAssertions, CommonBa
      * @dev Cast bool to uint8.
      */
     function _castBoolToUInt8(bool x_) internal pure returns (uint8 r_) {
+        /// @solidity memory-safe-assembly
         assembly {
             r_ := x_
         }

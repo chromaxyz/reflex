@@ -120,6 +120,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
 
         // NOTE: vm.expectEmit does not work as topic1 is checked implicitly.
         // Therefore a workaround using record logs is being used to check manually.
+        /// @solidity memory-safe-assembly
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
@@ -147,6 +148,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         bytes32 topic1 = bytes32(uint256(1));
 
         vm.expectEmit(false, false, false, true, address(proxy_));
+        /// @solidity memory-safe-assembly
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
@@ -165,6 +167,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         bytes32 topic2 = bytes32(uint256(2));
 
         vm.expectEmit(true, false, false, true, address(proxy_));
+        /// @solidity memory-safe-assembly
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
@@ -184,6 +187,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         bytes32 topic3 = bytes32(uint256(3));
 
         vm.expectEmit(true, true, false, true, address(proxy_));
+        /// @solidity memory-safe-assembly
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
@@ -204,6 +208,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         bytes32 topic4 = bytes32(uint256(4));
 
         vm.expectEmit(true, true, true, true, address(proxy_));
+        /// @solidity memory-safe-assembly
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, message)
