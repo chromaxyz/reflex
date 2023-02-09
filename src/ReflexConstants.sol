@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 /**
  * @title Reflex Constants
+ *
  * @dev Append-only extendable, only use internal constants!
  */
 abstract contract ReflexConstants {

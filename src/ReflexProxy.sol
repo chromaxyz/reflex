@@ -6,6 +6,7 @@ import {IReflexProxy} from "./interfaces/IReflexProxy.sol";
 
 /**
  * @title Reflex Proxy
+ *
  * @dev Execution takes place within the Dispatcher's storage context, not the proxy's.
  * @dev Non-upgradeable, extendable.
  */

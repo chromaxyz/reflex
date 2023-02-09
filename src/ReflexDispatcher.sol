@@ -12,6 +12,7 @@ import {ReflexProxy} from "./ReflexProxy.sol";
 
 /**
  * @title Reflex Dispatcher
+ *
  * @dev Non-upgradeable, extendable.
  */
 abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {

@@ -6,6 +6,7 @@ import {CommonBase} from "forge-std/Base.sol";
 
 /**
  * @title Users
+ *
  * @dev Common stand-in users for testing.
  * @author `Users` has been modified from: PRBTest (https://github.com/PaulRBerg/prb-math/blob/main/test/BaseTest.t.sol) (MIT)
  */

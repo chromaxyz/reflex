@@ -12,6 +12,7 @@ import {Users} from "./Users.sol";
 
 /**
  * @title Invariant Test Harness
+ *
  * @dev A rigorous invariant harness.
  */
 abstract contract InvariantTestHarness is Users, Test, InvariantTest {
@@ -57,6 +58,7 @@ abstract contract InvariantTestHarness is Users, Test, InvariantTest {
 
 /**
  * @title Unbounded Handler
+ *
  * @dev Abstract unbounded handler to inherit in invariant tests.
  * @dev Returns on failure.
  */
@@ -82,6 +84,7 @@ abstract contract UnboundedHandler is Users, StdUtils {
 
 /**
  * @title Bounded Handler
+ *
  * @dev Abstract bounded handler to inherit in invariant tests.
  * @dev Reverts on failure.
  */

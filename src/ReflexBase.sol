@@ -10,6 +10,7 @@ import {ReflexState} from "./ReflexState.sol";
 
 /**
  * @title Reflex Base
+ *
  * @dev Upgradeable, extendable.
  */
 abstract contract ReflexBase is IReflexBase, ReflexState {

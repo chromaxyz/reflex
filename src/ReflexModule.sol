@@ -9,6 +9,7 @@ import {ReflexBase} from "./ReflexBase.sol";
 
 /**
  * @title Reflex Module
+ *
  * @dev Execution takes place within the Dispatcher's storage context.
  * @dev Upgradeable, extendable.
  */
