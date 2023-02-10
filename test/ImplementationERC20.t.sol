@@ -10,7 +10,7 @@ import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
-import {InvariantTestHarness, BoundedHandler, UnboundedHandler} from "./fixtures/InvariantTestHarness.sol";
+import {TestHarness, BoundedHandler, UnboundedHandler} from "./fixtures/TestHarness.sol";
 
 // Mocks
 import {ImplementationERC20} from "./mocks/abstracts/ImplementationERC20.sol";
@@ -502,7 +502,7 @@ contract BoundedInvariantHandler is UnboundedInvariantHandler, BoundedHandler {
 /**
  * @title Base Invariant Test
  */
-contract BaseInvariantTest is InvariantTestHarness {
+contract BaseInvariantTest is TestHarness {
     // =======
     // Storage
     // =======
@@ -626,7 +626,7 @@ contract BoundedInvariantTest is BaseInvariantTest {
         _invariantB();
     }
 
-    function invariantDumpLog() external {
+    function invariantCreateLog() external {
         _createLog();
     }
 }

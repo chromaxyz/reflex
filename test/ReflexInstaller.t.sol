@@ -1,16 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.13;
 
-// Vendor
-import {console2} from "forge-std/console2.sol";
-
 // Interfaces
 import {TReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
 import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
-import {InvariantTestHarness, BoundedHandler, UnboundedHandler} from "./fixtures/InvariantTestHarness.sol";
 
 // Mocks
 import {MockReflexInstaller} from "./mocks/MockReflexInstaller.sol";

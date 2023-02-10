@@ -3,6 +3,8 @@ pragma solidity ^0.8.13;
 
 // Vendor
 import {console2} from "forge-std/console2.sol";
+import {InvariantTest} from "forge-std/InvariantTest.sol";
+import {StdUtils} from "forge-std/StdUtils.sol";
 import {Test} from "forge-std/Test.sol";
 
 // Fixtures
@@ -11,11 +13,11 @@ import {Users} from "./Users.sol";
 /**
  * @title Test Harness
  *
- * @dev A rigorous testing harness.
+ * @dev A rigorous testing and invariant harness.
  * @author `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/main/src/test/utils/DSTestPlus.sol) (AGPL-3.0-only)
  * @author `BrutalizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol) (MIT)
  */
-abstract contract TestHarness is Users, Test {
+abstract contract TestHarness is Users, InvariantTest, Test {
     // ======
     // Errors
     // ======
@@ -41,6 +43,10 @@ abstract contract TestHarness is Users, Test {
     string internal _gasLabel;
     uint256 internal _gasStart;
     uint256 internal _gasUsed;
+
+    uint256 internal _currentTimestamp;
+    uint256[] internal _timestamps;
+    uint256 internal _timestampCount;
 
     // =========
     // Modifiers
@@ -111,12 +117,21 @@ abstract contract TestHarness is Users, Test {
         _checkMemory();
     }
 
+    /**
+     * @dev Modifier to warp to cached timestamp for invariants.
+     */
+    modifier useCurrentTimestamp() {
+        vm.warp(_currentTimestamp);
+        _;
+    }
+
     // ===========
     // Constructor
     // ===========
 
     constructor() {
         _profile = vm.envOr("FOUNDRY_PROFILE", string("default"));
+        _currentTimestamp = block.timestamp;
     }
 
     // =====
@@ -133,6 +148,20 @@ abstract contract TestHarness is Users, Test {
         }
 
         if (!brutalizedAddressIsBrutalized) revert FailedSetup();
+    }
+
+    // ==============
+    // Public methods
+    // ==============
+
+    function currentTimestamp() external view returns (uint256) {
+        return _currentTimestamp;
+    }
+
+    function setCurrentTimestamp(uint256 currentTimestamp_) external {
+        _timestamps.push(currentTimestamp_);
+        _timestampCount++;
+        _currentTimestamp = currentTimestamp_;
     }
 
     // =========
@@ -243,4 +272,40 @@ abstract contract TestHarness is Users, Test {
     function _checkMemory(string memory data_) internal pure {
         _checkMemory(bytes(data_));
     }
+}
+
+/**
+ * @title Unbounded Handler
+ *
+ * @dev Abstract unbounded handler to inherit in invariant tests.
+ * @dev Returns on failure.
+ */
+abstract contract UnboundedHandler is Users, StdUtils {
+    // =======
+    // Storage
+    // =======
+
+    mapping(bytes32 => uint256) internal _callCounters;
+
+    // =========
+    // Utilities
+    // =========
+
+    function increaseCallCount(bytes32 message_) public virtual {
+        _callCounters[message_]++;
+    }
+
+    function getCallCount(bytes32 message_) public view virtual returns (uint256) {
+        return _callCounters[message_];
+    }
+}
+
+/**
+ * @title Bounded Handler
+ *
+ * @dev Abstract bounded handler to inherit in invariant tests.
+ * @dev Reverts on failure.
+ */
+abstract contract BoundedHandler is UnboundedHandler {
+
 }
