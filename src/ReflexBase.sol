@@ -136,8 +136,8 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @param errorMessage_ Error message.
      */
     function _revertBytes(bytes memory errorMessage_) internal pure {
-        /// @solidity memory-safe-assembly
         if (errorMessage_.length > 0) {
+            /// @solidity memory-safe-assembly
             assembly {
                 revert(add(32, errorMessage_), mload(errorMessage_))
             }
