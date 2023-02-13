@@ -4,7 +4,7 @@ A Solidity framework for upgradeable modularized applications.
 
 ---
 
-[![Tests][gha-contracts-badge]][gha-contracts] [![Linter][gha-lint-badge]][gha-lint] [![Foundry][foundry-badge]][foundry] [![License: AGPL-3.0][license-badge]][license]
+[![Tests][gha-contracts-badge]][gha-contracts] [![Linter][gha-lint-badge]][gha-lint] [![Foundry][foundry-badge]][foundry] [![License: GPL-3.0-or-later][license-badge]][license]
 
 [gha-contracts]: https://github.com/Chroma-Org/Reflex/actions/workflows/contracts.yml
 [gha-contracts-badge]: https://github.com/Chroma-Org/Reflex/actions/workflows/contracts.yml/badge.svg
@@ -12,8 +12,8 @@ A Solidity framework for upgradeable modularized applications.
 [gha-lint-badge]: https://github.com/Chroma-Org/Reflex/actions/workflows/lint.yml/badge.svg
 [foundry]: https://getfoundry.sh/
 [foundry-badge]: https://img.shields.io/badge/Built%20with-Foundry-DEA584.svg
-[license]: https://www.gnu.org/licenses/agpl-3.0
-[license-badge]: https://img.shields.io/badge/License-AGPL%203.0-blue
+[license]: https://www.gnu.org/licenses/gpl-3.0
+[license-badge]: https://img.shields.io/badge/License-GPL--3.0--or--later-blue
 
 ---
 
@@ -169,6 +169,6 @@ The contracts and tests were inspired by or directly modified from many sources,
 
 ## License
 
-Licensed under the [AGPL-3.0-only](/LICENSE) license.
+Licensed under the [GPL-3.0-or-later](/LICENSE) license.
 
 For third party licenses please refer to [THIRD_PARTY_LICENSES](/THIRD_PARTY_LICENSES).
