@@ -179,7 +179,7 @@ To verify that the storage layout is compatible one SHOULD RUN the respective [s
 In order to use the Reflex framework there are multiple abstract contracts one has to inherit as follows:
 
 ```solidity
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
 // Vendor
@@ -232,7 +232,6 @@ contract Dispatcher is ReflexDispatcher, Base {
 
   // ...
 }
-
 ```
 
 As a diagram:
