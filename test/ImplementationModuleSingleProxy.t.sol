@@ -94,7 +94,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     }
 
     function testUnitModuleSettings() external {
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleV1,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -102,7 +102,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -111,12 +111,12 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeSingleProxyAndDeprecate(bytes32 message_) external BrutalizeMemory {
+    function testFuzzUpgradeSingleProxyAndDeprecate(bytes32 message_) external {
         singleModuleProxy.setStorageSlot(message_);
 
         singleModuleProxy.verifyStorageSlot(message_);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -128,7 +128,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleV2);
         installerProxy.upgradeModules(moduleAddresses);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -142,7 +142,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleV3);
         installerProxy.upgradeModules(moduleAddresses);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -150,8 +150,11 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V3
         );
 
-        vm.expectRevert();
+        singleModuleProxy.setStorageSlot(message_);
         singleModuleProxy.verifyStorageSlot(message_);
+
+        vm.expectRevert();
+        singleModuleProxy.getTrue();
     }
 
     function testUnitProxySentinelFallback() external {

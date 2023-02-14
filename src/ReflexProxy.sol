@@ -156,31 +156,17 @@ contract ReflexProxy is IReflexProxy {
                 // We take full control of memory in this inline assembly block because it will not return to Solidity code.
                 // We overwrite the Solidity scratch pad at memory position 0 with the `dispatch()` function signature,
                 // occuping the first 4 bytes.
-                mstore(
-                    0x00,
-                    // bytes4(keccak256("dispatch()")) padded to 32 bytes.
-                    0xe9c4a3ac00000000000000000000000000000000000000000000000000000000
-                )
 
-                // Copy msg.data into memory, starting at position `4`.
-                calldatacopy(0x04, 0x00, calldatasize())
+                // Copy msg.data into memory.
+                calldatacopy(0x00, 0x00, calldatasize())
 
-                // We store the address of the `msg.sender` at location `4 + calldatasize()`.
-                mstore(add(0x04, calldatasize()), shl(0x60, caller()))
+                // We store the address of the `msg.sender` at the end of the copied msg.data in memory.
+                mstore(calldatasize(), shl(0x60, caller()))
 
                 // Call so that execution happens within the main context.
                 // Out and outsize are 0 because we don't know the size yet.
-                // Calldata: [dispatch() selector (4 bytes)][calldata (N bytes)][msg.sender (20 bytes)]
-                let result := call(
-                    gas(),
-                    deployer_,
-                    0,
-                    0,
-                    // 0x18 is the length of the selector + an address, 24 bytes, in hex.
-                    add(0x18, calldatasize()),
-                    0,
-                    0
-                )
+                // Calldata: [calldata (N bytes)][msg.sender (20 bytes)]
+                let result := call(gas(), deployer_, 0, 0, add(20, calldatasize()), 0, 0)
 
                 // Copy the returned data into memory, starting at position `0`.
                 returndatacopy(0x00, 0x00, returndatasize())

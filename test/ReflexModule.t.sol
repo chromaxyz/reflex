@@ -57,7 +57,7 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
             })
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             module,
             _MODULE_VALID_ID,
             _MODULE_VALID_TYPE_SINGLE,

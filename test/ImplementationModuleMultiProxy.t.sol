@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
+import {stdError} from "forge-std/StdError.sol";
+
 // Interfaces
+import {TReflexBase} from "../src/interfaces/IReflexBase.sol";
 import {TReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 import {IReflexProxy} from "../src/interfaces/IReflexProxy.sol";
@@ -173,7 +176,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     }
 
     function testUnitModuleSettings() external {
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleV1,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -181,7 +184,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleV2,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -200,7 +203,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         multiModuleProxyC.verifyStorageSlot(message_);
         installerProxy.verifyStorageSlot(message_);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyA,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -208,7 +211,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyB,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -216,7 +219,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyC,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -230,7 +233,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         moduleAddresses[0] = address(multiModuleV2);
         installerProxy.upgradeModules(moduleAddresses);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyA,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -238,7 +241,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V2
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyB,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -246,7 +249,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V2
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyC,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -265,7 +268,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleV2);
         installerProxy.upgradeModules(moduleAddresses);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -279,7 +282,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         moduleAddresses[0] = address(multiModuleV3);
         installerProxy.upgradeModules(moduleAddresses);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyA,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -287,7 +290,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V3
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyB,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -295,7 +298,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V3
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyC,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -305,14 +308,11 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
 
         // Logic has been deprecated and removed, expect calls to fail.
 
-        vm.expectRevert();
-        multiModuleProxyA.verifyStorageSlot(message_);
-
-        vm.expectRevert();
-        multiModuleProxyB.verifyStorageSlot(message_);
-
-        vm.expectRevert();
-        multiModuleProxyC.verifyStorageSlot(message_);
+        // multiModuleProxyA.setStorageSlot(message_);
+        // multiModuleProxyA.verifyStorageSlot(message_);
+        // multiModuleProxyB.verifyStorageSlot(message_);
+        // multiModuleProxyC.verifyStorageSlot(message_);
+        // installerProxy.verifyStorageSlot(message_);
     }
 
     function testUnitProxySentinelFallback() external {

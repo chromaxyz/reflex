@@ -72,14 +72,14 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         return _proxies[moduleId_];
     }
 
-    // ==============
-    // Public methods
-    // ==============
+    // ================
+    // Fallback methods
+    // ================
 
     /**
      * @notice Dispatch call to module implementation.
      */
-    function dispatch() external virtual override reentrancyAllowed {
+    fallback() external virtual reentrancyAllowed {
         uint32 moduleId = _relations[msg.sender].moduleId;
         address moduleImplementation = _relations[msg.sender].moduleImplementation;
 
@@ -89,31 +89,20 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
 
         uint256 messageDataLength = msg.data.length;
 
-        // Message length >= (4 + 4 + 20)
-        // 4 bytes for the dispatch() selector.
+        // Message length >= (4 + 20)
         // 4 bytes for selector used to call the proxy.
         // 20 bytes for the trailing msg.sender.
-        if (messageDataLength < 28) revert MessageTooShort();
+        if (messageDataLength < 24) revert MessageTooShort();
 
         // [dispatch() selector (4 bytes)][calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
-            // Remove `dispatch()` selector.
-            let payloadSize := sub(calldatasize(), 0x04)
             // Copy msg.data into memory, starting at position `4`.
-            calldatacopy(0x00, 0x04, payloadSize)
+            calldatacopy(0x00, 0x00, calldatasize())
             // Append proxy address.
-            mstore(payloadSize, shl(0x60, caller()))
+            mstore(calldatasize(), shl(0x60, caller()))
 
             // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
-            let result := delegatecall(
-                gas(),
-                moduleImplementation,
-                0,
-                // 0x14 is the length of an address, 20 bytes, in hex.
-                add(payloadSize, 0x14),
-                0,
-                0
-            )
+            let result := delegatecall(gas(), moduleImplementation, 0, add(calldatasize(), 20), 0, 0)
 
             // Copy the returned data into memory, starting at position `0`.
             returndatacopy(0x00, 0x00, returndatasize())

@@ -39,4 +39,8 @@ contract MockImplementationERC20Hub is MockReflexModule, ImplementationState {
 
         return tokenProxy_;
     }
+
+    function getTrue() public pure returns (bool) {
+        return true;
+    }
 }

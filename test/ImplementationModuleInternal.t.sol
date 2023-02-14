@@ -121,7 +121,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     }
 
     function testUnitModuleSettings() external {
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleV1,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -129,7 +129,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleV2,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -137,7 +137,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V2
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             internalModuleV1,
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
@@ -145,7 +145,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             _MODULE_INTERNAL_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             internalModuleV2,
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
@@ -153,7 +153,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             _MODULE_INTERNAL_UPGRADEABLE_V2
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             internalModuleV3,
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
@@ -202,7 +202,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         singleModuleProxy.setStorageSlot(message_);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -250,7 +250,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleV2);
         installerProxy.upgradeModules(moduleAddresses);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,

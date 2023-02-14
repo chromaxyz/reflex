@@ -65,7 +65,7 @@ abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness
     // Test stubs
     // ==========
 
-    function _testModuleConfiguration(
+    function _verifyModuleConfiguration(
         IReflexModule module_,
         uint32 moduleId_,
         uint16 moduleType_,

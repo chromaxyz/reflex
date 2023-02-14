@@ -171,7 +171,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // =====
 
     function testUnitModuleSettings() external {
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleV1,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -179,7 +179,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_SINGLE_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleV2,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -187,7 +187,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_SINGLE_UPGRADEABLE_V2
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleV3,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -195,7 +195,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_SINGLE_UPGRADEABLE_V3
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleV1,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -203,7 +203,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_MULTI_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleV2,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -211,7 +211,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_MULTI_UPGRADEABLE_V2
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleV3,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -219,7 +219,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_MULTI_UPGRADEABLE_V3
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             internalModuleV1,
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
@@ -227,7 +227,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_INTERNAL_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             internalModuleV2,
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
@@ -235,7 +235,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             _MODULE_INTERNAL_UPGRADEABLE_V2
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             internalModuleV3,
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,

@@ -17,4 +17,12 @@ contract MockImplementationModule is MockReflexModule, MockImplementationState {
      * @param moduleSettings_ Module settings.
      */
     constructor(ModuleSettings memory moduleSettings_) MockReflexModule(moduleSettings_) {}
+
+    // ==========
+    // Test stubs
+    // ==========
+
+    function getTrue() public pure returns (bool) {
+        return true;
+    }
 }
