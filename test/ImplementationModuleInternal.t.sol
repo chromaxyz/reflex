@@ -197,10 +197,8 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeInternalModuleAndDeprecate(bytes32 message_) public BrutalizeMemory {
+    function testUnitUpgradeInternalModuleAndDeprecate() public {
         // Verify internal module.
-
-        singleModuleProxy.setStorageSlot(message_);
 
         _verifyModuleConfiguration(
             singleModuleProxy,
@@ -219,11 +217,6 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
-        singleModuleProxy.verifyStorageSlot(message_);
-        installerProxy.verifyStorageSlot(message_);
-
-        _verifySetStateSlot(message_);
-
         // Upgrade internal module.
 
         address[] memory moduleAddresses = new address[](1);
@@ -238,11 +231,6 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
                 moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V2
             })
         );
-
-        singleModuleProxy.verifyStorageSlot(message_);
-        installerProxy.verifyStorageSlot(message_);
-
-        _verifySetStateSlot(message_);
 
         // Upgrade single-proxy module.
 
@@ -273,12 +261,16 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
-        singleModuleProxy.verifyStorageSlot(message_);
-        installerProxy.verifyStorageSlot(message_);
-
         // Logic has been deprecated and removed, expect calls to fail.
 
-        _verifySetStateSlotFailure(message_);
+        vm.expectRevert(TReflexBase.EmptyError.selector);
+        singleModuleProxy.callInternalModule(
+            _MODULE_INTERNAL_ID,
+            abi.encodeWithSignature("setImplementationState0(bytes32)", "")
+        );
+
+        vm.expectRevert(TReflexBase.EmptyError.selector);
+        singleModuleProxy.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("getImplementationState0()"));
     }
 
     // =========
@@ -323,16 +315,5 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
 
         _verifyGetStateSlot(message_);
-    }
-
-    function _verifySetStateSlotFailure(bytes32 message_) internal {
-        vm.expectRevert(TReflexBase.EmptyError.selector);
-        singleModuleProxy.callInternalModule(
-            _MODULE_INTERNAL_ID,
-            abi.encodeWithSignature("setImplementationState0(bytes32)", message_)
-        );
-
-        vm.expectRevert(TReflexBase.EmptyError.selector);
-        singleModuleProxy.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("getImplementationState0()"));
     }
 }

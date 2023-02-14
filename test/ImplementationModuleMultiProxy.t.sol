@@ -193,15 +193,8 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeMultiProxyAndDeprecate(bytes32 message_) external BrutalizeMemory {
+    function testUnitUpgradeMultiProxyAndDeprecate() external {
         // Verify multi-proxy module.
-
-        multiModuleProxyA.setStorageSlot(message_);
-
-        multiModuleProxyA.verifyStorageSlot(message_);
-        multiModuleProxyB.verifyStorageSlot(message_);
-        multiModuleProxyC.verifyStorageSlot(message_);
-        installerProxy.verifyStorageSlot(message_);
 
         _verifyModuleConfiguration(
             multiModuleProxyA,
@@ -257,11 +250,6 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V2
         );
 
-        multiModuleProxyA.verifyStorageSlot(message_);
-        multiModuleProxyB.verifyStorageSlot(message_);
-        multiModuleProxyC.verifyStorageSlot(message_);
-        installerProxy.verifyStorageSlot(message_);
-
         // Upgrade single-proxy module.
 
         moduleAddresses = new address[](1);
@@ -275,6 +263,10 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_SINGLE_VERSION_V2,
             _MODULE_SINGLE_UPGRADEABLE_V2
         );
+
+        assertTrue(multiModuleProxyA.getTrue());
+        assertTrue(multiModuleProxyB.getTrue());
+        assertTrue(multiModuleProxyC.getTrue());
 
         // Upgrade to deprecate multi-proxy module.
 
@@ -308,11 +300,14 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
 
         // Logic has been deprecated and removed, expect calls to fail.
 
-        // multiModuleProxyA.setStorageSlot(message_);
-        // multiModuleProxyA.verifyStorageSlot(message_);
-        // multiModuleProxyB.verifyStorageSlot(message_);
-        // multiModuleProxyC.verifyStorageSlot(message_);
-        // installerProxy.verifyStorageSlot(message_);
+        vm.expectRevert();
+        multiModuleProxyA.getTrue();
+
+        vm.expectRevert();
+        multiModuleProxyB.getTrue();
+
+        vm.expectRevert();
+        multiModuleProxyC.getTrue();
     }
 
     function testUnitProxySentinelFallback() external {

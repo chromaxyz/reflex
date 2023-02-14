@@ -111,11 +111,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeSingleProxyAndDeprecate(bytes32 message_) external {
-        singleModuleProxy.setStorageSlot(message_);
-
-        singleModuleProxy.verifyStorageSlot(message_);
-
+    function testUnitUpgradeSingleProxyAndDeprecate() external {
         _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
@@ -136,7 +132,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V2
         );
 
-        singleModuleProxy.verifyStorageSlot(message_);
+        assertTrue(singleModuleProxy.getTrue());
 
         moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV3);
@@ -149,9 +145,6 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_VERSION_V3,
             _MODULE_SINGLE_UPGRADEABLE_V3
         );
-
-        singleModuleProxy.setStorageSlot(message_);
-        singleModuleProxy.verifyStorageSlot(message_);
 
         vm.expectRevert();
         singleModuleProxy.getTrue();

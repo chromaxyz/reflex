@@ -21,6 +21,10 @@ contract MockImplementationERC20 is ImplementationERC20 {
     // Test stubs
     // ==========
 
+    function getTrue() public pure returns (bool) {
+        return true;
+    }
+
     function emitTransferEvent(address proxyAddress_, address from_, address to_, uint256 amount_) external {
         _emitTransferEvent(proxyAddress_, from_, to_, amount_);
     }
