@@ -119,27 +119,27 @@ contract ReflexProxy is IReflexProxy {
                 case 0 {
                     // 0 Topics
                     // log0(memory[offset:offset+len])
-                    log0(0x20, sub(calldatasize(), 0x01))
+                    log0(0x20, sub(calldatasize(), 1))
                 }
                 case 1 {
                     // 1 Topic
                     // log1(memory[offset:offset+len], topic0)
-                    log1(0x40, sub(calldatasize(), 0x21), mload(0x20))
+                    log1(0x40, sub(calldatasize(), 33), mload(0x20))
                 }
                 case 2 {
                     // 2 Topics
                     // log2(memory[offset:offset+len], topic0, topic1)
-                    log2(0x60, sub(calldatasize(), 0x41), mload(0x20), mload(0x40))
+                    log2(0x60, sub(calldatasize(), 65), mload(0x20), mload(0x40))
                 }
                 case 3 {
                     // 3 Topics
                     // log3(memory[offset:offset+len], topic0, topic1, topic2)
-                    log3(0x80, sub(calldatasize(), 0x61), mload(0x20), mload(0x40), mload(0x60))
+                    log3(0x80, sub(calldatasize(), 97), mload(0x20), mload(0x40), mload(0x60))
                 }
                 case 4 {
                     // 4 Topics
                     // log4(memory[offset:offset+len], topic0, topic1, topic2, topic3)
-                    log4(0xA0, sub(calldatasize(), 0x81), mload(0x20), mload(0x40), mload(0x60), mload(0x80))
+                    log4(0xA0, sub(calldatasize(), 129), mload(0x20), mload(0x40), mload(0x60), mload(0x80))
                 }
                 // The EVM doesn't support more than 4 topics, so in case the number of topics is not within the
                 // range {0..4} something probably went wrong and we should revert.
@@ -161,12 +161,12 @@ contract ReflexProxy is IReflexProxy {
                 calldatacopy(0x00, 0x00, calldatasize())
 
                 // We store the address of the `msg.sender` at the end of the copied msg.data in memory.
-                mstore(calldatasize(), shl(0x60, caller()))
+                mstore(calldatasize(), shl(96, caller()))
 
                 // Call so that execution happens within the main context.
                 // Out and outsize are 0 because we don't know the size yet.
                 // Calldata: [calldata (N bytes)][msg.sender (20 bytes)]
-                let result := call(gas(), deployer_, 0, 0, add(20, calldatasize()), 0, 0)
+                let result := call(gas(), deployer_, 0, 0, add(calldatasize(), 20), 0, 0)
 
                 // Copy the returned data into memory, starting at position `0`.
                 returndatacopy(0x00, 0x00, returndatasize())

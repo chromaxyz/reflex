@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
+import {console2} from "forge-std/console2.sol";
+
 // Interfaces
 import {IReflexBase} from "./interfaces/IReflexBase.sol";
 
@@ -101,7 +103,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
         /// @solidity memory-safe-assembly
         assembly {
-            messageSender_ := shr(0x60, calldataload(sub(calldatasize(), 40)))
+            messageSender_ := shr(96, calldataload(sub(calldatasize(), 40)))
         }
     }
 
@@ -113,7 +115,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
         /// @solidity memory-safe-assembly
         assembly {
-            proxyAddress_ := shr(0x60, calldataload(sub(calldatasize(), 20)))
+            proxyAddress_ := shr(96, calldataload(sub(calldatasize(), 20)))
         }
     }
 
@@ -122,12 +124,12 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @return messageSender_ Message sender.
      * @return proxyAddress_ Proxy address.
      */
-    function _unpackTrailingParameters() internal pure virtual returns (address messageSender_, address proxyAddress_) {
+    function _unpackTrailingParameters() internal view virtual returns (address messageSender_, address proxyAddress_) {
         /// @solidity memory-safe-assembly
         assembly {
             // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
-            messageSender_ := shr(0x60, calldataload(sub(calldatasize(), 40)))
-            proxyAddress_ := shr(0x60, calldataload(sub(calldatasize(), 20)))
+            messageSender_ := shr(96, calldataload(sub(calldatasize(), 40)))
+            proxyAddress_ := shr(96, calldataload(sub(calldatasize(), 20)))
         }
     }
 

@@ -87,19 +87,18 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
 
         if (moduleImplementation == address(0)) moduleImplementation = _modules[moduleId];
 
-        uint256 messageDataLength = msg.data.length;
-
         // Message length >= (4 + 20)
         // 4 bytes for selector used to call the proxy.
         // 20 bytes for the trailing msg.sender.
-        if (messageDataLength < 24) revert MessageTooShort();
+        if (msg.data.length < 24) revert MessageTooShort();
 
         // [dispatch() selector (4 bytes)][calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
             // Copy msg.data into memory, starting at position `4`.
             calldatacopy(0x00, 0x00, calldatasize())
+
             // Append proxy address.
-            mstore(calldatasize(), shl(0x60, caller()))
+            mstore(calldatasize(), shl(96, caller()))
 
             // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
             let result := delegatecall(gas(), moduleImplementation, 0, add(calldatasize(), 20), 0, 0)
