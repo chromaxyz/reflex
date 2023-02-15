@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexBase} from "../src/interfaces/IReflexBase.sol";
 import {TReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 import {IReflexProxy} from "../src/interfaces/IReflexProxy.sol";
