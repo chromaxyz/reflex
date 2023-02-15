@@ -3,7 +3,6 @@ pragma solidity ^0.8.13;
 
 // Vendor
 import {console2} from "forge-std/console2.sol";
-import {InvariantTest} from "forge-std/InvariantTest.sol";
 import {StdUtils} from "forge-std/StdUtils.sol";
 import {Test} from "forge-std/Test.sol";
 
@@ -17,7 +16,7 @@ import {Users} from "./Users.sol";
  * @author `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/main/src/test/utils/DSTestPlus.sol) (AGPL-3.0-only)
  * @author `BrutalizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol) (MIT)
  */
-abstract contract TestHarness is Users, InvariantTest, Test {
+abstract contract TestHarness is Users, Test {
     // ======
     // Errors
     // ======
