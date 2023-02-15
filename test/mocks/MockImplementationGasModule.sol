@@ -33,7 +33,7 @@ contract MockImplementationGasModule is ReflexModule, ImplementationState {
     // Test stubs
     // ==========
 
-    function getEmpty() public view {}
+    function getEmpty() external view {}
 
     function setNumber(uint8 number_) external {
         _number = number_;

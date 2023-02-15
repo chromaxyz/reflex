@@ -39,7 +39,7 @@ A Solidity framework for upgradeable modularized applications.
 - Avoids function selector clashing allowing you to run multiple spec-compliant modules side-by-side.
 - Multiple module types: `single-proxy` modules, `multi-proxy` modules and `internal` modules.
 - Uses neutral language, avoids introducing new terminology.
-- Relatively minimal overhead for the features it provides: [~8100](test/ImplementationGas.t.sol) gas.
+- Relatively minimal overhead for the features it provides: [~8065](test/ImplementationGas.t.sol) gas on the initial call and [~1065](test/ImplementationGas.t.sol) gas on subsequent calls in a batched transaction.
 - A built-in upgradeable installer allowing you to add, upgrade and deprecate modules throughout the application lifespan.
 
 Noteably this is a so-called framework, a single well-tested audited implementation rather than a specification.

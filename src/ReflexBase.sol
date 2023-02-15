@@ -101,7 +101,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
         /// @solidity memory-safe-assembly
         assembly {
-            messageSender_ := shr(0x60, calldataload(sub(calldatasize(), 40)))
+            messageSender_ := shr(96, calldataload(sub(calldatasize(), 40)))
         }
     }
 
@@ -113,7 +113,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
         /// @solidity memory-safe-assembly
         assembly {
-            proxyAddress_ := shr(0x60, calldataload(sub(calldatasize(), 20)))
+            proxyAddress_ := shr(96, calldataload(sub(calldatasize(), 20)))
         }
     }
 
@@ -126,8 +126,8 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         /// @solidity memory-safe-assembly
         assembly {
             // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
-            messageSender_ := shr(0x60, calldataload(sub(calldatasize(), 40)))
-            proxyAddress_ := shr(0x60, calldataload(sub(calldatasize(), 20)))
+            messageSender_ := shr(96, calldataload(sub(calldatasize(), 40)))
+            proxyAddress_ := shr(96, calldataload(sub(calldatasize(), 20)))
         }
     }
 

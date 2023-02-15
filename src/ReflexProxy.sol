@@ -80,10 +80,9 @@ contract ReflexProxy is IReflexProxy {
             // This branch is expected to never be executed as `msg.sender` can never be 0.
             // If this branch ever were to be executed it is expected to be harmless and have no side-effects.
             // A `delegatecall` to non-contract address 0 yields `true` and is ignored.
-            /// @solidity memory-safe-assembly
             assembly {
                 // Ignore return value.
-                pop(delegatecall(gas(), 0x00, 0, 0, 0, 0))
+                pop(delegatecall(gas(), 0, 0, 0, 0, 0))
             }
         } else {
             // If the function selector clashes fall through to the fallback.
@@ -106,7 +105,7 @@ contract ReflexProxy is IReflexProxy {
             // Calldata: [number of topics as uint8 (1 byte)][topic #i (32 bytes)]{0,4}[extra log data (N bytes)]
             assembly {
                 // We take full control of memory in this inline assembly block because it will not return to
-                // Solidity code. We overwrite the Solidity scratch pad at memory position 0.
+                // Solidity code. We overwrite the Solidity scratch pad at memory position `0`.
                 mstore(0x00, 0x00)
 
                 // Copy all transaction data into memory starting at location `31`.
@@ -119,27 +118,27 @@ contract ReflexProxy is IReflexProxy {
                 case 0 {
                     // 0 Topics
                     // log0(memory[offset:offset+len])
-                    log0(0x20, sub(calldatasize(), 0x01))
+                    log0(0x20, sub(calldatasize(), 1))
                 }
                 case 1 {
                     // 1 Topic
                     // log1(memory[offset:offset+len], topic0)
-                    log1(0x40, sub(calldatasize(), 0x21), mload(0x20))
+                    log1(0x40, sub(calldatasize(), 33), mload(0x20))
                 }
                 case 2 {
                     // 2 Topics
                     // log2(memory[offset:offset+len], topic0, topic1)
-                    log2(0x60, sub(calldatasize(), 0x41), mload(0x20), mload(0x40))
+                    log2(0x60, sub(calldatasize(), 65), mload(0x20), mload(0x40))
                 }
                 case 3 {
                     // 3 Topics
                     // log3(memory[offset:offset+len], topic0, topic1, topic2)
-                    log3(0x80, sub(calldatasize(), 0x61), mload(0x20), mload(0x40), mload(0x60))
+                    log3(0x80, sub(calldatasize(), 97), mload(0x20), mload(0x40), mload(0x60))
                 }
                 case 4 {
                     // 4 Topics
                     // log4(memory[offset:offset+len], topic0, topic1, topic2, topic3)
-                    log4(0xA0, sub(calldatasize(), 0x81), mload(0x20), mload(0x40), mload(0x60), mload(0x80))
+                    log4(0xA0, sub(calldatasize(), 129), mload(0x20), mload(0x40), mload(0x60), mload(0x80))
                 }
                 // The EVM doesn't support more than 4 topics, so in case the number of topics is not within the
                 // range {0..4} something probably went wrong and we should revert.
@@ -154,33 +153,17 @@ contract ReflexProxy is IReflexProxy {
             // Calldata: [calldata (N bytes)]
             assembly {
                 // We take full control of memory in this inline assembly block because it will not return to Solidity code.
-                // We overwrite the Solidity scratch pad at memory position 0 with the `dispatch()` function signature,
-                // occuping the first 4 bytes.
-                mstore(
-                    0x00,
-                    // bytes4(keccak256("dispatch()")) padded to 32 bytes.
-                    0xe9c4a3ac00000000000000000000000000000000000000000000000000000000
-                )
 
-                // Copy msg.data into memory, starting at position `4`.
-                calldatacopy(0x04, 0x00, calldatasize())
+                // Copy msg.data into memory, starting at position `0`.
+                calldatacopy(0x00, 0x00, calldatasize())
 
-                // We store the address of the `msg.sender` at location `4 + calldatasize()`.
-                mstore(add(0x04, calldatasize()), shl(0x60, caller()))
+                // Append `msg.sender` with leading 12 bytes of padding removed to copied `msg.data` in memory.
+                mstore(calldatasize(), shl(96, caller()))
 
-                // Call so that execution happens within the main context.
+                // Call so that execution happens within the `Dispatcher` context.
                 // Out and outsize are 0 because we don't know the size yet.
-                // Calldata: [dispatch() selector (4 bytes)][calldata (N bytes)][msg.sender (20 bytes)]
-                let result := call(
-                    gas(),
-                    deployer_,
-                    0,
-                    0,
-                    // 0x18 is the length of the selector + an address, 24 bytes, in hex.
-                    add(0x18, calldatasize()),
-                    0,
-                    0
-                )
+                // Calldata: [calldata (N bytes)][msg.sender (20 bytes)]
+                let result := call(gas(), deployer_, 0, 0, add(calldatasize(), 20), 0, 0)
 
                 // Copy the returned data into memory, starting at position `0`.
                 returndatacopy(0x00, 0x00, returndatasize())
@@ -204,6 +187,7 @@ contract ReflexProxy is IReflexProxy {
     /**
      * @dev Will run if no other function in the contract matches the call data.
      */
+    // solhint-disable-next-line payable-fallback
     fallback() external virtual {
         _fallback();
     }
