@@ -338,9 +338,11 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
-        // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
+        // Overwrite storage in the `Dispatcher` context from the malicious module.
 
         singleModuleProxy.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("setNumber(uint8)", number_));
+
+        // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
 
         assertEq(
             abi.decode(
