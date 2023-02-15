@@ -58,11 +58,22 @@ contract ImplementationGasTest is ImplementationFixture {
     // =====
 
     function testGasProxyGetEmpty() external view {
-        // 8208 - 143 = 8065
+        // Cold: 8065 gas (8208-143)
         //
-        //   [13369] ImplementationGasTest::testGasProxyGetEmpty()
+        //   [15043] ImplementationGasTest::testGasProxyGetEmpty()
         //     ├─ [8208] ReflexProxy::getEmpty() [staticcall]
         //     │   ├─ [5352] MockImplementationDispatcher::getEmpty()
+        //     │   │   ├─ [143] MockImplementationGasModule::getEmpty() [delegatecall]
+        //     │   │   │   └─ ← ()
+        //     │   │   └─ ← ()
+        //     │   └─ ← ()
+
+        singleModuleProxy.getEmpty();
+
+        // Hot: 1065 gas (1208-143)
+        //
+        //     ├─ [1208] ReflexProxy::getEmpty() [staticcall]
+        //     │   ├─ [852] MockImplementationDispatcher::getEmpty()
         //     │   │   ├─ [143] MockImplementationGasModule::getEmpty() [delegatecall]
         //     │   │   │   └─ ← ()
         //     │   │   └─ ← ()
@@ -73,27 +84,49 @@ contract ImplementationGasTest is ImplementationFixture {
     }
 
     function testGasProxySetValue() external {
-        // 10580 - 2509 = 8071
+        // Cold: 8071 gas (10580-2509)
         //
-        //   [15726] ImplementationGasTest::testGasProxySetValue()
+        //   [20554] ImplementationGasTest::testGasProxySetValue()
         //     ├─ [10580] ReflexProxy::setNumber(1)
         //     │   ├─ [7721] MockImplementationDispatcher::setNumber(1)
         //     │   │   ├─ [2509] MockImplementationGasModule::setNumber(1) [delegatecall]
         //     │   │   │   └─ ← ()
         //     │   │   └─ ← ()
         //     │   └─ ← ()
-        //     └─ ← ()
 
         singleModuleProxy.setNumber(1);
+
+        // Hot: 1071 gas (4380-3309)
+        //
+        //     ├─ [4380] ReflexProxy::setNumber(2)
+        //     │   ├─ [4021] MockImplementationDispatcher::setNumber(2)
+        //     │   │   ├─ [3309] MockImplementationGasModule::setNumber(2) [delegatecall]
+        //     │   │   │   └─ ← ()
+        //     │   │   └─ ← ()
+        //     │   └─ ← ()
+        //     └─ ← ()
+
+        singleModuleProxy.setNumber(2);
     }
 
     function testGasProxyGetValue() external view {
-        // 10424 - 2355 = 8069
+        // Cold: 8069 gas (10424-2355)
         //
-        //   [15646] ImplementationGasTest::testGasProxyGetValue()
+        //   [17577] ImplementationGasTest::testGasProxyGetValue()
         //     ├─ [10424] ReflexProxy::getNumber() [staticcall]
         //     │   ├─ [7565] MockImplementationDispatcher::getNumber()
         //     │   │   ├─ [2355] MockImplementationGasModule::getNumber() [delegatecall]
+        //     │   │   │   └─ ← 1
+        //     │   │   └─ ← 1
+        //     │   └─ ← 1
+
+        singleModuleProxy.getNumber();
+
+        // Hot: 1069 gas (1424-355)
+        //
+        //     ├─ [1424] ReflexProxy::getNumber() [staticcall]
+        //     │   ├─ [1065] MockImplementationDispatcher::getNumber()
+        //     │   │   ├─ [355] MockImplementationGasModule::getNumber() [delegatecall]
         //     │   │   │   └─ ← 1
         //     │   │   └─ ← 1
         //     │   └─ ← 1
