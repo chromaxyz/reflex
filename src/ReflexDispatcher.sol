@@ -79,6 +79,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
     /**
      * @notice Dispatch call to module implementation.
      */
+    // solhint-disable-next-line payable-fallback, no-complex-fallback
     fallback() external virtual reentrancyAllowed {
         uint32 moduleId = _relations[msg.sender].moduleId;
         address moduleImplementation = _relations[msg.sender].moduleImplementation;
@@ -92,7 +93,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         // 20 bytes for the trailing `msg.sender`.
         if (msg.data.length < 24) revert MessageTooShort();
 
-        // [dispatch() selector (4 bytes)][calldata (N bytes)][msg.sender (20 bytes)]
+        // [calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
             // We take full control of memory in this inline assembly block because it will not return to Solidity code.
 

@@ -6,7 +6,6 @@ Summary
 - [low-level-calls](#low-level-calls) (2 results) (Informational)
 - [naming-convention](#naming-convention) (13 results) (Informational)
 - [similar-names](#similar-names) (1 results) (Informational)
-- [too-many-digits](#too-many-digits) (1 results) (Informational)
 
 ## uninitialized-state
 
@@ -59,39 +58,39 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-7
-      [ReflexDispatcher.dispatch()](../src/ReflexDispatcher.sol#L82-L130) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L99-L129)
+      [ReflexProxy.\_fallback()](../src/ReflexProxy.sol#L100-L181) uses assembly - [INLINE ASM](../src/ReflexProxy.sol#L106-L151) - [INLINE ASM](../src/ReflexProxy.sol#L154-L179)
 
-../src/ReflexDispatcher.sol#L82-L130
+../src/ReflexProxy.sol#L100-L181
 
 - [ ] ID-8
-      [ReflexProxy.\_fallback()](../src/ReflexProxy.sol#L101-L198) uses assembly - [INLINE ASM](../src/ReflexProxy.sol#L107-L152) - [INLINE ASM](../src/ReflexProxy.sol#L155-L196)
+      [ReflexDispatcher.fallback()](../src/ReflexDispatcher.sol#L82-L120) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L96-L119)
 
-../src/ReflexProxy.sol#L101-L198
+../src/ReflexDispatcher.sol#L82-L120
 
 - [ ] ID-9
+      [ReflexProxy.sentinel()](../src/ReflexProxy.sol#L76-L91) uses assembly - [INLINE ASM](../src/ReflexProxy.sol#L83-L86)
+
+../src/ReflexProxy.sol#L76-L91
+
+- [ ] ID-10
       [ReflexBase.\_unpackMessageSender()](../src/ReflexBase.sol#L100-L106) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L103-L105)
 
 ../src/ReflexBase.sol#L100-L106
 
-- [ ] ID-10
+- [ ] ID-11
       [ReflexBase.\_revertBytes(bytes)](../src/ReflexBase.sol#L138-L147) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L141-L143)
 
 ../src/ReflexBase.sol#L138-L147
 
-- [ ] ID-11
+- [ ] ID-12
       [ReflexBase.\_unpackProxyAddress()](../src/ReflexBase.sol#L112-L118) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L115-L117)
 
 ../src/ReflexBase.sol#L112-L118
 
-- [ ] ID-12
+- [ ] ID-13
       [ReflexBase.\_unpackTrailingParameters()](../src/ReflexBase.sol#L125-L132) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L127-L131)
 
 ../src/ReflexBase.sol#L125-L132
-
-- [ ] ID-13
-      [ReflexProxy.sentinel()](../src/ReflexProxy.sol#L76-L92) uses assembly - [INLINE ASM](../src/ReflexProxy.sol#L84-L87)
-
-../src/ReflexProxy.sol#L76-L92
 
 ## low-level-calls
 
@@ -187,13 +186,3 @@ Confidence: Medium
       Variable [ReflexModule.\_moduleType](../src/ReflexModule.sol#L29) is too similar to [ReflexBase._createProxy(uint32,uint16,address).moduleType_](../src/ReflexBase.sol#L58)
 
 ../src/ReflexModule.sol#L29
-
-## too-many-digits
-
-Impact: Informational
-Confidence: Medium
-
-- [ ] ID-30
-      [ReflexProxy.\_fallback()](../src/ReflexProxy.sol#L101-L198) uses literals with too many digits: - [mstore(uint256,uint256)(0x00,0xe9c4a3ac00000000000000000000000000000000000000000000000000000000)](../src/ReflexProxy.sol#L159-L163)
-
-../src/ReflexProxy.sol#L101-L198

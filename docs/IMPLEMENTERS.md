@@ -104,17 +104,17 @@ One important feature provided by the proxy/module system is that a single stora
 
 ### Proxy => Dispatcher
 
-To the calldata received in a fallback, the proxy prepends the 4-byte selector for `dispatch()`: `(0xe9c4a3ac)`, and appends its view of msg.sender:
+To the calldata received in a fallback, the proxy appends its view of msg.sender:
 
 ```
-[dispatch() selector (4 bytes)][calldata (N bytes)][msg.sender (20 bytes)]
+[calldata (N bytes)][msg.sender (20 bytes)]
 ```
 
 This data is then passed to the `Dispatcher` contract with a `CALL` (not `DELEGATECALL`).
 
 ### Dispatcher => Module
 
-In the `dispatch()` method, the `Dispatcher` contract looks up its view of `msg.sender`, which corresponds to the proxy address.
+In the `fallback` method, the `Dispatcher` contract looks up its view of `msg.sender`, which corresponds to the proxy address.
 
 The presumed proxy address is then looked up in the internal `_relations` mapping, which must exist otherwise the call is reverted. It is determined to exist by having a non-zero entry in the `moduleId` field (modules must have non-zero IDs, see section [Numerical limitations](#numerical-limitations)).
 
@@ -124,13 +124,12 @@ In the case of a `single-proxy module`, the same storage slot in the internal `_
 
 In the case of a `multi-proxy module`, the storage slot will only contain the `moduleId`. This is because during an upgrade, `single-proxy modules` just have to update this one spot, whereas `multi-proxy modules` would otherwise need to update every corresponding entry in the internal `_relations` mapping.
 
-At this point we know the message is originating from a legitimate proxy, so the last 20 bytes can be assumed to correspond to an actual `msg.sender` who invoked a proxy. The length of the calldata is checked. It should be at least `4 + 4 + 20 bytes` long, which corresponds to:
+At this point we know the message is originating from a legitimate proxy, so the last 20 bytes can be assumed to correspond to an actual `msg.sender` who invoked a proxy. The length of the calldata is checked. It should be at least `4 + 20 bytes` long, which corresponds to:
 
-- `4 bytes` for the `dispatch()` selector.
 - `4 bytes` for selector used to call the proxy (non-standard ABI invocations and fallback methods are not supported in modules).
 - `20 bytes` for the trailing `msg.sender`.
 
-The `Dispatcher` then takes the received calldata and strips off the `dispatch()` selector, and then appends its view of `msg.sender` (`caller()` in assembly), which corresponds to the proxy's address. This results in the following:
+The `Dispatcher` then takes the received calldata and appends its view of `msg.sender` (`caller()` in assembly), which corresponds to the proxy's address. This results in the following:
 
 ```
 [original calldata (N bytes)][original msg.sender (20 bytes)][proxy addr (20 bytes)]

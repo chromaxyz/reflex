@@ -187,6 +187,7 @@ contract ReflexProxy is IReflexProxy {
     /**
      * @dev Will run if no other function in the contract matches the call data.
      */
+    // solhint-disable-next-line payable-fallback
     fallback() external virtual {
         _fallback();
     }
