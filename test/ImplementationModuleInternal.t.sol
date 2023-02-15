@@ -198,9 +198,11 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     }
 
     function testFuzzUpgradeInternalModuleAndDeprecate(bytes32 message_) public {
-        // Verify internal module.
+        // Verify storage sets in `Dispatcher` context.
 
-        dispatcher.setStorageSlot(message_);
+        _verifySetStateSlot(message_);
+
+        // Verify internal module.
 
         _testModuleConfiguration(
             singleModuleProxy,
@@ -219,9 +221,9 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
-        dispatcher.verifyStorageSlot(message_);
+        // Verify storage is not modified by upgrades in `Dispatcher` context.
 
-        _verifySetStateSlot(message_);
+        _verifyGetStateSlot(message_);
 
         // Upgrade internal module.
 
@@ -238,9 +240,9 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
-        dispatcher.verifyStorageSlot(message_);
+        // Verify storage is not modified by upgrades in `Dispatcher` context.
 
-        _verifySetStateSlot(message_);
+        _verifyGetStateSlot(message_);
 
         // Upgrade single-proxy module.
 
@@ -271,7 +273,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
-        dispatcher.verifyStorageSlot(message_);
+        // Verify storage is not modified by upgrades in `Dispatcher` context.
 
         _verifyGetStateSlot(message_);
     }
@@ -293,16 +295,24 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     }
 
     function _verifyGetStateSlot(bytes32 message_) internal {
-        bytes32 value = abi.decode(
-            singleModuleProxy.callInternalModule(
-                _MODULE_INTERNAL_ID,
-                abi.encodeWithSignature("getImplementationState0()")
-            ),
-            (bytes32)
-        );
-
-        assertEq(value, message_);
+        assertEq(singleModuleV1.getImplementationState0(), 0);
+        assertEq(singleModuleV2.getImplementationState0(), 0);
         assertEq(singleModuleProxy.getImplementationState0(), message_);
+
+        assertEq(internalModuleV1.getImplementationState0(), 0);
+        assertEq(internalModuleV2.getImplementationState0(), 0);
+        assertEq(internalModuleV3.getImplementationState0(), 0);
+
+        assertEq(
+            abi.decode(
+                singleModuleProxy.callInternalModule(
+                    _MODULE_INTERNAL_ID,
+                    abi.encodeWithSignature("getImplementationState0()")
+                ),
+                (bytes32)
+            ),
+            message_
+        );
         assertEq(dispatcher.getImplementationState0(), message_);
     }
 

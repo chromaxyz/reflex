@@ -112,9 +112,11 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     }
 
     function testFuzzUpgradeSingleProxyAndDeprecate(bytes32 message_) external {
-        dispatcher.setStorageSlot(message_);
+        // Verify storage sets in `Dispatcher` context.
 
-        dispatcher.verifyStorageSlot(message_);
+        _verifySetStateSlot(message_);
+
+        // Verify single-proxy module.
 
         _testModuleConfiguration(
             singleModuleProxy,
@@ -123,6 +125,8 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_VERSION_V1,
             _MODULE_SINGLE_UPGRADEABLE_V1
         );
+
+        // Upgrade single-proxy module.
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV2);
@@ -136,7 +140,11 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V2
         );
 
-        dispatcher.verifyStorageSlot(message_);
+        // Verify storage is not modified by upgrades in `Dispatcher` context.
+
+        _verifyGetStateSlot(message_);
+
+        // Upgrade to deprecate single-proxy module.
 
         moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV3);
@@ -150,7 +158,9 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V3
         );
 
-        dispatcher.verifyStorageSlot(message_);
+        // Verify storage is not modified by upgrades in `Dispatcher` context.
+
+        _verifyGetStateSlot(message_);
     }
 
     function testUnitProxySentinelFallback() external {
@@ -215,5 +225,27 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         vm.startPrank(_users.Alice);
         _testUnpackTrailingParameters(singleModuleProxy, _users.Alice);
         vm.stopPrank();
+    }
+
+    // =========
+    // Utilities
+    // =========
+
+    function _verifyGetStateSlot(bytes32 message_) internal {
+        assertEq((singleModuleV1).getImplementationState0(), 0);
+        assertEq((singleModuleV2).getImplementationState0(), 0);
+        assertEq(singleModuleProxy.getImplementationState0(), message_);
+
+        assertEq(dispatcher.getImplementationState0(), message_);
+    }
+
+    function _verifySetStateSlot(bytes32 message_) internal {
+        dispatcher.setImplementationState0(0);
+
+        _verifyGetStateSlot(0);
+
+        dispatcher.setImplementationState0(message_);
+
+        _verifyGetStateSlot(message_);
     }
 }
