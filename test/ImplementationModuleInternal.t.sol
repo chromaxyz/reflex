@@ -10,6 +10,7 @@ import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
 import {MockImplementationDeprecatedModule} from "./mocks/MockImplementationDeprecatedModule.sol";
+import {MockImplementationMaliciousModule} from "./mocks/MockImplementationMaliciousModule.sol";
 import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 
 /**
@@ -32,9 +33,11 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     uint16 internal constant _MODULE_INTERNAL_VERSION_V1 = 1;
     uint16 internal constant _MODULE_INTERNAL_VERSION_V2 = 2;
     uint16 internal constant _MODULE_INTERNAL_VERSION_V3 = 3;
+    uint16 internal constant _MODULE_INTERNAL_VERSION_V4 = 4;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V2 = true;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V3 = false;
+    bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V4 = false;
 
     // =======
     // Storage
@@ -47,6 +50,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     MockImplementationModule public internalModuleV1;
     MockImplementationModule public internalModuleV2;
     MockImplementationDeprecatedModule public internalModuleV3;
+    MockImplementationMaliciousModule public internalModuleV4;
 
     // =====
     // Setup
@@ -97,6 +101,15 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
                 moduleType: _MODULE_INTERNAL_TYPE,
                 moduleVersion: _MODULE_INTERNAL_VERSION_V3,
                 moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V3
+            })
+        );
+
+        internalModuleV4 = new MockImplementationMaliciousModule(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_INTERNAL_ID,
+                moduleType: _MODULE_INTERNAL_TYPE,
+                moduleVersion: _MODULE_INTERNAL_VERSION_V4,
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V4
             })
         );
 
@@ -159,6 +172,14 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             _MODULE_INTERNAL_TYPE,
             _MODULE_INTERNAL_VERSION_V3,
             _MODULE_INTERNAL_UPGRADEABLE_V3
+        );
+
+        _testModuleConfiguration(
+            internalModuleV4,
+            _MODULE_INTERNAL_ID,
+            _MODULE_INTERNAL_TYPE,
+            _MODULE_INTERNAL_VERSION_V4,
+            _MODULE_INTERNAL_UPGRADEABLE_V4
         );
     }
 
@@ -276,6 +297,72 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
         _verifyGetStateSlot(message_);
+    }
+
+    function testFuzzUpgradeInternalModuleToMaliciousModule(bytes32 message_, uint8 number_) public {
+        vm.assume(uint8(uint256(message_)) != number_);
+
+        // Verify storage sets in `Dispatcher` context.
+
+        _verifySetStateSlot(message_);
+
+        assertEq(dispatcher.getImplementationState0(), message_);
+
+        _testModuleConfiguration(
+            singleModuleProxy,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V1,
+            _MODULE_SINGLE_UPGRADEABLE_V1
+        );
+
+        _verifyModuleConfiguration(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_INTERNAL_ID,
+                moduleType: _MODULE_INTERNAL_TYPE,
+                moduleVersion: _MODULE_INTERNAL_VERSION_V1,
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V1
+            })
+        );
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(internalModuleV4);
+        installerProxy.upgradeModules(moduleAddresses);
+
+        _verifyModuleConfiguration(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_INTERNAL_ID,
+                moduleType: _MODULE_INTERNAL_TYPE,
+                moduleVersion: _MODULE_INTERNAL_VERSION_V4,
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V4
+            })
+        );
+
+        // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
+
+        singleModuleProxy.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("setNumber(uint8)", number_));
+
+        assertEq(
+            abi.decode(
+                singleModuleProxy.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("getNumber()")),
+                (uint8)
+            ),
+            number_
+        );
+
+        // Verify that the storage in the `Dispatcher` context has been overwritten.
+
+        assertEq(uint8(uint256(dispatcher.getImplementationState0())), number_);
+        assertFalse(dispatcher.getImplementationState0() == message_);
+
+        // Overwrite storage in the `Dispatcher` context.
+
+        dispatcher.setImplementationState0(message_);
+
+        // Verify that the storage in the `Dispatcher` context has been overwritten.
+
+        assertEq(dispatcher.getImplementationState0(), message_);
+        assertFalse(uint8(uint256(dispatcher.getImplementationState0())) == number_);
     }
 
     // =========
