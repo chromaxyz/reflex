@@ -2,13 +2,13 @@
 pragma solidity ^0.8.13;
 
 // Mocks
-import {MockImplementationState} from "./MockImplementationState.sol";
+import {ImplementationState} from "./abstracts/ImplementationState.sol";
 import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
  * @title Mock Implementation Module
  */
-contract MockImplementationModule is MockReflexModule, MockImplementationState {
+contract MockImplementationModule is MockReflexModule, ImplementationState {
     // ===========
     // Constructor
     // ===========
@@ -22,7 +22,11 @@ contract MockImplementationModule is MockReflexModule, MockImplementationState {
     // Test stubs
     // ==========
 
-    function getTrue() public pure returns (bool) {
-        return true;
+    function setImplementationState0(bytes32 message_) public {
+        _implementationState0 = message_;
+    }
+
+    function getImplementationState0() public view returns (bytes32) {
+        return _implementationState0;
     }
 }

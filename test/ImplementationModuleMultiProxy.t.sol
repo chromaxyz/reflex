@@ -140,6 +140,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
                 _MODULE_MULTI_DECIMALS_A
             )
         );
+
         multiModuleProxyB = MockImplementationERC20(
             singleModuleProxy.addERC20(
                 _MODULE_MULTI_ID,
@@ -149,6 +150,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
                 _MODULE_MULTI_DECIMALS_B
             )
         );
+
         multiModuleProxyC = MockImplementationERC20(
             singleModuleProxy.addERC20(
                 _MODULE_MULTI_ID,
@@ -176,6 +178,58 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     }
 
     function testUnitModuleSettings() external {
+        // Proxies
+
+        _verifyModuleConfiguration(
+            singleModuleProxy,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V1,
+            _MODULE_SINGLE_UPGRADEABLE_V1
+        );
+
+        _verifyModuleConfiguration(
+            multiModuleProxyA,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V1,
+            _MODULE_MULTI_UPGRADEABLE_V1
+        );
+
+        _verifyModuleConfiguration(
+            multiModuleProxyB,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V1,
+            _MODULE_MULTI_UPGRADEABLE_V1
+        );
+
+        _verifyModuleConfiguration(
+            multiModuleProxyC,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V1,
+            _MODULE_MULTI_UPGRADEABLE_V1
+        );
+
+        // Modules
+
+        _verifyModuleConfiguration(
+            singleModuleV1,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V1,
+            _MODULE_SINGLE_UPGRADEABLE_V1
+        );
+
+        _verifyModuleConfiguration(
+            singleModuleV2,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V2,
+            _MODULE_SINGLE_UPGRADEABLE_V2
+        );
+
         _verifyModuleConfiguration(
             multiModuleV1,
             _MODULE_MULTI_ID,
@@ -191,9 +245,21 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_VERSION_V2,
             _MODULE_MULTI_UPGRADEABLE_V2
         );
+
+        _verifyModuleConfiguration(
+            multiModuleV3,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V3,
+            _MODULE_MULTI_UPGRADEABLE_V3
+        );
     }
 
-    function testUnitUpgradeMultiProxyAndDeprecate() external {
+    function testFuzzUpgradeMultiProxyAndDeprecate(bytes32 message_) external {
+        // Verify storage sets in `Dispatcher` context.
+
+        _verifySetStateSlot(message_);
+
         // Verify multi-proxy module.
 
         _verifyModuleConfiguration(
@@ -250,6 +316,10 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V2
         );
 
+        // Verify storage is not modified by upgrades in `Dispatcher` context.
+
+        _verifyGetStateSlot(message_);
+
         // Upgrade single-proxy module.
 
         moduleAddresses = new address[](1);
@@ -264,9 +334,9 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V2
         );
 
-        assertTrue(multiModuleProxyA.getTrue());
-        assertTrue(multiModuleProxyB.getTrue());
-        assertTrue(multiModuleProxyC.getTrue());
+        // Verify storage is not modified by upgrades in `Dispatcher` context.
+
+        _verifyGetStateSlot(message_);
 
         // Upgrade to deprecate multi-proxy module.
 
@@ -298,16 +368,9 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V3
         );
 
-        // Logic has been deprecated and removed, expect calls to fail.
+        // Verify storage is not modified by upgrades in `Dispatcher` context.
 
-        vm.expectRevert();
-        multiModuleProxyA.getTrue();
-
-        vm.expectRevert();
-        multiModuleProxyB.getTrue();
-
-        vm.expectRevert();
-        multiModuleProxyC.getTrue();
+        _verifyGetStateSlot(message_);
     }
 
     function testUnitProxySentinelFallback() external {
@@ -402,5 +465,35 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         _testUnpackTrailingParameters(multiModuleProxyB, _users.Alice);
         _testUnpackTrailingParameters(multiModuleProxyC, _users.Alice);
         vm.stopPrank();
+    }
+
+    // =========
+    // Utilities
+    // =========
+
+    function _verifyGetStateSlot(bytes32 message_) internal {
+        assertEq(singleModuleV1.getImplementationState0(), 0);
+        assertEq(singleModuleV2.getImplementationState0(), 0);
+        assertEq(singleModuleProxy.getImplementationState0(), message_);
+
+        assertEq(multiModuleV1.getImplementationState0(), 0);
+        assertEq(multiModuleV2.getImplementationState0(), 0);
+        assertEq(multiModuleV3.getImplementationState0(), 0);
+
+        assertEq(multiModuleProxyA.getImplementationState0(), message_);
+        assertEq(multiModuleProxyB.getImplementationState0(), message_);
+        assertEq(multiModuleProxyC.getImplementationState0(), message_);
+
+        assertEq(dispatcher.getImplementationState0(), message_);
+    }
+
+    function _verifySetStateSlot(bytes32 message_) internal {
+        dispatcher.setImplementationState0(0);
+
+        _verifyGetStateSlot(0);
+
+        dispatcher.setImplementationState0(message_);
+
+        _verifyGetStateSlot(message_);
     }
 }

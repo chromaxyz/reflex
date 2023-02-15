@@ -11,6 +11,7 @@ import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
 import {MockImplementationDeprecatedModule} from "./mocks/MockImplementationDeprecatedModule.sol";
+import {MockImplementationMaliciousModule} from "./mocks/MockImplementationMaliciousModule.sol";
 import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 
 /**
@@ -26,9 +27,11 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
     uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
     uint16 internal constant _MODULE_SINGLE_VERSION_V3 = 3;
+    uint16 internal constant _MODULE_SINGLE_VERSION_V4 = 3;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V2 = true;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V3 = false;
+    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V4 = false;
 
     // =======
     // Storage
@@ -37,6 +40,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     MockImplementationModule public singleModuleV1;
     MockImplementationModule public singleModuleV2;
     MockImplementationDeprecatedModule public singleModuleV3;
+    MockImplementationMaliciousModule public singleModuleV4;
     MockImplementationModule public singleModuleProxy;
 
     // =====
@@ -73,6 +77,15 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             })
         );
 
+        singleModuleV4 = new MockImplementationMaliciousModule(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_SINGLE_ID,
+                moduleType: _MODULE_SINGLE_TYPE,
+                moduleVersion: _MODULE_SINGLE_VERSION_V4,
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V4
+            })
+        );
+
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV1);
         installerProxy.addModules(moduleAddresses);
@@ -94,6 +107,18 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     }
 
     function testUnitModuleSettings() external {
+        // Proxies
+
+        _verifyModuleConfiguration(
+            singleModuleProxy,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V1,
+            _MODULE_SINGLE_UPGRADEABLE_V1
+        );
+
+        // Modules
+
         _verifyModuleConfiguration(
             singleModuleV1,
             _MODULE_SINGLE_ID,
@@ -103,15 +128,37 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            singleModuleProxy,
+            singleModuleV2,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1
+            _MODULE_SINGLE_VERSION_V2,
+            _MODULE_SINGLE_UPGRADEABLE_V2
+        );
+
+        _verifyModuleConfiguration(
+            singleModuleV3,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V3,
+            _MODULE_SINGLE_UPGRADEABLE_V3
+        );
+
+        _verifyModuleConfiguration(
+            singleModuleV4,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V4,
+            _MODULE_SINGLE_UPGRADEABLE_V4
         );
     }
 
-    function testUnitUpgradeSingleProxyAndDeprecate() external {
+    function testFuzzUpgradeSingleProxyAndDeprecate(bytes32 message_) external {
+        // Verify storage sets in `Dispatcher` context.
+
+        _verifySetStateSlot(message_);
+
+        // Verify single-proxy module.
+
         _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
@@ -119,6 +166,8 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_VERSION_V1,
             _MODULE_SINGLE_UPGRADEABLE_V1
         );
+
+        // Upgrade single-proxy module.
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV2);
@@ -132,7 +181,11 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V2
         );
 
-        assertTrue(singleModuleProxy.getTrue());
+        // Verify storage is not modified by upgrades in `Dispatcher` context.
+
+        _verifyGetStateSlot(message_);
+
+        // Upgrade to deprecate single-proxy module.
 
         moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV3);
@@ -146,8 +199,9 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V3
         );
 
-        vm.expectRevert();
-        singleModuleProxy.getTrue();
+        // Verify storage is not modified by upgrades in `Dispatcher` context.
+
+        _verifyGetStateSlot(message_);
     }
 
     function testUnitProxySentinelFallback() external {
@@ -212,5 +266,27 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         vm.startPrank(_users.Alice);
         _testUnpackTrailingParameters(singleModuleProxy, _users.Alice);
         vm.stopPrank();
+    }
+
+    // =========
+    // Utilities
+    // =========
+
+    function _verifyGetStateSlot(bytes32 message_) internal {
+        assertEq((singleModuleV1).getImplementationState0(), 0);
+        assertEq((singleModuleV2).getImplementationState0(), 0);
+        assertEq(singleModuleProxy.getImplementationState0(), message_);
+
+        assertEq(dispatcher.getImplementationState0(), message_);
+    }
+
+    function _verifySetStateSlot(bytes32 message_) internal {
+        dispatcher.setImplementationState0(0);
+
+        _verifyGetStateSlot(0);
+
+        dispatcher.setImplementationState0(message_);
+
+        _verifyGetStateSlot(message_);
     }
 }

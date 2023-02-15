@@ -2,13 +2,12 @@
 pragma solidity ^0.8.13;
 
 // Mocks
-import {ImplementationState} from "./abstracts/ImplementationState.sol";
-import {MockReflexModule} from "../mocks/MockReflexModule.sol";
+import {MockImplementationModule} from "./MockImplementationModule.sol";
 
 /**
  * @title Mock Implementation ERC20 Hub
  */
-contract MockImplementationERC20Hub is MockReflexModule, ImplementationState {
+contract MockImplementationERC20Hub is MockImplementationModule {
     // ===========
     // Constructor
     // ===========
@@ -16,7 +15,7 @@ contract MockImplementationERC20Hub is MockReflexModule, ImplementationState {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(ModuleSettings memory moduleSettings_) MockReflexModule(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) MockImplementationModule(moduleSettings_) {}
 
     // ==========
     // Test stubs

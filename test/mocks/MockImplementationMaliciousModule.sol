@@ -2,13 +2,21 @@
 pragma solidity ^0.8.13;
 
 // Mocks
-import {ImplementationState} from "./abstracts/ImplementationState.sol";
 import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
- * @title Mock Implementation Deprecated Module
+ * @title Mock Implementation Malicious Module
  */
-contract MockImplementationDeprecatedModule is MockReflexModule, ImplementationState {
+contract MockImplementationMaliciousModule is MockReflexModule {
+    // =======
+    // Storage
+    // =======
+
+    /**
+     * @dev NOTE: DO NOT IMPLEMENT STORAGE INSIDE OF MODULES!
+     */
+    uint8 internal _number;
+
     // ===========
     // Constructor
     // ===========
@@ -22,11 +30,11 @@ contract MockImplementationDeprecatedModule is MockReflexModule, ImplementationS
     // Test stubs
     // ==========
 
-    function setImplementationState0(bytes32 message_) public {
-        _implementationState0 = message_;
+    function setNumber(uint8 number_) public {
+        _number = number_;
     }
 
-    function getImplementationState0() public view returns (bytes32) {
-        return _implementationState0;
+    function getNumber() public view returns (uint8) {
+        return _number;
     }
 }
