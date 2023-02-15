@@ -45,6 +45,6 @@ contract ImplementationStateTest is TestHarness {
         bool flag_
     ) external BrutalizeMemory {
         state.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
-        // state.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
+        state.verifyStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
     }
 }

@@ -190,15 +190,12 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeMultiProxyAndDeprecate(bytes32 message_) external BrutalizeMemory {
+    function testFuzzUpgradeMultiProxyAndDeprecate(bytes32 message_) external {
         // Verify multi-proxy module.
 
-        multiModuleProxyA.setStorageSlot(message_);
+        dispatcher.setStorageSlot(message_);
 
-        multiModuleProxyA.verifyStorageSlot(message_);
-        multiModuleProxyB.verifyStorageSlot(message_);
-        multiModuleProxyC.verifyStorageSlot(message_);
-        installerProxy.verifyStorageSlot(message_);
+        dispatcher.verifyStorageSlot(message_);
 
         _testModuleConfiguration(
             multiModuleProxyA,
@@ -254,10 +251,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V2
         );
 
-        multiModuleProxyA.verifyStorageSlot(message_);
-        multiModuleProxyB.verifyStorageSlot(message_);
-        multiModuleProxyC.verifyStorageSlot(message_);
-        installerProxy.verifyStorageSlot(message_);
+        dispatcher.verifyStorageSlot(message_);
 
         // Upgrade single-proxy module.
 
@@ -303,16 +297,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V3
         );
 
-        // Logic has been deprecated and removed, expect calls to fail.
-
-        vm.expectRevert();
-        multiModuleProxyA.verifyStorageSlot(message_);
-
-        vm.expectRevert();
-        multiModuleProxyB.verifyStorageSlot(message_);
-
-        vm.expectRevert();
-        multiModuleProxyC.verifyStorageSlot(message_);
+        dispatcher.verifyStorageSlot(message_);
     }
 
     function testUnitProxySentinelFallback() external {

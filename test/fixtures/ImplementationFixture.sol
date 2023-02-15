@@ -17,7 +17,6 @@ import {TestHarness} from "./TestHarness.sol";
 // Mocks
 import {MockImplementationDispatcher} from "../mocks/MockImplementationDispatcher.sol";
 import {MockImplementationInstaller} from "../mocks/MockImplementationInstaller.sol";
-import {MockImplementationState} from "../mocks/MockImplementationState.sol";
 import {MockReflexModule, ICustomError} from "../mocks/MockReflexModule.sol";
 
 /**
