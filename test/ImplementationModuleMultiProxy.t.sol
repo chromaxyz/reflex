@@ -137,6 +137,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
                 _MODULE_MULTI_DECIMALS_A
             )
         );
+
         multiModuleProxyB = MockImplementationERC20(
             singleModuleProxy.addERC20(
                 _MODULE_MULTI_ID,
@@ -146,6 +147,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
                 _MODULE_MULTI_DECIMALS_B
             )
         );
+
         multiModuleProxyC = MockImplementationERC20(
             singleModuleProxy.addERC20(
                 _MODULE_MULTI_ID,
@@ -173,6 +175,58 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     }
 
     function testUnitModuleSettings() external {
+        // Proxies
+
+        _testModuleConfiguration(
+            singleModuleProxy,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V1,
+            _MODULE_SINGLE_UPGRADEABLE_V1
+        );
+
+        _testModuleConfiguration(
+            multiModuleProxyA,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V1,
+            _MODULE_MULTI_UPGRADEABLE_V1
+        );
+
+        _testModuleConfiguration(
+            multiModuleProxyB,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V1,
+            _MODULE_MULTI_UPGRADEABLE_V1
+        );
+
+        _testModuleConfiguration(
+            multiModuleProxyC,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V1,
+            _MODULE_MULTI_UPGRADEABLE_V1
+        );
+
+        // Modules
+
+        _testModuleConfiguration(
+            singleModuleV1,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V1,
+            _MODULE_SINGLE_UPGRADEABLE_V1
+        );
+
+        _testModuleConfiguration(
+            singleModuleV2,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V2,
+            _MODULE_SINGLE_UPGRADEABLE_V2
+        );
+
         _testModuleConfiguration(
             multiModuleV1,
             _MODULE_MULTI_ID,
@@ -187,6 +241,14 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V2,
             _MODULE_MULTI_UPGRADEABLE_V2
+        );
+
+        _testModuleConfiguration(
+            multiModuleV3,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V3,
+            _MODULE_MULTI_UPGRADEABLE_V3
         );
     }
 

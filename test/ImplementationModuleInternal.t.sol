@@ -134,6 +134,18 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     }
 
     function testUnitModuleSettings() external {
+        // Proxies
+
+        _testModuleConfiguration(
+            singleModuleProxy,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V1,
+            _MODULE_SINGLE_UPGRADEABLE_V1
+        );
+
+        // Modules
+
         _testModuleConfiguration(
             singleModuleV1,
             _MODULE_SINGLE_ID,

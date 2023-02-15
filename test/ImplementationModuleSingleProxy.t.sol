@@ -11,6 +11,7 @@ import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
 import {MockImplementationDeprecatedModule} from "./mocks/MockImplementationDeprecatedModule.sol";
+import {MockImplementationMaliciousModule} from "./mocks/MockImplementationMaliciousModule.sol";
 import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 
 /**
@@ -26,9 +27,11 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
     uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
     uint16 internal constant _MODULE_SINGLE_VERSION_V3 = 3;
+    uint16 internal constant _MODULE_SINGLE_VERSION_V4 = 3;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V2 = true;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V3 = false;
+    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V4 = false;
 
     // =======
     // Storage
@@ -37,6 +40,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     MockImplementationModule public singleModuleV1;
     MockImplementationModule public singleModuleV2;
     MockImplementationDeprecatedModule public singleModuleV3;
+    MockImplementationMaliciousModule public singleModuleV4;
     MockImplementationModule public singleModuleProxy;
 
     // =====
@@ -73,6 +77,15 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             })
         );
 
+        singleModuleV4 = new MockImplementationMaliciousModule(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_SINGLE_ID,
+                moduleType: _MODULE_SINGLE_TYPE,
+                moduleVersion: _MODULE_SINGLE_VERSION_V4,
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V4
+            })
+        );
+
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV1);
         installerProxy.addModules(moduleAddresses);
@@ -94,6 +107,18 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     }
 
     function testUnitModuleSettings() external {
+        // Proxies
+
+        _testModuleConfiguration(
+            singleModuleProxy,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V1,
+            _MODULE_SINGLE_UPGRADEABLE_V1
+        );
+
+        // Modules
+
         _testModuleConfiguration(
             singleModuleV1,
             _MODULE_SINGLE_ID,
@@ -103,11 +128,27 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         );
 
         _testModuleConfiguration(
-            singleModuleProxy,
+            singleModuleV2,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1
+            _MODULE_SINGLE_VERSION_V2,
+            _MODULE_SINGLE_UPGRADEABLE_V2
+        );
+
+        _testModuleConfiguration(
+            singleModuleV3,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V3,
+            _MODULE_SINGLE_UPGRADEABLE_V3
+        );
+
+        _testModuleConfiguration(
+            singleModuleV4,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V4,
+            _MODULE_SINGLE_UPGRADEABLE_V4
         );
     }
 
