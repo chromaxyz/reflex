@@ -30,11 +30,11 @@ contract MockImplementationMaliciousModule is MockReflexModule {
     // Test stubs
     // ==========
 
-    function setNumber(uint8 number_) public {
+    function setNumber(uint8 number_) external {
         _number = number_;
     }
 
-    function getNumber() public view returns (uint8) {
+    function getNumber() external view returns (uint8) {
         return _number;
     }
 }

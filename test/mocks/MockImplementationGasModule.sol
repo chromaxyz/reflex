@@ -8,9 +8,18 @@ import {ReflexModule} from "../../src/ReflexModule.sol";
 import {ImplementationState} from "./abstracts/ImplementationState.sol";
 
 /**
- * @title Mock Reflex Module
+ * @title Mock Implementation Gas Module
  */
-contract MockReflexGasModule is ReflexModule {
+contract MockImplementationGasModule is ReflexModule, ImplementationState {
+    // =======
+    // Storage
+    // =======
+
+    /**
+     * @dev NOTE: DO NOT IMPLEMENT STORAGE INSIDE OF MODULES!
+     */
+    uint8 internal _number;
+
     // ===========
     // Constructor
     // ===========
@@ -19,20 +28,6 @@ contract MockReflexGasModule is ReflexModule {
      * @param moduleSettings_ Module settings.
      */
     constructor(ModuleSettings memory moduleSettings_) ReflexModule(moduleSettings_) {}
-}
-
-/**
- * @title Mock Implementation Gas Module
- */
-contract MockImplementationGasModule is MockReflexGasModule, ImplementationState {
-    // ===========
-    // Constructor
-    // ===========
-
-    /**
-     * @param moduleSettings_ Module settings.
-     */
-    constructor(ModuleSettings memory moduleSettings_) MockReflexGasModule(moduleSettings_) {}
 
     // ==========
     // Test stubs
@@ -40,11 +35,11 @@ contract MockImplementationGasModule is MockReflexGasModule, ImplementationState
 
     function getEmpty() public view {}
 
-    function getImplementationState0() public view returns (bytes32) {
-        return _implementationState0;
+    function setNumber(uint8 number_) external {
+        _number = number_;
     }
 
-    function setImplementationState0(bytes32 message_) public {
-        _implementationState0 = message_;
+    function getNumber() external view returns (uint8) {
+        return _number;
     }
 }

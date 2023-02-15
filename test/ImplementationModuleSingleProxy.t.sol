@@ -109,7 +109,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     function testUnitModuleSettings() external {
         // Proxies
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -119,7 +119,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
 
         // Modules
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleV1,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -127,7 +127,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleV2,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -135,7 +135,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V2
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleV3,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -143,7 +143,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V3
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleV4,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -159,7 +159,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
 
         // Verify single-proxy module.
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -173,7 +173,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleV2);
         installerProxy.upgradeModules(moduleAddresses);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -191,7 +191,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleV3);
         installerProxy.upgradeModules(moduleAddresses);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,

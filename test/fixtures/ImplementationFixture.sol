@@ -55,7 +55,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
     // Test stubs
     // ==========
 
-    function _testModuleConfiguration(
+    function _verifyModuleConfiguration(
         MockReflexModule module_,
         uint32 moduleId_,
         uint16 moduleType_,

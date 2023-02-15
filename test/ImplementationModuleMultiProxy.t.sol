@@ -177,7 +177,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     function testUnitModuleSettings() external {
         // Proxies
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -185,7 +185,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyA,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -193,7 +193,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyB,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -201,7 +201,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyC,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -211,7 +211,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
 
         // Modules
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleV1,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -219,7 +219,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleV2,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -227,7 +227,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_SINGLE_UPGRADEABLE_V2
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleV1,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -235,7 +235,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleV2,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -243,7 +243,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V2
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleV3,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -259,7 +259,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
 
         // Verify multi-proxy module.
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyA,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -267,7 +267,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyB,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -275,7 +275,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V1
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyC,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -289,7 +289,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         moduleAddresses[0] = address(multiModuleV2);
         installerProxy.upgradeModules(moduleAddresses);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyA,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -297,7 +297,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V2
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyB,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -305,7 +305,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V2
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyC,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -323,7 +323,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleV2);
         installerProxy.upgradeModules(moduleAddresses);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             singleModuleProxy,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
@@ -341,7 +341,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         moduleAddresses[0] = address(multiModuleV3);
         installerProxy.upgradeModules(moduleAddresses);
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyA,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -349,7 +349,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V3
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyB,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
@@ -357,7 +357,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V3
         );
 
-        _testModuleConfiguration(
+        _verifyModuleConfiguration(
             multiModuleProxyC,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
