@@ -89,23 +89,23 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
 
         // Message length >= (4 + 20)
         // 4 bytes for selector used to call the proxy.
-        // 20 bytes for the trailing msg.sender.
+        // 20 bytes for the trailing `msg.sender`.
         if (msg.data.length < 24) revert MessageTooShort();
 
         // [dispatch() selector (4 bytes)][calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
             // We take full control of memory in this inline assembly block because it will not return to Solidity code.
 
-            // Copy msg.data into memory, starting at position 0.
+            // Copy `msg.data` into memory, starting at position `0`.
             calldatacopy(0x00, 0x00, calldatasize())
 
-            // Append proxy address to copied msg.data in memory, prepended by 12 bytes.
+            // Append proxy address with leading 12 bytes of padding removed to copied `msg.data` in memory.
             mstore(calldatasize(), shl(96, caller()))
 
             // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
             let result := delegatecall(gas(), moduleImplementation, 0, add(calldatasize(), 20), 0, 0)
 
-            // Copy the returned data into memory, starting at position 0.
+            // Copy the returned data into memory, starting at position `0`.
             returndatacopy(0x00, 0x00, returndatasize())
 
             switch result

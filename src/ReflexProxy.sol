@@ -80,10 +80,9 @@ contract ReflexProxy is IReflexProxy {
             // This branch is expected to never be executed as `msg.sender` can never be 0.
             // If this branch ever were to be executed it is expected to be harmless and have no side-effects.
             // A `delegatecall` to non-contract address 0 yields `true` and is ignored.
-            /// @solidity memory-safe-assembly
             assembly {
                 // Ignore return value.
-                pop(delegatecall(gas(), 0x00, 0, 0, 0, 0))
+                pop(delegatecall(gas(), 0, 0, 0, 0, 0))
             }
         } else {
             // If the function selector clashes fall through to the fallback.
@@ -106,7 +105,7 @@ contract ReflexProxy is IReflexProxy {
             // Calldata: [number of topics as uint8 (1 byte)][topic #i (32 bytes)]{0,4}[extra log data (N bytes)]
             assembly {
                 // We take full control of memory in this inline assembly block because it will not return to
-                // Solidity code. We overwrite the Solidity scratch pad at memory position 0.
+                // Solidity code. We overwrite the Solidity scratch pad at memory position `0`.
                 mstore(0x00, 0x00)
 
                 // Copy all transaction data into memory starting at location `31`.
@@ -155,18 +154,18 @@ contract ReflexProxy is IReflexProxy {
             assembly {
                 // We take full control of memory in this inline assembly block because it will not return to Solidity code.
 
-                // Copy msg.data into memory, starting at position 0.
+                // Copy msg.data into memory, starting at position `0`.
                 calldatacopy(0x00, 0x00, calldatasize())
 
-                // Append msg.sender to copied msg.data in memory, prepended by 12 bytes.
+                // Append `msg.sender` with leading 12 bytes of padding removed to copied `msg.data` in memory.
                 mstore(calldatasize(), shl(96, caller()))
 
-                // Call so that execution happens within the main context.
+                // Call so that execution happens within the `Dispatcher` context.
                 // Out and outsize are 0 because we don't know the size yet.
                 // Calldata: [calldata (N bytes)][msg.sender (20 bytes)]
                 let result := call(gas(), deployer_, 0, 0, add(calldatasize(), 20), 0, 0)
 
-                // Copy the returned data into memory, starting at position 0.
+                // Copy the returned data into memory, starting at position `0`.
                 returndatacopy(0x00, 0x00, returndatasize())
 
                 switch result
