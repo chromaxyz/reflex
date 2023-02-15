@@ -154,13 +154,11 @@ contract ReflexProxy is IReflexProxy {
             // Calldata: [calldata (N bytes)]
             assembly {
                 // We take full control of memory in this inline assembly block because it will not return to Solidity code.
-                // We overwrite the Solidity scratch pad at memory position 0 with the `dispatch()` function signature,
-                // occuping the first 4 bytes.
 
-                // Copy msg.data into memory.
+                // Copy msg.data into memory, starting at position 0.
                 calldatacopy(0x00, 0x00, calldatasize())
 
-                // We store the address of the `msg.sender` at the end of the copied msg.data in memory.
+                // Append msg.sender to copied msg.data in memory, prepended by 12 bytes.
                 mstore(calldatasize(), shl(96, caller()))
 
                 // Call so that execution happens within the main context.
@@ -168,7 +166,7 @@ contract ReflexProxy is IReflexProxy {
                 // Calldata: [calldata (N bytes)][msg.sender (20 bytes)]
                 let result := call(gas(), deployer_, 0, 0, add(calldatasize(), 20), 0, 0)
 
-                // Copy the returned data into memory, starting at position `0`.
+                // Copy the returned data into memory, starting at position 0.
                 returndatacopy(0x00, 0x00, returndatasize())
 
                 switch result

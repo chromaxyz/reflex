@@ -94,16 +94,18 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
 
         // [dispatch() selector (4 bytes)][calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
-            // Copy msg.data into memory, starting at position `4`.
+            // We take full control of memory in this inline assembly block because it will not return to Solidity code.
+
+            // Copy msg.data into memory, starting at position 0.
             calldatacopy(0x00, 0x00, calldatasize())
 
-            // Append proxy address.
+            // Append proxy address to copied msg.data in memory, prepended by 12 bytes.
             mstore(calldatasize(), shl(96, caller()))
 
             // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
             let result := delegatecall(gas(), moduleImplementation, 0, add(calldatasize(), 20), 0, 0)
 
-            // Copy the returned data into memory, starting at position `0`.
+            // Copy the returned data into memory, starting at position 0.
             returndatacopy(0x00, 0x00, returndatasize())
 
             switch result
