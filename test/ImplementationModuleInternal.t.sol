@@ -230,7 +230,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeInternalModuleAndDeprecate(bytes32 message_) public {
+    function testFuzzUpgradeInternalModuleAndDeprecate(bytes32 message_) external BrutalizeMemory {
         // Verify storage sets in `Dispatcher` context.
 
         _verifySetStateSlot(message_);
@@ -311,7 +311,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         _verifyGetStateSlot(message_);
     }
 
-    function testFuzzUpgradeInternalModuleToMaliciousModule(bytes32 message_, uint8 number_) public {
+    function testFuzzUpgradeInternalModuleToMaliciousModule(bytes32 message_, uint8 number_) external BrutalizeMemory {
         vm.assume(uint8(uint256(message_)) != number_);
 
         // Verify storage sets in `Dispatcher` context.
