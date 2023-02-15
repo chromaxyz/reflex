@@ -58,11 +58,11 @@ contract ImplementationGasTest is ImplementationFixture {
     // =====
 
     function testGasProxyGetEmpty() external view {
-        // 8211 - 143 = 8068
+        // 8208 - 143 = 8065
         //
-        //   [13372] ImplementationGasTest::testGasProxyGetEmpty()
-        //     ├─ [8211] ReflexProxy::getEmpty() [staticcall]
-        //     │   ├─ [5355] MockImplementationDispatcher::getEmpty()
+        //   [13369] ImplementationGasTest::testGasProxyGetEmpty()
+        //     ├─ [8208] ReflexProxy::getEmpty() [staticcall]
+        //     │   ├─ [5352] MockImplementationDispatcher::getEmpty()
         //     │   │   ├─ [143] MockImplementationGasModule::getEmpty() [delegatecall]
         //     │   │   │   └─ ← ()
         //     │   │   └─ ← ()
@@ -73,11 +73,11 @@ contract ImplementationGasTest is ImplementationFixture {
     }
 
     function testGasProxySetValue() external {
-        // 10583 - 2509 = 8074
+        // 10580 - 2509 = 8071
         //
-        //   [15729] ImplementationGasTest::testGasProxySetValue()
-        //     ├─ [10583] ReflexProxy::setNumber(1)
-        //     │   ├─ [7724] MockImplementationDispatcher::setNumber(1)
+        //   [15726] ImplementationGasTest::testGasProxySetValue()
+        //     ├─ [10580] ReflexProxy::setNumber(1)
+        //     │   ├─ [7721] MockImplementationDispatcher::setNumber(1)
         //     │   │   ├─ [2509] MockImplementationGasModule::setNumber(1) [delegatecall]
         //     │   │   │   └─ ← ()
         //     │   │   └─ ← ()
@@ -88,11 +88,11 @@ contract ImplementationGasTest is ImplementationFixture {
     }
 
     function testGasProxyGetValue() external view {
-        // 10427 - 2355 = 8072
+        // 10424 - 2355 = 8069
         //
-        //   [15649] ImplementationGasTest::testGasProxyGetValue()
-        //     ├─ [10427] ReflexProxy::getNumber() [staticcall]
-        //     │   ├─ [7568] MockImplementationDispatcher::getNumber()
+        //   [15646] ImplementationGasTest::testGasProxyGetValue()
+        //     ├─ [10424] ReflexProxy::getNumber() [staticcall]
+        //     │   ├─ [7565] MockImplementationDispatcher::getNumber()
         //     │   │   ├─ [2355] MockImplementationGasModule::getNumber() [delegatecall]
         //     │   │   │   └─ ← 1
         //     │   │   └─ ← 1
