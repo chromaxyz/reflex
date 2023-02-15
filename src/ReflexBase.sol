@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
-import {console2} from "forge-std/console2.sol";
-
 // Interfaces
 import {IReflexBase} from "./interfaces/IReflexBase.sol";
 
@@ -124,7 +122,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @return messageSender_ Message sender.
      * @return proxyAddress_ Proxy address.
      */
-    function _unpackTrailingParameters() internal view virtual returns (address messageSender_, address proxyAddress_) {
+    function _unpackTrailingParameters() internal pure virtual returns (address messageSender_, address proxyAddress_) {
         /// @solidity memory-safe-assembly
         assembly {
             // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]

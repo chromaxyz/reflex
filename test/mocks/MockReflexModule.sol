@@ -136,7 +136,7 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         return _unpackProxyAddress();
     }
 
-    function testUnitUnpackTrailingParameters() external view returns (address, address) {
+    function testUnitUnpackTrailingParameters() external pure returns (address, address) {
         return _unpackTrailingParameters();
     }
 
