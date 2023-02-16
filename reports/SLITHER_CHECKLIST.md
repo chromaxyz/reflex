@@ -1,9 +1,9 @@
 Summary
 
-- [uninitialized-state](#uninitialized-state) (2 results) (High)
-- [calls-loop](#calls-loop) (5 results) (Low)
+- [uninitialized-state](#uninitialized-state) (3 results) (High)
+- [calls-loop](#calls-loop) (6 results) (Low)
 - [assembly](#assembly) (7 results) (Informational)
-- [low-level-calls](#low-level-calls) (2 results) (Informational)
+- [low-level-calls](#low-level-calls) (3 results) (Informational)
 - [naming-convention](#naming-convention) (13 results) (Informational)
 - [similar-names](#similar-names) (1 results) (Informational)
 
@@ -18,6 +18,11 @@ Confidence: High
 ../src/ReflexState.sol#L53
 
 - [ ] ID-1
+      [ReflexState.\_modules](../src/ReflexState.sol#L53) is never initialized. It is used in: - [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L78-L97) - [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L88-L94)
+
+../src/ReflexState.sol#L53
+
+- [ ] ID-2
       [ReflexState.\_owner](../src/ReflexState.sol#L40) is never initialized. It is used in:
 
 ../src/ReflexState.sol#L40
@@ -27,27 +32,32 @@ Confidence: High
 Impact: Low
 Confidence: Medium
 
-- [ ] ID-2
+- [ ] ID-3
       [ReflexInstaller.addModules(address[])](../src/ReflexInstaller.sol#L112-L136) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L118)
 
 ../src/ReflexInstaller.sol#L112-L136
 
-- [ ] ID-3
+- [ ] ID-4
+      [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L78-L97) has external calls inside a loop: [(success*,returnData*) = moduleImplementation*.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender\_),uint160(proxyAddress)))](../src/periphery/ReflexBatch.sol#L94-L96)
+
+../src/periphery/ReflexBatch.sol#L78-L97
+
+- [ ] ID-5
       [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L147-L183) has external calls inside a loop: [moduleSettings*.moduleType != IReflexModule(\_modules[moduleSettings*.moduleId]).moduleType()](../src/ReflexInstaller.sol#L167)
 
 ../src/ReflexInstaller.sol#L147-L183
 
-- [ ] ID-4
+- [ ] ID-6
       [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L147-L183) has external calls inside a loop: [! IReflexModule(_modules[moduleSettings_.moduleId]).moduleUpgradeable()](../src/ReflexInstaller.sol#L159)
 
 ../src/ReflexInstaller.sol#L147-L183
 
-- [ ] ID-5
+- [ ] ID-7
       [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L147-L183) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L153)
 
 ../src/ReflexInstaller.sol#L147-L183
 
-- [ ] ID-6
+- [ ] ID-8
       [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L147-L183) has external calls inside a loop: [moduleSettings*.moduleVersion <= IReflexModule(\_modules[moduleSettings*.moduleId]).moduleVersion()](../src/ReflexInstaller.sol#L163)
 
 ../src/ReflexInstaller.sol#L147-L183
@@ -57,122 +67,127 @@ Confidence: Medium
 Impact: Informational
 Confidence: High
 
-- [ ] ID-7
+- [ ] ID-9
       [ReflexProxy.\_fallback()](../src/ReflexProxy.sol#L100-L181) uses assembly - [INLINE ASM](../src/ReflexProxy.sol#L106-L151) - [INLINE ASM](../src/ReflexProxy.sol#L154-L179)
 
 ../src/ReflexProxy.sol#L100-L181
 
-- [ ] ID-8
-      [ReflexDispatcher.fallback()](../src/ReflexDispatcher.sol#L82-L120) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L96-L119)
+- [ ] ID-10
+      [ReflexBase.\_unpackTrailingParameters()](../src/ReflexBase.sol#L125-L132) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L128-L131)
 
-../src/ReflexDispatcher.sol#L82-L120
+../src/ReflexBase.sol#L125-L132
 
-- [ ] ID-9
+- [ ] ID-11
       [ReflexProxy.sentinel()](../src/ReflexProxy.sol#L76-L91) uses assembly - [INLINE ASM](../src/ReflexProxy.sol#L83-L86)
 
 ../src/ReflexProxy.sol#L76-L91
 
-- [ ] ID-10
+- [ ] ID-12
+      [ReflexDispatcher.fallback()](../src/ReflexDispatcher.sol#L83-L121) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L97-L120)
+
+../src/ReflexDispatcher.sol#L83-L121
+
+- [ ] ID-13
       [ReflexBase.\_unpackMessageSender()](../src/ReflexBase.sol#L100-L106) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L103-L105)
 
 ../src/ReflexBase.sol#L100-L106
 
-- [ ] ID-11
+- [ ] ID-14
       [ReflexBase.\_revertBytes(bytes)](../src/ReflexBase.sol#L138-L147) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L141-L143)
 
 ../src/ReflexBase.sol#L138-L147
 
-- [ ] ID-12
+- [ ] ID-15
       [ReflexBase.\_unpackProxyAddress()](../src/ReflexBase.sol#L112-L118) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L115-L117)
 
 ../src/ReflexBase.sol#L112-L118
-
-- [ ] ID-13
-      [ReflexBase.\_unpackTrailingParameters()](../src/ReflexBase.sol#L125-L132) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L127-L131)
-
-../src/ReflexBase.sol#L125-L132
 
 ## low-level-calls
 
 Impact: Informational
 Confidence: High
 
-- [ ] ID-14
+- [ ] ID-16
       Low level call in [ReflexProxy.implementation()](../src/ReflexProxy.sol#L60-L70): - [(success,response) = \_deployer.staticcall(abi.encodeWithSelector(\_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR,\_moduleId))](../src/ReflexProxy.sol#L61-L63)
 
 ../src/ReflexProxy.sol#L60-L70
 
-- [ ] ID-15
+- [ ] ID-17
       Low level call in [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L88-L94): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L89)
 
 ../src/ReflexBase.sol#L88-L94
+
+- [ ] ID-18
+      Low level call in [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L78-L97): - [(success*,returnData*) = moduleImplementation*.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender\_),uint160(proxyAddress)))](../src/periphery/ReflexBatch.sol#L94-L96)
+
+../src/periphery/ReflexBatch.sol#L78-L97
 
 ## naming-convention
 
 Impact: Informational
 Confidence: High
 
-- [ ] ID-16
+- [ ] ID-19
       Variable [ReflexState.\_pendingOwner](../src/ReflexState.sol#L46) is not in mixedCase
 
 ../src/ReflexState.sol#L46
 
-- [ ] ID-17
+- [ ] ID-20
       Variable [ReflexModule.\_moduleId](../src/ReflexModule.sol#L24) is not in mixedCase
 
 ../src/ReflexModule.sol#L24
 
-- [ ] ID-18
+- [ ] ID-21
       Variable [ReflexState.\_reentrancyLock](../src/ReflexState.sol#L34) is not in mixedCase
 
 ../src/ReflexState.sol#L34
 
-- [ ] ID-19
+- [ ] ID-22
       Variable [ReflexState.\_modules](../src/ReflexState.sol#L53) is not in mixedCase
 
 ../src/ReflexState.sol#L53
 
-- [ ] ID-20
+- [ ] ID-23
       Variable [ReflexProxy.\_deployer](../src/ReflexProxy.sol#L35) is not in mixedCase
 
 ../src/ReflexProxy.sol#L35
 
-- [ ] ID-21
+- [ ] ID-24
       Variable [ReflexProxy.\_moduleId](../src/ReflexProxy.sol#L30) is not in mixedCase
 
 ../src/ReflexProxy.sol#L30
 
-- [ ] ID-22
+- [ ] ID-25
       Variable [ReflexModule.\_moduleVersion](../src/ReflexModule.sol#L34) is not in mixedCase
 
 ../src/ReflexModule.sol#L34
 
-- [ ] ID-23
+- [ ] ID-26
       Variable [ReflexModule.\_moduleUpgradeable](../src/ReflexModule.sol#L39) is not in mixedCase
 
 ../src/ReflexModule.sol#L39
 
-- [ ] ID-24
+- [ ] ID-27
       Variable [ReflexState.\_\_gap](../src/ReflexState.sol#L76) is not in mixedCase
 
 ../src/ReflexState.sol#L76
 
-- [ ] ID-25
+- [ ] ID-28
       Variable [ReflexState.\_owner](../src/ReflexState.sol#L40) is not in mixedCase
 
 ../src/ReflexState.sol#L40
 
-- [ ] ID-26
+- [ ] ID-29
       Variable [ReflexState.\_proxies](../src/ReflexState.sol#L60) is not in mixedCase
 
 ../src/ReflexState.sol#L60
 
-- [ ] ID-27
+- [ ] ID-30
       Variable [ReflexModule.\_moduleType](../src/ReflexModule.sol#L29) is not in mixedCase
 
 ../src/ReflexModule.sol#L29
 
-- [ ] ID-28
+- [ ] ID-31
       Variable [ReflexState.\_relations](../src/ReflexState.sol#L67) is not in mixedCase
 
 ../src/ReflexState.sol#L67
@@ -182,7 +197,7 @@ Confidence: High
 Impact: Informational
 Confidence: Medium
 
-- [ ] ID-29
+- [ ] ID-32
       Variable [ReflexModule.\_moduleType](../src/ReflexModule.sol#L29) is too similar to [ReflexBase._createProxy(uint32,uint16,address).moduleType_](../src/ReflexBase.sol#L58)
 
 ../src/ReflexModule.sol#L29

@@ -211,6 +211,53 @@
 
 ```
 
+**ReflexBatch**
+
+```json
+{
+  "name": "performBatchCall",
+  "modifiers": [
+    {
+      "id": 28283,
+      "kind": "modifierInvocation",
+      "modifierName": {
+        "id": 28282,
+        "name": "reentrancyAllowed",
+        "nameLocations": [
+          "780:17:31"
+        ],
+        "nodeType": "IdentifierPath",
+        "referencedDeclaration": 26905,
+        "src": "780:17:31"
+      },
+      "nodeType": "ModifierInvocation",
+      "src": "780:17:31"
+    }
+  ]
+}
+{
+  "name": "simulateBatchCall",
+  "modifiers": [
+    {
+      "id": 28340,
+      "kind": "modifierInvocation",
+      "modifierName": {
+        "id": 28339,
+        "name": "reentrancyAllowed",
+        "nameLocations": [
+          "1509:17:31"
+        ],
+        "nodeType": "IdentifierPath",
+        "referencedDeclaration": 26905,
+        "src": "1509:17:31"
+      },
+      "nodeType": "ModifierInvocation",
+      "src": "1509:17:31"
+    }
+  ]
+}
+```
+
 **MockImplementationDispatcher**
 
 ```json
