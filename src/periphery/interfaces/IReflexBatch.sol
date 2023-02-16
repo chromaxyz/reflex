@@ -33,9 +33,9 @@ interface IReflexBatch is IReflexModule, TReflexBatch {
      * @notice Single action in a batch request.
      */
     struct BatchAction {
-        bool allowError;
         address proxyAddress;
-        bytes data;
+        bool allowFailure;
+        bytes callData;
     }
 
     /**
@@ -43,6 +43,6 @@ interface IReflexBatch is IReflexModule, TReflexBatch {
      */
     struct BatchActionResponse {
         bool success;
-        bytes result;
+        bytes returnData;
     }
 }

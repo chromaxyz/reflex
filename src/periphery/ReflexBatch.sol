@@ -21,51 +21,80 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
 
     /**
      * @notice Perform a batch call to interact with multiple modules in a single transaction.
-     * @param actions List of
+     * @param actions_ List of actions to perform.
      */
-    function performBatchCall(BatchAction[] calldata actions, bool simulate) external virtual reentrancyAllowed {
-        // TODO: remove simulation mode?
-        // TODO: inline proxy address?
-        // TODO: optimize encodePacked?
-
+    function performBatchCall(BatchAction[] calldata actions_) external virtual reentrancyAllowed {
         address messageSender = _unpackMessageSender();
 
-        BatchActionResponse[] memory simulation;
+        for (uint256 i = 0; i < actions_.length; ) {
+            BatchAction calldata action = actions_[i];
 
-        if (simulate) simulation = new BatchActionResponse[](actions.length);
+            (bool success, bytes memory returnData) = _performBatchAction(messageSender, action);
 
-        for (uint256 i = 0; i < actions.length; ) {
-            BatchAction calldata action = actions[i];
+            if (!(success || action.allowFailure)) _revertBytes(returnData);
 
-            address proxyAddress = action.proxyAddress;
-
-            uint32 moduleId_ = _relations[proxyAddress].moduleId;
-
-            if (moduleId_ == 0) revert InvalidModuleId();
-
-            if (_relations[proxyAddress].moduleType == _MODULE_TYPE_INTERNAL) revert InvalidModuleType();
-
-            address moduleImplementation_ = _relations[proxyAddress].moduleImplementation;
-
-            if (moduleImplementation_ == address(0)) moduleImplementation_ = _modules[moduleId_];
-
-            if (moduleImplementation_ == address(0)) revert ModuleNonexistent(moduleId_);
-
-            (bool success, bytes memory result) = moduleImplementation_.delegatecall(
-                abi.encodePacked(action.data, uint160(messageSender), uint160(proxyAddress))
-            );
-
-            if (simulate) {
-                simulation[i] = BatchActionResponse({success: success, result: result});
-            } else if (!(success || action.allowError)) {
-                _revertBytes(result);
+            unchecked {
+                ++i;
             }
+        }
+    }
+
+    /**
+     * @notice Simulate a batch call to interact with multiple modules in a single transaction.
+     * @param actions_ List of actions to simulate.
+     * @dev Reverts with simulation results.
+     */
+    function simulateBatchCall(BatchAction[] calldata actions_) external virtual reentrancyAllowed {
+        address messageSender = _unpackMessageSender();
+
+        BatchActionResponse[] memory simulation = new BatchActionResponse[](actions_.length);
+
+        for (uint256 i = 0; i < actions_.length; ) {
+            BatchAction calldata action = actions_[i];
+
+            (bool success, bytes memory returnData) = _performBatchAction(messageSender, action);
+
+            simulation[i] = BatchActionResponse({success: success, returnData: returnData});
 
             unchecked {
                 ++i;
             }
         }
 
-        if (simulate) revert BatchSimulation(simulation);
+        revert BatchSimulation(simulation);
+    }
+
+    // ================
+    // Internal methods
+    // ================
+
+    /**
+     * @notice Perform a single batch action.
+     * @param messageSender_ Message sender.
+     * @param action_ Action to perform.
+     * @return success_ Whether the batch action was succesful.
+     * @return returnData_ The return data of the performed batch action.
+     */
+    function _performBatchAction(
+        address messageSender_,
+        BatchAction calldata action_
+    ) internal virtual returns (bool success_, bytes memory returnData_) {
+        address proxyAddress = action_.proxyAddress;
+
+        uint32 moduleId_ = _relations[proxyAddress].moduleId;
+
+        if (moduleId_ == 0) revert InvalidModuleId();
+
+        if (_relations[proxyAddress].moduleType == _MODULE_TYPE_INTERNAL) revert InvalidModuleType();
+
+        address moduleImplementation_ = _relations[proxyAddress].moduleImplementation;
+
+        if (moduleImplementation_ == address(0)) moduleImplementation_ = _modules[moduleId_];
+
+        if (moduleImplementation_ == address(0)) revert ModuleNonexistent(moduleId_);
+
+        (success_, returnData_) = moduleImplementation_.delegatecall(
+            abi.encodePacked(action_.callData, uint160(messageSender_), uint160(proxyAddress))
+        );
     }
 }

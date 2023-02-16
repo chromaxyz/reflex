@@ -9,6 +9,7 @@ import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
 // Mocks
+import {MockMulticall} from "./mocks/external/MockMulticall.sol";
 import {MockReflexBatch} from "./mocks/MockReflexBatch.sol";
 
 /**
@@ -30,6 +31,8 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
 
     MockReflexBatch public batch;
     MockReflexBatch public batchProxy;
+
+    MockMulticall public multicall;
 
     // =====
     // Setup
@@ -74,6 +77,8 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         // batchProxy.performBatchCall(actions, false);
     }
 
+    // verify regular multicall works
+    // verify combinative multicall with batch call
     // test allow error
     // test all paths
     // test with all module types

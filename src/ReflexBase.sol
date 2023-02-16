@@ -132,7 +132,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
     }
 
     /**
-     * @dev Revert with error message.
+     * @dev Bubble up revert with error message.
      * @param errorMessage_ Error message.
      */
     function _revertBytes(bytes memory errorMessage_) internal pure {
