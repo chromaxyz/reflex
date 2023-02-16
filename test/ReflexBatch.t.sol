@@ -56,6 +56,9 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
     // Storage
     // =======
 
+    MockReflexBatch public batch;
+    MockReflexBatch public batchProxy;
+
     MockImplementationERC20Hub public singleModule;
     MockImplementationERC20Hub public singleModuleProxy;
 
@@ -63,9 +66,6 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
     MockImplementationERC20 public multiModuleProxy;
 
     MockImplementationModule public internalModule;
-
-    MockReflexBatch public batch;
-    MockReflexBatch public batchProxy;
 
     // =====
     // Setup
@@ -115,7 +115,6 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         moduleAddresses[1] = address(singleModule);
         moduleAddresses[2] = address(multiModule);
         moduleAddresses[3] = address(internalModule);
-
         installerProxy.addModules(moduleAddresses);
 
         batchProxy = MockReflexBatch(dispatcher.moduleIdToProxy(_MODULE_ID_BATCH));
