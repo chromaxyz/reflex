@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexBatch} from "../src/periphery/interfaces/IReflexBatch.sol";
+import {IReflexBatch, TReflexBatch} from "../src/periphery/interfaces/IReflexBatch.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
@@ -54,7 +54,27 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchProxy = MockReflexBatch(dispatcher.moduleIdToProxy(_MODULE_ID_BATCH));
     }
 
-    function testUnitPerformBatchCall() external {
-        // Add scenario
+    function testUnitPerformBatchCallSimulation() external {
+        // IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
+        // actions[0] = IReflexBatch.BatchAction({
+        //     allowError: false,
+        //     proxy: address(engineProxy),
+        //     data: abi.encodeCall(Engine.borrow, (WETH, 0.25e18))
+        // });
+        // actions[1] = IReflexBatch.BatchAction({
+        //     allowError: false,
+        //     proxy: address(swapProxy),
+        //     data: abi.encodeCall(Swap.swap, (swapParams))
+        // });
+        // batchProxy.performBatchCall(actions, true);
     }
+
+    function testUnitPerformBatchCallExecution() external {
+        // IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
+        // batchProxy.performBatchCall(actions, false);
+    }
+
+    // test allow error
+    // test all paths
+    // test with all module types
 }

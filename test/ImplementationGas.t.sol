@@ -134,4 +134,7 @@ contract ImplementationGasTest is ImplementationFixture {
 
         singleModuleProxy.getNumber();
     }
+
+    // TODO: add test to measure gas overhead inside of a ReflexBatch as it doesn't route through the proxy indirection layer
+    // but rather directly delegatecalls into modules.
 }
