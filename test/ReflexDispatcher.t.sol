@@ -144,28 +144,28 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
     }
 
     function testUnitRevertDispatchCalledNotTrusted() external {
-        (bool success, bytes memory errorMessage) = address(dispatcher).call("");
+        (bool success, bytes memory result) = address(dispatcher).call("");
 
         assertFalse(success);
 
         vm.expectRevert(CallerNotTrusted.selector);
         /// @solidity memory-safe-assembly
         assembly {
-            revert(add(32, errorMessage), mload(errorMessage))
+            revert(add(32, result), mload(result))
         }
     }
 
     function testUnitRevertDispatchMessageTooShort() external {
         vm.prank(address(installerProxy));
 
-        (bool success, bytes memory errorMessage) = address(dispatcher).call("");
+        (bool success, bytes memory result) = address(dispatcher).call("");
 
         assertFalse(success);
 
         vm.expectRevert(MessageTooShort.selector);
         /// @solidity memory-safe-assembly
         assembly {
-            revert(add(32, errorMessage), mload(errorMessage))
+            revert(add(32, result), mload(result))
         }
     }
 }
