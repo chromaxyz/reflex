@@ -123,9 +123,9 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @return proxyAddress_ Proxy address.
      */
     function _unpackTrailingParameters() internal pure virtual returns (address messageSender_, address proxyAddress_) {
+        // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
         /// @solidity memory-safe-assembly
         assembly {
-            // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
             messageSender_ := shr(96, calldataload(sub(calldatasize(), 40)))
             proxyAddress_ := shr(96, calldataload(sub(calldatasize(), 20)))
         }
