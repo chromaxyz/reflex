@@ -277,7 +277,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchProxy.performBatchCall(actions);
     }
 
-    function testUnitRevertPerformBatchCallUnregisteredMultiModule() external {
+    function testUnitRevertPerformBatchCallNotRegisteredMultiModule() external {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -300,7 +300,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
             callData: abi.encodeCall(MockImplementationModule.getImplementationState0, ())
         });
 
-        vm.expectRevert(abi.encodeWithSelector(ModuleNonexistent.selector, _MODULE_MULTI_ID_B));
+        vm.expectRevert(abi.encodeWithSelector(ModuleNotRegistered.selector, _MODULE_MULTI_ID_B));
         batchProxy.performBatchCall(actions);
     }
 }

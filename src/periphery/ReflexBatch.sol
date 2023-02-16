@@ -25,8 +25,9 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      */
     function performBatchCall(BatchAction[] calldata actions_) external virtual reentrancyAllowed {
         address messageSender = _unpackMessageSender();
+        uint256 actionsLength = actions_.length;
 
-        for (uint256 i = 0; i < actions_.length; ) {
+        for (uint256 i = 0; i < actionsLength; ) {
             BatchAction calldata action = actions_[i];
 
             (bool success, bytes memory returnData) = _performBatchAction(messageSender, action);
@@ -46,10 +47,11 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      */
     function simulateBatchCall(BatchAction[] calldata actions_) external virtual reentrancyAllowed {
         address messageSender = _unpackMessageSender();
+        uint256 actionsLength = actions_.length;
 
         BatchActionResponse[] memory simulation = new BatchActionResponse[](actions_.length);
 
-        for (uint256 i = 0; i < actions_.length; ) {
+        for (uint256 i = 0; i < actionsLength; ) {
             BatchAction calldata action = actions_[i];
 
             (bool success, bytes memory returnData) = _performBatchAction(messageSender, action);
@@ -89,7 +91,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
 
         if (moduleImplementation_ == address(0)) moduleImplementation_ = _modules[moduleId_];
 
-        if (moduleImplementation_ == address(0)) revert ModuleNonexistent(moduleId_);
+        if (moduleImplementation_ == address(0)) revert ModuleNotRegistered(moduleId_);
 
         (success_, returnData_) = moduleImplementation_.delegatecall(
             abi.encodePacked(action_.callData, uint160(messageSender_), uint160(proxyAddress))

@@ -154,20 +154,20 @@ contract ImplementationGasTest is ImplementationFixture {
     }
 
     function testGasBatchCall() external {
-        // Cold: 19174 gas (21683-2509)
+        // Cold: 19179 gas (21688-2509)
         //
-        //     ├─ [21683] ReflexProxy::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
-        //     │   ├─ [18703] MockImplementationDispatcher::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
-        //     │   │   ├─ [13370] MockReflexBatch::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)]) [delegatecall]
-        //     │   │   │   ├─ [2509] MockImplementationGasModule::setNumber(1) [delegatecall]
-        //     │   │   │   │   └─ ← ()
-        //     │   │   │   ├─ [355] MockImplementationGasModule::getNumber() [delegatecall]
-        //     │   │   │   │   └─ ← 1
-        //     │   │   │   ├─ [143] MockImplementationGasModule::getEmpty() [delegatecall]
-        //     │   │   │   │   └─ ← ()
-        //     │   │   │   └─ ← ()
-        //     │   │   └─ ← ()
-        //     │   └─ ← ()
+        // ├─ [21688] ReflexProxy::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
+        // │   ├─ [18708] MockImplementationDispatcher::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
+        // │   │   ├─ [13375] MockReflexBatch::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)]) [delegatecall]
+        // │   │   │   ├─ [2509] MockImplementationGasModule::setNumber(1) [delegatecall]
+        // │   │   │   │   └─ ← ()
+        // │   │   │   ├─ [355] MockImplementationGasModule::getNumber() [delegatecall]
+        // │   │   │   │   └─ ← 1
+        // │   │   │   ├─ [143] MockImplementationGasModule::getEmpty() [delegatecall]
+        // │   │   │   │   └─ ← ()
+        // │   │   │   └─ ← ()
+        // │   │   └─ ← ()
+        // │   └─ ← ()
 
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](3);
 
@@ -191,21 +191,21 @@ contract ImplementationGasTest is ImplementationFixture {
 
         batchProxy.performBatchCall(actions);
 
-        // Hot: 7674 gas (8183-509)
+        // Hot: 7679 gas (8188-509)
         //
-        //     ├─ [8183] ReflexProxy::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
-        //     │   ├─ [7703] MockImplementationDispatcher::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
-        //     │   │   ├─ [6870] MockReflexBatch::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)]) [delegatecall]
-        //     │   │   │   ├─ [509] MockImplementationGasModule::setNumber(1) [delegatecall]
-        //     │   │   │   │   └─ ← ()
-        //     │   │   │   ├─ [355] MockImplementationGasModule::getNumber() [delegatecall]
-        //     │   │   │   │   └─ ← 1
-        //     │   │   │   ├─ [143] MockImplementationGasModule::getEmpty() [delegatecall]
-        //     │   │   │   │   └─ ← ()
-        //     │   │   │   └─ ← ()
-        //     │   │   └─ ← ()
-        //     │   └─ ← ()
-        //     └─ ← ()
+        // ├─ [8188] ReflexProxy::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
+        // │   ├─ [7708] MockImplementationDispatcher::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
+        // │   │   ├─ [6875] MockReflexBatch::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)]) [delegatecall]
+        // │   │   │   ├─ [509] MockImplementationGasModule::setNumber(1) [delegatecall]
+        // │   │   │   │   └─ ← ()
+        // │   │   │   ├─ [355] MockImplementationGasModule::getNumber() [delegatecall]
+        // │   │   │   │   └─ ← 1
+        // │   │   │   ├─ [143] MockImplementationGasModule::getEmpty() [delegatecall]
+        // │   │   │   │   └─ ← ()
+        // │   │   │   └─ ← ()
+        // │   │   └─ ← ()
+        // │   └─ ← ()
+        // └─ ← ()
 
         batchProxy.performBatchCall(actions);
     }
