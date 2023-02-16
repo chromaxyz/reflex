@@ -89,9 +89,13 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
 
         if (moduleId_ == 0) revert InvalidModuleId();
 
+        // TODO: add check for moduleType?
+
         address moduleImplementation_ = _relations[proxyAddress].moduleImplementation;
 
         if (moduleImplementation_ == address(0)) moduleImplementation_ = _modules[moduleId_];
+
+        // TODO: is this ever possible?
 
         if (moduleImplementation_ == address(0)) revert ModuleNonexistent(moduleId_);
 

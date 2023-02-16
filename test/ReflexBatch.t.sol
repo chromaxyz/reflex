@@ -29,16 +29,25 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
     uint16 internal constant _MODULE_SINGLE_VERSION = 1;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE = true;
 
-    uint32 internal constant _MODULE_MULTI_ID = 101;
-    uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_PROXY;
-    uint16 internal constant _MODULE_MULTI_VERSION = 1;
-    bool internal constant _MODULE_MULTI_UPGRADEABLE = true;
+    uint32 internal constant _MODULE_MULTI_ID_A = 101;
+    uint16 internal constant _MODULE_MULTI_TYPE_A = _MODULE_TYPE_MULTI_PROXY;
+    uint16 internal constant _MODULE_MULTI_VERSION_A = 1;
+    bool internal constant _MODULE_MULTI_UPGRADEABLE_A = true;
 
-    string internal constant _MODULE_MULTI_NAME = "TOKEN A";
-    string internal constant _MODULE_MULTI_SYMBOL = "TKNA";
-    uint8 internal constant _MODULE_MULTI_DECIMALS = 18;
+    uint32 internal constant _MODULE_MULTI_ID_B = 102;
+    uint16 internal constant _MODULE_MULTI_TYPE_B = _MODULE_TYPE_MULTI_PROXY;
+    uint16 internal constant _MODULE_MULTI_VERSION_B = 1;
+    bool internal constant _MODULE_MULTI_UPGRADEABLE_B = true;
 
-    uint32 internal constant _MODULE_INTERNAL_ID = 102;
+    string internal constant _MODULE_MULTI_NAME_A = "TOKEN A";
+    string internal constant _MODULE_MULTI_SYMBOL_A = "TKNA";
+    uint8 internal constant _MODULE_MULTI_DECIMALS_A = 18;
+
+    string internal constant _MODULE_MULTI_NAME_B = "TOKEN B";
+    string internal constant _MODULE_MULTI_SYMBOL_B = "TKNB";
+    uint8 internal constant _MODULE_MULTI_DECIMALS_B = 6;
+
+    uint32 internal constant _MODULE_INTERNAL_ID = 103;
     uint16 internal constant _MODULE_INTERNAL_TYPE = _MODULE_TYPE_INTERNAL;
     uint16 internal constant _MODULE_INTERNAL_VERSION = 1;
     bool internal constant _MODULE_INTERNAL_UPGRADEABLE = true;
@@ -85,10 +94,10 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
 
         multiModule = new MockImplementationERC20(
             IReflexModule.ModuleSettings({
-                moduleId: _MODULE_MULTI_ID,
-                moduleType: _MODULE_MULTI_TYPE,
-                moduleVersion: _MODULE_MULTI_VERSION,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE
+                moduleId: _MODULE_MULTI_ID_A,
+                moduleType: _MODULE_MULTI_TYPE_A,
+                moduleVersion: _MODULE_MULTI_VERSION_A,
+                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_A
             })
         );
 
@@ -115,16 +124,16 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
 
         multiModuleProxy = MockImplementationERC20(
             singleModuleProxy.addERC20(
-                _MODULE_MULTI_ID,
-                _MODULE_MULTI_TYPE,
-                _MODULE_MULTI_NAME,
-                _MODULE_MULTI_SYMBOL,
-                _MODULE_MULTI_DECIMALS
+                _MODULE_MULTI_ID_A,
+                _MODULE_MULTI_TYPE_A,
+                _MODULE_MULTI_NAME_A,
+                _MODULE_MULTI_SYMBOL_A,
+                _MODULE_MULTI_DECIMALS_A
             )
         );
     }
 
-    function testFuzzSimulateBatchCall(bytes32 message_) external {
+    function testFuzzSimulateBatchCallSingleModule(bytes32 message_) external {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -140,16 +149,37 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         });
 
         IReflexBatch.BatchActionResponse[] memory responses = new IReflexBatch.BatchActionResponse[](2);
-
         responses[0] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
-
         responses[1] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encodePacked(message_)});
 
         vm.expectRevert(abi.encodeWithSelector(IReflexBatch.BatchSimulation.selector, responses));
         batchProxy.simulateBatchCall(actions);
     }
 
-    function testFuzzPerformBatchCall(bytes32 message_) public {
+    function testFuzzSimulateBatchCallMultiModule(address target_, uint256 amount_) external {
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
+
+        actions[0] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(multiModuleProxy),
+            callData: abi.encodeCall(MockImplementationERC20.mint, (target_, amount_))
+        });
+
+        actions[1] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(multiModuleProxy),
+            callData: abi.encodeCall(MockImplementationERC20.burn, (target_, amount_))
+        });
+
+        IReflexBatch.BatchActionResponse[] memory responses = new IReflexBatch.BatchActionResponse[](2);
+        responses[0] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
+        responses[1] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
+
+        vm.expectRevert(abi.encodeWithSelector(IReflexBatch.BatchSimulation.selector, responses));
+        batchProxy.simulateBatchCall(actions);
+    }
+
+    function testFuzzPerformBatchCall(bytes32 message_) external {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -167,7 +197,33 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchProxy.performBatchCall(actions);
     }
 
-    function testUnitPerformBatchCallAllowFailure() public {
+    function testFuzzPerformBatchCallAllowFailure(bytes32 message_, address target_, uint256 amount_) external {
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](3);
+
+        actions[0] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(singleModuleProxy),
+            callData: abi.encodeCall(MockImplementationModule.setImplementationState0, (message_))
+        });
+
+        // Action expected to revert
+
+        actions[1] = IReflexBatch.BatchAction({
+            allowFailure: true,
+            proxyAddress: address(batchProxy),
+            callData: abi.encodeCall(MockImplementationModule.getImplementationState0, ())
+        });
+
+        actions[2] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(multiModuleProxy),
+            callData: abi.encodeCall(MockImplementationERC20.mint, (target_, amount_))
+        });
+
+        batchProxy.performBatchCall(actions);
+    }
+
+    function testUnitRevertPerformBatchCallFailure() external {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -176,16 +232,19 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
             callData: abi.encodeCall(MockImplementationModule.setImplementationState0, (bytes32("777")))
         });
 
+        // Action expected to revert
+
         actions[1] = IReflexBatch.BatchAction({
-            allowFailure: true,
+            allowFailure: false,
             proxyAddress: address(batchProxy),
             callData: abi.encodeCall(MockImplementationModule.getImplementationState0, ())
         });
 
+        vm.expectRevert(EmptyError.selector);
         batchProxy.performBatchCall(actions);
     }
 
-    function testUnitRevertPerformBatchCallInvalidModuleId() public {
+    function testUnitRevertPerformBatchCallInvalidModuleId() external {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -204,7 +263,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchProxy.performBatchCall(actions);
     }
 
-    function testUnitRevertPerformBatchCallInternalModule() public {
+    function testUnitRevertPerformBatchCallInternalModule() external {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -223,7 +282,30 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchProxy.performBatchCall(actions);
     }
 
-    // test allow error
-    // test all paths
-    // test with all module types
+    function testUnitRevertPerformBatchCallUnregisteredMultiModule() external {
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
+
+        actions[0] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(singleModuleProxy),
+            callData: abi.encodeCall(MockImplementationModule.setImplementationState0, (bytes32("777")))
+        });
+
+        actions[1] = IReflexBatch.BatchAction({
+            allowFailure: true,
+            proxyAddress: address(
+                singleModuleProxy.addERC20(
+                    _MODULE_MULTI_ID_B,
+                    _MODULE_MULTI_TYPE_B,
+                    _MODULE_MULTI_NAME_B,
+                    _MODULE_MULTI_SYMBOL_B,
+                    _MODULE_MULTI_DECIMALS_B
+                )
+            ),
+            callData: abi.encodeCall(MockImplementationModule.getImplementationState0, ())
+        });
+
+        vm.expectRevert(abi.encodeWithSelector(ModuleNonexistent.selector, _MODULE_MULTI_ID_B));
+        batchProxy.performBatchCall(actions);
+    }
 }
