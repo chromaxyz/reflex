@@ -23,7 +23,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      * @notice Perform a batch call to interact with multiple modules in a single transaction.
      * @param actions_ List of actions to perform.
      */
-    function performBatchCall(BatchAction[] calldata actions_) external virtual reentrancyAllowed {
+    function performBatchCall(BatchAction[] calldata actions_) external virtual override reentrancyAllowed {
         address messageSender = _unpackMessageSender();
         uint256 actionsLength = actions_.length;
 
@@ -45,7 +45,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      * @param actions_ List of actions to simulate.
      * @dev Reverts with simulation results.
      */
-    function simulateBatchCall(BatchAction[] calldata actions_) external virtual reentrancyAllowed {
+    function simulateBatchCall(BatchAction[] calldata actions_) external virtual override reentrancyAllowed {
         address messageSender = _unpackMessageSender();
         uint256 actionsLength = actions_.length;
 
