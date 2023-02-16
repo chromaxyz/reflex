@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexModule, TReflexModule} from "./IReflexModule.sol";
+import {IReflexModule, TReflexModule} from "../../interfaces/IReflexModule.sol";
 
 /**
  * @title Reflex Batch Test Interface
@@ -23,25 +23,25 @@ interface IReflexBatch is IReflexModule, TReflexBatch {
     // Errors
     // ======
 
-    error BatchSimulation(BatchItemResponse[] simulation);
+    error BatchSimulation(BatchActionResponse[] simulation);
 
     // =======
     // Structs
     // =======
 
     /**
-     * @notice Single item in a batch request.
+     * @notice Single action in a batch request.
      */
-    struct BatchItem {
+    struct BatchAction {
         bool allowError;
         address proxyAddress;
         bytes data;
     }
 
     /**
-     * @notice Single item in a batch response.
+     * @notice Single action in a batch response.
      */
-    struct BatchItemResponse {
+    struct BatchActionResponse {
         bool success;
         bytes result;
     }
