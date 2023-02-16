@@ -206,8 +206,6 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
             callData: abi.encodeCall(MockImplementationModule.setImplementationState0, (message_))
         });
 
-        // Action expected to revert
-
         actions[1] = IReflexBatch.BatchAction({
             allowFailure: true,
             proxyAddress: address(batchProxy),
@@ -231,8 +229,6 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
             proxyAddress: address(singleModuleProxy),
             callData: abi.encodeCall(MockImplementationModule.setImplementationState0, (bytes32("777")))
         });
-
-        // Action expected to revert
 
         actions[1] = IReflexBatch.BatchAction({
             allowFailure: false,
