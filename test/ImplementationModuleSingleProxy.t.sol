@@ -152,7 +152,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeSingleProxyAndDeprecate(bytes32 message_) external {
+    function testFuzzUpgradeSingleProxyAndDeprecate(bytes32 message_) external BrutalizeMemory {
         // Verify storage sets in `Dispatcher` context.
 
         _verifySetStateSlot(message_);

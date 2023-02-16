@@ -10,7 +10,6 @@ import {IReflexProxy} from "../src/interfaces/IReflexProxy.sol";
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {ImplementationERC20} from "./mocks/abstracts/ImplementationERC20.sol";
 import {MockImplementationDeprecatedModule} from "./mocks/MockImplementationDeprecatedModule.sol";
 import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
 import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
@@ -252,7 +251,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeMultiProxyAndDeprecate(bytes32 message_) external {
+    function testFuzzUpgradeMultiProxyAndDeprecate(bytes32 message_) external BrutalizeMemory {
         // Verify storage sets in `Dispatcher` context.
 
         _verifySetStateSlot(message_);

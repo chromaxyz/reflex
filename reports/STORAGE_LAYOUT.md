@@ -68,6 +68,18 @@
 | \_relations      | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexState.sol:ReflexState |
 | \_\_gap          | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexState.sol:ReflexState |
 
+**ReflexBatch**
+
+| Name             | Type                                                  | Slot | Offset | Bytes | Contract                                  |
+| ---------------- | ----------------------------------------------------- | ---- | ------ | ----- | ----------------------------------------- |
+| \_reentrancyLock | uint256                                               | 0    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
+| \_owner          | address                                               | 1    | 0      | 20    | src/periphery/ReflexBatch.sol:ReflexBatch |
+| \_pendingOwner   | address                                               | 2    | 0      | 20    | src/periphery/ReflexBatch.sol:ReflexBatch |
+| \_modules        | mapping(uint32 => address)                            | 3    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
+| \_proxies        | mapping(uint32 => address)                            | 4    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
+| \_relations      | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
+| \_\_gap          | uint256[44]                                           | 6    | 0      | 1408  | src/periphery/ReflexBatch.sol:ReflexBatch |
+
 **MockImplementationDispatcher**
 
 | Name                   | Type                                                  | Slot | Offset | Bytes | Contract                                                                 |
