@@ -37,10 +37,14 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     }
 
     /**
-     * @notice Perform a batch call to call multiple modules in a single transaction.
+     * @notice Perform a batch call to interact with multiple modules in a single transaction.
      * @param items List of
      */
     function performBatchCall(BatchItem[] calldata items, bool simulate) external virtual {
+        // TODO: remove simulation mode?
+        // TODO: make note that if using this method you don't pay for the call overhead (proxy -> dispatcher -> module) but only for (module -> module)
+        // this is possible due to the shared state layout and authorizing happening on the call ot performBatchCall.
+
         address messageSender = _unpackMessageSender();
 
         BatchItemResponse[] memory simulation;
@@ -50,15 +54,17 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         for (uint256 i = 0; i < items.length; ) {
             BatchItem calldata item = items[i];
 
-            uint32 moduleId_ = _relations[item.proxyAddress].moduleId;
+            address proxyAddress = item.proxyAddress;
+
+            uint32 moduleId_ = _relations[proxyAddress].moduleId;
 
             if (moduleId_ == 0) revert InvalidModuleId();
 
-            uint16 moduleType_ = _relations[item.proxyAddress].moduleType;
+            uint16 moduleType_ = _relations[proxyAddress].moduleType;
 
             if (moduleType_ == _MODULE_TYPE_INTERNAL) revert InvalidModuleType();
 
-            address moduleImplementation_ = _relations[item.proxyAddress].moduleImplementation;
+            address moduleImplementation_ = _relations[proxyAddress].moduleImplementation;
 
             if (moduleImplementation_ == address(0)) moduleImplementation_ = _modules[moduleId_];
 
@@ -67,7 +73,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
             // TODO: optimize this to lower memory expansion cost?
 
             (bool success, bytes memory result) = moduleImplementation_.delegatecall(
-                abi.encodePacked(item.data, uint160(messageSender), uint160(item.proxyAddress))
+                abi.encodePacked(item.data, uint160(messageSender), uint160(proxyAddress))
             );
 
             if (simulate) {
