@@ -8,6 +8,10 @@ import {IReflexModule} from "../interfaces/IReflexModule.sol";
 // Sources
 import {ReflexModule} from "../ReflexModule.sol";
 
+// TODO: evaluate payable for 24 gas savings per call
+// TODO: evaluate using public for maximum compatibility (so super becomes available)
+// TODO: evaluate the need for marking as payable if wrapped into multicall
+
 /**
  * @title Reflex Batch
  *
@@ -84,8 +88,6 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         uint32 moduleId_ = _relations[proxyAddress].moduleId;
 
         if (moduleId_ == 0) revert InvalidModuleId();
-
-        if (_relations[proxyAddress].moduleType == _MODULE_TYPE_INTERNAL) revert InvalidModuleType();
 
         address moduleImplementation_ = _relations[proxyAddress].moduleImplementation;
 

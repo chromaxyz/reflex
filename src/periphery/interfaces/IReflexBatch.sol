@@ -45,4 +45,12 @@ interface IReflexBatch is IReflexModule, TReflexBatch {
         bool success;
         bytes returnData;
     }
+
+    // =======
+    // Methods
+    // =======
+
+    function performBatchCall(BatchAction[] memory actions_) external;
+
+    function simulateBatchCall(BatchAction[] memory actions_) external;
 }
