@@ -28,7 +28,7 @@ function notify () {
 log $GREEN "Verifying storage overview from contracts"
 
 # Variables
-CONTRACTS="ReflexBase ReflexConstants ReflexDispatcher ReflexInstaller ReflexModule ReflexProxy ReflexState ReflexBatch MockImplementationDispatcher"
+CONTRACTS="ReflexBase ReflexConstants ReflexDispatcher ReflexInstaller ReflexModule ReflexEndpoint ReflexState ReflexBatch MockImplementationDispatcher"
 FILENAME=reports/STORAGE_LAYOUT.md
 TEMP_FILENAME=reports/STORAGE_LAYOUT.temp.md
 

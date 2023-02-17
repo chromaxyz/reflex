@@ -33,7 +33,7 @@ interface IReflexBatch is IReflexModule, TReflexBatch {
      * @notice Single action in a batch request.
      */
     struct BatchAction {
-        address proxyAddress;
+        address endpointAddress;
         bool allowFailure;
         bytes callData;
     }

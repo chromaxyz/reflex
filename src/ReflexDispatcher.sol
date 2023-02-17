@@ -8,7 +8,7 @@ import {IReflexModule} from "./interfaces/IReflexModule.sol";
 
 // Sources
 import {ReflexBase} from "./ReflexBase.sol";
-import {ReflexProxy} from "./ReflexProxy.sol";
+import {ReflexEndpoint} from "./ReflexEndpoint.sol";
 
 /**
  * @title Reflex Dispatcher
@@ -35,7 +35,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         IReflexModule.ModuleSettings memory moduleSettings_ = IReflexInstaller(installerModule_).moduleSettings();
 
         if (moduleSettings_.moduleId != _MODULE_ID_INSTALLER) revert InvalidModuleId();
-        if (moduleSettings_.moduleType != _MODULE_TYPE_SINGLE_PROXY) revert InvalidModuleType();
+        if (moduleSettings_.moduleType != _MODULE_TYPE_SINGLE_ENDPOINT) revert InvalidModuleType();
 
         // Initialize the owner.
         _owner = owner_;
@@ -43,8 +43,8 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         // Register the built-in `Installer` module.
         _modules[_MODULE_ID_INSTALLER] = installerModule_;
 
-        // Create and register the `Installer` proxy.
-        _createProxy(moduleSettings_.moduleId, moduleSettings_.moduleType, installerModule_);
+        // Create and register the `Installer` endpoint.
+        _createEndpoint(moduleSettings_.moduleId, moduleSettings_.moduleType, installerModule_);
 
         emit OwnershipTransferred(address(0), owner_);
         emit ModuleAdded(_MODULE_ID_INSTALLER, installerModule_, IReflexInstaller(installerModule_).moduleVersion());
@@ -64,11 +64,11 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
     }
 
     /**
-     * @notice Returns the proxy address by module id.
+     * @notice Returns the endpoint address by module id.
      * @param moduleId_ Module id.
-     * @return address Proxy address.
+     * @return address Endpoint address.
      */
-    function moduleIdToProxy(uint32 moduleId_) external view virtual override returns (address) {
+    function moduleIdToEndpoint(uint32 moduleId_) external view virtual override returns (address) {
         return _proxies[moduleId_];
     }
 
@@ -89,7 +89,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         if (moduleImplementation == address(0)) moduleImplementation = _modules[moduleId];
 
         // Message length >= (4 + 20)
-        // 4 bytes for selector used to call the proxy.
+        // 4 bytes for selector used to call the endpoint.
         // 20 bytes for the trailing `msg.sender`.
         if (msg.data.length < 24) revert MessageTooShort();
 
@@ -100,10 +100,10 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
             // Copy `msg.data` into memory, starting at position `0`.
             calldatacopy(0x00, 0x00, calldatasize())
 
-            // Append proxy address with leading 12 bytes of padding removed to copied `msg.data` in memory.
+            // Append endpoint address with leading 12 bytes of padding removed to copied `msg.data` in memory.
             mstore(calldatasize(), shl(96, caller()))
 
-            // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
+            // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][endpoint address (20 bytes)]
             let result := delegatecall(gas(), moduleImplementation, 0, add(calldatasize(), 20), 0, 0)
 
             // Copy the returned data into memory, starting at position `0`.

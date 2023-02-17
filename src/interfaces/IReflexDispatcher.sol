@@ -39,5 +39,5 @@ interface IReflexDispatcher is IReflexBase, TReflexDispatcher {
 
     function moduleIdToModuleImplementation(uint32 moduleId_) external view returns (address);
 
-    function moduleIdToProxy(uint32 moduleId_) external view returns (address);
+    function moduleIdToEndpoint(uint32 moduleId_) external view returns (address);
 }

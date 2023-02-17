@@ -2,9 +2,9 @@
 pragma solidity ^0.8.13;
 
 /**
- * @title Reflex Proxy Test Interface
+ * @title Reflex Endpoint Test Interface
  */
-interface TReflexProxy {
+interface TReflexEndpoint {
     // ======
     // Errors
     // ======
@@ -13,9 +13,9 @@ interface TReflexProxy {
 }
 
 /**
- * @title Reflex Proxy Interface
+ * @title Reflex Endpoint Interface
  */
-interface IReflexProxy is TReflexProxy {
+interface IReflexEndpoint is TReflexEndpoint {
     // =======
     // Methods
     // =======

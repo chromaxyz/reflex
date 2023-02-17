@@ -23,7 +23,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     bytes4 internal constant _VALID = 0;
 
     uint32 internal constant _MODULE_SINGLE_ID = 100;
-    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
+    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
     uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
     uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
     uint16 internal constant _MODULE_SINGLE_VERSION_V3 = 3;
@@ -34,7 +34,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V4 = false;
 
     uint32 internal constant _MODULE_MULTI_ID = 101;
-    uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_PROXY;
+    uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_ENDPOINT;
     uint16 internal constant _MODULE_MULTI_VERSION_V1 = 1;
     uint16 internal constant _MODULE_MULTI_VERSION_V2 = 2;
     uint16 internal constant _MODULE_MULTI_VERSION_V3 = 3;
@@ -251,25 +251,25 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     function testFuzzTransferOwnership(address user_) external {
         vm.assume(user_ != address(0));
 
-        assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), address(0));
+        assertEq(installerEndpoint.owner(), address(this));
+        assertEq(installerEndpoint.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
         emit OwnershipTransferStarted(address(this), user_);
-        installerProxy.transferOwnership(user_);
+        installerEndpoint.transferOwnership(user_);
 
-        assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), user_);
+        assertEq(installerEndpoint.owner(), address(this));
+        assertEq(installerEndpoint.pendingOwner(), user_);
     }
 
     function testFuzzRevertTransferOwnershipNotOwner(address user_) external {
-        vm.assume(user_ != address(0) && user_ != installerProxy.owner() && user_ != address(dispatcher));
+        vm.assume(user_ != address(0) && user_ != installerEndpoint.owner() && user_ != address(dispatcher));
         assumeNoPrecompiles(user_);
 
         vm.startPrank(user_);
 
         vm.expectRevert(Unauthorized.selector);
-        installerProxy.transferOwnership(_users.Alice);
+        installerEndpoint.transferOwnership(_users.Alice);
 
         vm.stopPrank();
     }
@@ -278,26 +278,26 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         vm.assume(user_ != address(0) && user_ != address(dispatcher));
         assumeNoPrecompiles(user_);
 
-        assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), address(0));
+        assertEq(installerEndpoint.owner(), address(this));
+        assertEq(installerEndpoint.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
         emit OwnershipTransferStarted(address(this), user_);
-        installerProxy.transferOwnership(user_);
+        installerEndpoint.transferOwnership(user_);
 
-        assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), user_);
+        assertEq(installerEndpoint.owner(), address(this));
+        assertEq(installerEndpoint.pendingOwner(), user_);
 
         vm.startPrank(user_);
 
         vm.expectEmit(true, false, false, false);
         emit OwnershipTransferred(address(this), user_);
-        installerProxy.acceptOwnership();
+        installerEndpoint.acceptOwnership();
 
         vm.stopPrank();
 
-        assertEq(installerProxy.owner(), user_);
-        assertEq(installerProxy.pendingOwner(), address(0));
+        assertEq(installerEndpoint.owner(), user_);
+        assertEq(installerEndpoint.pendingOwner(), address(0));
     }
 
     function testFuzzRevertTransferOwnershipNotPendingOwner(address user_, address target_) external {
@@ -305,76 +305,76 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assumeNoPrecompiles(user_);
         assumeNoPrecompiles(target_);
 
-        assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), address(0));
+        assertEq(installerEndpoint.owner(), address(this));
+        assertEq(installerEndpoint.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
         emit OwnershipTransferStarted(address(this), target_);
-        installerProxy.transferOwnership(target_);
+        installerEndpoint.transferOwnership(target_);
 
-        assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), target_);
+        assertEq(installerEndpoint.owner(), address(this));
+        assertEq(installerEndpoint.pendingOwner(), target_);
 
         vm.startPrank(user_);
 
         vm.expectRevert(Unauthorized.selector);
-        installerProxy.acceptOwnership();
+        installerEndpoint.acceptOwnership();
 
         vm.stopPrank();
 
-        assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), target_);
+        assertEq(installerEndpoint.owner(), address(this));
+        assertEq(installerEndpoint.pendingOwner(), target_);
     }
 
     function testUnitRenounceOwnership() external {
-        assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), address(0));
+        assertEq(installerEndpoint.owner(), address(this));
+        assertEq(installerEndpoint.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
         emit OwnershipTransferred(address(this), address(0));
-        installerProxy.renounceOwnership();
+        installerEndpoint.renounceOwnership();
 
-        assertEq(installerProxy.owner(), address(0));
-        assertEq(installerProxy.pendingOwner(), address(0));
+        assertEq(installerEndpoint.owner(), address(0));
+        assertEq(installerEndpoint.pendingOwner(), address(0));
     }
 
     function testFuzzRenounceOwnershipWithPendingOwner(address user_) external {
         vm.assume(user_ != address(0));
         assumeNoPrecompiles(user_);
 
-        assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), address(0));
+        assertEq(installerEndpoint.owner(), address(this));
+        assertEq(installerEndpoint.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
         emit OwnershipTransferStarted(address(this), user_);
-        installerProxy.transferOwnership(user_);
+        installerEndpoint.transferOwnership(user_);
 
-        assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), user_);
+        assertEq(installerEndpoint.owner(), address(this));
+        assertEq(installerEndpoint.pendingOwner(), user_);
 
         vm.expectEmit(true, false, false, false);
         emit OwnershipTransferred(address(this), address(0));
-        installerProxy.renounceOwnership();
+        installerEndpoint.renounceOwnership();
 
-        assertEq(installerProxy.owner(), address(0));
-        assertEq(installerProxy.pendingOwner(), address(0));
+        assertEq(installerEndpoint.owner(), address(0));
+        assertEq(installerEndpoint.pendingOwner(), address(0));
     }
 
     function testFuzzRevertRenounceOwnershipNotOwner(address user_) external {
-        vm.assume(user_ != address(0) && user_ != installerProxy.owner() && user_ != address(dispatcher));
+        vm.assume(user_ != address(0) && user_ != installerEndpoint.owner() && user_ != address(dispatcher));
         assumeNoPrecompiles(user_);
 
         vm.startPrank(user_);
 
         vm.expectRevert(Unauthorized.selector);
-        installerProxy.renounceOwnership();
+        installerEndpoint.renounceOwnership();
 
         vm.stopPrank();
     }
 
     function testUnitRevertTransferOwnershipZeroAddress() external {
         vm.expectRevert(ZeroAddress.selector);
-        installerProxy.transferOwnership(address(0));
+        installerEndpoint.transferOwnership(address(0));
     }
 
     // ============
@@ -386,7 +386,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         moduleAddresses[0] = address(1);
 
         vm.expectRevert();
-        installerProxy.addModules(moduleAddresses);
+        installerEndpoint.addModules(moduleAddresses);
     }
 
     function testUnitRevertNonModuleIdContract() external {
@@ -394,7 +394,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         moduleAddresses[0] = address(dispatcher);
 
         vm.expectRevert();
-        installerProxy.addModules(moduleAddresses);
+        installerEndpoint.addModules(moduleAddresses);
     }
 
     function testUnitRevertUpgradeModulesModuleNonexistent() external {
@@ -411,7 +411,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         );
 
         vm.expectRevert(abi.encodeWithSelector(ModuleNonexistent.selector, 777));
-        installerProxy.upgradeModules(moduleAddresses);
+        installerEndpoint.upgradeModules(moduleAddresses);
     }
 
     function testUnitRevertUpgradeModulesNonContract() external {
@@ -419,7 +419,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         moduleAddresses[0] = address(1);
 
         vm.expectRevert();
-        installerProxy.upgradeModules(moduleAddresses);
+        installerEndpoint.upgradeModules(moduleAddresses);
     }
 
     function testUnitRevertUpgradeModulesNonModuleIdContract() external {
@@ -427,46 +427,46 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         moduleAddresses[0] = address(dispatcher);
 
         vm.expectRevert();
-        installerProxy.upgradeModules(moduleAddresses);
+        installerEndpoint.upgradeModules(moduleAddresses);
     }
 
-    // =========================
-    // Single-proxy module tests
-    // =========================
+    // ============================
+    // Single-endpoint module tests
+    // ============================
 
-    function testUnitAddModulesSingleProxy() public {
+    function testUnitAddModulesSingleEndpoint() public {
         _addModule(singleModuleV1, _VALID);
 
         address singleModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID);
-        address singleModuleProxyV1 = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
+        address singleModuleEndpointV1 = dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID);
 
         assertEq(singleModuleImplementationV1, address(singleModuleV1));
-        assertTrue(singleModuleProxyV1 != address(0));
+        assertTrue(singleModuleEndpointV1 != address(0));
     }
 
-    function testUnitRevertAddModulesExistentSingleProxy() external {
+    function testUnitRevertAddModulesExistentSingleEndpoint() external {
         _addModule(singleModuleV1, _VALID);
 
         _addModule(singleModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
-    function testUnitUpgradeModulesSingleProxy() public {
-        testUnitAddModulesSingleProxy();
+    function testUnitUpgradeModulesSingleEndpoint() public {
+        testUnitAddModulesSingleEndpoint();
 
         address singleModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID);
-        address singleModuleProxyV1 = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
+        address singleModuleEndpointV1 = dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID);
 
         _upgradeModule(singleModuleV2, _VALID);
 
         address singleModuleImplementationV2 = dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID);
-        address singleModuleProxyV2 = dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID);
+        address singleModuleEndpointV2 = dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID);
 
-        assertEq(singleModuleProxyV1, singleModuleProxyV2);
+        assertEq(singleModuleEndpointV1, singleModuleEndpointV2);
         assertTrue(singleModuleImplementationV1 != singleModuleImplementationV2);
         assertEq(singleModuleImplementationV2, address(singleModuleV2));
     }
 
-    function testUnitRevertUpgradeInvalidVersionSingleProxy() external {
+    function testUnitRevertUpgradeInvalidVersionSingleEndpoint() external {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
 
@@ -474,7 +474,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(singleModuleV2, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
-    function testUnitRevertUpgradeInvalidTypeSingleProxy() external {
+    function testUnitRevertUpgradeInvalidTypeSingleEndpoint() external {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
 
@@ -490,7 +490,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(singleModuleInvalidType, TReflexInstaller.ModuleInvalidType.selector);
     }
 
-    function testUnitRevertUpgradeModulesNonUpgradeableSingleProxy() external {
+    function testUnitRevertUpgradeModulesNonUpgradeableSingleEndpoint() external {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
         _upgradeModule(singleModuleV3, _VALID);
@@ -508,42 +508,42 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         );
     }
 
-    // ========================
-    // Multi-proxy module tests
-    // ========================
+    // ===========================
+    // Multi-endpoint module tests
+    // ===========================
 
-    function testUnitAddModulesMultiProxy() public {
+    function testUnitAddModulesMultiEndpoint() public {
         _addModule(multiModuleV1, _VALID);
 
         address multiModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID);
-        address multiModuleProxyV1 = dispatcher.moduleIdToProxy(_MODULE_MULTI_ID);
+        address multiModuleEndpointV1 = dispatcher.moduleIdToEndpoint(_MODULE_MULTI_ID);
 
         assertEq(multiModuleImplementationV1, address(multiModuleV1));
-        assertEq(multiModuleProxyV1, address(0));
+        assertEq(multiModuleEndpointV1, address(0));
     }
 
-    function testUnitRevertAddModulesExistentMultiProxy() external {
+    function testUnitRevertAddModulesExistentMultiEndpoint() external {
         _addModule(multiModuleV1, _VALID);
 
         _addModule(multiModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
-    function testUnitUpgradeModulesMultiProxy() public {
-        testUnitAddModulesMultiProxy();
+    function testUnitUpgradeModulesMultiEndpoint() public {
+        testUnitAddModulesMultiEndpoint();
 
         address multiModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID);
 
         _upgradeModule(multiModuleV2, _VALID);
 
         address multiModuleImplementationV2 = dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID);
-        address multiModuleProxyV2 = dispatcher.moduleIdToProxy(_MODULE_MULTI_ID);
+        address multiModuleEndpointV2 = dispatcher.moduleIdToEndpoint(_MODULE_MULTI_ID);
 
         assertTrue(multiModuleImplementationV1 != multiModuleImplementationV2);
-        assertEq(multiModuleProxyV2, address(0));
+        assertEq(multiModuleEndpointV2, address(0));
         assertEq(multiModuleImplementationV2, address(multiModuleV2));
     }
 
-    function testUnitRevertUpgradeInvalidVersionMultiProxy() external {
+    function testUnitRevertUpgradeInvalidVersionMultiEndpoint() external {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
 
@@ -551,7 +551,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(multiModuleV2, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
-    function testUnitRevertUpgradeInvalidTypeMultiProxy() external {
+    function testUnitRevertUpgradeInvalidTypeMultiEndpoint() external {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
 
@@ -567,7 +567,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(multiModuleInvalidType, TReflexInstaller.ModuleInvalidType.selector);
     }
 
-    function testUnitRevertUpgradeModulesNonUpgradeableMultiProxy() external {
+    function testUnitRevertUpgradeModulesNonUpgradeableMultiEndpoint() external {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
         _upgradeModule(multiModuleV3, _VALID);
@@ -589,10 +589,10 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _addModule(internalModuleV1, _VALID);
 
         address internalModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID);
-        address internalModuleProxyV1 = dispatcher.moduleIdToProxy(_MODULE_INTERNAL_ID);
+        address internalModuleEndpointV1 = dispatcher.moduleIdToEndpoint(_MODULE_INTERNAL_ID);
 
         assertEq(internalModuleImplementationV1, address(internalModuleV1));
-        assertEq(internalModuleProxyV1, address(0));
+        assertEq(internalModuleEndpointV1, address(0));
     }
 
     function testUnitRevertAddModulesExistentInternal() external {
@@ -609,10 +609,10 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(internalModuleV2, _VALID);
 
         address internalModuleImplementationV2 = dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID);
-        address internalModuleProxyV2 = dispatcher.moduleIdToProxy(_MODULE_INTERNAL_ID);
+        address internalModuleEndpointV2 = dispatcher.moduleIdToEndpoint(_MODULE_INTERNAL_ID);
 
         assertTrue(internalModuleImplementationV1 != internalModuleImplementationV2);
-        assertEq(internalModuleProxyV2, address(0));
+        assertEq(internalModuleEndpointV2, address(0));
         assertEq(internalModuleImplementationV2, address(internalModuleV2));
     }
 
@@ -664,16 +664,16 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
 
     function testUnitUpgradeInstaller() external {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
-        assertTrue(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER) == address(installerProxy));
+        assertTrue(dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER) == address(installerEndpoint));
 
         _upgradeModule(installerModuleV2, _VALID);
 
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV2));
-        assertTrue(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER) == address(installerProxy));
+        assertTrue(dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER) == address(installerEndpoint));
 
-        testUnitUpgradeModulesSingleProxy();
+        testUnitUpgradeModulesSingleEndpoint();
 
-        testUnitUpgradeModulesMultiProxy();
+        testUnitUpgradeModulesMultiEndpoint();
 
         testUnitUpgradeModulesInternal();
     }
@@ -693,7 +693,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleId()));
         }
 
-        installerProxy.addModules(moduleAddresses);
+        installerEndpoint.addModules(moduleAddresses);
     }
 
     function _upgradeModule(IReflexModule module_, bytes4 selector_) internal {
@@ -707,6 +707,6 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleId()));
         }
 
-        installerProxy.upgradeModules(moduleAddresses);
+        installerEndpoint.upgradeModules(moduleAddresses);
     }
 }

@@ -19,7 +19,7 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
     // =========
 
     uint32 internal constant _MODULE_VALID_ID = 5;
-    uint16 internal constant _MODULE_VALID_TYPE_SINGLE = _MODULE_TYPE_SINGLE_PROXY;
+    uint16 internal constant _MODULE_VALID_TYPE_SINGLE = _MODULE_TYPE_SINGLE_ENDPOINT;
     uint16 internal constant _MODULE_VALID_VERSION = 1;
     bool internal constant _MODULE_VALID_UPGRADEABLE = true;
 
@@ -33,7 +33,7 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
     // =======
 
     MockReflexModule public module;
-    MockReflexModule public moduleProxy;
+    MockReflexModule public moduleEndpoint;
 
     // =====
     // Setup

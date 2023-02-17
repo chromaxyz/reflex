@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 // Interfaces
 import {TReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
-import {IReflexProxy} from "../src/interfaces/IReflexProxy.sol";
+import {IReflexEndpoint} from "../src/interfaces/IReflexEndpoint.sol";
 
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
@@ -15,22 +15,22 @@ import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
 import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
 
 /**
- * @title Implementation Module Multi Proxy Test
+ * @title Implementation Module Multi Endpoint Test
  */
-contract ImplementationModuleMultiProxyTest is ImplementationFixture {
+contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
     // =========
     // Constants
     // =========
 
     uint32 internal constant _MODULE_SINGLE_ID = 100;
-    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
+    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
     uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
     uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V2 = false;
 
     uint32 internal constant _MODULE_MULTI_ID = 101;
-    uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_PROXY;
+    uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_ENDPOINT;
     uint16 internal constant _MODULE_MULTI_VERSION_V1 = 1;
     uint16 internal constant _MODULE_MULTI_VERSION_V2 = 2;
     uint16 internal constant _MODULE_MULTI_VERSION_V3 = 3;
@@ -58,15 +58,15 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
 
     MockImplementationERC20Hub public singleModuleV1;
     MockImplementationERC20Hub public singleModuleV2;
-    MockImplementationERC20Hub public singleModuleProxy;
+    MockImplementationERC20Hub public singleModuleEndpoint;
 
     MockImplementationERC20 public multiModuleV1;
     MockImplementationERC20 public multiModuleV2;
     MockImplementationDeprecatedModule public multiModuleV3;
 
-    MockImplementationERC20 public multiModuleProxyA;
-    MockImplementationERC20 public multiModuleProxyB;
-    MockImplementationERC20 public multiModuleProxyC;
+    MockImplementationERC20 public multiModuleEndpointA;
+    MockImplementationERC20 public multiModuleEndpointB;
+    MockImplementationERC20 public multiModuleEndpointC;
 
     // =====
     // Setup
@@ -123,12 +123,12 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         address[] memory moduleAddresses = new address[](2);
         moduleAddresses[0] = address(singleModuleV1);
         moduleAddresses[1] = address(multiModuleV1);
-        installerProxy.addModules(moduleAddresses);
+        installerEndpoint.addModules(moduleAddresses);
 
-        singleModuleProxy = MockImplementationERC20Hub(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID));
+        singleModuleEndpoint = MockImplementationERC20Hub(dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID));
 
-        multiModuleProxyA = MockImplementationERC20(
-            singleModuleProxy.addERC20(
+        multiModuleEndpointA = MockImplementationERC20(
+            singleModuleEndpoint.addERC20(
                 _MODULE_MULTI_ID,
                 _MODULE_MULTI_TYPE,
                 _MODULE_MULTI_NAME_A,
@@ -137,8 +137,8 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             )
         );
 
-        multiModuleProxyB = MockImplementationERC20(
-            singleModuleProxy.addERC20(
+        multiModuleEndpointB = MockImplementationERC20(
+            singleModuleEndpoint.addERC20(
                 _MODULE_MULTI_ID,
                 _MODULE_MULTI_TYPE,
                 _MODULE_MULTI_NAME_B,
@@ -147,8 +147,8 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
             )
         );
 
-        multiModuleProxyC = MockImplementationERC20(
-            singleModuleProxy.addERC20(
+        multiModuleEndpointC = MockImplementationERC20(
+            singleModuleEndpoint.addERC20(
                 _MODULE_MULTI_ID,
                 _MODULE_MULTI_TYPE,
                 _MODULE_MULTI_NAME_C,
@@ -164,20 +164,20 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
 
     function testUnitModuleIdToImplementation() external {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID), address(multiModuleV1));
-        assertEq(IReflexProxy(address(multiModuleProxyA)).implementation(), address(multiModuleV1));
-        assertEq(IReflexProxy(address(multiModuleProxyB)).implementation(), address(multiModuleV1));
-        assertEq(IReflexProxy(address(multiModuleProxyC)).implementation(), address(multiModuleV1));
+        assertEq(IReflexEndpoint(address(multiModuleEndpointA)).implementation(), address(multiModuleV1));
+        assertEq(IReflexEndpoint(address(multiModuleEndpointB)).implementation(), address(multiModuleV1));
+        assertEq(IReflexEndpoint(address(multiModuleEndpointC)).implementation(), address(multiModuleV1));
     }
 
-    function testUnitModuleIdToProxy() external {
-        assertEq(dispatcher.moduleIdToProxy(_MODULE_MULTI_ID), address(0));
+    function testUnitModuleIdToEndpoint() external {
+        assertEq(dispatcher.moduleIdToEndpoint(_MODULE_MULTI_ID), address(0));
     }
 
     function testUnitModuleSettings() external {
         // Proxies
 
         _verifyModuleConfiguration(
-            singleModuleProxy,
+            singleModuleEndpoint,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V1,
@@ -185,7 +185,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            multiModuleProxyA,
+            multiModuleEndpointA,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V1,
@@ -193,7 +193,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            multiModuleProxyB,
+            multiModuleEndpointB,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V1,
@@ -201,7 +201,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            multiModuleProxyC,
+            multiModuleEndpointC,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V1,
@@ -251,15 +251,15 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeMultiProxyAndDeprecate(bytes32 message_) external BrutalizeMemory {
+    function testFuzzUpgradeMultiEndpointAndDeprecate(bytes32 message_) external BrutalizeMemory {
         // Verify storage sets in `Dispatcher` context.
 
         _verifySetStateSlot(message_);
 
-        // Verify multi-proxy module.
+        // Verify multi-endpoint module.
 
         _verifyModuleConfiguration(
-            multiModuleProxyA,
+            multiModuleEndpointA,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V1,
@@ -267,7 +267,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            multiModuleProxyB,
+            multiModuleEndpointB,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V1,
@@ -275,21 +275,21 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            multiModuleProxyC,
+            multiModuleEndpointC,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V1,
             _MODULE_MULTI_UPGRADEABLE_V1
         );
 
-        // Upgrade multi-proxy module.
+        // Upgrade multi-endpoint module.
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(multiModuleV2);
-        installerProxy.upgradeModules(moduleAddresses);
+        installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
-            multiModuleProxyA,
+            multiModuleEndpointA,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V2,
@@ -297,7 +297,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            multiModuleProxyB,
+            multiModuleEndpointB,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V2,
@@ -305,7 +305,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            multiModuleProxyC,
+            multiModuleEndpointC,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V2,
@@ -316,14 +316,14 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
 
         _verifyGetStateSlot(message_);
 
-        // Upgrade single-proxy module.
+        // Upgrade single-endpoint module.
 
         moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV2);
-        installerProxy.upgradeModules(moduleAddresses);
+        installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
-            singleModuleProxy,
+            singleModuleEndpoint,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V2,
@@ -334,14 +334,14 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
 
         _verifyGetStateSlot(message_);
 
-        // Upgrade to deprecate multi-proxy module.
+        // Upgrade to deprecate multi-endpoint module.
 
         moduleAddresses = new address[](1);
         moduleAddresses[0] = address(multiModuleV3);
-        installerProxy.upgradeModules(moduleAddresses);
+        installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
-            multiModuleProxyA,
+            multiModuleEndpointA,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V3,
@@ -349,7 +349,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            multiModuleProxyB,
+            multiModuleEndpointB,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V3,
@@ -357,7 +357,7 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            multiModuleProxyC,
+            multiModuleEndpointC,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V3,
@@ -369,97 +369,97 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
         _verifyGetStateSlot(message_);
     }
 
-    function testUnitProxySentinelFallback() external {
-        _testProxySentinelFallback(multiModuleProxyA);
-        _testProxySentinelFallback(multiModuleProxyB);
-        _testProxySentinelFallback(multiModuleProxyC);
+    function testUnitEndpointSentinelFallback() external {
+        _testEndpointSentinelFallback(multiModuleEndpointA);
+        _testEndpointSentinelFallback(multiModuleEndpointB);
+        _testEndpointSentinelFallback(multiModuleEndpointC);
     }
 
     function testFuzzRevertBytesCustomError(uint256 code_, string memory message_) external {
-        _testRevertBytesCustomError(multiModuleProxyA, code_, message_);
-        _testRevertBytesCustomError(multiModuleProxyB, code_, message_);
-        _testRevertBytesCustomError(multiModuleProxyC, code_, message_);
+        _testRevertBytesCustomError(multiModuleEndpointA, code_, message_);
+        _testRevertBytesCustomError(multiModuleEndpointB, code_, message_);
+        _testRevertBytesCustomError(multiModuleEndpointC, code_, message_);
     }
 
     function testUnitRevertBytesPanicAssert() external {
-        _testRevertBytesPanicAssert(multiModuleProxyA);
-        _testRevertBytesPanicAssert(multiModuleProxyB);
-        _testRevertBytesPanicAssert(multiModuleProxyC);
+        _testRevertBytesPanicAssert(multiModuleEndpointA);
+        _testRevertBytesPanicAssert(multiModuleEndpointB);
+        _testRevertBytesPanicAssert(multiModuleEndpointC);
     }
 
     function testUnitRevertBytesPanicDivideByZero() external {
-        _testRevertBytesPanicDivideByZero(multiModuleProxyA);
-        _testRevertBytesPanicDivideByZero(multiModuleProxyB);
-        _testRevertBytesPanicDivideByZero(multiModuleProxyC);
+        _testRevertBytesPanicDivideByZero(multiModuleEndpointA);
+        _testRevertBytesPanicDivideByZero(multiModuleEndpointB);
+        _testRevertBytesPanicDivideByZero(multiModuleEndpointC);
     }
 
     function testUnitRevertBytesPanicArithmaticOverflow() external {
-        _testRevertBytesPanicArithmaticOverflow(multiModuleProxyA);
-        _testRevertBytesPanicArithmaticOverflow(multiModuleProxyB);
-        _testRevertBytesPanicArithmaticOverflow(multiModuleProxyC);
+        _testRevertBytesPanicArithmaticOverflow(multiModuleEndpointA);
+        _testRevertBytesPanicArithmaticOverflow(multiModuleEndpointB);
+        _testRevertBytesPanicArithmaticOverflow(multiModuleEndpointC);
     }
 
     function testUnitRevertBytesPanicArithmaticUnderflow() external {
-        _testRevertBytesPanicArithmaticUnderflow(multiModuleProxyA);
-        _testRevertBytesPanicArithmaticUnderflow(multiModuleProxyB);
-        _testRevertBytesPanicArithmaticUnderflow(multiModuleProxyC);
+        _testRevertBytesPanicArithmaticUnderflow(multiModuleEndpointA);
+        _testRevertBytesPanicArithmaticUnderflow(multiModuleEndpointB);
+        _testRevertBytesPanicArithmaticUnderflow(multiModuleEndpointC);
     }
 
-    function testFuzzProxyLog0Topic(bytes memory message_) external {
-        _testProxyLog0Topic(multiModuleProxyA, message_);
-        _testProxyLog0Topic(multiModuleProxyB, message_);
-        _testProxyLog0Topic(multiModuleProxyC, message_);
+    function testFuzzEndpointLog0Topic(bytes memory message_) external {
+        _testEndpointLog0Topic(multiModuleEndpointA, message_);
+        _testEndpointLog0Topic(multiModuleEndpointB, message_);
+        _testEndpointLog0Topic(multiModuleEndpointC, message_);
     }
 
-    function testFuzzProxyLog1Topic(bytes memory message_) external {
-        _testProxyLog1Topic(multiModuleProxyA, message_);
-        _testProxyLog1Topic(multiModuleProxyB, message_);
-        _testProxyLog1Topic(multiModuleProxyC, message_);
+    function testFuzzEndpointLog1Topic(bytes memory message_) external {
+        _testEndpointLog1Topic(multiModuleEndpointA, message_);
+        _testEndpointLog1Topic(multiModuleEndpointB, message_);
+        _testEndpointLog1Topic(multiModuleEndpointC, message_);
     }
 
-    function testFuzzProxyLog2Topic(bytes memory message_) external {
-        _testProxyLog2Topic(multiModuleProxyA, message_);
-        _testProxyLog2Topic(multiModuleProxyB, message_);
-        _testProxyLog2Topic(multiModuleProxyC, message_);
+    function testFuzzEndpointLog2Topic(bytes memory message_) external {
+        _testEndpointLog2Topic(multiModuleEndpointA, message_);
+        _testEndpointLog2Topic(multiModuleEndpointB, message_);
+        _testEndpointLog2Topic(multiModuleEndpointC, message_);
     }
 
-    function testFuzzProxyLog3Topic(bytes memory message_) external {
-        _testProxyLog3Topic(multiModuleProxyA, message_);
-        _testProxyLog3Topic(multiModuleProxyB, message_);
-        _testProxyLog3Topic(multiModuleProxyC, message_);
+    function testFuzzEndpointLog3Topic(bytes memory message_) external {
+        _testEndpointLog3Topic(multiModuleEndpointA, message_);
+        _testEndpointLog3Topic(multiModuleEndpointB, message_);
+        _testEndpointLog3Topic(multiModuleEndpointC, message_);
     }
 
-    function testFuzzProxyLog4Topic(bytes memory message_) external {
-        _testProxyLog4Topic(multiModuleProxyA, message_);
-        _testProxyLog4Topic(multiModuleProxyB, message_);
-        _testProxyLog4Topic(multiModuleProxyC, message_);
+    function testFuzzEndpointLog4Topic(bytes memory message_) external {
+        _testEndpointLog4Topic(multiModuleEndpointA, message_);
+        _testEndpointLog4Topic(multiModuleEndpointB, message_);
+        _testEndpointLog4Topic(multiModuleEndpointC, message_);
     }
 
-    function testFuzzRevertProxyLogOutOfBounds(bytes memory message_) external {
-        _testRevertProxyLogOutOfBounds(multiModuleProxyA, message_);
-        _testRevertProxyLogOutOfBounds(multiModuleProxyB, message_);
-        _testRevertProxyLogOutOfBounds(multiModuleProxyC, message_);
+    function testFuzzRevertEndpointLogOutOfBounds(bytes memory message_) external {
+        _testRevertEndpointLogOutOfBounds(multiModuleEndpointA, message_);
+        _testRevertEndpointLogOutOfBounds(multiModuleEndpointB, message_);
+        _testRevertEndpointLogOutOfBounds(multiModuleEndpointC, message_);
     }
 
     function testUnitUnpackMessageSender() external {
         vm.startPrank(_users.Alice);
-        _testUnpackMessageSender(multiModuleProxyA, _users.Alice);
-        _testUnpackMessageSender(multiModuleProxyB, _users.Alice);
-        _testUnpackMessageSender(multiModuleProxyC, _users.Alice);
+        _testUnpackMessageSender(multiModuleEndpointA, _users.Alice);
+        _testUnpackMessageSender(multiModuleEndpointB, _users.Alice);
+        _testUnpackMessageSender(multiModuleEndpointC, _users.Alice);
         vm.stopPrank();
     }
 
-    function testUnitUnpackProxyAddress() external {
-        _testUnpackProxyAddress(multiModuleProxyA);
-        _testUnpackProxyAddress(multiModuleProxyB);
-        _testUnpackProxyAddress(multiModuleProxyC);
+    function testUnitUnpackEndpointAddress() external {
+        _testUnpackEndpointAddress(multiModuleEndpointA);
+        _testUnpackEndpointAddress(multiModuleEndpointB);
+        _testUnpackEndpointAddress(multiModuleEndpointC);
     }
 
     function testUnitUnpackTrailingParameters() external {
         vm.startPrank(_users.Alice);
-        _testUnpackTrailingParameters(multiModuleProxyA, _users.Alice);
-        _testUnpackTrailingParameters(multiModuleProxyB, _users.Alice);
-        _testUnpackTrailingParameters(multiModuleProxyC, _users.Alice);
+        _testUnpackTrailingParameters(multiModuleEndpointA, _users.Alice);
+        _testUnpackTrailingParameters(multiModuleEndpointB, _users.Alice);
+        _testUnpackTrailingParameters(multiModuleEndpointC, _users.Alice);
         vm.stopPrank();
     }
 
@@ -470,15 +470,15 @@ contract ImplementationModuleMultiProxyTest is ImplementationFixture {
     function _verifyGetStateSlot(bytes32 message_) internal {
         assertEq(singleModuleV1.getImplementationState0(), 0);
         assertEq(singleModuleV2.getImplementationState0(), 0);
-        assertEq(singleModuleProxy.getImplementationState0(), message_);
+        assertEq(singleModuleEndpoint.getImplementationState0(), message_);
 
         assertEq(multiModuleV1.getImplementationState0(), 0);
         assertEq(multiModuleV2.getImplementationState0(), 0);
         assertEq(multiModuleV3.getImplementationState0(), 0);
 
-        assertEq(multiModuleProxyA.getImplementationState0(), message_);
-        assertEq(multiModuleProxyB.getImplementationState0(), message_);
-        assertEq(multiModuleProxyC.getImplementationState0(), message_);
+        assertEq(multiModuleEndpointA.getImplementationState0(), message_);
+        assertEq(multiModuleEndpointB.getImplementationState0(), message_);
+        assertEq(multiModuleEndpointC.getImplementationState0(), message_);
 
         assertEq(dispatcher.getImplementationState0(), message_);
     }

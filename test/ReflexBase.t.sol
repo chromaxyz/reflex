@@ -39,24 +39,24 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
     // Tests
     // =====
 
-    function testUnitRevertCreateProxyInvalidModuleId() external {
+    function testUnitRevertCreateEndpointInvalidModuleId() external {
         vm.expectRevert(InvalidModuleId.selector);
-        base.createProxy(0, 0, address(0));
+        base.createEndpoint(0, 0, address(0));
     }
 
-    function testUnitRevertCreateProxyInvalidModuleType() external {
+    function testUnitRevertCreateEndpointInvalidModuleType() external {
         vm.expectRevert(InvalidModuleType.selector);
-        base.createProxy(102, 0, address(0));
+        base.createEndpoint(102, 0, address(0));
 
         vm.expectRevert(InvalidModuleType.selector);
-        base.createProxy(102, _MODULE_TYPE_INTERNAL, address(0));
+        base.createEndpoint(102, _MODULE_TYPE_INTERNAL, address(0));
     }
 
     function testFuzzEarlyReturnRegisteredModule(uint32 moduleId_) external {
         vm.assume(moduleId_ > _MODULE_ID_INSTALLER);
 
-        base.createProxy(moduleId_, _MODULE_TYPE_SINGLE_PROXY, address(0));
-        base.createProxy(moduleId_, _MODULE_TYPE_SINGLE_PROXY, address(0));
+        base.createEndpoint(moduleId_, _MODULE_TYPE_SINGLE_ENDPOINT, address(0));
+        base.createEndpoint(moduleId_, _MODULE_TYPE_SINGLE_ENDPOINT, address(0));
     }
 
     function testFuzzRevertBytes(bytes memory errorMessage_) external {

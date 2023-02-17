@@ -53,7 +53,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
         MockReflexModule module = new MockReflexModule(
             IReflexModule.ModuleSettings({
                 moduleId: moduleId_,
-                moduleType: _MODULE_TYPE_SINGLE_PROXY,
+                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
                 moduleVersion: _MODULE_VERSION_INSTALLER_V1,
                 moduleUpgradeable: true
             })
@@ -67,7 +67,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
         MockReflexModule module = new MockReflexModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INSTALLER,
-                moduleType: _MODULE_TYPE_MULTI_PROXY,
+                moduleType: _MODULE_TYPE_MULTI_ENDPOINT,
                 moduleVersion: _MODULE_VERSION_INSTALLER_V1,
                 moduleUpgradeable: true
             })
@@ -82,17 +82,17 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
 
         MockReflexDispatcher dispatcher = new MockReflexDispatcher(address(this), address(installerModuleV1));
 
-        address installerProxy = dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER);
+        address installerEndpoint = dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER);
 
         VmSafe.Log[] memory entries = vm.getRecordedLogs();
 
         // 3 logs are expected to be emitted.
         assertEq(entries.length, 3);
 
-        // emit ProxyCreated(address(installerModuleV1))
+        // emit EndpointCreated(address(installerModuleV1))
         assertEq(entries[0].topics.length, 2);
-        assertEq(entries[0].topics[0], keccak256("ProxyCreated(address)"));
-        assertEq(entries[0].topics[1], bytes32(uint256(uint160(address(installerProxy)))));
+        assertEq(entries[0].topics[0], keccak256("EndpointCreated(address)"));
+        assertEq(entries[0].topics[1], bytes32(uint256(uint160(address(installerEndpoint)))));
         assertEq(entries[0].emitter, address(dispatcher));
 
         // emit OwnershipTransferred(address(0), address(this));
@@ -116,29 +116,29 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
     }
 
     function testUnitInstallerConfiguration() external {
-        assertEq(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER), address(installerProxy));
+        assertEq(dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER), address(installerEndpoint));
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
     }
 
-    function testUnitGetOwnerThroughInstallerProxy() external {
-        assertEq(installerProxy.owner(), address(this));
+    function testUnitGetOwnerThroughInstallerEndpoint() external {
+        assertEq(installerEndpoint.owner(), address(this));
     }
 
-    function testUnitUpdateOwnerThroughInstallerProxy() external {
-        assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), address(0));
+    function testUnitUpdateOwnerThroughInstallerEndpoint() external {
+        assertEq(installerEndpoint.owner(), address(this));
+        assertEq(installerEndpoint.pendingOwner(), address(0));
 
-        installerProxy.transferOwnership(_users.Alice);
+        installerEndpoint.transferOwnership(_users.Alice);
 
-        assertEq(installerProxy.owner(), address(this));
-        assertEq(installerProxy.pendingOwner(), address(_users.Alice));
+        assertEq(installerEndpoint.owner(), address(this));
+        assertEq(installerEndpoint.pendingOwner(), address(_users.Alice));
 
         vm.startPrank(_users.Alice);
 
-        installerProxy.acceptOwnership();
+        installerEndpoint.acceptOwnership();
 
-        assertEq(installerProxy.owner(), address(_users.Alice));
-        assertEq(installerProxy.pendingOwner(), address(0));
+        assertEq(installerEndpoint.owner(), address(_users.Alice));
+        assertEq(installerEndpoint.pendingOwner(), address(0));
 
         vm.stopPrank();
     }
@@ -156,7 +156,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
     }
 
     function testUnitRevertDispatchMessageTooShort() external {
-        vm.prank(address(installerProxy));
+        vm.prank(address(installerEndpoint));
 
         (bool success, bytes memory result) = address(dispatcher).call("");
 

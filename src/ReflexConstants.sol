@@ -26,14 +26,14 @@ abstract contract ReflexConstants {
     // =============
 
     /**
-     * @dev Modules that have a single proxy to a single implementation relation.
+     * @dev Modules that have a single endpoint to a single implementation relation.
      */
-    uint16 internal constant _MODULE_TYPE_SINGLE_PROXY = 1;
+    uint16 internal constant _MODULE_TYPE_SINGLE_ENDPOINT = 1;
 
     /**
-     * @dev Modules that have a multiple proxies to a single implementation relation.
+     * @dev Modules that have multiple endpoints to a single implementation relation.
      */
-    uint16 internal constant _MODULE_TYPE_MULTI_PROXY = 2;
+    uint16 internal constant _MODULE_TYPE_MULTI_ENDPOINT = 2;
 
     /**
      * @dev Modules that are available internally, called internally and don't have any public-facing proxies.

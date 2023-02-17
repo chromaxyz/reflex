@@ -22,7 +22,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     // =========
 
     uint32 internal constant _MODULE_SINGLE_ID = 100;
-    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
+    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
     uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
     uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V1 = true;
@@ -45,7 +45,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
     MockImplementationModule public singleModuleV1;
     MockImplementationModule public singleModuleV2;
-    MockImplementationModule public singleModuleProxy;
+    MockImplementationModule public singleModuleEndpoint;
 
     MockImplementationModule public internalModuleV1;
     MockImplementationModule public internalModuleV2;
@@ -116,9 +116,9 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         address[] memory moduleAddresses = new address[](2);
         moduleAddresses[0] = address(singleModuleV1);
         moduleAddresses[1] = address(internalModuleV1);
-        installerProxy.addModules(moduleAddresses);
+        installerEndpoint.addModules(moduleAddresses);
 
-        singleModuleProxy = MockImplementationModule(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID));
+        singleModuleEndpoint = MockImplementationModule(dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID));
     }
 
     // =====
@@ -129,15 +129,15 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID), address(internalModuleV1));
     }
 
-    function testUnitModuleIdToProxy() external {
-        assertEq(dispatcher.moduleIdToProxy(_MODULE_INTERNAL_ID), address(0));
+    function testUnitModuleIdToEndpoint() external {
+        assertEq(dispatcher.moduleIdToEndpoint(_MODULE_INTERNAL_ID), address(0));
     }
 
     function testUnitModuleSettings() external {
         // Proxies
 
         _verifyModuleConfiguration(
-            singleModuleProxy,
+            singleModuleEndpoint,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V1,
@@ -197,7 +197,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
     function testFuzzCallInternalModule(bytes32 message_) external {
         bytes32 value = abi.decode(
-            singleModuleProxy.callInternalModule(
+            singleModuleEndpoint.callInternalModule(
                 _MODULE_INTERNAL_ID,
                 abi.encodeWithSignature("getImplementationState0()")
             ),
@@ -206,13 +206,13 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         assertEq(value, 0);
 
-        singleModuleProxy.callInternalModule(
+        singleModuleEndpoint.callInternalModule(
             _MODULE_INTERNAL_ID,
             abi.encodeWithSignature("setImplementationState0(bytes32)", message_)
         );
 
         value = abi.decode(
-            singleModuleProxy.callInternalModule(
+            singleModuleEndpoint.callInternalModule(
                 _MODULE_INTERNAL_ID,
                 abi.encodeWithSignature("getImplementationState0()")
             ),
@@ -224,7 +224,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
     function testUnitRevertInvalidCallInternalModule() external {
         vm.expectRevert();
-        singleModuleProxy.callInternalModule(
+        singleModuleEndpoint.callInternalModule(
             _MODULE_INTERNAL_ID,
             abi.encodeWithSignature("getImplementationState777()")
         );
@@ -238,7 +238,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         // Verify internal module.
 
         _verifyModuleConfiguration(
-            singleModuleProxy,
+            singleModuleEndpoint,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V1,
@@ -262,7 +262,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(internalModuleV2);
-        installerProxy.upgradeModules(moduleAddresses);
+        installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
             IReflexModule.ModuleSettings({
@@ -277,14 +277,14 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         _verifyGetStateSlot(message_);
 
-        // Upgrade single-proxy module.
+        // Upgrade single-endpoint module.
 
         moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV2);
-        installerProxy.upgradeModules(moduleAddresses);
+        installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
-            singleModuleProxy,
+            singleModuleEndpoint,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V2,
@@ -295,7 +295,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         moduleAddresses = new address[](1);
         moduleAddresses[0] = address(internalModuleV3);
-        installerProxy.upgradeModules(moduleAddresses);
+        installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
             IReflexModule.ModuleSettings({
@@ -321,7 +321,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         assertEq(dispatcher.getImplementationState0(), message_);
 
         _verifyModuleConfiguration(
-            singleModuleProxy,
+            singleModuleEndpoint,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V1,
@@ -339,7 +339,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(internalModuleV4);
-        installerProxy.upgradeModules(moduleAddresses);
+        installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
             IReflexModule.ModuleSettings({
@@ -352,13 +352,16 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         // Overwrite storage in the `Dispatcher` context from the malicious module.
 
-        singleModuleProxy.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("setNumber(uint8)", number_));
+        singleModuleEndpoint.callInternalModule(
+            _MODULE_INTERNAL_ID,
+            abi.encodeWithSignature("setNumber(uint8)", number_)
+        );
 
         // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
 
         assertEq(
             abi.decode(
-                singleModuleProxy.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("getNumber()")),
+                singleModuleEndpoint.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("getNumber()")),
                 (uint8)
             ),
             number_
@@ -385,7 +388,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
     function _verifyModuleConfiguration(IReflexModule.ModuleSettings memory moduleSettings_) internal {
         IReflexModule.ModuleSettings memory moduleSettings = abi.decode(
-            singleModuleProxy.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("moduleSettings()")),
+            singleModuleEndpoint.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("moduleSettings()")),
             (IReflexModule.ModuleSettings)
         );
 
@@ -398,7 +401,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     function _verifyGetStateSlot(bytes32 message_) internal {
         assertEq(singleModuleV1.getImplementationState0(), 0);
         assertEq(singleModuleV2.getImplementationState0(), 0);
-        assertEq(singleModuleProxy.getImplementationState0(), message_);
+        assertEq(singleModuleEndpoint.getImplementationState0(), message_);
 
         assertEq(internalModuleV1.getImplementationState0(), 0);
         assertEq(internalModuleV2.getImplementationState0(), 0);
@@ -406,7 +409,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         assertEq(
             abi.decode(
-                singleModuleProxy.callInternalModule(
+                singleModuleEndpoint.callInternalModule(
                     _MODULE_INTERNAL_ID,
                     abi.encodeWithSignature("getImplementationState0()")
                 ),
@@ -418,14 +421,14 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     }
 
     function _verifySetStateSlot(bytes32 message_) internal {
-        singleModuleProxy.callInternalModule(
+        singleModuleEndpoint.callInternalModule(
             _MODULE_INTERNAL_ID,
             abi.encodeWithSignature("setImplementationState0(bytes32)", 0)
         );
 
         _verifyGetStateSlot(0);
 
-        singleModuleProxy.callInternalModule(
+        singleModuleEndpoint.callInternalModule(
             _MODULE_INTERNAL_ID,
             abi.encodeWithSignature("setImplementationState0(bytes32)", message_)
         );
