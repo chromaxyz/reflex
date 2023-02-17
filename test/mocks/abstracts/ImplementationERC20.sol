@@ -189,8 +189,8 @@ abstract contract ImplementationERC20 is MockImplementationModule {
     // Internal methods
     // ================
 
-    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
-     * the total supply.
+    /**
+     * @dev Creates `amount` tokens and assigns them to `account`, increasing the total supply.
      *
      * Emits a {Transfer} event with `from` set to the zero address.
      */
@@ -209,8 +209,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
     }
 
     /**
-     * @notice Destroys `amount` tokens from `account`, reducing the
-     * total supply.
+     * @notice Destroys `amount` tokens from `account`, reducing the total supply.
      *
      * Emits a {Transfer} event with `to` set to the zero address.
      *

@@ -24,6 +24,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      * @param contractAddress_ Address of the contract to call.
      * @param payload_ Encoded call payload.
      * @return bytes Encoded return data.
+     *
      * @dev Intended to be used in static-called batches, to e.g. provide detailed information about the impacts of the simulated operation.
      */
     function performStaticCall(address contractAddress_, bytes memory payload_) external view returns (bytes memory) {
@@ -60,6 +61,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     /**
      * @notice Simulate a batch call to interact with multiple modules in a single transaction.
      * @param actions_ List of actions to simulate.
+     *
      * @dev During simulation all batch actions are executed, regardless of the `allowFailure` flag.
      * @dev Reverts with simulation results.
      */
@@ -87,6 +89,8 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     /**
      * @notice Simulate a batch call, catch the revert and parse it to BatchActionResponse[].
      * @param actions_ List of actions to simulate.
+     * @return simulation_ The decoded simulation of the simulated batched actions.
+     *
      * @dev During simulation all batch actions are executed, regardless of the `allowFailure` flag.
      * @dev Returns with simulation results.
      */
