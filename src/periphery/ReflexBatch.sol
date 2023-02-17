@@ -85,9 +85,9 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     }
 
     /**
-     * @notice Simulate a batch call and catch the revert and parse it to BatchActionResponse[]
+     * @notice Simulate a batch call, catch the revert and parse it to BatchActionResponse[].
      * @param actions_ List of actions to simulate.
-     * @dev During simulation all batch actions are executed, regardless of the `allowFailure` flag
+     * @dev During simulation all batch actions are executed, regardless of the `allowFailure` flag.
      * @dev Returns with simulation results.
      */
     function simulateBatchCallDecoded(
@@ -101,7 +101,9 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
 
         address moduleImplementation_ = _relations[proxyAddress].moduleImplementation;
 
-        if (moduleImplementation_ == address(0)) revert BatchSimulationFailed();
+        if (moduleImplementation_ == address(0)) moduleImplementation_ = _modules[moduleId_];
+
+        if (moduleImplementation_ == address(0)) revert ModuleNotRegistered(moduleId_);
 
         (bool success, bytes memory result) = moduleImplementation_.delegatecall(
             abi.encodePacked(
