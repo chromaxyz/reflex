@@ -52,13 +52,13 @@ interface IReflexBatch is IReflexModule, TReflexBatch {
     // Methods
     // =======
 
-    function performBatchCall(BatchAction[] memory actions_) external;
+    function performBatchCall(IReflexBatch.BatchAction[] memory actions_) external;
 
-    function simulateBatchCall(BatchAction[] memory actions_) external;
+    function performStaticCall(address contractAddress_, bytes memory payload_) external view returns (bytes memory);
+
+    function simulateBatchCall(IReflexBatch.BatchAction[] memory actions_) external;
 
     function simulateBatchCallDecoded(
-        BatchAction[] calldata actions_
-    ) external returns (BatchActionResponse[] memory simulation_);
-
-    function performStaticCall(address contractAddress, bytes memory payload) external view returns (bytes memory);
+        IReflexBatch.BatchAction[] memory actions_
+    ) external returns (IReflexBatch.BatchActionResponse[] memory simulation_);
 }
