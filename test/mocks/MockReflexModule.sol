@@ -128,15 +128,15 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         );
     }
 
-    function unpackMessageSender() public pure returns (address) {
+    function unpackMessageSender() external pure returns (address) {
         return _unpackMessageSender();
     }
 
-    function unpackProxyAddress() public pure returns (address) {
+    function unpackProxyAddress() external pure returns (address) {
         return _unpackProxyAddress();
     }
 
-    function unpackTrailingParameters() public pure returns (address, address) {
+    function unpackTrailingParameters() external pure returns (address, address) {
         return _unpackTrailingParameters();
     }
 
