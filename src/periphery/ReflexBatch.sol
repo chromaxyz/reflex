@@ -93,23 +93,11 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     function simulateBatchCallDecoded(
         BatchAction[] calldata actions_
     ) external virtual override reentrancyAllowed returns (BatchActionResponse[] memory simulation_) {
-        address proxyAddress = _unpackProxyAddress();
-
-        uint32 moduleId_ = _relations[proxyAddress].moduleId;
-
-        if (moduleId_ == 0) revert InvalidModuleId();
-
-        address moduleImplementation_ = _relations[proxyAddress].moduleImplementation;
-
-        if (moduleImplementation_ == address(0)) moduleImplementation_ = _modules[moduleId_];
-
-        if (moduleImplementation_ == address(0)) revert ModuleNotRegistered(moduleId_);
-
-        (bool success, bytes memory result) = moduleImplementation_.delegatecall(
+        (bool success, bytes memory result) = _modules[_moduleId].delegatecall(
             abi.encodePacked(
                 abi.encodeWithSelector(ReflexBatch.simulateBatchCall.selector, actions_),
                 uint160(_unpackMessageSender()),
-                uint160(proxyAddress)
+                uint160(_unpackProxyAddress())
             )
         );
 
