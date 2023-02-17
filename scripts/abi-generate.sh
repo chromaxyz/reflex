@@ -21,7 +21,7 @@ function log () {
 log $GREEN "Creating storage overview from contracts"
 
 # Variables
-CONTRACTS="ReflexBase ReflexDispatcher ReflexInstaller ReflexModule ReflexEndpoint"
+CONTRACTS="ReflexBase ReflexDispatcher ReflexInstaller ReflexModule ReflexEndpoint ReflexBatch"
 
 # Remove previous reports
 rm -rf reports/abi
