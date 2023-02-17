@@ -88,27 +88,27 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
                 ICustomError.CustomErrorPayload({code: code_, message: message_})
             )
         );
-        proxy_.testUnitRevertBytesCustomError(code_, message_);
+        proxy_.revertBytesCustomError(code_, message_);
     }
 
     function _testRevertBytesPanicAssert(MockReflexModule proxy_) internal {
         vm.expectRevert(stdError.assertionError);
-        proxy_.testUnitRevertPanicAssert();
+        proxy_.revertPanicAssert();
     }
 
     function _testRevertBytesPanicDivideByZero(MockReflexModule proxy_) internal {
         vm.expectRevert(stdError.divisionError);
-        proxy_.testUnitRevertPanicDivisionByZero();
+        proxy_.revertPanicDivisionByZero();
     }
 
     function _testRevertBytesPanicArithmaticOverflow(MockReflexModule proxy_) internal {
         vm.expectRevert(stdError.arithmeticError);
-        proxy_.testUnitRevertPanicArithmeticOverflow();
+        proxy_.revertPanicArithmeticOverflow();
     }
 
     function _testRevertBytesPanicArithmaticUnderflow(MockReflexModule proxy_) internal {
         vm.expectRevert(stdError.arithmeticError);
-        proxy_.testUnitRevertPanicArithmeticUnderflow();
+        proxy_.revertPanicArithmeticUnderflow();
     }
 
     function _testProxyLog0Topic(MockReflexModule proxy_, bytes memory message_) internal BrutalizeMemory {
@@ -128,7 +128,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
 
         vm.recordLogs();
 
-        proxy_.testFuzzProxyLog0Topic(message_);
+        proxy_.proxyLog0Topic(message_);
 
         VmSafe.Log[] memory entries = vm.getRecordedLogs();
 
@@ -153,7 +153,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
             mstore(ptr, message)
             log1(ptr, messageLength, topic1)
         }
-        proxy_.testFuzzProxyLog1Topic(message_);
+        proxy_.proxyLog1Topic(message_);
     }
 
     function _testProxyLog2Topic(MockReflexModule proxy_, bytes memory message_) internal BrutalizeMemory {
@@ -172,7 +172,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
             mstore(ptr, message)
             log2(ptr, messageLength, topic1, topic2)
         }
-        proxy_.testFuzzProxyLog2Topic(message_);
+        proxy_.proxyLog2Topic(message_);
     }
 
     function _testProxyLog3Topic(MockReflexModule proxy_, bytes memory message_) internal BrutalizeMemory {
@@ -192,7 +192,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
             mstore(ptr, message)
             log3(ptr, messageLength, topic1, topic2, topic3)
         }
-        proxy_.testFuzzProxyLog3Topic(message_);
+        proxy_.proxyLog3Topic(message_);
     }
 
     function _testProxyLog4Topic(MockReflexModule proxy_, bytes memory message_) internal BrutalizeMemory {
@@ -213,30 +213,30 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
             mstore(ptr, message)
             log4(ptr, messageLength, topic1, topic2, topic3, topic4)
         }
-        proxy_.testFuzzProxyLog4Topic(message_);
+        proxy_.proxyLog4Topic(message_);
     }
 
     function _testRevertProxyLogOutOfBounds(MockReflexModule proxy_, bytes memory message_) internal BrutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         vm.expectRevert(MockReflexModule.FailedToLog.selector);
-        proxy_.testUnitRevertProxyLogOutOfBounds(message_);
+        proxy_.revertProxyLogOutOfBounds(message_);
     }
 
     function _testUnpackMessageSender(MockReflexModule proxy_, address sender_) internal BrutalizeMemory {
-        address messageSender = proxy_.testUnitUnpackMessageSender();
+        address messageSender = proxy_.unpackMessageSender();
 
         assertEq(messageSender, sender_);
     }
 
     function _testUnpackProxyAddress(MockReflexModule proxy_) internal BrutalizeMemory {
-        address proxyAddress = proxy_.testUnitUnpackProxyAddress();
+        address proxyAddress = proxy_.unpackProxyAddress();
 
         assertEq(proxyAddress, address(proxy_));
     }
 
     function _testUnpackTrailingParameters(MockReflexModule proxy_, address sender_) internal BrutalizeMemory {
-        (address messageSender, address proxyAddress) = proxy_.testUnitUnpackTrailingParameters();
+        (address messageSender, address proxyAddress) = proxy_.unpackTrailingParameters();
 
         assertEq(messageSender, sender_);
         assertEq(proxyAddress, address(proxy_));

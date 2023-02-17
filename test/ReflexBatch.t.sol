@@ -13,6 +13,7 @@ import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
 import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
 import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 import {MockReflexBatch} from "./mocks/MockReflexBatch.sol";
+import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 
 /**
  * @title Reflex Batch Test
@@ -133,7 +134,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
     }
 
     function testFuzzSimulateBatchCallSingleModule(bytes32 message_) external {
-        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](4);
 
         actions[0] = IReflexBatch.BatchAction({
             allowFailure: false,
@@ -147,39 +148,33 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
             callData: abi.encodeCall(MockImplementationModule.getImplementationState0, ())
         });
 
-        IReflexBatch.BatchActionResponse[] memory responses = new IReflexBatch.BatchActionResponse[](2);
-        responses[0] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
-        responses[1] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encodePacked(message_)});
-
-        vm.expectRevert(abi.encodeWithSelector(IReflexBatch.BatchSimulation.selector, responses));
-        batchProxy.simulateBatchCall(actions);
-    }
-
-    function testFuzzSimulateBatchCallMultiModule(address target_, uint256 amount_) external {
-        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
-
-        actions[0] = IReflexBatch.BatchAction({
+        actions[2] = IReflexBatch.BatchAction({
             allowFailure: false,
-            proxyAddress: address(multiModuleProxy),
-            callData: abi.encodeCall(MockImplementationERC20.mint, (target_, amount_))
+            proxyAddress: address(singleModuleProxy),
+            callData: abi.encodeCall(MockReflexModule.unpackMessageSender, ())
         });
 
-        actions[1] = IReflexBatch.BatchAction({
+        actions[3] = IReflexBatch.BatchAction({
             allowFailure: false,
-            proxyAddress: address(multiModuleProxy),
-            callData: abi.encodeCall(MockImplementationERC20.burn, (target_, amount_))
+            proxyAddress: address(singleModuleProxy),
+            callData: abi.encodeCall(MockReflexModule.unpackProxyAddress, ())
         });
 
-        IReflexBatch.BatchActionResponse[] memory responses = new IReflexBatch.BatchActionResponse[](2);
+        IReflexBatch.BatchActionResponse[] memory responses = new IReflexBatch.BatchActionResponse[](4);
         responses[0] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
-        responses[1] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
+        responses[1] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(message_)});
+        responses[2] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(address(this))});
+        responses[3] = IReflexBatch.BatchActionResponse({
+            success: true,
+            returnData: abi.encode(address(singleModuleProxy))
+        });
 
         vm.expectRevert(abi.encodeWithSelector(IReflexBatch.BatchSimulation.selector, responses));
         batchProxy.simulateBatchCall(actions);
     }
 
     function testFuzzSimulateBatchCallSingleModuleDecoded(bytes32 message_) external {
-        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](4);
 
         actions[0] = IReflexBatch.BatchAction({
             allowFailure: false,
@@ -191,6 +186,18 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
             allowFailure: false,
             proxyAddress: address(singleModuleProxy),
             callData: abi.encodeCall(MockImplementationModule.getImplementationState0, ())
+        });
+
+        actions[2] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(singleModuleProxy),
+            callData: abi.encodeCall(MockReflexModule.unpackMessageSender, ())
+        });
+
+        actions[3] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(singleModuleProxy),
+            callData: abi.encodeCall(MockReflexModule.unpackProxyAddress, ())
         });
 
         IReflexBatch.BatchActionResponse[] memory responses = batchProxy.simulateBatchCallDecoded(actions);
@@ -199,11 +206,17 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         assertEq(responses[0].returnData, "");
 
         assertEq(responses[1].success, true);
-        assertEq(bytes32(responses[1].returnData), message_);
+        assertEq(responses[1].returnData, abi.encode(message_));
+
+        assertEq(responses[2].success, true);
+        assertEq(responses[2].returnData, abi.encode(address(this)));
+
+        assertEq(responses[3].success, true);
+        assertEq(responses[3].returnData, abi.encode(address(singleModuleProxy)));
     }
 
-    function testFuzzSimulateBatchCallMultiModuleDecoded(address target_, uint256 amount_) external {
-        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
+    function testFuzzSimulateBatchCallMultiModule(address target_, uint256 amount_) external {
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](4);
 
         actions[0] = IReflexBatch.BatchAction({
             allowFailure: false,
@@ -215,6 +228,58 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
             allowFailure: false,
             proxyAddress: address(multiModuleProxy),
             callData: abi.encodeCall(MockImplementationERC20.burn, (target_, amount_))
+        });
+
+        actions[2] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(multiModuleProxy),
+            callData: abi.encodeCall(MockReflexModule.unpackMessageSender, ())
+        });
+
+        actions[3] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(multiModuleProxy),
+            callData: abi.encodeCall(MockReflexModule.unpackProxyAddress, ())
+        });
+
+        IReflexBatch.BatchActionResponse[] memory responses = new IReflexBatch.BatchActionResponse[](4);
+        responses[0] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
+        responses[1] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
+        responses[2] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(address(this))});
+        responses[3] = IReflexBatch.BatchActionResponse({
+            success: true,
+            returnData: abi.encode(address(multiModuleProxy))
+        });
+
+        vm.expectRevert(abi.encodeWithSelector(IReflexBatch.BatchSimulation.selector, responses));
+        batchProxy.simulateBatchCall(actions);
+    }
+
+    function testFuzzSimulateBatchCallMultiModuleDecoded(address target_, uint256 amount_) external {
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](4);
+
+        actions[0] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(multiModuleProxy),
+            callData: abi.encodeCall(MockImplementationERC20.mint, (target_, amount_))
+        });
+
+        actions[1] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(multiModuleProxy),
+            callData: abi.encodeCall(MockImplementationERC20.burn, (target_, amount_))
+        });
+
+        actions[2] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(multiModuleProxy),
+            callData: abi.encodeCall(MockReflexModule.unpackMessageSender, ())
+        });
+
+        actions[3] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(multiModuleProxy),
+            callData: abi.encodeCall(MockReflexModule.unpackProxyAddress, ())
         });
 
         IReflexBatch.BatchActionResponse[] memory responses = batchProxy.simulateBatchCallDecoded(actions);
@@ -224,6 +289,12 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
 
         assertEq(responses[1].success, true);
         assertEq(responses[1].returnData, "");
+
+        assertEq(responses[2].success, true);
+        assertEq(responses[2].returnData, abi.encode(address(this)));
+
+        assertEq(responses[3].success, true);
+        assertEq(responses[3].returnData, abi.encode(address(multiModuleProxy)));
     }
 
     function testFuzzPerformBatchCall(bytes32 message_) external {

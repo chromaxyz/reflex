@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
+import {console2} from "forge-std/console2.sol";
+
 // Interfaces
 import {IReflexBatch} from "./interfaces/IReflexBatch.sol";
 import {IReflexModule} from "../interfaces/IReflexModule.sol";
@@ -93,11 +95,23 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     function simulateBatchCallDecoded(
         BatchAction[] calldata actions_
     ) external virtual override reentrancyAllowed returns (BatchActionResponse[] memory simulation_) {
-        (bool success, bytes memory result) = address(this).delegatecall(
+        address proxyAddress = msg.sender;
+
+        uint32 moduleId_ = _relations[proxyAddress].moduleId;
+
+        if (moduleId_ == 0) revert InvalidModuleId();
+
+        address moduleImplementation_ = _relations[proxyAddress].moduleImplementation;
+
+        if (moduleImplementation_ == address(0)) revert BatchSimulationFailed();
+
+        console2.log(moduleImplementation_, address(this), msg.sender);
+
+        (bool success, bytes memory result) = moduleImplementation_.delegatecall(
             abi.encodePacked(
-                abi.encodeWithSelector(this.simulateBatchCall.selector, actions_),
+                abi.encodeWithSelector(ReflexBatch.simulateBatchCall.selector, actions_),
                 uint160(_unpackMessageSender()),
-                uint160(msg.sender)
+                uint160(proxyAddress)
             )
         );
 

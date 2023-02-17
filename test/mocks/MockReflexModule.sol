@@ -41,7 +41,7 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         return true;
     }
 
-    function testUnitRevertBytesCustomError(uint256 code, string calldata message) external {
+    function revertBytesCustomError(uint256 code, string calldata message) external {
         CustomErrorThrower thrower = new CustomErrorThrower();
 
         (, bytes memory data) = address(thrower).call(
@@ -51,7 +51,7 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         _revertBytes(data);
     }
 
-    function testUnitRevertPanicAssert() external {
+    function revertPanicAssert() external {
         PanicThrower thrower = new PanicThrower();
 
         (, bytes memory data) = address(thrower).call(abi.encodeWithSignature("throwPanicAssert()"));
@@ -59,7 +59,7 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         _revertBytes(data);
     }
 
-    function testUnitRevertPanicDivisionByZero() external {
+    function revertPanicDivisionByZero() external {
         PanicThrower thrower = new PanicThrower();
 
         (, bytes memory data) = address(thrower).call(abi.encodeWithSignature("throwPanicDivisionByZero()"));
@@ -67,7 +67,7 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         _revertBytes(data);
     }
 
-    function testUnitRevertPanicArithmeticOverflow() external {
+    function revertPanicArithmeticOverflow() external {
         PanicThrower thrower = new PanicThrower();
 
         (, bytes memory data) = address(thrower).call(abi.encodeWithSignature("throwPanicArithmeticOverflow()"));
@@ -75,7 +75,7 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         _revertBytes(data);
     }
 
-    function testUnitRevertPanicArithmeticUnderflow() external {
+    function revertPanicArithmeticUnderflow() external {
         PanicThrower thrower = new PanicThrower();
 
         (, bytes memory data) = address(thrower).call(abi.encodeWithSignature("throwPanicArithmeticUnderflow()"));
@@ -83,25 +83,25 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         _revertBytes(data);
     }
 
-    function testFuzzProxyLog0Topic(bytes memory message_) external {
+    function proxyLog0Topic(bytes memory message_) external {
         _issueLogToProxy(abi.encodePacked(uint8(0), message_));
     }
 
-    function testFuzzProxyLog1Topic(bytes calldata message_) external {
+    function proxyLog1Topic(bytes calldata message_) external {
         _issueLogToProxy(abi.encodePacked(uint8(1), bytes32(uint256(1)), message_));
     }
 
-    function testFuzzProxyLog2Topic(bytes memory message_) external {
+    function proxyLog2Topic(bytes memory message_) external {
         _issueLogToProxy(abi.encodePacked(uint8(2), bytes32(uint256(1)), bytes32(uint256(2)), message_));
     }
 
-    function testFuzzProxyLog3Topic(bytes memory message_) external {
+    function proxyLog3Topic(bytes memory message_) external {
         _issueLogToProxy(
             abi.encodePacked(uint8(3), bytes32(uint256(1)), bytes32(uint256(2)), bytes32(uint256(3)), message_)
         );
     }
 
-    function testFuzzProxyLog4Topic(bytes memory message_) external {
+    function proxyLog4Topic(bytes memory message_) external {
         _issueLogToProxy(
             abi.encodePacked(
                 uint8(4),
@@ -114,7 +114,7 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         );
     }
 
-    function testUnitRevertProxyLogOutOfBounds(bytes memory message_) external {
+    function revertProxyLogOutOfBounds(bytes memory message_) external {
         _issueLogToProxy(
             abi.encodePacked(
                 uint8(5),
@@ -128,15 +128,15 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         );
     }
 
-    function testUnitUnpackMessageSender() external pure returns (address) {
+    function unpackMessageSender() public pure returns (address) {
         return _unpackMessageSender();
     }
 
-    function testUnitUnpackProxyAddress() external pure returns (address) {
+    function unpackProxyAddress() public pure returns (address) {
         return _unpackProxyAddress();
     }
 
-    function testUnitUnpackTrailingParameters() external pure returns (address, address) {
+    function unpackTrailingParameters() public pure returns (address, address) {
         return _unpackTrailingParameters();
     }
 
