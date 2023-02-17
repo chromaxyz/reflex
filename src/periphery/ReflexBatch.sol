@@ -20,6 +20,23 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     // ==============
 
     /**
+     * @notice Execute a staticcall to an arbitrary address with an arbitrary payload.
+     * @param contractAddress_ Address of the contract to call.
+     * @param payload_ Encoded call payload.
+     * @return bytes Encoded return data.
+     * @dev Intended to be used in static-called batches, to e.g. provide detailed information about the impacts of the simulated operation.
+     */
+    function performStaticCall(address contractAddress_, bytes memory payload_) external view returns (bytes memory) {
+        (bool success, bytes memory result) = contractAddress_.staticcall(payload_);
+
+        if (!success) _revertBytes(result);
+
+        assembly {
+            return(add(32, result), mload(result))
+        }
+    }
+
+    /**
      * @notice Perform a batch call to interact with multiple modules in a single transaction.
      * @param actions_ List of actions to perform.
      */
@@ -30,9 +47,9 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         for (uint256 i = 0; i < actionsLength; ) {
             BatchAction calldata action = actions_[i];
 
-            (bool success, bytes memory returnData) = _performBatchAction(messageSender, action);
+            (bool success, bytes memory result) = _performBatchAction(messageSender, action);
 
-            if (!(success || action.allowFailure)) _revertBytes(returnData);
+            if (!(success || action.allowFailure)) _revertBytes(result);
 
             unchecked {
                 ++i;
@@ -43,6 +60,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     /**
      * @notice Simulate a batch call to interact with multiple modules in a single transaction.
      * @param actions_ List of actions to simulate.
+     * @dev During simulation all batch actions are executed, regardless of the `allowFailure` flag.
      * @dev Reverts with simulation results.
      */
     function simulateBatchCall(BatchAction[] calldata actions_) external virtual override reentrancyAllowed {
@@ -54,9 +72,9 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         for (uint256 i = 0; i < actionsLength; ) {
             BatchAction calldata action = actions_[i];
 
-            (bool success, bytes memory returnData) = _performBatchAction(messageSender, action);
+            (bool success, bytes memory result) = _performBatchAction(messageSender, action);
 
-            simulation[i] = BatchActionResponse({success: success, returnData: returnData});
+            simulation[i] = BatchActionResponse({success: success, returnData: result});
 
             unchecked {
                 ++i;
@@ -64,6 +82,45 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         }
 
         revert BatchSimulation(simulation);
+    }
+
+    // TODO: can we merge this into simulateBatchCall?
+
+    /**
+     * @notice Simulate a batch call and catch the revert and parse it to BatchActionResponse[]
+     * @param actions_ List of actions to simulate.
+     * @dev During simulation all batch actions are executed, regardless of the `allowFailure` flag
+     * @dev Returns with simulation results.
+     */
+    function simulateBatchCallDecoded(
+        BatchAction[] calldata actions_
+    ) external virtual override reentrancyAllowed returns (BatchActionResponse[] memory simulation_) {
+        address messageSender_ = _unpackMessageSender();
+        bytes memory action = abi.encodeWithSelector(ReflexBatch.simulateBatchCall.selector, actions_);
+
+        uint32 moduleId_ = _relations[msg.sender].moduleId;
+
+        if (moduleId_ == 0) revert InvalidModuleId();
+
+        address moduleImplementation_ = _relations[msg.sender].moduleImplementation;
+
+        if (moduleImplementation_ == address(0)) moduleImplementation_ = _modules[moduleId_];
+
+        if (moduleImplementation_ == address(0)) revert ModuleNotRegistered(moduleId_);
+
+        (bool success, bytes memory result) = moduleImplementation_.delegatecall(
+            abi.encodePacked(action, uint160(messageSender_), uint160(msg.sender))
+        );
+
+        if (success) revert BatchSimulationFailed();
+
+        if (bytes4(result) != BatchSimulation.selector) _revertBytes(result);
+
+        assembly {
+            result := add(result, 0x4)
+        }
+
+        simulation_ = abi.decode(result, (BatchActionResponse[]));
     }
 
     // ================
