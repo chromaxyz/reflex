@@ -178,6 +178,54 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchProxy.simulateBatchCall(actions);
     }
 
+    function testFuzzSimulateBatchCallSingleModuleDecoded(bytes32 message_) external {
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
+
+        actions[0] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(singleModuleProxy),
+            callData: abi.encodeCall(MockImplementationModule.setImplementationState0, (message_))
+        });
+
+        actions[1] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(singleModuleProxy),
+            callData: abi.encodeCall(MockImplementationModule.getImplementationState0, ())
+        });
+
+        IReflexBatch.BatchActionResponse[] memory responses = batchProxy.simulateBatchCallDecoded(actions);
+
+        assertEq(responses[0].success, true);
+        assertEq(responses[0].returnData, "");
+
+        assertEq(responses[1].success, true);
+        assertEq(bytes32(responses[1].returnData), message_);
+    }
+
+    function testFuzzSimulateBatchCallMultiModuleDecoded(address target_, uint256 amount_) external {
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
+
+        actions[0] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(multiModuleProxy),
+            callData: abi.encodeCall(MockImplementationERC20.mint, (target_, amount_))
+        });
+
+        actions[1] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            proxyAddress: address(multiModuleProxy),
+            callData: abi.encodeCall(MockImplementationERC20.burn, (target_, amount_))
+        });
+
+        IReflexBatch.BatchActionResponse[] memory responses = batchProxy.simulateBatchCallDecoded(actions);
+
+        assertEq(responses[0].success, true);
+        assertEq(responses[0].returnData, "");
+
+        assertEq(responses[1].success, true);
+        assertEq(responses[1].returnData, "");
+    }
+
     function testFuzzPerformBatchCall(bytes32 message_) external {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 

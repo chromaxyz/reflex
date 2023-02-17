@@ -84,8 +84,6 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         revert BatchSimulation(simulation);
     }
 
-    // TODO: can we merge this into simulateBatchCall?
-
     /**
      * @notice Simulate a batch call and catch the revert and parse it to BatchActionResponse[]
      * @param actions_ List of actions to simulate.
@@ -95,21 +93,12 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     function simulateBatchCallDecoded(
         BatchAction[] calldata actions_
     ) external virtual override reentrancyAllowed returns (BatchActionResponse[] memory simulation_) {
-        address messageSender_ = _unpackMessageSender();
-        bytes memory action = abi.encodeWithSelector(ReflexBatch.simulateBatchCall.selector, actions_);
-
-        uint32 moduleId_ = _relations[msg.sender].moduleId;
-
-        if (moduleId_ == 0) revert InvalidModuleId();
-
-        address moduleImplementation_ = _relations[msg.sender].moduleImplementation;
-
-        if (moduleImplementation_ == address(0)) moduleImplementation_ = _modules[moduleId_];
-
-        if (moduleImplementation_ == address(0)) revert ModuleNotRegistered(moduleId_);
-
-        (bool success, bytes memory result) = moduleImplementation_.delegatecall(
-            abi.encodePacked(action, uint160(messageSender_), uint160(msg.sender))
+        (bool success, bytes memory result) = address(this).delegatecall(
+            abi.encodePacked(
+                abi.encodeWithSelector(this.simulateBatchCall.selector, actions_),
+                uint160(_unpackMessageSender()),
+                uint160(msg.sender)
+            )
         );
 
         if (success) revert BatchSimulationFailed();
@@ -117,7 +106,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         if (bytes4(result) != BatchSimulation.selector) _revertBytes(result);
 
         assembly {
-            result := add(result, 0x4)
+            result := add(4, result)
         }
 
         simulation_ = abi.decode(result, (BatchActionResponse[]));
