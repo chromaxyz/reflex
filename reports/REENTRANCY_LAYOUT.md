@@ -218,41 +218,62 @@
   "name": "performBatchCall",
   "modifiers": [
     {
-      "id": 28284,
+      "id": 28312,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 28283,
+        "id": 28311,
         "name": "reentrancyAllowed",
         "nameLocations": [
-          "789:17:31"
+          "1528:17:31"
         ],
         "nodeType": "IdentifierPath",
         "referencedDeclaration": 26905,
-        "src": "789:17:31"
+        "src": "1528:17:31"
       },
       "nodeType": "ModifierInvocation",
-      "src": "789:17:31"
+      "src": "1528:17:31"
     }
   ]
 }
 {
-  "name": "simulateBatchCall",
+  "name": "simulateBatchCallRevert",
   "modifiers": [
     {
-      "id": 28346,
+      "id": 28374,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 28345,
+        "id": 28373,
         "name": "reentrancyAllowed",
         "nameLocations": [
-          "1574:17:31"
+          "2419:17:31"
         ],
         "nodeType": "IdentifierPath",
         "referencedDeclaration": 26905,
-        "src": "1574:17:31"
+        "src": "2419:17:31"
       },
       "nodeType": "ModifierInvocation",
-      "src": "1574:17:31"
+      "src": "2419:17:31"
+    }
+  ]
+}
+{
+  "name": "simulateBatchCallReturn",
+  "modifiers": [
+    {
+      "id": 28451,
+      "kind": "modifierInvocation",
+      "modifierName": {
+        "id": 28450,
+        "name": "reentrancyAllowed",
+        "nameLocations": [
+          "3580:17:31"
+        ],
+        "nodeType": "IdentifierPath",
+        "referencedDeclaration": 26905,
+        "src": "3580:17:31"
+      },
+      "nodeType": "ModifierInvocation",
+      "src": "3580:17:31"
     }
   ]
 }
