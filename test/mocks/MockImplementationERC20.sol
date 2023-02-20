@@ -21,12 +21,12 @@ contract MockImplementationERC20 is ImplementationERC20 {
     // Test stubs
     // ==========
 
-    function emitTransferEvent(address proxyAddress_, address from_, address to_, uint256 amount_) external {
-        _emitTransferEvent(proxyAddress_, from_, to_, amount_);
+    function emitTransferEvent(address endpointAddress_, address from_, address to_, uint256 amount_) external {
+        _emitTransferEvent(endpointAddress_, from_, to_, amount_);
     }
 
-    function emitApprovalEvent(address proxyAddress_, address owner_, address spender_, uint256 amount_) external {
-        _emitApprovalEvent(proxyAddress_, owner_, spender_, amount_);
+    function emitApprovalEvent(address endpointAddress_, address owner_, address spender_, uint256 amount_) external {
+        _emitApprovalEvent(endpointAddress_, owner_, spender_, amount_);
     }
 
     function mint(address to, uint256 value) external {

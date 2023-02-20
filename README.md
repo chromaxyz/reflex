@@ -37,7 +37,7 @@ A Solidity framework for upgradeable modularized applications.
 - Provides a minimal, gas-optimized framework for building and maintaining upgradeable modularized applications.
 - Modularization prevents hitting the Spurious Dragon maximum contract size limitation of `24576` bytes.
 - Avoids function selector clashing allowing you to run multiple spec-compliant modules side-by-side.
-- Multiple module types: `single-proxy` modules, `multi-proxy` modules and `internal` modules.
+- Multiple module types: `single-endpoint` modules, `multi-endpoint` modules and `internal` modules.
 - Uses neutral language, avoids introducing new terminology.
 - Relatively minimal overhead for the features it provides:
   - [~8065](test/ImplementationGas.t.sol) gas on the initial cold call.
@@ -54,20 +54,24 @@ The framework serves as the foundation of your modular application allowing you 
 
 ```
 .
-├── ReflexConstants.sol "Extendable `Constants`: constants used in the framework."
-├── ReflexDispatcher.sol "Non-upgradeable `Dispatcher`: dispatcher to module implementations."
-├── ReflexInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
-├── ReflexModule.sol "Upgradeable `Module`, foundational building block of modules."
-├── ReflexProxy.sol "Non-upgradeable `Proxy`, internal proxy indirection layer."
 ├── ReflexBase.sol "Extendable `Base`, internal abstraction for `Dispatcher` and `Module`."
+├── ReflexConstants.sol "Extendable `Constants`: constants used in the framework."
+├── ReflexDispatcher.sol  "Non-upgradeable `Dispatcher`: dispatcher to module implementations."
+├── ReflexEndpoint.sol "Non-upgradeable `Endpoint`, internal proxy indirection layer."
+├── ReflexInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
+├── ReflexModule.sol
 ├── ReflexState.sol "Extendable `State`, foundational state store of the framework."
-└── interfaces
+├── interfaces
+    ├── IReflexBase.sol "Interface for the `Base`."
     ├── IReflexDispatcher.sol "Interface for the `Dispatcher`."
+    ├── IReflexEndpoint.sol "Interface for the `Endpoint`."
     ├── IReflexInstaller.sol "Interface for the `Installer`."
     ├── IReflexModule.sol "Interface for the `Module`."
-    ├── IReflexProxy.sol "Interface for the `Proxy`."
-    ├── IReflexBase.sol "Interface for the `Base`."
-    └── IReflexState.sol "Interface for the `State`."
+│   └── IReflexState.sol "Interface for the `State`."
+└── periphery
+    ├── ReflexBatch.sol "Upgradeable `Batch`, upgradeable batch call for modules."
+    └── interfaces
+        └── IReflexBatch.sol "Interface for the `Batch`."
 ```
 
 ```mermaid
@@ -78,7 +82,7 @@ graph TD
     ReflexDispatcher --> ReflexBase
     ReflexModule --> ReflexBase
     ReflexBase --> ReflexState
-    ReflexBase --> ReflexProxy
+    ReflexBase --> ReflexEndpoint
     ReflexState --> ReflexConstants
     end
 ```
@@ -165,7 +169,7 @@ Please refer to the [CONTRIBUTORS](docs/CONTRIBUTORS.md) guide for more informat
 
 The goal of the framework is to provide an alternative, and in some aspects superior, solution to the fundamental problem EIP-2535: [Diamond, Multi-Facet Proxy](https://eips.ethereum.org/EIPS/eip-2535) aims to solve namely to enable the creation of modular smart contract systems that can be extended after deployment.
 
-The architecture is directly inspired by [Euler's Proxy Protocol](https://docs.euler.finance/developers/proxy-protocol) and we are thankful for their extensive documentation and novel modularization architecture.
+The architecture is directly inspired by [Euler's Proxy Protocol](https://docs.euler.finance/developers/endpoint-protocol) and we are thankful for their extensive documentation and novel modularization architecture.
 
 The contracts and tests were inspired by or directly modified from many sources, primarily:
 

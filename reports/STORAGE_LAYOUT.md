@@ -51,7 +51,7 @@
 | \_relations      | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexModule.sol:ReflexModule |
 | \_\_gap          | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexModule.sol:ReflexModule |
 
-**ReflexProxy**
+**ReflexEndpoint**
 
 | Name | Type | Slot | Offset | Bytes | Contract |
 | ---- | ---- | ---- | ------ | ----- | -------- |

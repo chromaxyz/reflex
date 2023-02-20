@@ -57,12 +57,12 @@ contract DeployScript is Script, DeployConstants {
     // =======
 
     MockImplementationInstaller public installerImplementation;
-    MockImplementationInstaller public installerProxy;
+    MockImplementationInstaller public installerEndpoint;
 
     MockImplementationDispatcher public dispatcher;
 
     MockImplementationModule public exampleModuleImplementation;
-    MockImplementationModule public exampleModuleProxy;
+    MockImplementationModule public exampleModuleEndpoint;
 
     // ===
     // Run
@@ -74,7 +74,7 @@ contract DeployScript is Script, DeployConstants {
         installerImplementation = new MockImplementationInstaller(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INSTALLER,
-                moduleType: _MODULE_TYPE_SINGLE_PROXY,
+                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
                 moduleVersion: _MODULE_VERSION_INSTALLER_V1,
                 moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER_V1
             })
@@ -82,12 +82,12 @@ contract DeployScript is Script, DeployConstants {
 
         dispatcher = new MockImplementationDispatcher(msg.sender, address(installerImplementation));
 
-        installerProxy = MockImplementationInstaller(dispatcher.moduleIdToProxy(_MODULE_ID_INSTALLER));
+        installerEndpoint = MockImplementationInstaller(dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER));
 
         exampleModuleImplementation = new MockImplementationModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_EXAMPLE,
-                moduleType: _MODULE_TYPE_SINGLE_PROXY,
+                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
                 moduleVersion: _MODULE_VERSION_EXAMPLE,
                 moduleUpgradeable: _MODULE_UPGRADEABLE_EXAMPLE
             })
@@ -95,10 +95,10 @@ contract DeployScript is Script, DeployConstants {
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(exampleModuleImplementation);
-        installerProxy.addModules(moduleAddresses);
+        installerEndpoint.addModules(moduleAddresses);
 
         vm.stopBroadcast();
 
-        exampleModuleProxy = MockImplementationModule(dispatcher.moduleIdToProxy(_MODULE_ID_EXAMPLE));
+        exampleModuleEndpoint = MockImplementationModule(dispatcher.moduleIdToEndpoint(_MODULE_ID_EXAMPLE));
     }
 }

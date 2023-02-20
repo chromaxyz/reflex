@@ -2,15 +2,15 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexProxy} from "./interfaces/IReflexProxy.sol";
+import {IReflexEndpoint} from "./interfaces/IReflexEndpoint.sol";
 
 /**
- * @title Reflex Proxy
+ * @title Reflex Endpoint
  *
- * @dev Execution takes place within the Dispatcher's storage context, not the proxy's.
+ * @dev Execution takes place within the Dispatcher's storage context, not the endpoints'.
  * @dev Non-upgradeable, extendable.
  */
-contract ReflexProxy is IReflexProxy {
+contract ReflexEndpoint is IReflexEndpoint {
     // =========
     // Constants
     // =========

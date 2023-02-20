@@ -26,11 +26,11 @@ contract ImplementationERC20Test is ImplementationFixture {
     // =========
 
     uint32 public constant _TOKEN_HUB_MODULE_ID = 100;
-    uint16 public constant _TOKEN_HUB_MODULE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
+    uint16 public constant _TOKEN_HUB_MODULE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
     uint16 public constant _TOKEN_HUB_MODULE_VERSION = 1;
 
     uint32 public constant _TOKEN_MODULE_ID = 101;
-    uint16 public constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_PROXY;
+    uint16 public constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_ENDPOINT;
     uint16 public constant _TOKEN_MODULE_VERSION = 1;
     string public constant _TOKEN_MODULE_NAME = "TOKEN A";
     string public constant _TOKEN_MODULE_SYMBOL = "TKNA";
@@ -41,10 +41,10 @@ contract ImplementationERC20Test is ImplementationFixture {
     // =======
 
     MockImplementationERC20Hub public tokenHub;
-    MockImplementationERC20Hub public tokenHubProxy;
+    MockImplementationERC20Hub public tokenHubEndpoint;
 
     MockImplementationERC20 public token;
-    MockImplementationERC20 public tokenProxy;
+    MockImplementationERC20 public tokenEndpoint;
 
     // =====
     // Setup
@@ -74,12 +74,12 @@ contract ImplementationERC20Test is ImplementationFixture {
         address[] memory moduleAddresses = new address[](2);
         moduleAddresses[0] = address(tokenHub);
         moduleAddresses[1] = address(token);
-        installerProxy.addModules(moduleAddresses);
+        installerEndpoint.addModules(moduleAddresses);
 
-        tokenHubProxy = MockImplementationERC20Hub(dispatcher.moduleIdToProxy(_TOKEN_HUB_MODULE_ID));
+        tokenHubEndpoint = MockImplementationERC20Hub(dispatcher.moduleIdToEndpoint(_TOKEN_HUB_MODULE_ID));
 
-        tokenProxy = MockImplementationERC20(
-            tokenHubProxy.addERC20(
+        tokenEndpoint = MockImplementationERC20(
+            tokenHubEndpoint.addERC20(
                 _TOKEN_MODULE_ID,
                 _TOKEN_MODULE_TYPE,
                 _TOKEN_MODULE_NAME,
@@ -94,179 +94,179 @@ contract ImplementationERC20Test is ImplementationFixture {
     // =====
 
     function testUnitMetadata() external {
-        assertEq(tokenProxy.name(), _TOKEN_MODULE_NAME);
-        assertEq(tokenProxy.symbol(), _TOKEN_MODULE_SYMBOL);
-        assertEq(tokenProxy.decimals(), _TOKEN_MODULE_DECIMALS);
+        assertEq(tokenEndpoint.name(), _TOKEN_MODULE_NAME);
+        assertEq(tokenEndpoint.symbol(), _TOKEN_MODULE_SYMBOL);
+        assertEq(tokenEndpoint.decimals(), _TOKEN_MODULE_DECIMALS);
     }
 
     function testFuzzMint(uint256 amount_) external {
-        tokenProxy.mint(_users.Alice, amount_);
+        tokenEndpoint.mint(_users.Alice, amount_);
 
-        assertEq(tokenProxy.totalSupply(), amount_);
-        assertEq(tokenProxy.balanceOf(_users.Alice), amount_);
+        assertEq(tokenEndpoint.totalSupply(), amount_);
+        assertEq(tokenEndpoint.balanceOf(_users.Alice), amount_);
     }
 
     function testFuzzBurn(uint256 mintAmount_, uint256 burnAmount_) external {
         vm.assume(mintAmount_ > burnAmount_);
 
-        tokenProxy.mint(_users.Alice, mintAmount_);
-        tokenProxy.burn(_users.Alice, burnAmount_);
+        tokenEndpoint.mint(_users.Alice, mintAmount_);
+        tokenEndpoint.burn(_users.Alice, burnAmount_);
 
-        assertEq(tokenProxy.totalSupply(), mintAmount_ - burnAmount_);
-        assertEq(tokenProxy.balanceOf(_users.Alice), mintAmount_ - burnAmount_);
+        assertEq(tokenEndpoint.totalSupply(), mintAmount_ - burnAmount_);
+        assertEq(tokenEndpoint.balanceOf(_users.Alice), mintAmount_ - burnAmount_);
     }
 
     function testFuzzApprove(uint256 amount_) external {
-        assertTrue(tokenProxy.approve(_users.Alice, amount_));
-        assertEq(tokenProxy.allowance(address(this), _users.Alice), amount_);
+        assertTrue(tokenEndpoint.approve(_users.Alice, amount_));
+        assertEq(tokenEndpoint.allowance(address(this), _users.Alice), amount_);
     }
 
     function testFuzzTransfer(uint256 amount_) external {
-        tokenProxy.mint(address(this), amount_);
+        tokenEndpoint.mint(address(this), amount_);
 
-        assertTrue(tokenProxy.transfer(_users.Alice, amount_));
-        assertEq(tokenProxy.totalSupply(), amount_);
-        assertEq(tokenProxy.balanceOf(address(this)), 0);
-        assertEq(tokenProxy.balanceOf(_users.Alice), amount_);
+        assertTrue(tokenEndpoint.transfer(_users.Alice, amount_));
+        assertEq(tokenEndpoint.totalSupply(), amount_);
+        assertEq(tokenEndpoint.balanceOf(address(this)), 0);
+        assertEq(tokenEndpoint.balanceOf(_users.Alice), amount_);
     }
 
     function testFuzzTransferFrom(uint256 amount_) external {
         vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
-        tokenProxy.mint(_users.Alice, amount_);
+        tokenEndpoint.mint(_users.Alice, amount_);
 
         vm.prank(_users.Alice);
-        tokenProxy.approve(address(this), amount_);
+        tokenEndpoint.approve(address(this), amount_);
 
-        assertTrue(tokenProxy.transferFrom(_users.Alice, _users.Bob, amount_));
-        assertEq(tokenProxy.totalSupply(), amount_);
-        assertEq(tokenProxy.allowance(_users.Alice, address(this)), 0);
-        assertEq(tokenProxy.balanceOf(_users.Alice), 0);
-        assertEq(tokenProxy.balanceOf(_users.Bob), amount_);
+        assertTrue(tokenEndpoint.transferFrom(_users.Alice, _users.Bob, amount_));
+        assertEq(tokenEndpoint.totalSupply(), amount_);
+        assertEq(tokenEndpoint.allowance(_users.Alice, address(this)), 0);
+        assertEq(tokenEndpoint.balanceOf(_users.Alice), 0);
+        assertEq(tokenEndpoint.balanceOf(_users.Bob), amount_);
     }
 
     function testFuzzInfiniteApproveTransferFrom(uint256 amount_) external {
         vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
-        tokenProxy.mint(_users.Alice, amount_);
+        tokenEndpoint.mint(_users.Alice, amount_);
 
         vm.prank(_users.Alice);
-        tokenProxy.approve(address(this), type(uint256).max);
+        tokenEndpoint.approve(address(this), type(uint256).max);
 
-        assertTrue(tokenProxy.transferFrom(_users.Alice, _users.Bob, amount_));
-        assertEq(tokenProxy.totalSupply(), amount_);
-        assertEq(tokenProxy.allowance(_users.Alice, address(this)), type(uint256).max);
-        assertEq(tokenProxy.balanceOf(_users.Alice), 0);
-        assertEq(tokenProxy.balanceOf(_users.Bob), amount_);
+        assertTrue(tokenEndpoint.transferFrom(_users.Alice, _users.Bob, amount_));
+        assertEq(tokenEndpoint.totalSupply(), amount_);
+        assertEq(tokenEndpoint.allowance(_users.Alice, address(this)), type(uint256).max);
+        assertEq(tokenEndpoint.balanceOf(_users.Alice), 0);
+        assertEq(tokenEndpoint.balanceOf(_users.Bob), amount_);
     }
 
     function testFuzzRevertTransferInsufficientBalance(uint256 amount_) external {
         vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
-        tokenProxy.mint(address(this), amount_ - 1);
+        tokenEndpoint.mint(address(this), amount_ - 1);
 
         vm.expectRevert(stdError.arithmeticError);
-        tokenProxy.transfer(_users.Alice, amount_);
+        tokenEndpoint.transfer(_users.Alice, amount_);
     }
 
     function testFuzzRevertTransferFromInsufficientAllowance(uint256 amount_) external {
         vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
-        tokenProxy.mint(_users.Alice, amount_);
+        tokenEndpoint.mint(_users.Alice, amount_);
 
         vm.prank(_users.Alice);
-        tokenProxy.approve(_users.Bob, amount_ - 1);
+        tokenEndpoint.approve(_users.Bob, amount_ - 1);
 
         vm.expectRevert(stdError.arithmeticError);
-        tokenProxy.transferFrom(_users.Alice, _users.Bob, amount_);
+        tokenEndpoint.transferFrom(_users.Alice, _users.Bob, amount_);
     }
 
     function testFuzzRevertTransferFromInsufficientBalance(uint256 amount_) external {
         vm.assume(amount_ > 0 && amount_ < type(uint256).max);
 
-        tokenProxy.mint(_users.Alice, amount_ - 1);
+        tokenEndpoint.mint(_users.Alice, amount_ - 1);
 
         vm.prank(_users.Alice);
-        tokenProxy.approve(_users.Bob, amount_);
+        tokenEndpoint.approve(_users.Bob, amount_);
 
         vm.expectRevert(stdError.arithmeticError);
-        tokenProxy.transferFrom(_users.Alice, _users.Bob, amount_);
+        tokenEndpoint.transferFrom(_users.Alice, _users.Bob, amount_);
     }
 
     function testFuzzRevertBurnInsufficientBalance(address to_, uint256 mintAmount_, uint256 burnAmount_) external {
         assumeNoPrecompiles(to_);
         vm.assume(burnAmount_ > mintAmount_);
 
-        tokenProxy.mint(to_, mintAmount_);
+        tokenEndpoint.mint(to_, mintAmount_);
 
         vm.expectRevert(stdError.arithmeticError);
-        tokenProxy.burn(to_, burnAmount_);
+        tokenEndpoint.burn(to_, burnAmount_);
     }
 
     function testFuzzMintBurn(uint256 amount_) external {
-        _expectEmitTransfer(address(tokenProxy), address(0), _users.Alice, amount_);
-        tokenProxy.mint(_users.Alice, amount_);
+        _expectEmitTransfer(address(tokenEndpoint), address(0), _users.Alice, amount_);
+        tokenEndpoint.mint(_users.Alice, amount_);
 
-        assertEq(tokenProxy.balanceOf(_users.Alice), amount_);
-        assertEq(tokenProxy.totalSupply(), amount_);
+        assertEq(tokenEndpoint.balanceOf(_users.Alice), amount_);
+        assertEq(tokenEndpoint.totalSupply(), amount_);
 
-        _expectEmitTransfer(address(tokenProxy), _users.Alice, address(0), amount_);
-        tokenProxy.burn(_users.Alice, amount_);
+        _expectEmitTransfer(address(tokenEndpoint), _users.Alice, address(0), amount_);
+        tokenEndpoint.burn(_users.Alice, amount_);
 
-        assertEq(tokenProxy.balanceOf(_users.Alice), 0);
-        assertEq(tokenProxy.totalSupply(), 0);
+        assertEq(tokenEndpoint.balanceOf(_users.Alice), 0);
+        assertEq(tokenEndpoint.totalSupply(), 0);
     }
 
     function testFuzzApproveTransfer(uint256 amount_) external {
-        _expectEmitTransfer(address(tokenProxy), address(0), _users.Alice, amount_);
-        tokenProxy.mint(_users.Alice, amount_);
+        _expectEmitTransfer(address(tokenEndpoint), address(0), _users.Alice, amount_);
+        tokenEndpoint.mint(_users.Alice, amount_);
 
-        assertEq(tokenProxy.balanceOf(_users.Alice), amount_);
-        assertEq(tokenProxy.balanceOf(_users.Bob), 0);
-        assertEq(tokenProxy.totalSupply(), amount_);
+        assertEq(tokenEndpoint.balanceOf(_users.Alice), amount_);
+        assertEq(tokenEndpoint.balanceOf(_users.Bob), 0);
+        assertEq(tokenEndpoint.totalSupply(), amount_);
 
         vm.startPrank(_users.Alice);
-        _expectEmitApproval(address(tokenProxy), _users.Alice, _users.Bob, amount_);
-        tokenProxy.approve(_users.Bob, amount_);
+        _expectEmitApproval(address(tokenEndpoint), _users.Alice, _users.Bob, amount_);
+        tokenEndpoint.approve(_users.Bob, amount_);
         vm.stopPrank();
 
         vm.startPrank(_users.Alice);
-        _expectEmitTransfer(address(tokenProxy), _users.Alice, _users.Bob, amount_);
-        tokenProxy.transfer(_users.Bob, amount_);
-        assertEq(tokenProxy.balanceOf(_users.Alice), 0);
-        assertEq(tokenProxy.balanceOf(_users.Bob), amount_);
-        assertEq(tokenProxy.totalSupply(), amount_);
+        _expectEmitTransfer(address(tokenEndpoint), _users.Alice, _users.Bob, amount_);
+        tokenEndpoint.transfer(_users.Bob, amount_);
+        assertEq(tokenEndpoint.balanceOf(_users.Alice), 0);
+        assertEq(tokenEndpoint.balanceOf(_users.Bob), amount_);
+        assertEq(tokenEndpoint.totalSupply(), amount_);
         vm.stopPrank();
     }
 
     function testFuzzApproveTransferFrom(uint256 amount_) external {
-        _expectEmitTransfer(address(tokenProxy), address(0), _users.Alice, amount_);
-        tokenProxy.mint(_users.Alice, amount_);
+        _expectEmitTransfer(address(tokenEndpoint), address(0), _users.Alice, amount_);
+        tokenEndpoint.mint(_users.Alice, amount_);
 
-        assertEq(tokenProxy.balanceOf(_users.Alice), amount_);
-        assertEq(tokenProxy.balanceOf(_users.Bob), 0);
-        assertEq(tokenProxy.totalSupply(), amount_);
+        assertEq(tokenEndpoint.balanceOf(_users.Alice), amount_);
+        assertEq(tokenEndpoint.balanceOf(_users.Bob), 0);
+        assertEq(tokenEndpoint.totalSupply(), amount_);
 
         vm.startPrank(_users.Alice);
-        _expectEmitApproval(address(tokenProxy), _users.Alice, _users.Bob, amount_);
-        tokenProxy.approve(_users.Bob, amount_);
+        _expectEmitApproval(address(tokenEndpoint), _users.Alice, _users.Bob, amount_);
+        tokenEndpoint.approve(_users.Bob, amount_);
         vm.stopPrank();
 
         vm.startPrank(_users.Bob);
-        _expectEmitTransfer(address(tokenProxy), _users.Alice, _users.Bob, amount_);
-        tokenProxy.transferFrom(_users.Alice, _users.Bob, amount_);
-        assertEq(tokenProxy.balanceOf(_users.Alice), 0);
-        assertEq(tokenProxy.balanceOf(_users.Bob), amount_);
-        assertEq(tokenProxy.totalSupply(), amount_);
+        _expectEmitTransfer(address(tokenEndpoint), _users.Alice, _users.Bob, amount_);
+        tokenEndpoint.transferFrom(_users.Alice, _users.Bob, amount_);
+        assertEq(tokenEndpoint.balanceOf(_users.Alice), 0);
+        assertEq(tokenEndpoint.balanceOf(_users.Bob), amount_);
+        assertEq(tokenEndpoint.totalSupply(), amount_);
         vm.stopPrank();
     }
 
-    function testFuzzRevertFailedProxyLog() external {
-        vm.expectRevert(ImplementationERC20.ProxyEventEmittanceFailed.selector);
-        tokenProxy.emitTransferEvent(address(dispatcher), address(0), address(0), 100e18);
+    function testFuzzRevertFailedEndpointLog() external {
+        vm.expectRevert(ImplementationERC20.EndpointEventEmittanceFailed.selector);
+        tokenEndpoint.emitTransferEvent(address(dispatcher), address(0), address(0), 100e18);
 
-        vm.expectRevert(ImplementationERC20.ProxyEventEmittanceFailed.selector);
-        tokenProxy.emitApprovalEvent(address(dispatcher), address(0), address(0), 100e18);
+        vm.expectRevert(ImplementationERC20.EndpointEventEmittanceFailed.selector);
+        tokenEndpoint.emitApprovalEvent(address(dispatcher), address(0), address(0), 100e18);
     }
 
     // =========
@@ -530,9 +530,9 @@ contract BaseInvariantTest is TestHarness {
      * - Metadata is correctly tracked during lifespan.
      */
     function _invariantA() internal {
-        assertEq(base.tokenProxy().name(), base._TOKEN_MODULE_NAME());
-        assertEq(base.tokenProxy().symbol(), base._TOKEN_MODULE_SYMBOL());
-        assertEq(base.tokenProxy().decimals(), base._TOKEN_MODULE_DECIMALS());
+        assertEq(base.tokenEndpoint().name(), base._TOKEN_MODULE_NAME());
+        assertEq(base.tokenEndpoint().symbol(), base._TOKEN_MODULE_SYMBOL());
+        assertEq(base.tokenEndpoint().decimals(), base._TOKEN_MODULE_DECIMALS());
     }
 
     /**
@@ -540,7 +540,7 @@ contract BaseInvariantTest is TestHarness {
      * - Total supply is correctly tracked during lifespan.
      */
     function _invariantB() internal {
-        assertEq(base.tokenProxy().totalSupply(), handler.sum());
+        assertEq(base.tokenEndpoint().totalSupply(), handler.sum());
     }
 
     function _createLog() internal {
@@ -571,7 +571,7 @@ contract UnboundedInvariantTest is BaseInvariantTest {
     function setUp() public virtual override {
         super.setUp();
 
-        handler = IInvariantHandler(address(new UnboundedInvariantHandler(base.tokenProxy())));
+        handler = IInvariantHandler(address(new UnboundedInvariantHandler(base.tokenEndpoint())));
 
         targetContract(address(handler));
     }
@@ -604,7 +604,7 @@ contract BoundedInvariantTest is BaseInvariantTest {
     function setUp() public virtual override {
         super.setUp();
 
-        handler = IInvariantHandler(address(new BoundedInvariantHandler(base.tokenProxy())));
+        handler = IInvariantHandler(address(new BoundedInvariantHandler(base.tokenEndpoint())));
 
         targetContract(address(handler));
 

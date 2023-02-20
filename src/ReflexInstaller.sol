@@ -123,9 +123,9 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             // Register the module.
             _modules[moduleSettings_.moduleId] = moduleAddress;
 
-            // Create and register the proxy for the module.
-            if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY)
-                _createProxy(moduleSettings_.moduleId, moduleSettings_.moduleType, moduleAddress);
+            // Create and register the endpoint for the module.
+            if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_ENDPOINT)
+                _createEndpoint(moduleSettings_.moduleId, moduleSettings_.moduleType, moduleAddress);
 
             emit ModuleAdded(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
 
@@ -170,8 +170,8 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             // Register the module.
             _modules[moduleSettings_.moduleId] = moduleAddress;
 
-            // Update the module implementation of the module proxy.
-            if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_PROXY)
+            // Update the module implementation of the module endpoint.
+            if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_ENDPOINT)
                 _relations[_proxies[moduleSettings_.moduleId]].moduleImplementation = moduleAddress;
 
             emit ModuleUpgraded(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
