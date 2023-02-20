@@ -15,7 +15,7 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
     // Error
     // =====
 
-    error InvalidProxyAddress();
+    error InvalidEndpointAddress();
 
     error InvalidMessageSender();
 
@@ -35,7 +35,7 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
     // ==========
 
     function sentinel() external pure returns (bool) {
-        if (_unpackProxyAddress() == address(0)) revert InvalidProxyAddress();
+        if (_unpackEndpointAddress() == address(0)) revert InvalidEndpointAddress();
         if (_unpackMessageSender() == address(0)) revert InvalidMessageSender();
 
         return true;
@@ -83,26 +83,26 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         _revertBytes(data);
     }
 
-    function proxyLog0Topic(bytes memory message_) external {
-        _issueLogToProxy(abi.encodePacked(uint8(0), message_));
+    function endpointLog0Topic(bytes memory message_) external {
+        _issueLogToEndpoint(abi.encodePacked(uint8(0), message_));
     }
 
-    function proxyLog1Topic(bytes calldata message_) external {
-        _issueLogToProxy(abi.encodePacked(uint8(1), bytes32(uint256(1)), message_));
+    function endpointLog1Topic(bytes calldata message_) external {
+        _issueLogToEndpoint(abi.encodePacked(uint8(1), bytes32(uint256(1)), message_));
     }
 
-    function proxyLog2Topic(bytes memory message_) external {
-        _issueLogToProxy(abi.encodePacked(uint8(2), bytes32(uint256(1)), bytes32(uint256(2)), message_));
+    function endpointLog2Topic(bytes memory message_) external {
+        _issueLogToEndpoint(abi.encodePacked(uint8(2), bytes32(uint256(1)), bytes32(uint256(2)), message_));
     }
 
-    function proxyLog3Topic(bytes memory message_) external {
-        _issueLogToProxy(
+    function endpointLog3Topic(bytes memory message_) external {
+        _issueLogToEndpoint(
             abi.encodePacked(uint8(3), bytes32(uint256(1)), bytes32(uint256(2)), bytes32(uint256(3)), message_)
         );
     }
 
-    function proxyLog4Topic(bytes memory message_) external {
-        _issueLogToProxy(
+    function endpointLog4Topic(bytes memory message_) external {
+        _issueLogToEndpoint(
             abi.encodePacked(
                 uint8(4),
                 bytes32(uint256(1)),
@@ -114,8 +114,8 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         );
     }
 
-    function revertProxyLogOutOfBounds(bytes memory message_) external {
-        _issueLogToProxy(
+    function revertEndpointLogOutOfBounds(bytes memory message_) external {
+        _issueLogToEndpoint(
             abi.encodePacked(
                 uint8(5),
                 bytes32(uint256(1)),
@@ -132,8 +132,8 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         return _unpackMessageSender();
     }
 
-    function unpackProxyAddress() external pure returns (address) {
-        return _unpackProxyAddress();
+    function unpackEndpointAddress() external pure returns (address) {
+        return _unpackEndpointAddress();
     }
 
     function unpackTrailingParameters() external pure returns (address, address) {
@@ -144,10 +144,10 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
     // Utilities
     // =========
 
-    function _issueLogToProxy(bytes memory payload) internal {
-        address proxyAddress = _unpackProxyAddress();
+    function _issueLogToEndpoint(bytes memory payload) internal {
+        address endpointAddress = _unpackEndpointAddress();
 
-        (bool success, ) = proxyAddress.call(payload);
+        (bool success, ) = endpointAddress.call(payload);
 
         if (!success) {
             revert FailedToLog();

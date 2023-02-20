@@ -27,15 +27,15 @@ contract MockImplementationERC20Hub is MockImplementationModule {
         string memory name_,
         string memory symbol_,
         uint8 decimals_
-    ) external returns (address tokenProxy_) {
-        tokenProxy_ = _createProxy(moduleId_, moduleType_, address(0));
+    ) external returns (address tokenEndpoint_) {
+        tokenEndpoint_ = _createEndpoint(moduleId_, moduleType_, address(0));
 
-        Token storage token = _tokens[tokenProxy_];
+        Token storage token = _tokens[tokenEndpoint_];
 
         token.name = name_;
         token.symbol = symbol_;
         token.decimals = decimals_;
 
-        return tokenProxy_;
+        return tokenEndpoint_;
     }
 }

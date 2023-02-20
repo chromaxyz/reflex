@@ -12,7 +12,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
     // Errors
     // ======
 
-    error ProxyEventEmittanceFailed();
+    error EndpointEventEmittanceFailed();
 
     // ======
     // Events
@@ -122,11 +122,11 @@ abstract contract ImplementationERC20 is MockImplementationModule {
      * Emits an {Approval} event.
      */
     function approve(address spender_, uint256 amount_) public virtual returns (bool) {
-        (Token storage token, address proxyAddress, address messageSender) = _unpackCalldata();
+        (Token storage token, address endpointAddress, address messageSender) = _unpackCalldata();
 
         token.allowance[messageSender][spender_] = amount_;
 
-        _emitApprovalEvent(proxyAddress, messageSender, spender_, amount_);
+        _emitApprovalEvent(endpointAddress, messageSender, spender_, amount_);
 
         return true;
     }
@@ -139,7 +139,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
      * Emits a {Transfer} event.
      */
     function transfer(address to_, uint256 amount_) public virtual returns (bool) {
-        (Token storage token, address proxyAddress, address messageSender) = _unpackCalldata();
+        (Token storage token, address endpointAddress, address messageSender) = _unpackCalldata();
 
         token.balanceOf[messageSender] -= amount_;
 
@@ -149,7 +149,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
             token.balanceOf[to_] += amount_;
         }
 
-        _emitTransferEvent(proxyAddress, messageSender, to_, amount_);
+        _emitTransferEvent(endpointAddress, messageSender, to_, amount_);
 
         return true;
     }
@@ -164,7 +164,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
      * Emits a {Transfer} event.
      */
     function transferFrom(address from_, address to_, uint256 amount_) public virtual returns (bool) {
-        (Token storage token, address proxyAddress, address messageSender) = _unpackCalldata();
+        (Token storage token, address endpointAddress, address messageSender) = _unpackCalldata();
 
         uint256 allowed = token.allowance[from_][messageSender];
 
@@ -180,7 +180,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
             token.balanceOf[to_] += amount_;
         }
 
-        _emitTransferEvent(proxyAddress, from_, to_, amount_);
+        _emitTransferEvent(endpointAddress, from_, to_, amount_);
 
         return true;
     }
@@ -195,7 +195,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
      * Emits a {Transfer} event with `from` set to the zero address.
      */
     function _mint(address to_, uint256 amount_) internal virtual {
-        (Token storage token, address proxyAddress, ) = _unpackCalldata();
+        (Token storage token, address endpointAddress, ) = _unpackCalldata();
 
         token.totalSupply += amount_;
 
@@ -205,7 +205,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
             token.balanceOf[to_] += amount_;
         }
 
-        _emitTransferEvent(proxyAddress, address(0), to_, amount_);
+        _emitTransferEvent(endpointAddress, address(0), to_, amount_);
     }
 
     /**
@@ -218,7 +218,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
      * - `account` must have at least `amount` tokens.
      */
     function _burn(address from_, uint256 amount_) internal virtual {
-        (Token storage token, address proxyAddress, ) = _unpackCalldata();
+        (Token storage token, address endpointAddress, ) = _unpackCalldata();
 
         token.balanceOf[from_] -= amount_;
 
@@ -228,14 +228,19 @@ abstract contract ImplementationERC20 is MockImplementationModule {
             token.totalSupply -= amount_;
         }
 
-        _emitTransferEvent(proxyAddress, from_, address(0), amount_);
+        _emitTransferEvent(endpointAddress, from_, address(0), amount_);
     }
 
     /**
-     * @dev Emit `Transfer` event from the `Proxy` rather than the `Dispatcher`.
+     * @dev Emit `Transfer` event from the `Endpoint` rather than the `Dispatcher`.
      */
-    function _emitTransferEvent(address proxyAddress_, address from_, address to_, uint256 amount_) internal virtual {
-        (bool success, ) = proxyAddress_.call(
+    function _emitTransferEvent(
+        address endpointAddress_,
+        address from_,
+        address to_,
+        uint256 amount_
+    ) internal virtual {
+        (bool success, ) = endpointAddress_.call(
             abi.encodePacked(
                 uint8(3),
                 keccak256(bytes("Transfer(address,address,uint256")),
@@ -245,19 +250,19 @@ abstract contract ImplementationERC20 is MockImplementationModule {
             )
         );
 
-        if (!success) revert ProxyEventEmittanceFailed();
+        if (!success) revert EndpointEventEmittanceFailed();
     }
 
     /**
-     * @dev Emit `Approval` event from the `Proxy` rather than the `Dispatcher`.
+     * @dev Emit `Approval` event from the `Endpoint` rather than the `Dispatcher`.
      */
     function _emitApprovalEvent(
-        address proxyAddress_,
+        address endpointAddress_,
         address owner_,
         address spender_,
         uint256 amount_
     ) internal virtual {
-        (bool success, ) = proxyAddress_.call(
+        (bool success, ) = endpointAddress_.call(
             abi.encodePacked(
                 uint8(3),
                 keccak256(bytes("Approval(address,address,uint256)")),
@@ -267,7 +272,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
             )
         );
 
-        if (!success) revert ProxyEventEmittanceFailed();
+        if (!success) revert EndpointEventEmittanceFailed();
     }
 
     /**
@@ -277,9 +282,9 @@ abstract contract ImplementationERC20 is MockImplementationModule {
         internal
         view
         virtual
-        returns (Token storage token_, address proxyAddress_, address messageSender_)
+        returns (Token storage token_, address endpointAddress_, address messageSender_)
     {
-        (messageSender_, proxyAddress_) = _unpackTrailingParameters();
-        token_ = _tokens[proxyAddress_];
+        (messageSender_, endpointAddress_) = _unpackTrailingParameters();
+        token_ = _tokens[endpointAddress_];
     }
 }

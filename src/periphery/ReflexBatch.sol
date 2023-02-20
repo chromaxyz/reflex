@@ -101,7 +101,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
             abi.encodePacked(
                 abi.encodeWithSelector(ReflexBatch.simulateBatchCall.selector, actions_),
                 uint160(_unpackMessageSender()),
-                uint160(_unpackProxyAddress())
+                uint160(_unpackEndpointAddress())
             )
         );
 
@@ -131,20 +131,20 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         address messageSender_,
         BatchAction calldata action_
     ) internal virtual returns (bool success_, bytes memory returnData_) {
-        address proxyAddress = action_.proxyAddress;
+        address endpointAddress = action_.endpointAddress;
 
-        uint32 moduleId_ = _relations[proxyAddress].moduleId;
+        uint32 moduleId_ = _relations[endpointAddress].moduleId;
 
         if (moduleId_ == 0) revert InvalidModuleId();
 
-        address moduleImplementation_ = _relations[proxyAddress].moduleImplementation;
+        address moduleImplementation_ = _relations[endpointAddress].moduleImplementation;
 
         if (moduleImplementation_ == address(0)) moduleImplementation_ = _modules[moduleId_];
 
         if (moduleImplementation_ == address(0)) revert ModuleNotRegistered(moduleId_);
 
         (success_, returnData_) = moduleImplementation_.delegatecall(
-            abi.encodePacked(action_.callData, uint160(messageSender_), uint160(proxyAddress))
+            abi.encodePacked(action_.callData, uint160(messageSender_), uint160(endpointAddress))
         );
     }
 }

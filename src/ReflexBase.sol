@@ -5,7 +5,7 @@ pragma solidity ^0.8.13;
 import {IReflexBase} from "./interfaces/IReflexBase.sol";
 
 // Sources
-import {ReflexProxy} from "./ReflexProxy.sol";
+import {ReflexEndpoint} from "./ReflexEndpoint.sol";
 import {ReflexState} from "./ReflexState.sol";
 
 /**
@@ -47,36 +47,36 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
     // ================
 
     /**
-     * @dev Create or return proxy by module id.
+     * @dev Create or return existing endpoint by module id.
      * @param moduleId_ Module id.
      * @param moduleType_ Module type.
      * @param moduleImplementation_ Module implementation.
-     * @return address Proxy address.
+     * @return address Endpoint address.
      */
-    function _createProxy(
+    function _createEndpoint(
         uint32 moduleId_,
         uint16 moduleType_,
         address moduleImplementation_
     ) internal virtual returns (address) {
         if (moduleId_ == 0) revert InvalidModuleId();
-        if (moduleType_ != _MODULE_TYPE_SINGLE_PROXY && moduleType_ != _MODULE_TYPE_MULTI_PROXY)
+        if (moduleType_ != _MODULE_TYPE_SINGLE_ENDPOINT && moduleType_ != _MODULE_TYPE_MULTI_ENDPOINT)
             revert InvalidModuleType();
 
-        if (_proxies[moduleId_] != address(0)) return _proxies[moduleId_];
+        if (_endpoints[moduleId_] != address(0)) return _endpoints[moduleId_];
 
-        address proxyAddress = address(new ReflexProxy(moduleId_));
+        address endpointAddress = address(new ReflexEndpoint(moduleId_));
 
-        if (moduleType_ == _MODULE_TYPE_SINGLE_PROXY) _proxies[moduleId_] = proxyAddress;
+        if (moduleType_ == _MODULE_TYPE_SINGLE_ENDPOINT) _endpoints[moduleId_] = endpointAddress;
 
-        _relations[proxyAddress] = TrustRelation({
+        _relations[endpointAddress] = TrustRelation({
             moduleId: moduleId_,
             moduleType: moduleType_,
             moduleImplementation: moduleImplementation_
         });
 
-        emit ProxyCreated(proxyAddress);
+        emit EndpointCreated(endpointAddress);
 
-        return proxyAddress;
+        return endpointAddress;
     }
 
     /**
@@ -98,7 +98,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @return messageSender_ Message sender.
      */
     function _unpackMessageSender() internal pure virtual returns (address messageSender_) {
-        // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
+        // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][endpoint address (20 bytes)]
         /// @solidity memory-safe-assembly
         assembly {
             messageSender_ := shr(96, calldataload(sub(calldatasize(), 40)))
@@ -106,28 +106,33 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
     }
 
     /**
-     * @dev Unpack proxy address from calldata.
-     * @return proxyAddress_ Proxy address.
+     * @dev Unpack endpoint address from calldata.
+     * @return endpointAddress_ Endpoint address.
      */
-    function _unpackProxyAddress() internal pure virtual returns (address proxyAddress_) {
-        // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
+    function _unpackEndpointAddress() internal pure virtual returns (address endpointAddress_) {
+        // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][endpoint address (20 bytes)]
         /// @solidity memory-safe-assembly
         assembly {
-            proxyAddress_ := shr(96, calldataload(sub(calldatasize(), 20)))
+            endpointAddress_ := shr(96, calldataload(sub(calldatasize(), 20)))
         }
     }
 
     /**
      * @dev Unpack trailing parameters from calldata.
      * @return messageSender_ Message sender.
-     * @return proxyAddress_ Proxy address.
+     * @return endpointAddress_ Endpoint address.
      */
-    function _unpackTrailingParameters() internal pure virtual returns (address messageSender_, address proxyAddress_) {
-        // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][proxy address (20 bytes)]
+    function _unpackTrailingParameters()
+        internal
+        pure
+        virtual
+        returns (address messageSender_, address endpointAddress_)
+    {
+        // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][endpoint address (20 bytes)]
         /// @solidity memory-safe-assembly
         assembly {
             messageSender_ := shr(96, calldataload(sub(calldatasize(), 40)))
-            proxyAddress_ := shr(96, calldataload(sub(calldatasize(), 20)))
+            endpointAddress_ := shr(96, calldataload(sub(calldatasize(), 20)))
         }
     }
 

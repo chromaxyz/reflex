@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 // Interfaces
 import {TReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
-import {IReflexProxy} from "../src/interfaces/IReflexProxy.sol";
+import {IReflexEndpoint} from "../src/interfaces/IReflexEndpoint.sol";
 
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
@@ -15,15 +15,15 @@ import {MockImplementationMaliciousModule} from "./mocks/MockImplementationMalic
 import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 
 /**
- * @title Implementation Module Single Proxy Test
+ * @title Implementation Module Single Endpoint Test
  */
-contract ImplementationModuleSingleProxyTest is ImplementationFixture {
+contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     // =========
     // Constants
     // =========
 
     uint32 internal constant _MODULE_SINGLE_ID = 100;
-    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_PROXY;
+    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
     uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
     uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
     uint16 internal constant _MODULE_SINGLE_VERSION_V3 = 3;
@@ -41,7 +41,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     MockImplementationModule public singleModuleV2;
     MockImplementationDeprecatedModule public singleModuleV3;
     MockImplementationMaliciousModule public singleModuleV4;
-    MockImplementationModule public singleModuleProxy;
+    MockImplementationModule public singleModuleEndpoint;
 
     // =====
     // Setup
@@ -88,9 +88,9 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV1);
-        installerProxy.addModules(moduleAddresses);
+        installerEndpoint.addModules(moduleAddresses);
 
-        singleModuleProxy = MockImplementationModule(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID));
+        singleModuleEndpoint = MockImplementationModule(dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID));
     }
 
     // =====
@@ -99,18 +99,18 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
 
     function testUnitModuleIdToImplementation() external {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID), address(singleModuleV1));
-        assertEq(IReflexProxy(address(singleModuleProxy)).implementation(), address(singleModuleV1));
+        assertEq(IReflexEndpoint(address(singleModuleEndpoint)).implementation(), address(singleModuleV1));
     }
 
-    function testUnitModuleIdToProxy() external {
-        assertTrue(dispatcher.moduleIdToProxy(_MODULE_SINGLE_ID) != address(0));
+    function testUnitModuleIdToEndpoint() external {
+        assertTrue(dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID) != address(0));
     }
 
     function testUnitModuleSettings() external {
         // Proxies
 
         _verifyModuleConfiguration(
-            singleModuleProxy,
+            singleModuleEndpoint,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V1,
@@ -152,29 +152,29 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeSingleProxyAndDeprecate(bytes32 message_) external BrutalizeMemory {
+    function testFuzzUpgradeSingleEndpointAndDeprecate(bytes32 message_) external BrutalizeMemory {
         // Verify storage sets in `Dispatcher` context.
 
         _verifySetStateSlot(message_);
 
-        // Verify single-proxy module.
+        // Verify single-endpoint module.
 
         _verifyModuleConfiguration(
-            singleModuleProxy,
+            singleModuleEndpoint,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V1,
             _MODULE_SINGLE_UPGRADEABLE_V1
         );
 
-        // Upgrade single-proxy module.
+        // Upgrade single-endpoint module.
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV2);
-        installerProxy.upgradeModules(moduleAddresses);
+        installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
-            singleModuleProxy,
+            singleModuleEndpoint,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V2,
@@ -185,14 +185,14 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
 
         _verifyGetStateSlot(message_);
 
-        // Upgrade to deprecate single-proxy module.
+        // Upgrade to deprecate single-endpoint module.
 
         moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV3);
-        installerProxy.upgradeModules(moduleAddresses);
+        installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
-            singleModuleProxy,
+            singleModuleEndpoint,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V3,
@@ -204,67 +204,67 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
         _verifyGetStateSlot(message_);
     }
 
-    function testUnitProxySentinelFallback() external {
-        _testProxySentinelFallback(singleModuleProxy);
+    function testUnitEndpointSentinelFallback() external {
+        _testEndpointSentinelFallback(singleModuleEndpoint);
     }
 
     function testFuzzRevertBytesCustomError(uint256 code_, string memory message_) external {
-        _testRevertBytesCustomError(singleModuleProxy, code_, message_);
+        _testRevertBytesCustomError(singleModuleEndpoint, code_, message_);
     }
 
     function testUnitRevertBytesPanicAssert() external {
-        _testRevertBytesPanicAssert(singleModuleProxy);
+        _testRevertBytesPanicAssert(singleModuleEndpoint);
     }
 
     function testUnitRevertBytesPanicDivideByZero() external {
-        _testRevertBytesPanicDivideByZero(singleModuleProxy);
+        _testRevertBytesPanicDivideByZero(singleModuleEndpoint);
     }
 
     function testUnitRevertBytesPanicArithmaticOverflow() external {
-        _testRevertBytesPanicArithmaticOverflow(singleModuleProxy);
+        _testRevertBytesPanicArithmaticOverflow(singleModuleEndpoint);
     }
 
     function testUnitRevertBytesPanicArithmaticUnderflow() external {
-        _testRevertBytesPanicArithmaticUnderflow(singleModuleProxy);
+        _testRevertBytesPanicArithmaticUnderflow(singleModuleEndpoint);
     }
 
-    function testFuzzProxyLog0Topic(bytes memory message_) external {
-        _testProxyLog0Topic(singleModuleProxy, message_);
+    function testFuzzEndpointLog0Topic(bytes memory message_) external {
+        _testEndpointLog0Topic(singleModuleEndpoint, message_);
     }
 
-    function testFuzzProxyLog1Topic(bytes memory message_) external {
-        _testProxyLog1Topic(singleModuleProxy, message_);
+    function testFuzzEndpointLog1Topic(bytes memory message_) external {
+        _testEndpointLog1Topic(singleModuleEndpoint, message_);
     }
 
-    function testFuzzProxyLog2Topic(bytes memory message_) external {
-        _testProxyLog2Topic(singleModuleProxy, message_);
+    function testFuzzEndpointLog2Topic(bytes memory message_) external {
+        _testEndpointLog2Topic(singleModuleEndpoint, message_);
     }
 
-    function testFuzzProxyLog3Topic(bytes memory message_) external {
-        _testProxyLog3Topic(singleModuleProxy, message_);
+    function testFuzzEndpointLog3Topic(bytes memory message_) external {
+        _testEndpointLog3Topic(singleModuleEndpoint, message_);
     }
 
-    function testFuzzProxyLog4Topic(bytes memory message_) external {
-        _testProxyLog4Topic(singleModuleProxy, message_);
+    function testFuzzEndpointLog4Topic(bytes memory message_) external {
+        _testEndpointLog4Topic(singleModuleEndpoint, message_);
     }
 
-    function testFuzzRevertProxyLogOutOfBounds(bytes memory message_) external {
-        _testRevertProxyLogOutOfBounds(singleModuleProxy, message_);
+    function testFuzzRevertEndpointLogOutOfBounds(bytes memory message_) external {
+        _testRevertEndpointLogOutOfBounds(singleModuleEndpoint, message_);
     }
 
     function testUnitUnpackMessageSender() external {
         vm.startPrank(_users.Alice);
-        _testUnpackMessageSender(singleModuleProxy, _users.Alice);
+        _testUnpackMessageSender(singleModuleEndpoint, _users.Alice);
         vm.stopPrank();
     }
 
-    function testUnitUnpackProxyAddress() external {
-        _testUnpackProxyAddress(singleModuleProxy);
+    function testUnitUnpackEndpointAddress() external {
+        _testUnpackEndpointAddress(singleModuleEndpoint);
     }
 
     function testUnitUnpackTrailingParameters() external {
         vm.startPrank(_users.Alice);
-        _testUnpackTrailingParameters(singleModuleProxy, _users.Alice);
+        _testUnpackTrailingParameters(singleModuleEndpoint, _users.Alice);
         vm.stopPrank();
     }
 
@@ -275,7 +275,7 @@ contract ImplementationModuleSingleProxyTest is ImplementationFixture {
     function _verifyGetStateSlot(bytes32 message_) internal {
         assertEq((singleModuleV1).getImplementationState0(), 0);
         assertEq((singleModuleV2).getImplementationState0(), 0);
-        assertEq(singleModuleProxy.getImplementationState0(), message_);
+        assertEq(singleModuleEndpoint.getImplementationState0(), message_);
 
         assertEq(dispatcher.getImplementationState0(), message_);
     }

@@ -29,7 +29,7 @@ Module id `1` is reserved for the `Installer`.
 
 - [ ] Which module id am I going to use?
 
-It is most common that you will use `single-proxy` modules.
+It is most common that you will use `single-endpoint` modules.
 
 - [ ] Which module type am I going to use?
 
@@ -40,8 +40,8 @@ It is best practice to use `1` as your first module version for a new module.
 - [ ] Should the module be able to be deprecated? If so, it must be upgradeable.
 - [ ] Is my storage layout still compatible?
 
-In order to add one or more modules call `addModules()` on the `Installer`'s proxy.
-If your module is of the type `single-proxy` the proxy will be created for you.
+In order to add one or more modules call `addModules()` on the `Installer`'s endpoint.
+If your module is of the type `single-endpoint` the endpoint will be created for you.
 
 ## Upgrading modules
 
@@ -70,7 +70,7 @@ It is best practice to increment by `1` when updating the version for a new modu
 - [ ] Should the module be able to be deprecated? If so, it must be upgradeable.
 - [ ] Is my storage layout still compatible?
 
-In order to upgrade one or more modules call `upgradeModules()` on the `Installer`'s proxy.
+In order to upgrade one or more modules call `upgradeModules()` on the `Installer`'s endpoint.
 
 ## Deprecating modules
 
@@ -93,4 +93,4 @@ It is best practice to increment by `1` when updating the version for a new modu
 - [ ] Have I marked the module as non-upgradeable?
 - [ ] Is my storage layout still compatible?
 
-In order to deprecate one or more modules call `upgradeModules()` on the `Installer`'s proxy.
+In order to deprecate one or more modules call `upgradeModules()` on the `Installer`'s endpoint.

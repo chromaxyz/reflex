@@ -10,7 +10,7 @@ interface TReflexState {
     // =======
 
     /**
-     * @notice Trust relationship between `Proxy` and `Dispatcher`.
+     * @notice Trust relationship between `Endpoint` and `Dispatcher`.
      *
      * @dev Packed slot: 4 + 2 + 20 = 26 bytes out of 32 bytes.
      */
@@ -30,7 +30,7 @@ interface TReflexState {
         /**
          * @notice Module implementation.
          *
-         * @dev Only non-0 for single-proxy modules.
+         * @dev Only non-0 for single-endpoint modules.
          */
         address moduleImplementation;
     }

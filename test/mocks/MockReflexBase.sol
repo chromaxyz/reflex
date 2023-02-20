@@ -75,8 +75,12 @@ contract MockReflexBase is ReflexBase {
         require(getReentrancyStatus() == _REENTRANCY_LOCK_UNLOCKED);
     }
 
-    function createProxy(uint32 moduleId_, uint16 moduleType_, address moduleImplementation_) public returns (address) {
-        return _createProxy(moduleId_, moduleType_, moduleImplementation_);
+    function createEndpoint(
+        uint32 moduleId_,
+        uint16 moduleType_,
+        address moduleImplementation_
+    ) public returns (address) {
+        return _createEndpoint(moduleId_, moduleType_, moduleImplementation_);
     }
 
     function callInternalModule(uint32 moduleId_, bytes memory input_) public returns (bytes memory) {

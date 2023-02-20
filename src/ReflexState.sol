@@ -18,7 +18,7 @@ import {ReflexConstants} from "./ReflexConstants.sol";
  * | _owner          | address                                               | 1    | 0      | 20    |
  * | _pendingOwner   | address                                               | 2    | 0      | 20    |
  * | _modules        | mapping(uint32 => address)                            | 3    | 0      | 32    |
- * | _proxies        | mapping(uint32 => address)                            | 4    | 0      | 32    |
+ * | _endpoints      | mapping(uint32 => address)                            | 4    | 0      | 32    |
  * | _relations      | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    |
  * | __gap           | uint256[44]                                           | 6    | 0      | 1408  |
  */
@@ -57,17 +57,17 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
     mapping(uint32 => address) internal _modules;
 
     /**
-     * @notice Internal proxy mapping.
+     * @notice Internal endpoint mapping.
      *
-     * @dev Module id => proxy address (only for single-proxy modules).
+     * @dev Module id => endpoint address (only for single-endpoint modules).
      * @dev Slot 4 (32 bytes).
      */
-    mapping(uint32 => address) internal _proxies;
+    mapping(uint32 => address) internal _endpoints;
 
     /**
-     * @notice Internal proxy to module relation mapping.
+     * @notice Internal endpoint to module relation mapping.
      *
-     * @dev Proxy address => TrustRelation { moduleId, moduleType, moduleImplementation }.
+     * @dev Endpoint address => TrustRelation { moduleId, moduleType, moduleImplementation }.
      * @dev Slot 5 (32 bytes).
      */
     mapping(address => TrustRelation) internal _relations;

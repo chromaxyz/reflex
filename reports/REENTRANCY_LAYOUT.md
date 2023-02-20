@@ -23,36 +23,36 @@
   "name": "transferOwnership",
   "modifiers": [
     {
-      "id": 27344,
+      "id": 27469,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27343,
+        "id": 27468,
         "name": "onlyOwner",
         "nameLocations": [
-          "1371:9:21"
+          "1371:9:22"
         ],
         "nodeType": "IdentifierPath",
-        "referencedDeclaration": 27711,
-        "src": "1371:9:21"
+        "referencedDeclaration": 27836,
+        "src": "1371:9:22"
       },
       "nodeType": "ModifierInvocation",
-      "src": "1371:9:21"
+      "src": "1371:9:22"
     },
     {
-      "id": 27346,
+      "id": 27471,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27345,
+        "id": 27470,
         "name": "nonReentrant",
         "nameLocations": [
-          "1381:12:21"
+          "1381:12:22"
         ],
         "nodeType": "IdentifierPath",
         "referencedDeclaration": 26925,
-        "src": "1381:12:21"
+        "src": "1381:12:22"
       },
       "nodeType": "ModifierInvocation",
-      "src": "1381:12:21"
+      "src": "1381:12:22"
     }
   ]
 }
@@ -60,20 +60,20 @@
   "name": "acceptOwnership",
   "modifiers": [
     {
-      "id": 27373,
+      "id": 27498,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27372,
+        "id": 27497,
         "name": "nonReentrant",
         "nameLocations": [
-          "1776:12:21"
+          "1776:12:22"
         ],
         "nodeType": "IdentifierPath",
         "referencedDeclaration": 26925,
-        "src": "1776:12:21"
+        "src": "1776:12:22"
       },
       "nodeType": "ModifierInvocation",
-      "src": "1776:12:21"
+      "src": "1776:12:22"
     }
   ]
 }
@@ -81,36 +81,36 @@
   "name": "renounceOwnership",
   "modifiers": [
     {
-      "id": 27409,
+      "id": 27534,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27408,
+        "id": 27533,
         "name": "onlyOwner",
         "nameLocations": [
-          "2529:9:21"
+          "2529:9:22"
         ],
         "nodeType": "IdentifierPath",
-        "referencedDeclaration": 27711,
-        "src": "2529:9:21"
+        "referencedDeclaration": 27836,
+        "src": "2529:9:22"
       },
       "nodeType": "ModifierInvocation",
-      "src": "2529:9:21"
+      "src": "2529:9:22"
     },
     {
-      "id": 27411,
+      "id": 27536,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27410,
+        "id": 27535,
         "name": "nonReentrant",
         "nameLocations": [
-          "2539:12:21"
+          "2539:12:22"
         ],
         "nodeType": "IdentifierPath",
         "referencedDeclaration": 26925,
-        "src": "2539:12:21"
+        "src": "2539:12:22"
       },
       "nodeType": "ModifierInvocation",
-      "src": "2539:12:21"
+      "src": "2539:12:22"
     }
   ]
 }
@@ -118,36 +118,36 @@
   "name": "addModules",
   "modifiers": [
     {
-      "id": 27445,
+      "id": 27570,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27444,
+        "id": 27569,
         "name": "onlyOwner",
         "nameLocations": [
-          "3059:9:21"
+          "3059:9:22"
         ],
         "nodeType": "IdentifierPath",
-        "referencedDeclaration": 27711,
-        "src": "3059:9:21"
+        "referencedDeclaration": 27836,
+        "src": "3059:9:22"
       },
       "nodeType": "ModifierInvocation",
-      "src": "3059:9:21"
+      "src": "3059:9:22"
     },
     {
-      "id": 27447,
+      "id": 27572,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27446,
+        "id": 27571,
         "name": "nonReentrant",
         "nameLocations": [
-          "3069:12:21"
+          "3069:12:22"
         ],
         "nodeType": "IdentifierPath",
         "referencedDeclaration": 26925,
-        "src": "3069:12:21"
+        "src": "3069:12:22"
       },
       "nodeType": "ModifierInvocation",
-      "src": "3069:12:21"
+      "src": "3069:12:22"
     }
   ]
 }
@@ -155,36 +155,36 @@
   "name": "upgradeModules",
   "modifiers": [
     {
-      "id": 27536,
+      "id": 27661,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27535,
+        "id": 27660,
         "name": "onlyOwner",
         "nameLocations": [
-          "4406:9:21"
+          "4415:9:22"
         ],
         "nodeType": "IdentifierPath",
-        "referencedDeclaration": 27711,
-        "src": "4406:9:21"
+        "referencedDeclaration": 27836,
+        "src": "4415:9:22"
       },
       "nodeType": "ModifierInvocation",
-      "src": "4406:9:21"
+      "src": "4415:9:22"
     },
     {
-      "id": 27538,
+      "id": 27663,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27537,
+        "id": 27662,
         "name": "nonReentrant",
         "nameLocations": [
-          "4416:12:21"
+          "4425:12:22"
         ],
         "nodeType": "IdentifierPath",
         "referencedDeclaration": 26925,
-        "src": "4416:12:21"
+        "src": "4425:12:22"
       },
       "nodeType": "ModifierInvocation",
-      "src": "4416:12:21"
+      "src": "4425:12:22"
     }
   ]
 }
@@ -196,7 +196,7 @@
 
 ```
 
-**ReflexProxy**
+**ReflexEndpoint**
 
 ```json
 {
@@ -218,20 +218,20 @@
   "name": "performBatchCall",
   "modifiers": [
     {
-      "id": 28283,
+      "id": 28284,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 28282,
+        "id": 28283,
         "name": "reentrancyAllowed",
         "nameLocations": [
-          "780:17:31"
+          "789:17:31"
         ],
         "nodeType": "IdentifierPath",
         "referencedDeclaration": 26905,
-        "src": "780:17:31"
+        "src": "789:17:31"
       },
       "nodeType": "ModifierInvocation",
-      "src": "780:17:31"
+      "src": "789:17:31"
     }
   ]
 }
@@ -239,20 +239,20 @@
   "name": "simulateBatchCall",
   "modifiers": [
     {
-      "id": 28340,
+      "id": 28346,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 28339,
+        "id": 28345,
         "name": "reentrancyAllowed",
         "nameLocations": [
-          "1509:17:31"
+          "1574:17:31"
         ],
         "nodeType": "IdentifierPath",
         "referencedDeclaration": 26905,
-        "src": "1509:17:31"
+        "src": "1574:17:31"
       },
       "nodeType": "ModifierInvocation",
-      "src": "1509:17:31"
+      "src": "1574:17:31"
     }
   ]
 }

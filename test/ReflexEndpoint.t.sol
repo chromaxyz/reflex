@@ -2,18 +2,18 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexProxy} from "../src/interfaces/IReflexProxy.sol";
+import {TReflexEndpoint} from "../src/interfaces/IReflexEndpoint.sol";
 
 // Sources
-import {ReflexProxy} from "../src/ReflexProxy.sol";
+import {ReflexEndpoint} from "../src/ReflexEndpoint.sol";
 
 // Fixtures
 import {TestHarness} from "./fixtures/TestHarness.sol";
 
 /**
- * @title Reflex Proxy Test
+ * @title Reflex Endpoint Test
  */
-contract ReflexProxyTest is TReflexProxy, TestHarness {
+contract ReflexEndpointTest is TReflexEndpoint, TestHarness {
     // =========
     // Constants
     // =========
@@ -24,7 +24,7 @@ contract ReflexProxyTest is TReflexProxy, TestHarness {
     // Storage
     // =======
 
-    ReflexProxy public proxy;
+    ReflexEndpoint public endpoint;
 
     // =====
     // Setup
@@ -33,7 +33,7 @@ contract ReflexProxyTest is TReflexProxy, TestHarness {
     function setUp() public virtual override {
         super.setUp();
 
-        proxy = new ReflexProxy(_MODULE_VALID_ID);
+        endpoint = new ReflexEndpoint(_MODULE_VALID_ID);
     }
 
     // =====
@@ -42,18 +42,18 @@ contract ReflexProxyTest is TReflexProxy, TestHarness {
 
     function testUnitRevertInvalidModuleId() external {
         vm.expectRevert(InvalidModuleId.selector);
-        new ReflexProxy(0);
+        new ReflexEndpoint(0);
     }
 
     function testUnitResolveInvalidImplementationToZeroAddress() external {
-        assertEq(proxy.implementation(), address(0));
+        assertEq(endpoint.implementation(), address(0));
     }
 
     function testFuzzSentinelSideEffectsDelegateCall(bytes memory data_) public BrutalizeMemory {
         // This should never happen in any actual deployments.
         vm.startPrank(address(0));
 
-        (bool success, bytes memory data) = address(proxy).call(
+        (bool success, bytes memory data) = address(endpoint).call(
             // Prepend random data input with `sentinel()` selector.
             abi.encodePacked(bytes4(keccak256("sentinel()")), data_)
         );
