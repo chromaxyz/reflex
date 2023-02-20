@@ -9,6 +9,7 @@ import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
 // Mocks
+import {ImplementationERC20} from "./mocks/abstracts/ImplementationERC20.sol";
 import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
 import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
 import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
@@ -227,7 +228,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         actions[1] = IReflexBatch.BatchAction({
             allowFailure: false,
             endpointAddress: address(multiModuleEndpoint),
-            callData: abi.encodeCall(MockImplementationERC20.burn, (target_, amount_))
+            callData: abi.encodeCall(ImplementationERC20.balanceOf, (target_))
         });
 
         actions[2] = IReflexBatch.BatchAction({
@@ -244,7 +245,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
 
         IReflexBatch.BatchActionResponse[] memory responses = new IReflexBatch.BatchActionResponse[](4);
         responses[0] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
-        responses[1] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
+        responses[1] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(amount_)});
         responses[2] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(address(this))});
         responses[3] = IReflexBatch.BatchActionResponse({
             success: true,
@@ -253,6 +254,8 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
 
         vm.expectRevert(abi.encodeWithSelector(IReflexBatch.BatchSimulation.selector, responses));
         batchEndpoint.simulateBatchCall(actions);
+
+        assertEq(multiModuleEndpoint.balanceOf(target_), 0);
     }
 
     function testFuzzSimulateBatchCallMultiModuleDecoded(address target_, uint256 amount_) external {
@@ -267,7 +270,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         actions[1] = IReflexBatch.BatchAction({
             allowFailure: false,
             endpointAddress: address(multiModuleEndpoint),
-            callData: abi.encodeCall(MockImplementationERC20.burn, (target_, amount_))
+            callData: abi.encodeCall(ImplementationERC20.balanceOf, (target_))
         });
 
         actions[2] = IReflexBatch.BatchAction({
@@ -288,13 +291,15 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         assertEq(responses[0].returnData, "");
 
         assertEq(responses[1].success, true);
-        assertEq(responses[1].returnData, "");
+        assertEq(responses[1].returnData, abi.encode(amount_));
 
         assertEq(responses[2].success, true);
         assertEq(responses[2].returnData, abi.encode(address(this)));
 
         assertEq(responses[3].success, true);
         assertEq(responses[3].returnData, abi.encode(address(multiModuleEndpoint)));
+
+        assertEq(multiModuleEndpoint.balanceOf(target_), 0);
     }
 
     function testFuzzPerformBatchCall(bytes32 message_) external {
