@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
+import {console2} from "forge-std/console2.sol";
+
 // Vendor
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 
@@ -338,23 +340,27 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         assertEq(multiModuleEndpoint.balanceOf(target_), amount_);
     }
 
-    // function testFuzzBatchSimulationFailed(address target_, uint256 amount_) external {
-    //     IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
+    function testUnitRevertInvalidBatchActionConfiguration() external {
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
 
-    //     actions[0] = IReflexBatch.BatchAction({
-    //         allowFailure: false,
-    //         endpointAddress: address(multiModuleEndpoint),
-    //         callData: abi.encodeCall(MockImplementationERC20.mint, (target_, amount_))
-    //     });
+        vm.expectRevert(InvalidModuleId.selector);
+        batchEndpoint.simulateBatchCallReturn(actions);
+    }
 
-    //     actions[1] = IReflexBatch.BatchAction({
-    //         allowFailure: false,
-    //         endpointAddress: address(multiModuleEndpoint),
-    //         callData: abi.encodeCall(ImplementationERC20.transferFrom, (address(this), address(0), amount_))
-    //     });
+    function testUnitRevertBatchSimulationFailed() external {
+        dispatcher.setModule(batch.moduleId(), address(0));
 
-    //     batchEndpoint.simulateBatchCallReturn(actions);
-    // }
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
+
+        actions[0] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            endpointAddress: address(singleModuleEndpoint),
+            callData: abi.encodeCall(MockImplementationModule.getImplementationState0, ())
+        });
+
+        vm.expectRevert(IReflexBatch.BatchSimulationFailed.selector);
+        batchEndpoint.simulateBatchCallReturn(actions);
+    }
 
     function testFuzzPerformBatchCall(
         address target_,

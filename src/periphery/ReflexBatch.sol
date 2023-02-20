@@ -97,8 +97,6 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     function simulateBatchCallReturn(
         BatchAction[] calldata actions_
     ) external virtual override reentrancyAllowed returns (BatchActionResponse[] memory simulation_) {
-        if (_modules[_moduleId] == address(0)) revert ModuleNotRegistered(_moduleId);
-
         (bool success, bytes memory result) = _modules[_moduleId].delegatecall(
             abi.encodePacked(
                 abi.encodeWithSelector(ReflexBatch.simulateBatchCallRevert.selector, actions_),
