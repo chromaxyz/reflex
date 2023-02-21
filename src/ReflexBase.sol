@@ -38,7 +38,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
 
         _;
 
-        // By storing the original value once again, a refund is triggered (see https://eips.ethereum.org/EIPS/eip-2200).
+        // By storing the original value once again, a refund is triggered.
         _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
     }
 

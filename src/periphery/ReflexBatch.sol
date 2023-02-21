@@ -25,7 +25,8 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      * @param callData_ Encoded call data.
      * @return bytes Encoded return data.
      *
-     * @dev Intended to be used in static-called batches, to e.g. provide detailed information about the impacts of the simulated operation.
+     * @dev Intended to be used in static-called batches, to e.g. provide
+     * detailed information about the impacts of the simulated operation.
      */
     function performStaticCall(address contractAddress_, bytes memory callData_) external view returns (bytes memory) {
         (bool success, bytes memory result) = contractAddress_.staticcall(callData_);

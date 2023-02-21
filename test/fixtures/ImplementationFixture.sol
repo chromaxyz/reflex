@@ -111,7 +111,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         endpoint_.revertPanicArithmeticUnderflow();
     }
 
-    function _testEndpointLog0Topic(MockReflexModule endpoint_, bytes memory message_) internal BrutalizeMemory {
+    function _testEndpointLog0Topic(MockReflexModule endpoint_, bytes memory message_) internal brutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         uint256 messageLength = message_.length;
@@ -138,7 +138,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         assertEq(entries[0].emitter, address(endpoint_));
     }
 
-    function _testEndpointLog1Topic(MockReflexModule endpoint_, bytes memory message_) internal BrutalizeMemory {
+    function _testEndpointLog1Topic(MockReflexModule endpoint_, bytes memory message_) internal brutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -156,7 +156,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         endpoint_.endpointLog1Topic(message_);
     }
 
-    function _testEndpointLog2Topic(MockReflexModule endpoint_, bytes memory message_) internal BrutalizeMemory {
+    function _testEndpointLog2Topic(MockReflexModule endpoint_, bytes memory message_) internal brutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -175,7 +175,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         endpoint_.endpointLog2Topic(message_);
     }
 
-    function _testEndpointLog3Topic(MockReflexModule endpoint_, bytes memory message_) internal BrutalizeMemory {
+    function _testEndpointLog3Topic(MockReflexModule endpoint_, bytes memory message_) internal brutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -195,7 +195,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         endpoint_.endpointLog3Topic(message_);
     }
 
-    function _testEndpointLog4Topic(MockReflexModule endpoint_, bytes memory message_) internal BrutalizeMemory {
+    function _testEndpointLog4Topic(MockReflexModule endpoint_, bytes memory message_) internal brutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         bytes32 message = bytes32(abi.encodePacked(message_));
@@ -219,26 +219,26 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
     function _testRevertEndpointLogOutOfBounds(
         MockReflexModule endpoint_,
         bytes memory message_
-    ) internal BrutalizeMemory {
+    ) internal brutalizeMemory {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         vm.expectRevert(MockReflexModule.FailedToLog.selector);
         endpoint_.revertEndpointLogOutOfBounds(message_);
     }
 
-    function _testUnpackMessageSender(MockReflexModule endpoint_, address sender_) internal BrutalizeMemory {
+    function _testUnpackMessageSender(MockReflexModule endpoint_, address sender_) internal brutalizeMemory {
         address messageSender = endpoint_.unpackMessageSender();
 
         assertEq(messageSender, sender_);
     }
 
-    function _testUnpackEndpointAddress(MockReflexModule endpoint_) internal BrutalizeMemory {
+    function _testUnpackEndpointAddress(MockReflexModule endpoint_) internal brutalizeMemory {
         address endpointAddress = endpoint_.unpackEndpointAddress();
 
         assertEq(endpointAddress, address(endpoint_));
     }
 
-    function _testUnpackTrailingParameters(MockReflexModule endpoint_, address sender_) internal BrutalizeMemory {
+    function _testUnpackTrailingParameters(MockReflexModule endpoint_, address sender_) internal brutalizeMemory {
         (address messageSender, address endpointAddress) = endpoint_.unpackTrailingParameters();
 
         assertEq(messageSender, sender_);

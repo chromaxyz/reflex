@@ -25,16 +25,17 @@ contract ImplementationERC20Test is ImplementationFixture {
     // Constants
     // =========
 
-    uint32 public constant _TOKEN_HUB_MODULE_ID = 100;
-    uint16 public constant _TOKEN_HUB_MODULE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
-    uint16 public constant _TOKEN_HUB_MODULE_VERSION = 1;
+    uint32 internal constant _TOKEN_HUB_MODULE_ID = 100;
+    uint16 internal constant _TOKEN_HUB_MODULE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
+    uint16 internal constant _TOKEN_HUB_MODULE_VERSION = 1;
 
-    uint32 public constant _TOKEN_MODULE_ID = 101;
-    uint16 public constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_ENDPOINT;
-    uint16 public constant _TOKEN_MODULE_VERSION = 1;
-    string public constant _TOKEN_MODULE_NAME = "TOKEN A";
-    string public constant _TOKEN_MODULE_SYMBOL = "TKNA";
-    uint8 public constant _TOKEN_MODULE_DECIMALS = 18;
+    uint32 internal constant _TOKEN_MODULE_ID = 101;
+    uint16 internal constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_ENDPOINT;
+    uint16 internal constant _TOKEN_MODULE_VERSION = 1;
+
+    string public constant TOKEN_MODULE_NAME = "TOKEN A";
+    string public constant TOKEN_MODULE_SYMBOL = "TKNA";
+    uint8 public constant TOKEN_MODULE_DECIMALS = 18;
 
     // =======
     // Storage
@@ -82,9 +83,9 @@ contract ImplementationERC20Test is ImplementationFixture {
             tokenHubEndpoint.addERC20(
                 _TOKEN_MODULE_ID,
                 _TOKEN_MODULE_TYPE,
-                _TOKEN_MODULE_NAME,
-                _TOKEN_MODULE_SYMBOL,
-                _TOKEN_MODULE_DECIMALS
+                TOKEN_MODULE_NAME,
+                TOKEN_MODULE_SYMBOL,
+                TOKEN_MODULE_DECIMALS
             )
         );
     }
@@ -94,9 +95,9 @@ contract ImplementationERC20Test is ImplementationFixture {
     // =====
 
     function testUnitMetadata() external {
-        assertEq(tokenEndpoint.name(), _TOKEN_MODULE_NAME);
-        assertEq(tokenEndpoint.symbol(), _TOKEN_MODULE_SYMBOL);
-        assertEq(tokenEndpoint.decimals(), _TOKEN_MODULE_DECIMALS);
+        assertEq(tokenEndpoint.name(), TOKEN_MODULE_NAME);
+        assertEq(tokenEndpoint.symbol(), TOKEN_MODULE_SYMBOL);
+        assertEq(tokenEndpoint.decimals(), TOKEN_MODULE_DECIMALS);
     }
 
     function testFuzzMint(uint256 amount_) external {
@@ -278,7 +279,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         address from_,
         address to_,
         uint256 amount_
-    ) internal BrutalizeMemory {
+    ) internal brutalizeMemory {
         bytes32 message = bytes32(amount_);
         uint256 messageLength = message.length;
 
@@ -300,7 +301,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         address owner_,
         address spender_,
         uint256 amount_
-    ) internal BrutalizeMemory {
+    ) internal brutalizeMemory {
         bytes32 message = bytes32(amount_);
         uint256 messageLength = message.length;
 
@@ -530,9 +531,9 @@ contract BaseInvariantTest is TestHarness {
      * - Metadata is correctly tracked during lifespan.
      */
     function _invariantA() internal {
-        assertEq(base.tokenEndpoint().name(), base._TOKEN_MODULE_NAME());
-        assertEq(base.tokenEndpoint().symbol(), base._TOKEN_MODULE_SYMBOL());
-        assertEq(base.tokenEndpoint().decimals(), base._TOKEN_MODULE_DECIMALS());
+        assertEq(base.tokenEndpoint().name(), base.TOKEN_MODULE_NAME());
+        assertEq(base.tokenEndpoint().symbol(), base.TOKEN_MODULE_SYMBOL());
+        assertEq(base.tokenEndpoint().decimals(), base.TOKEN_MODULE_DECIMALS());
     }
 
     /**

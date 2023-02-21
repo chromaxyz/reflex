@@ -152,7 +152,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeSingleEndpointAndDeprecate(bytes32 message_) external BrutalizeMemory {
+    function testFuzzUpgradeSingleEndpointAndDeprecate(bytes32 message_) external brutalizeMemory {
         // Verify storage sets in `Dispatcher` context.
 
         _verifySetStateSlot(message_);

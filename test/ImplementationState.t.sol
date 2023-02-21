@@ -31,7 +31,7 @@ contract ImplementationStateTest is TestHarness {
     // Tests
     // =====
 
-    function testFuzzVerifyStorageSlot(bytes32 message_) external BrutalizeMemory {
+    function testFuzzVerifyStorageSlot(bytes32 message_) external brutalizeMemory {
         state.setStorageSlot(message_);
         state.verifyStorageSlot(message_);
     }
@@ -43,7 +43,7 @@ contract ImplementationStateTest is TestHarness {
         address tokenA_,
         address tokenB_,
         bool flag_
-    ) external BrutalizeMemory {
+    ) external brutalizeMemory {
         state.setStorageSlots(message_, number_, location_, tokenA_, tokenB_, flag_);
 
         // NOTE: `via-ir` throws `Index out of bounds`

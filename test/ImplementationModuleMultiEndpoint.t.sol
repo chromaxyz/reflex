@@ -251,7 +251,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeMultiEndpointAndDeprecate(bytes32 message_) external BrutalizeMemory {
+    function testFuzzUpgradeMultiEndpointAndDeprecate(bytes32 message_) external brutalizeMemory {
         // Verify storage sets in `Dispatcher` context.
 
         _verifySetStateSlot(message_);

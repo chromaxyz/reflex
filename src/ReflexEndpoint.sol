@@ -152,7 +152,8 @@ contract ReflexEndpoint is IReflexEndpoint {
         } else {
             // Calldata: [calldata (N bytes)]
             assembly {
-                // We take full control of memory in this inline assembly block because it will not return to Solidity code.
+                // We take full control of memory in this inline assembly block
+                // because it will not return to Solidity code.
 
                 // Copy msg.data into memory, starting at position `0`.
                 calldatacopy(0x00, 0x00, calldatasize())

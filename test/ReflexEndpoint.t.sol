@@ -49,7 +49,7 @@ contract ReflexEndpointTest is TReflexEndpoint, TestHarness {
         assertEq(endpoint.implementation(), address(0));
     }
 
-    function testFuzzSentinelSideEffectsDelegateCall(bytes memory data_) public BrutalizeMemory {
+    function testFuzzSentinelSideEffectsDelegateCall(bytes memory data_) public brutalizeMemory {
         // This should never happen in any actual deployments.
         vm.startPrank(address(0));
 

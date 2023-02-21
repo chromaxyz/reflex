@@ -21,11 +21,11 @@ function log () {
 # Variables
 while getopts d:p:t: flag
 do
-    case "${flag}" in
-        d) DIRECTORY=${OPTARG};;
-        p) PROFILE=${OPTARG};;
-        t) TEST=${OPTARG};;
-    esac
+  case "${flag}" in
+    d) DIRECTORY=${OPTARG};;
+    p) PROFILE=${OPTARG};;
+    t) TEST=${OPTARG};;
+  esac
 done
 
 # Set Foundry profile
@@ -35,14 +35,14 @@ log $GREEN "Creating snapshot with profile: $PROFILE"
 
 if [ -z "$TEST" ];
 then
-    if [ -z "$DIRECTORY" ];
-    then
-        forge snapshot --snap .gas-snapshot-$PROFILE;
-    else
-        forge snapshot --match-path "$DIRECTORY/*.t.sol" --snap .gas-snapshot-$PROFILE;
-    fi
+  if [ -z "$DIRECTORY" ];
+  then
+    forge snapshot --snap .gas-snapshot-$PROFILE;
+  else
+    forge snapshot --match-path "$DIRECTORY/*.t.sol" --snap .gas-snapshot-$PROFILE;
+  fi
 else
-    forge snapshot --match "$TEST" --snap .gas-snapshot-$PROFILE -vvvvv;
+  forge snapshot --match "$TEST" --snap .gas-snapshot-$PROFILE -vvvvv;
 fi
 
 log $GREEN "Done"
