@@ -25,6 +25,8 @@ interface IReflexBatch is IReflexModule, TReflexBatch {
 
     error BatchSimulation(BatchActionResponse[] simulation);
 
+    error BatchSimulationFailed();
+
     // =======
     // Structs
     // =======
@@ -52,5 +54,11 @@ interface IReflexBatch is IReflexModule, TReflexBatch {
 
     function performBatchCall(BatchAction[] memory actions_) external;
 
-    function simulateBatchCall(BatchAction[] memory actions_) external;
+    function performStaticCall(address contractAddress_, bytes memory payload_) external view returns (bytes memory);
+
+    function simulateBatchCallRevert(BatchAction[] memory actions_) external;
+
+    function simulateBatchCallReturn(
+        BatchAction[] memory actions_
+    ) external returns (BatchActionResponse[] memory simulation_);
 }

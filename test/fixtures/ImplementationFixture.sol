@@ -88,27 +88,27 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
                 ICustomError.CustomErrorPayload({code: code_, message: message_})
             )
         );
-        endpoint_.testUnitRevertBytesCustomError(code_, message_);
+        endpoint_.revertBytesCustomError(code_, message_);
     }
 
     function _testRevertBytesPanicAssert(MockReflexModule endpoint_) internal {
         vm.expectRevert(stdError.assertionError);
-        endpoint_.testUnitRevertPanicAssert();
+        endpoint_.revertPanicAssert();
     }
 
     function _testRevertBytesPanicDivideByZero(MockReflexModule endpoint_) internal {
         vm.expectRevert(stdError.divisionError);
-        endpoint_.testUnitRevertPanicDivisionByZero();
+        endpoint_.revertPanicDivisionByZero();
     }
 
     function _testRevertBytesPanicArithmaticOverflow(MockReflexModule endpoint_) internal {
         vm.expectRevert(stdError.arithmeticError);
-        endpoint_.testUnitRevertPanicArithmeticOverflow();
+        endpoint_.revertPanicArithmeticOverflow();
     }
 
     function _testRevertBytesPanicArithmaticUnderflow(MockReflexModule endpoint_) internal {
         vm.expectRevert(stdError.arithmeticError);
-        endpoint_.testUnitRevertPanicArithmeticUnderflow();
+        endpoint_.revertPanicArithmeticUnderflow();
     }
 
     function _testEndpointLog0Topic(MockReflexModule endpoint_, bytes memory message_) internal BrutalizeMemory {
@@ -128,7 +128,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
 
         vm.recordLogs();
 
-        endpoint_.testFuzzEndpointLog0Topic(message_);
+        endpoint_.endpointLog0Topic(message_);
 
         VmSafe.Log[] memory entries = vm.getRecordedLogs();
 
@@ -153,7 +153,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
             mstore(ptr, message)
             log1(ptr, messageLength, topic1)
         }
-        endpoint_.testFuzzEndpointLog1Topic(message_);
+        endpoint_.endpointLog1Topic(message_);
     }
 
     function _testEndpointLog2Topic(MockReflexModule endpoint_, bytes memory message_) internal BrutalizeMemory {
@@ -172,7 +172,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
             mstore(ptr, message)
             log2(ptr, messageLength, topic1, topic2)
         }
-        endpoint_.testFuzzEndpointLog2Topic(message_);
+        endpoint_.endpointLog2Topic(message_);
     }
 
     function _testEndpointLog3Topic(MockReflexModule endpoint_, bytes memory message_) internal BrutalizeMemory {
@@ -192,7 +192,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
             mstore(ptr, message)
             log3(ptr, messageLength, topic1, topic2, topic3)
         }
-        endpoint_.testFuzzEndpointLog3Topic(message_);
+        endpoint_.endpointLog3Topic(message_);
     }
 
     function _testEndpointLog4Topic(MockReflexModule endpoint_, bytes memory message_) internal BrutalizeMemory {
@@ -213,7 +213,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
             mstore(ptr, message)
             log4(ptr, messageLength, topic1, topic2, topic3, topic4)
         }
-        endpoint_.testFuzzEndpointLog4Topic(message_);
+        endpoint_.endpointLog4Topic(message_);
     }
 
     function _testRevertEndpointLogOutOfBounds(
@@ -223,23 +223,23 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         vm.assume(message_.length > 0 && message_.length <= 32);
 
         vm.expectRevert(MockReflexModule.FailedToLog.selector);
-        endpoint_.testUnitRevertEndpointLogOutOfBounds(message_);
+        endpoint_.revertEndpointLogOutOfBounds(message_);
     }
 
     function _testUnpackMessageSender(MockReflexModule endpoint_, address sender_) internal BrutalizeMemory {
-        address messageSender = endpoint_.testUnitUnpackMessageSender();
+        address messageSender = endpoint_.unpackMessageSender();
 
         assertEq(messageSender, sender_);
     }
 
     function _testUnpackEndpointAddress(MockReflexModule endpoint_) internal BrutalizeMemory {
-        address endpointAddress = endpoint_.testUnitUnpackEndpointAddress();
+        address endpointAddress = endpoint_.unpackEndpointAddress();
 
         assertEq(endpointAddress, address(endpoint_));
     }
 
     function _testUnpackTrailingParameters(MockReflexModule endpoint_, address sender_) internal BrutalizeMemory {
-        (address messageSender, address endpointAddress) = endpoint_.testUnitUnpackTrailingParameters();
+        (address messageSender, address endpointAddress) = endpoint_.unpackTrailingParameters();
 
         assertEq(messageSender, sender_);
         assertEq(endpointAddress, address(endpoint_));

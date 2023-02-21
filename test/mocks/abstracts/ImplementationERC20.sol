@@ -48,7 +48,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
     /**
      * @notice Returns the name of the token.
      */
-    function name() external view virtual returns (string memory) {
+    function name() public view virtual returns (string memory) {
         (Token storage token, , ) = _unpackCalldata();
 
         return token.name;
@@ -57,7 +57,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
     /**
      * @notice Returns the symbol of the token.
      */
-    function symbol() external view virtual returns (string memory) {
+    function symbol() public view virtual returns (string memory) {
         (Token storage token, , ) = _unpackCalldata();
 
         return token.symbol;
@@ -66,7 +66,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
     /**
      * @notice Returns the decimals places of the token.
      */
-    function decimals() external view virtual returns (uint8) {
+    function decimals() public view virtual returns (uint8) {
         (Token storage token, , ) = _unpackCalldata();
 
         return token.decimals;
@@ -75,7 +75,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
     /**
      * @notice Returns the amount of tokens in existence.
      */
-    function totalSupply() external view virtual returns (uint256) {
+    function totalSupply() public view virtual returns (uint256) {
         (Token storage token, , ) = _unpackCalldata();
 
         return token.totalSupply;
@@ -84,7 +84,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
     /**
      * @notice Returns the amount of tokens owned by `account`.
      */
-    function balanceOf(address user_) external view virtual returns (uint256) {
+    function balanceOf(address user_) public view virtual returns (uint256) {
         (Token storage token, , ) = _unpackCalldata();
 
         return token.balanceOf[user_];
@@ -97,7 +97,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(address owner_, address spender_) external view virtual returns (uint256) {
+    function allowance(address owner_, address spender_) public view virtual returns (uint256) {
         (Token storage token, , ) = _unpackCalldata();
 
         return token.allowance[owner_][spender_];
@@ -189,8 +189,8 @@ abstract contract ImplementationERC20 is MockImplementationModule {
     // Internal methods
     // ================
 
-    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
-     * the total supply.
+    /**
+     * @dev Creates `amount` tokens and assigns them to `account`, increasing the total supply.
      *
      * Emits a {Transfer} event with `from` set to the zero address.
      */
@@ -209,8 +209,7 @@ abstract contract ImplementationERC20 is MockImplementationModule {
     }
 
     /**
-     * @notice Destroys `amount` tokens from `account`, reducing the
-     * total supply.
+     * @notice Destroys `amount` tokens from `account`, reducing the total supply.
      *
      * Emits a {Transfer} event with `to` set to the zero address.
      *

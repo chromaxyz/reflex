@@ -14,7 +14,7 @@ import {ReflexState} from "../../../src/ReflexState.sol";
  * | _owner                  | address                                               | 1    | 0      | 20    |
  * | _pendingOwner           | address                                               | 2    | 0      | 20    |
  * | _modules                | mapping(uint32 => address)                            | 3    | 0      | 32    |
- * | _proxies                | mapping(uint32 => address)                            | 4    | 0      | 32    |
+ * | _endpoints              | mapping(uint32 => address)                            | 4    | 0      | 32    |
  * | _relations              | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    |
  * | __gap                   | uint256[44]                                           | 6    | 0      | 1408  |
  * | _implementationState0   | bytes32                                               | 50   | 0      | 32    |
@@ -46,36 +46,42 @@ contract ImplementationState is ReflexState {
 
     /**
      * @notice Implementation state 0.
+     *
      * @dev Slot 50 (32 bytes).
      */
     bytes32 internal _implementationState0;
 
     /**
      * @notice Implementation state 1.
+     *
      * @dev Slot 51 (32 bytes).
      */
     uint256 internal _implementationState1;
 
     /**
      * @notice Implementation state 2.
+     *
      * @dev Slot 52 (20 bytes).
      */
     address internal _implementationState2;
 
     /**
      * @notice Implementation state 3.
+     *
      * @dev Slot 53 (20 bytes).
      */
     address public _implementationState3;
 
     /**
      * @notice Implementation state 4.
+     *
      * @dev Slot 53 (20 byte offset, 1 byte).
      */
     bool public _implementationState4;
 
     /**
      * @notice Implementation state 5.
+     *
      * @dev Slot 54 (32 bytes).
      */
     mapping(address => uint256) internal _implementationState5;
@@ -86,6 +92,7 @@ contract ImplementationState is ReflexState {
 
     /**
      * @notice Token mapping.
+     *
      * @dev Slot 55 (32 bytes)
      */
     mapping(address => Token) internal _tokens;

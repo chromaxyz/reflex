@@ -13,7 +13,8 @@ import {Users} from "./Users.sol";
  * @title Test Harness
  *
  * @dev A rigorous testing and invariant harness.
- * @author `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/main/src/test/utils/DSTestPlus.sol) (AGPL-3.0-only)
+ *
+ * @author `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/v7/src/test/utils/DSTestPlus.sol) (MIT)
  * @author `BrutalizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol) (MIT)
  */
 abstract contract TestHarness is Users, Test {

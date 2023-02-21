@@ -62,11 +62,11 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         if (moduleType_ != _MODULE_TYPE_SINGLE_ENDPOINT && moduleType_ != _MODULE_TYPE_MULTI_ENDPOINT)
             revert InvalidModuleType();
 
-        if (_proxies[moduleId_] != address(0)) return _proxies[moduleId_];
+        if (_endpoints[moduleId_] != address(0)) return _endpoints[moduleId_];
 
         address endpointAddress = address(new ReflexEndpoint(moduleId_));
 
-        if (moduleType_ == _MODULE_TYPE_SINGLE_ENDPOINT) _proxies[moduleId_] = endpointAddress;
+        if (moduleType_ == _MODULE_TYPE_SINGLE_ENDPOINT) _endpoints[moduleId_] = endpointAddress;
 
         _relations[endpointAddress] = TrustRelation({
             moduleId: moduleId_,

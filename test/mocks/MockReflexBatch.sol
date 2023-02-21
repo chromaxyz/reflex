@@ -3,12 +3,14 @@ pragma solidity ^0.8.13;
 
 // Sources
 import {ReflexBatch} from "../../src/periphery/ReflexBatch.sol";
-import {ReflexModule} from "../../src/ReflexModule.sol";
+
+// Mocks
+import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
  * @title Mock Reflex Batch
  */
-contract MockReflexBatch is ReflexBatch {
+contract MockReflexBatch is ReflexBatch, MockReflexModule {
     // ===========
     // Constructor
     // ===========
@@ -16,5 +18,5 @@ contract MockReflexBatch is ReflexBatch {
     /**
      * @param moduleSettings_ Module settings.
      */
-    constructor(ModuleSettings memory moduleSettings_) ReflexModule(moduleSettings_) {}
+    constructor(ModuleSettings memory moduleSettings_) MockReflexModule(moduleSettings_) {}
 }

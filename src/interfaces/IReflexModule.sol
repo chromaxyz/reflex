@@ -27,6 +27,7 @@ interface IReflexModule is IReflexBase, TReflexModule {
 
     /**
      * @notice Module settings.
+     *
      * @dev Packed slot: 4 + 2 + 4 + 1 + 1 = 12 bytes out of 32 bytes.
      */
     struct ModuleSettings {

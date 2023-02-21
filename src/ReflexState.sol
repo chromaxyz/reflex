@@ -18,7 +18,7 @@ import {ReflexConstants} from "./ReflexConstants.sol";
  * | _owner          | address                                               | 1    | 0      | 20    |
  * | _pendingOwner   | address                                               | 2    | 0      | 20    |
  * | _modules        | mapping(uint32 => address)                            | 3    | 0      | 32    |
- * | _proxies        | mapping(uint32 => address)                            | 4    | 0      | 32    |
+ * | _endpoints      | mapping(uint32 => address)                            | 4    | 0      | 32    |
  * | _relations      | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    |
  * | __gap           | uint256[44]                                           | 6    | 0      | 1408  |
  */
@@ -29,24 +29,28 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
 
     /**
      * @notice Global reentrancy lock.
+     *
      * @dev Slot 0 (32 bytes).
      */
     uint256 internal _reentrancyLock;
 
     /**
      * @notice Owner address.
+     *
      * @dev Slot 1 (20 bytes).
      */
     address internal _owner;
 
     /**
      * @notice Pending owner address.
+     *
      * @dev Slot 2 (20 bytes).
      */
     address internal _pendingOwner;
 
     /**
      * @notice Internal module mapping.
+     *
      * @dev Module id => module implementation.
      * @dev Slot 3 (32 bytes).
      */
@@ -54,13 +58,15 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
 
     /**
      * @notice Internal endpoint mapping.
+     *
      * @dev Module id => endpoint address (only for single-endpoint modules).
      * @dev Slot 4 (32 bytes).
      */
-    mapping(uint32 => address) internal _proxies;
+    mapping(uint32 => address) internal _endpoints;
 
     /**
      * @notice Internal endpoint to module relation mapping.
+     *
      * @dev Endpoint address => TrustRelation { moduleId, moduleType, moduleImplementation }.
      * @dev Slot 5 (32 bytes).
      */
@@ -71,6 +77,7 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
      * variables without shifting down storage in the inheritance chain.
      * The size of the __gap array is calculated so that the amount of storage used by a
      * contract always adds up to the same number (in this case 50 storage slots, 0 to 49).
+     *
      * @dev Slot 6 (1408 bytes).
      */
     uint256[44] private __gap;
