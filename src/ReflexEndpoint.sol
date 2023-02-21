@@ -70,7 +70,7 @@ contract ReflexEndpoint is IReflexEndpoint {
     }
 
     /**
-     * @dev Sentinel DELEGATECALL opcode to nudge Etherscan to recognize this as being a proxy.
+     * @dev Sentinel DELEGATECALL opcode to nudge Etherscan to classify this as a proxy.
      * @dev Function selector clashing is mitigated by falling through to the fallback.
      */
     function sentinel() external virtual {

@@ -12,6 +12,8 @@ interface TReflexBatch is TReflexModule {
     // Errors
     // ======
 
+    error ZeroAddress();
+
     error ModuleNotRegistered(uint32 moduleId_);
 }
 

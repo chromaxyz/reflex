@@ -43,7 +43,7 @@ graph TD
 
 ### Multi-endpoint modules
 
-Modules that have a multiple proxies to a single implementation relation.
+Modules that have a multiple endpoints to a single implementation relation.
 It is relatively uncommon that one needs this type of module.
 
 ```mermaid
@@ -58,7 +58,7 @@ graph TD
 
 ### Internal modules
 
-Modules that are called internally and don't have any public-facing proxies.
+Modules that are called internally and don't have any public-facing endpoints.
 Internal modules have the benefit that they are upgradeable where the `Dispatcher` itself is not.
 
 ```mermaid
@@ -89,16 +89,16 @@ Endpoints are non-upgradeable contracts that have two jobs:
 - Forward method calls from external users to the `Dispatcher`.
 - Receive method calls from the `Dispatcher` and log events as instructed.
 
-Although proxies themselves are non-upgradeable, they integrate with Reflex's module system, which does allow for upgrades.
+Although endpoints themselves are non-upgradeable, they integrate with Reflex's module system, which does allow for upgrades.
 
 Modules cannot be called directly. Instead, they must be invoked through an endpoint.
 By default, all endpoints are implemented by the same code: [src/ReflexEndpoint.sol](../src/ReflexEndpoint.sol). This is a very simple contract that forwards its requests to the `Dispatcher`, along with the original `msg.sender`. The call is done with a normal `call()`, so the execution takes place within the `Dispatcher` contract's storage context, not the endpoints'.
 
-Proxies contain the bare minimum amount of logic required for forwarding. This is because they are not upgradeable. They should ideally be as optimized as possible so as to minimise gas costs since many of them will be deployed.
+Endpoints contain the bare minimum amount of logic required for forwarding. This is because they are not upgradeable. They should ideally be as optimized as possible so as to minimise gas costs since many of them will be deployed.
 
 The `Dispatcher` contract ensures that all requests to it are from a known trusted endpoint address. The only way that addresses can become known trusted is when the `Dispatcher` contract itself creates them. In this way, the original `msg.sender` sent by the endpoint can be trusted.
 
-The only other thing that proxies do is to accept messages from the `Dispatcher` that instruct them to issue log messages as mentioned above.
+The only other thing that endpoints do is to accept messages from the `Dispatcher` that instruct them to issue log messages as mentioned above.
 
 One important feature provided by the endpoint-module system is that a single storage context (i.e. the `Dispatcher` contract) can have multiple possibly-colliding function ABI namespaces, which is not possible with systems like a conventional upgradeable proxy, or the [EIP-2535 Diamond, Multi-Facet Proxy](https://eips.ethereum.org/EIPS/eip-2535) standard. An example of how this works in practice can be found in [test/implementations/abstracts/ImplementationERC20.sol](../test/implementations/abstracts/ImplementationERC20.sol), [test/ImplementationERC20.t.sol](../test/ImplementationERC20.t.sol) and [test/ImplementationModuleMultiEndpoint.t.sol](../test/ImplementationModuleMultiEndpoint.t.sol).
 
@@ -281,7 +281,7 @@ Prior to adding, upgrading or deprecating a module make sure to go through the [
 
 ## Known limitations
 
-- Reflex has multiple application entrypoints via their proxies. The endpoint address however stays consistent throughout module upgrades.
+- Reflex has multiple application entrypoints via their endpoints. The endpoint address however stays consistent throughout module upgrades.
 - Reflex does not support `payable` modifiers and native token transfers due to reentrancy concerns.
 - The `Dispatcher` and the internal `Endpoint` contracts are not upgradable.
 - Storage in the `Dispatcher` is append-only extendable but implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.

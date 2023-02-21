@@ -36,7 +36,7 @@ abstract contract ReflexConstants {
     uint16 internal constant _MODULE_TYPE_MULTI_ENDPOINT = 2;
 
     /**
-     * @dev Modules that are available internally, called internally and don't have any public-facing proxies.
+     * @dev Modules that are available internally, called internally and don't have any public-facing endpoints.
      */
     uint16 internal constant _MODULE_TYPE_INTERNAL = 3;
 

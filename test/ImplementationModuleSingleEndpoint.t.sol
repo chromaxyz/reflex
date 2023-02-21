@@ -107,7 +107,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     }
 
     function testUnitModuleSettings() external {
-        // Proxies
+        // Endpoints
 
         _verifyModuleConfiguration(
             singleModuleEndpoint,

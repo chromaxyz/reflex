@@ -57,7 +57,7 @@ The framework serves as the foundation of your modular application allowing you 
 ├── ReflexBase.sol "Extendable `Base`, internal abstraction for `Dispatcher` and `Module`."
 ├── ReflexConstants.sol "Extendable `Constants`: constants used in the framework."
 ├── ReflexDispatcher.sol  "Non-upgradeable `Dispatcher`: dispatcher to module implementations."
-├── ReflexEndpoint.sol "Non-upgradeable `Endpoint`, internal proxy indirection layer."
+├── ReflexEndpoint.sol "Non-upgradeable `Endpoint`, internal proxy-like indirection layer."
 ├── ReflexInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
 ├── ReflexModule.sol
 ├── ReflexState.sol "Extendable `State`, foundational state store of the framework."

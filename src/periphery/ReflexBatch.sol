@@ -97,6 +97,9 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     function simulateBatchCallReturn(
         BatchAction[] calldata actions_
     ) external virtual reentrancyAllowed returns (BatchActionResponse[] memory simulation_) {
+        // NOTE: it is assumed user will never be able to control _modules (storage) nor _moduleId (immutable).
+        // TODO: _unpackEndpointAddress could be replaced by msg.sender.
+
         (bool success, bytes memory result) = _modules[_moduleId].delegatecall(
             abi.encodePacked(
                 abi.encodeWithSelector(ReflexBatch.simulateBatchCallRevert.selector, actions_),
@@ -137,13 +140,13 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
 
         if (moduleId_ == 0) revert InvalidModuleId();
 
-        address moduleImplementation_ = _relations[endpointAddress].moduleImplementation;
+        address moduleImplementation = _relations[endpointAddress].moduleImplementation;
 
-        if (moduleImplementation_ == address(0)) moduleImplementation_ = _modules[moduleId_];
+        if (moduleImplementation == address(0)) moduleImplementation = _modules[moduleId_];
 
-        if (moduleImplementation_ == address(0)) revert ModuleNotRegistered(moduleId_);
+        if (moduleImplementation == address(0)) revert ModuleNotRegistered(moduleId_);
 
-        (success_, returnData_) = moduleImplementation_.delegatecall(
+        (success_, returnData_) = moduleImplementation.delegatecall(
             abi.encodePacked(action_.callData, uint160(messageSender_), uint160(endpointAddress))
         );
     }
