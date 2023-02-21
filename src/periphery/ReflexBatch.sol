@@ -41,7 +41,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      * @notice Perform a batch call to interact with multiple modules in a single transaction.
      * @param actions_ List of actions to perform.
      */
-    function performBatchCall(BatchAction[] calldata actions_) external virtual override reentrancyAllowed {
+    function performBatchCall(BatchAction[] calldata actions_) external virtual reentrancyAllowed {
         address messageSender = _unpackMessageSender();
         uint256 actionsLength = actions_.length;
 
@@ -65,7 +65,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      * @dev During simulation all batch actions are executed, regardless of the `allowFailure` flag.
      * @dev Reverts with simulation results.
      */
-    function simulateBatchCallRevert(BatchAction[] calldata actions_) external virtual override reentrancyAllowed {
+    function simulateBatchCallRevert(BatchAction[] calldata actions_) external virtual reentrancyAllowed {
         address messageSender = _unpackMessageSender();
         uint256 actionsLength = actions_.length;
 
@@ -96,7 +96,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      */
     function simulateBatchCallReturn(
         BatchAction[] calldata actions_
-    ) external virtual override reentrancyAllowed returns (BatchActionResponse[] memory simulation_) {
+    ) external virtual reentrancyAllowed returns (BatchActionResponse[] memory simulation_) {
         (bool success, bytes memory result) = _modules[_moduleId].delegatecall(
             abi.encodePacked(
                 abi.encodeWithSelector(ReflexBatch.simulateBatchCallRevert.selector, actions_),

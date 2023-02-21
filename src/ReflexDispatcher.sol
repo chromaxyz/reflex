@@ -59,7 +59,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
      * @param moduleId_ Module id.
      * @return address Module implementation address.
      */
-    function moduleIdToModuleImplementation(uint32 moduleId_) external view virtual override returns (address) {
+    function moduleIdToModuleImplementation(uint32 moduleId_) external view virtual returns (address) {
         return _modules[moduleId_];
     }
 
@@ -68,7 +68,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
      * @param moduleId_ Module id.
      * @return address Endpoint address.
      */
-    function moduleIdToEndpoint(uint32 moduleId_) external view virtual override returns (address) {
+    function moduleIdToEndpoint(uint32 moduleId_) external view virtual returns (address) {
         return _endpoints[moduleId_];
     }
 
