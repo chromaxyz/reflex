@@ -2,7 +2,7 @@
 
 - It is assumed `owner` is not malicious.
 - It is assumed Reflex `implementers` are not malicious.
-- It is assumed Reflex `implementations` are correct and adhere to guidelines and restrictions set out in the [IMPLEMENTERS](docs/IMPLEMENTERS.md) guide, specifically:
+- It is assumed Reflex `implementations` are correct and adhere to guidelines and restrictions set out in the [IMPLEMENTERS](IMPLEMENTERS.md) guide, specifically:
   - `State` layout is consistent across `Modules`.
   - Implementers **MUST NOT** implement an `implementation()` or preferably a `sentinel()` method in `Modules` as this causes a function selector clash in the `Endpoint`.
   - Implementers **MUST NOT** implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
