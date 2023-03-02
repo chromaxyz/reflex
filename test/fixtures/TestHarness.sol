@@ -14,8 +14,11 @@ import {Users} from "./Users.sol";
  *
  * @dev A rigorous testing and invariant harness.
  *
- * @author `GasCapture` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/v7/src/test/utils/DSTestPlus.sol) (MIT)
- * @author `BrutalizeMemory` has been copied from: Solady (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol) (MIT)
+ * @author `brutalizeMemoryWith` and `captureGas` has been modified from: Solmate
+ * (https://github.com/transmissions11/solmate/blob/v7/src/test/utils/DSTestPlus.sol) (MIT)
+ *
+ * @author `brutalizeMemory` has been copied from: Solady
+ * (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol) (MIT)
  */
 abstract contract TestHarness is Users, Test {
     // ======
@@ -55,7 +58,7 @@ abstract contract TestHarness is Users, Test {
     /**
      * @dev Modifier to perform a gas capture.
      */
-    modifier GasCapture(string memory label_) {
+    modifier captureGas(string memory label_) {
         _startGasCapture(label_);
 
         _;
@@ -65,49 +68,61 @@ abstract contract TestHarness is Users, Test {
 
     /**
      * @dev Modifier to brutalize memory.
+     * Fills the memory with junk, for more robust testing of inline assembly which reads / writes to the memory.
      */
-    modifier BrutalizeMemory() {
-        /// @solidity memory-safe-assembly
-        assembly {
-            let offset := mload(0x40) // Start the offset at the free memory pointer.
-            calldatacopy(offset, 0, calldatasize())
+    modifier brutalizeMemory() {
+        // To prevent a solidity 0.8.13 bug.
+        // See: https://blog.soliditylang.org/2022/06/15/inline-assembly-memory-side-effects-bug
+        // Basically, we need to access a solidity variable from the assembly to
+        // tell the compiler that this assembly block is not in isolation.
+        {
+            uint256 zero;
+            /// @solidity memory-safe-assembly
+            assembly {
+                let offset := mload(0x40) // Start the offset at the free memory pointer.
+                calldatacopy(offset, zero, calldatasize())
 
-            // Fill the 64 bytes of scratch space with garbage.
-            mstore(0x00, xor(gas(), calldatasize()))
-            mstore(0x20, xor(caller(), keccak256(offset, calldatasize())))
-            mstore(0x00, keccak256(0x00, 0x40))
-            mstore(0x20, keccak256(0x00, 0x40))
+                // Fill the 64 bytes of scratch space with garbage.
+                mstore(zero, caller())
+                mstore(0x20, keccak256(offset, calldatasize()))
+                mstore(zero, keccak256(zero, 0x40))
 
-            let size := 0x40 // Start with 2 slots.
-            mstore(offset, mload(0x00))
-            mstore(add(offset, 0x20), mload(0x20))
+                let r0 := mload(zero)
+                let r1 := mload(0x20)
 
-            for {
-                let i := add(11, and(mload(0x00), 1))
-            } 1 {
+                let cSize := add(codesize(), iszero(codesize()))
+                if iszero(lt(cSize, 32)) {
+                    cSize := sub(cSize, and(mload(0x02), 31))
+                }
+                let start := mod(mload(0x10), cSize)
+                let size := mul(sub(cSize, start), gt(cSize, start))
+                let times := div(0x7ffff, cSize)
+                if iszero(lt(times, 128)) {
+                    times := 128
+                }
 
-            } {
-                let nextOffset := add(offset, size)
-                // Duplicate the data.
-                pop(
-                    staticcall(
-                        gas(), // Pass along all the gas in the call.
-                        0x04, // Call the identity precompile address.
-                        offset, // Offset is the bytes' pointer.
-                        size, // We want to pass the length of the bytes.
-                        nextOffset, // Store the return value at the next offset.
-                        size // Since the precompile just returns its input, we reuse size.
-                    )
-                )
-                // Duplicate the data again.
-                returndatacopy(add(nextOffset, size), 0, size)
-                offset := nextOffset
-                size := mul(2, size)
+                // Occasionally offset the offset by a psuedorandom large amount.
+                // Can't be too large, or we will easily get out-of-gas errors.
+                offset := add(offset, mul(iszero(and(r1, 0xf)), and(r0, 0xfffff)))
 
-                i := sub(i, 1)
+                // Fill the free memory with garbage.
+                for {
+                    let w := not(0)
+                } 1 {
 
-                if iszero(i) {
-                    break
+                } {
+                    mstore(offset, r0)
+                    mstore(add(offset, 0x20), r1)
+                    offset := add(offset, 0x40)
+                    // We use codecopy instead of the identity precompile
+                    // to avoid polluting the `forge test -vvvv` output with tons of junk.
+                    codecopy(offset, start, size)
+                    codecopy(add(offset, size), 0, start)
+                    offset := add(offset, cSize)
+                    times := add(times, w) // `sub(times, 1)`.
+                    if iszero(times) {
+                        break
+                    }
                 }
             }
         }
@@ -115,6 +130,42 @@ abstract contract TestHarness is Users, Test {
         _;
 
         _checkMemory();
+    }
+
+    /**
+     * @dev Modifier to brutalize memory with custom data.
+     */
+    modifier brutalizeMemoryWith(bytes memory brutalizeWith) {
+        /// @solidity memory-safe-assembly
+        assembly {
+            // Fill the 64 bytes of scratch space with the data.
+            pop(
+                staticcall(
+                    gas(), // Pass along all the gas in the call.
+                    0x04, // Call the identity precompile address.
+                    brutalizeWith, // Offset is the bytes' pointer.
+                    64, // Copy enough to only fill the scratch space.
+                    0, // Store the return value in the scratch space.
+                    64 // Scratch space is only 64 bytes in size, we don't want to write further.
+                )
+            )
+
+            let size := add(mload(brutalizeWith), 32) // Add 32 to include the 32 byte length slot.
+
+            // Fill the free memory pointer's destination with the data.
+            pop(
+                staticcall(
+                    gas(), // Pass along all the gas in the call.
+                    0x04, // Call the identity precompile address.
+                    brutalizeWith, // Offset is the bytes' pointer.
+                    size, // We want to pass the length of the bytes.
+                    mload(0x40), // Store the return value at the free memory pointer.
+                    size // Since the precompile just returns its input, we reuse size.
+                )
+            )
+        }
+
+        _;
     }
 
     /**
@@ -131,6 +182,8 @@ abstract contract TestHarness is Users, Test {
 
     constructor() {
         _profile = vm.envOr("FOUNDRY_PROFILE", string("default"));
+
+        // solhint-disable-next-line not-rely-on-time
         _currentTimestamp = block.timestamp;
     }
 

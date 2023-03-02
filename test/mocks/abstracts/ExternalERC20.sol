@@ -7,7 +7,8 @@ import {IERC20} from "forge-std/interfaces/IERC20.sol";
 /**
  * @title External ERC20
  *
- * @author `ERC20` has been modified from: Solmate (https://github.com/transmissions11/solmate/blob/v7/src/tokens/ERC20.sol) (MIT)
+ * @author `ERC20` has been modified from: Solmate
+ * (https://github.com/transmissions11/solmate/blob/v7/src/tokens/ERC20.sol) (MIT)
  */
 abstract contract ExternalERC20 is IERC20 {
     // ==========
@@ -16,9 +17,9 @@ abstract contract ExternalERC20 is IERC20 {
 
     uint8 public immutable decimals;
 
-    uint256 internal immutable INITIAL_CHAIN_ID;
+    uint256 internal immutable _initialChainId;
 
-    bytes32 internal immutable INITIAL_DOMAIN_SEPARATOR;
+    bytes32 internal immutable _initialDomainSeparator;
 
     // =======
     // Storage
@@ -50,16 +51,17 @@ abstract contract ExternalERC20 is IERC20 {
         symbol = symbol_;
         decimals = decimals_;
 
-        INITIAL_CHAIN_ID = block.chainid;
-        INITIAL_DOMAIN_SEPARATOR = computeDomainSeparator();
+        _initialChainId = block.chainid;
+        _initialDomainSeparator = _computeDomainSeparator();
     }
 
     // ============
     // View methods
     // ============
 
+    // solhint-disable-next-line func-name-mixedcase
     function DOMAIN_SEPARATOR() public view virtual returns (bytes32) {
-        return block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : computeDomainSeparator();
+        return block.chainid == _initialChainId ? _initialDomainSeparator : _computeDomainSeparator();
     }
 
     // ==============
@@ -115,6 +117,7 @@ abstract contract ExternalERC20 is IERC20 {
         bytes32 r,
         bytes32 s
     ) public virtual {
+        // solhint-disable-next-line not-rely-on-time
         require(deadline >= block.timestamp, "PERMIT_DEADLINE_EXPIRED");
 
         // Unchecked because the only math done is incrementing
@@ -156,7 +159,7 @@ abstract contract ExternalERC20 is IERC20 {
     // Internal methods
     // ================
 
-    function computeDomainSeparator() internal view virtual returns (bytes32) {
+    function _computeDomainSeparator() internal view virtual returns (bytes32) {
         return
             keccak256(
                 abi.encode(

@@ -22,13 +22,14 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     /**
      * @notice Execute a staticcall to an arbitrary address with an arbitrary payload.
      * @param contractAddress_ Address of the contract to call.
-     * @param payload_ Encoded call payload.
+     * @param callData_ Encoded call data.
      * @return bytes Encoded return data.
      *
-     * @dev Intended to be used in static-called batches, to e.g. provide detailed information about the impacts of the simulated operation.
+     * @dev Intended to be used in static-called batches, to e.g. provide
+     * detailed information about the impacts of the simulated operation.
      */
-    function performStaticCall(address contractAddress_, bytes memory payload_) external view returns (bytes memory) {
-        (bool success, bytes memory result) = contractAddress_.staticcall(payload_);
+    function performStaticCall(address contractAddress_, bytes memory callData_) public view returns (bytes memory) {
+        (bool success, bytes memory result) = contractAddress_.staticcall(callData_);
 
         if (!success) _revertBytes(result);
 
@@ -41,7 +42,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      * @notice Perform a batch call to interact with multiple modules in a single transaction.
      * @param actions_ List of actions to perform.
      */
-    function performBatchCall(BatchAction[] calldata actions_) external virtual reentrancyAllowed {
+    function performBatchCall(BatchAction[] calldata actions_) public virtual reentrancyAllowed {
         address messageSender = _unpackMessageSender();
         uint256 actionsLength = actions_.length;
 
@@ -65,7 +66,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      * @dev During simulation all batch actions are executed, regardless of the `allowFailure` flag.
      * @dev Reverts with simulation results.
      */
-    function simulateBatchCallRevert(BatchAction[] calldata actions_) external virtual reentrancyAllowed {
+    function simulateBatchCallRevert(BatchAction[] calldata actions_) public virtual reentrancyAllowed {
         address messageSender = _unpackMessageSender();
         uint256 actionsLength = actions_.length;
 
@@ -96,13 +97,13 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      */
     function simulateBatchCallReturn(
         BatchAction[] calldata actions_
-    ) external virtual reentrancyAllowed returns (BatchActionResponse[] memory simulation_) {
+    ) public virtual reentrancyAllowed returns (BatchActionResponse[] memory simulation_) {
         // NOTE: it is assumed user will never be able to control _modules (storage) nor _moduleId (immutable).
         // TODO: _unpackEndpointAddress could be replaced by msg.sender.
 
         (bool success, bytes memory result) = _modules[_moduleId].delegatecall(
             abi.encodePacked(
-                abi.encodeWithSelector(ReflexBatch.simulateBatchCallRevert.selector, actions_),
+                abi.encodeWithSelector(IReflexBatch.simulateBatchCallRevert.selector, actions_),
                 uint160(_unpackMessageSender()),
                 uint160(_unpackEndpointAddress())
             )

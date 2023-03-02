@@ -12,8 +12,6 @@ interface TReflexBatch is TReflexModule {
     // Errors
     // ======
 
-    error ZeroAddress();
-
     error ModuleNotRegistered(uint32 moduleId_);
 }
 
@@ -37,8 +35,17 @@ interface IReflexBatch is IReflexModule, TReflexBatch {
      * @notice Single action in a batch request.
      */
     struct BatchAction {
+        /**
+         * @notice The endpoint address of the module to call with the call data.
+         */
         address endpointAddress;
+        /**
+         * @notice Whether the action is allowed to fail.
+         */
         bool allowFailure;
+        /**
+         * @notice Encoded call data.
+         */
         bytes callData;
     }
 
@@ -46,7 +53,13 @@ interface IReflexBatch is IReflexModule, TReflexBatch {
      * @notice Single action in a batch response.
      */
     struct BatchActionResponse {
+        /**
+         * @notice Whether the action succeeded.
+         */
         bool success;
+        /**
+         * @notice Encoded return data.
+         */
         bytes returnData;
     }
 

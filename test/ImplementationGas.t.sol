@@ -75,6 +75,8 @@ contract ImplementationGasTest is ImplementationFixture {
     // Tests
     // =====
 
+    /* solhint-disable max-line-length */
+
     function testGasEndpointGetEmpty() external view {
         // Cold: 8065 gas (8208-143)
         //
@@ -209,4 +211,6 @@ contract ImplementationGasTest is ImplementationFixture {
 
         batchEndpoint.performBatchCall(actions);
     }
+
+    /* solhint-enable max-line-length */
 }

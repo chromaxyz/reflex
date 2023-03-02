@@ -80,7 +80,7 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
      * @notice Get module id.
      * @return uint32 Module id.
      */
-    function moduleId() external view virtual returns (uint32) {
+    function moduleId() public view virtual returns (uint32) {
         return _moduleId;
     }
 
@@ -88,7 +88,7 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
      * @notice Get module type.
      * @return uint16 Module type.
      */
-    function moduleType() external view virtual returns (uint16) {
+    function moduleType() public view virtual returns (uint16) {
         return _moduleType;
     }
 
@@ -96,7 +96,7 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
      * @notice Get module version.
      * @return uint32 Module version.
      */
-    function moduleVersion() external view virtual returns (uint32) {
+    function moduleVersion() public view virtual returns (uint32) {
         return _moduleVersion;
     }
 
@@ -104,7 +104,7 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
      * @notice Get whether module is upgradeable.
      * @return bool Whether module is upgradeable.
      */
-    function moduleUpgradeable() external view virtual returns (bool) {
+    function moduleUpgradeable() public view virtual returns (bool) {
         return _moduleUpgradeable;
     }
 
@@ -112,7 +112,7 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
      * @notice Get the module settings.
      * @return ModuleSettings Module settings.
      */
-    function moduleSettings() external view virtual returns (ModuleSettings memory) {
+    function moduleSettings() public view virtual returns (ModuleSettings memory) {
         return
             ModuleSettings({
                 moduleId: _moduleId,

@@ -9,7 +9,8 @@ import {CommonBase} from "forge-std/Base.sol";
  *
  * @dev Common stand-in users for testing.
  *
- * @author `Users` has been modified from: PRBTest (https://github.com/PaulRBerg/prb-math/blob/main/test/BaseTest.t.sol) (MIT)
+ * @author `Users` has been modified from: PRBTest
+ * (https://github.com/PaulRBerg/prb-math/blob/main/test/BaseTest.t.sol) (MIT)
  */
 abstract contract Users is CommonBase {
     // =======

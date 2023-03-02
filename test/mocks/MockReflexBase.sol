@@ -68,11 +68,11 @@ contract MockReflexBase is ReflexBase {
     }
 
     function guardedCheckLocked() public nonReentrant {
-        require(getReentrancyStatus() == _REENTRANCY_LOCK_LOCKED);
+        assert(getReentrancyStatus() == _REENTRANCY_LOCK_LOCKED);
     }
 
     function unguardedCheckUnlocked() public view {
-        require(getReentrancyStatus() == _REENTRANCY_LOCK_UNLOCKED);
+        assert(getReentrancyStatus() == _REENTRANCY_LOCK_UNLOCKED);
     }
 
     function createEndpoint(
