@@ -12,7 +12,7 @@ on:
       - development
 
 jobs:
-  tests:
+  lint:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true

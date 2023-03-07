@@ -23,7 +23,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * @notice Returns the address of the owner.
      * @return address Owner address.
      */
-    function owner() external view virtual returns (address) {
+    function owner() public view virtual returns (address) {
         return _owner;
     }
 
@@ -31,7 +31,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * @notice Returns the address of the pending owner.
      * @return address Pending owner address.
      */
-    function pendingOwner() external view virtual returns (address) {
+    function pendingOwner() public view virtual returns (address) {
         return _pendingOwner;
     }
 
@@ -48,7 +48,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * - The caller must be the current owner.
      * - Cannot be re-entered.
      */
-    function transferOwnership(address newOwner_) external virtual onlyOwner nonReentrant {
+    function transferOwnership(address newOwner_) public virtual onlyOwner nonReentrant {
         if (newOwner_ == address(0)) revert ZeroAddress();
 
         _pendingOwner = newOwner_;
@@ -64,7 +64,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * - The caller must be the pending owner.
      * - Cannot be re-entered.
      */
-    function acceptOwnership() external virtual nonReentrant {
+    function acceptOwnership() public virtual nonReentrant {
         address newOwner = _unpackMessageSender();
 
         if (newOwner != _pendingOwner) revert Unauthorized();
@@ -89,7 +89,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * thereby removing any functionality that is only available to the owner.
      * It will not be possible to call methods with the `onlyOwner` modifier anymore.
      */
-    function renounceOwnership() external virtual onlyOwner nonReentrant {
+    function renounceOwnership() public virtual onlyOwner nonReentrant {
         address newOwner = address(0);
 
         delete _pendingOwner;
@@ -109,7 +109,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * - The caller must be the current owner.
      * - Cannot be re-entered.
      */
-    function addModules(address[] calldata moduleAddresses_) external virtual onlyOwner nonReentrant {
+    function addModules(address[] calldata moduleAddresses_) public virtual onlyOwner nonReentrant {
         uint256 moduleAddressLength = moduleAddresses_.length;
 
         for (uint256 i = 0; i < moduleAddressLength; ) {
@@ -144,7 +144,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * - The caller must be the current owner.
      * - Cannot be re-entered.
      */
-    function upgradeModules(address[] calldata moduleAddresses_) external virtual onlyOwner nonReentrant {
+    function upgradeModules(address[] calldata moduleAddresses_) public virtual onlyOwner nonReentrant {
         uint256 moduleAddressLength = moduleAddresses_.length;
 
         for (uint256 i = 0; i < moduleAddressLength; ) {

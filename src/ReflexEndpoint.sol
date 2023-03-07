@@ -57,7 +57,7 @@ contract ReflexEndpoint is IReflexEndpoint {
      * @dev To prevent selector clashing avoid using the `implementation()` selector inside of modules.
      * @return address Implementation address or zero address if unresolved.
      */
-    function implementation() external view virtual returns (address) {
+    function implementation() public view virtual returns (address) {
         (bool success, bytes memory response) = _deployer.staticcall(
             abi.encodeWithSelector(_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR, _moduleId)
         );
@@ -73,7 +73,7 @@ contract ReflexEndpoint is IReflexEndpoint {
      * @dev Sentinel DELEGATECALL opcode to nudge Etherscan to classify this as a proxy.
      * @dev Function selector clashing is mitigated by falling through to the fallback.
      */
-    function sentinel() external virtual {
+    function sentinel() public virtual {
         // HACK: replace with better solution, preferably permanent.
 
         if (msg.sender == address(0)) {
