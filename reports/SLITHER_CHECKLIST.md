@@ -4,7 +4,6 @@ Summary
 - [uninitialized-state](#uninitialized-state) (3 results) (High)
 - [missing-zero-check](#missing-zero-check) (1 results) (Low)
 - [calls-loop](#calls-loop) (6 results) (Low)
-- [dead-code](#dead-code) (1 results) (Informational)
 - [low-level-calls](#low-level-calls) (5 results) (Informational)
 - [similar-names](#similar-names) (1 results) (Informational)
 
@@ -88,25 +87,20 @@ Confidence: Medium
 
 ../src/ReflexInstaller.sol#L147-L183
 
-## dead-code
-
-Impact: Informational
-Confidence: Medium
-
-- [ ] ID-12
-      [ReflexBase.\_reentrancyGuardLocked()](../src/ReflexBase.sol#L87-L89) is never used and should be removed
-
-../src/ReflexBase.sol#L87-L89
-
 ## low-level-calls
 
 Impact: Informational
 Confidence: High
 
-- [ ] ID-13
+- [ ] ID-12
       Low level call in [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L134-L153): - [(success*,returnData*) = moduleImplementation.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender*),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L150-L152)
 
 ../src/periphery/ReflexBatch.sol#L134-L153
+
+- [ ] ID-13
+      Low level call in [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L98-L121): - [(success,result) = _modules[\_moduleId].delegatecall(abi.encodePacked(abi.encodeWithSelector(IReflexBatch.simulateBatchCallRevert.selector,actions_),uint160(\_unpackMessageSender()),uint160(\_unpackEndpointAddress())))](../src/periphery/ReflexBatch.sol#L104-L110)
+
+../src/periphery/ReflexBatch.sol#L98-L121
 
 - [ ] ID-14
       Low level call in [ReflexBatch.performStaticCall(address,bytes)](../src/periphery/ReflexBatch.sol#L31-L39): - [(success,result) = contractAddress*.staticcall(callData*)](../src/periphery/ReflexBatch.sol#L32)
@@ -119,11 +113,6 @@ Confidence: High
 ../src/ReflexEndpoint.sol#L60-L70
 
 - [ ] ID-16
-      Low level call in [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L98-L121): - [(success,result) = _modules[\_moduleId].delegatecall(abi.encodePacked(abi.encodeWithSelector(ReflexBatch.simulateBatchCallRevert.selector,actions_),uint160(\_unpackMessageSender()),uint160(\_unpackEndpointAddress())))](../src/periphery/ReflexBatch.sol#L104-L110)
-
-../src/periphery/ReflexBatch.sol#L98-L121
-
-- [ ] ID-17
       Low level call in [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L97-L103): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L98)
 
 ../src/ReflexBase.sol#L97-L103
@@ -133,7 +122,7 @@ Confidence: High
 Impact: Informational
 Confidence: Medium
 
-- [ ] ID-18
+- [ ] ID-17
       Variable [ReflexModule.\_moduleType](../src/ReflexModule.sol#L29) is too similar to [ReflexBase._createEndpoint(uint32,uint16,address).moduleType_](../src/ReflexBase.sol#L58)
 
 ../src/ReflexModule.sol#L29
