@@ -12,14 +12,14 @@ abstract contract ReflexConstants {
     // =======
 
     /**
-     * @dev Reentrancy mutex unlocked state.
+     * @dev Reentrancy guard unlocked state.
      */
-    uint256 internal constant _REENTRANCY_LOCK_UNLOCKED = 1;
+    uint256 internal constant _REENTRANCY_GUARD_UNLOCKED = 1;
 
     /**
-     * @dev Reentrancy mutex locked state.
+     * @dev Reentrancy guard locked state.
      */
-    uint256 internal constant _REENTRANCY_LOCK_LOCKED = 2;
+    uint256 internal constant _REENTRANCY_GUARD_LOCKED = 2;
 
     // =============
     // Configuration

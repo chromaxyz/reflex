@@ -1,14 +1,14 @@
 **ReflexBase**
 
-| Name             | Type                                                  | Slot | Offset | Bytes | Contract                      |
-| ---------------- | ----------------------------------------------------- | ---- | ------ | ----- | ----------------------------- |
-| \_reentrancyLock | uint256                                               | 0    | 0      | 32    | src/ReflexBase.sol:ReflexBase |
-| \_owner          | address                                               | 1    | 0      | 20    | src/ReflexBase.sol:ReflexBase |
-| \_pendingOwner   | address                                               | 2    | 0      | 20    | src/ReflexBase.sol:ReflexBase |
-| \_modules        | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexBase.sol:ReflexBase |
-| \_endpoints      | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexBase.sol:ReflexBase |
-| \_relations      | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexBase.sol:ReflexBase |
-| \_\_gap          | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexBase.sol:ReflexBase |
+| Name               | Type                                                  | Slot | Offset | Bytes | Contract                      |
+| ------------------ | ----------------------------------------------------- | ---- | ------ | ----- | ----------------------------- |
+| \_reentrancyStatus | uint256                                               | 0    | 0      | 32    | src/ReflexBase.sol:ReflexBase |
+| \_owner            | address                                               | 1    | 0      | 20    | src/ReflexBase.sol:ReflexBase |
+| \_pendingOwner     | address                                               | 2    | 0      | 20    | src/ReflexBase.sol:ReflexBase |
+| \_modules          | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexBase.sol:ReflexBase |
+| \_endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexBase.sol:ReflexBase |
+| \_relations        | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexBase.sol:ReflexBase |
+| \_\_gap            | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexBase.sol:ReflexBase |
 
 **ReflexConstants**
 
@@ -17,39 +17,39 @@
 
 **ReflexDispatcher**
 
-| Name             | Type                                                  | Slot | Offset | Bytes | Contract                                  |
-| ---------------- | ----------------------------------------------------- | ---- | ------ | ----- | ----------------------------------------- |
-| \_reentrancyLock | uint256                                               | 0    | 0      | 32    | src/ReflexDispatcher.sol:ReflexDispatcher |
-| \_owner          | address                                               | 1    | 0      | 20    | src/ReflexDispatcher.sol:ReflexDispatcher |
-| \_pendingOwner   | address                                               | 2    | 0      | 20    | src/ReflexDispatcher.sol:ReflexDispatcher |
-| \_modules        | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexDispatcher.sol:ReflexDispatcher |
-| \_endpoints      | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexDispatcher.sol:ReflexDispatcher |
-| \_relations      | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexDispatcher.sol:ReflexDispatcher |
-| \_\_gap          | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexDispatcher.sol:ReflexDispatcher |
+| Name               | Type                                                  | Slot | Offset | Bytes | Contract                                  |
+| ------------------ | ----------------------------------------------------- | ---- | ------ | ----- | ----------------------------------------- |
+| \_reentrancyStatus | uint256                                               | 0    | 0      | 32    | src/ReflexDispatcher.sol:ReflexDispatcher |
+| \_owner            | address                                               | 1    | 0      | 20    | src/ReflexDispatcher.sol:ReflexDispatcher |
+| \_pendingOwner     | address                                               | 2    | 0      | 20    | src/ReflexDispatcher.sol:ReflexDispatcher |
+| \_modules          | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexDispatcher.sol:ReflexDispatcher |
+| \_endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexDispatcher.sol:ReflexDispatcher |
+| \_relations        | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexDispatcher.sol:ReflexDispatcher |
+| \_\_gap            | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexDispatcher.sol:ReflexDispatcher |
 
 **ReflexInstaller**
 
-| Name             | Type                                                  | Slot | Offset | Bytes | Contract                                |
-| ---------------- | ----------------------------------------------------- | ---- | ------ | ----- | --------------------------------------- |
-| \_reentrancyLock | uint256                                               | 0    | 0      | 32    | src/ReflexInstaller.sol:ReflexInstaller |
-| \_owner          | address                                               | 1    | 0      | 20    | src/ReflexInstaller.sol:ReflexInstaller |
-| \_pendingOwner   | address                                               | 2    | 0      | 20    | src/ReflexInstaller.sol:ReflexInstaller |
-| \_modules        | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexInstaller.sol:ReflexInstaller |
-| \_endpoints      | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexInstaller.sol:ReflexInstaller |
-| \_relations      | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexInstaller.sol:ReflexInstaller |
-| \_\_gap          | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexInstaller.sol:ReflexInstaller |
+| Name               | Type                                                  | Slot | Offset | Bytes | Contract                                |
+| ------------------ | ----------------------------------------------------- | ---- | ------ | ----- | --------------------------------------- |
+| \_reentrancyStatus | uint256                                               | 0    | 0      | 32    | src/ReflexInstaller.sol:ReflexInstaller |
+| \_owner            | address                                               | 1    | 0      | 20    | src/ReflexInstaller.sol:ReflexInstaller |
+| \_pendingOwner     | address                                               | 2    | 0      | 20    | src/ReflexInstaller.sol:ReflexInstaller |
+| \_modules          | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexInstaller.sol:ReflexInstaller |
+| \_endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexInstaller.sol:ReflexInstaller |
+| \_relations        | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexInstaller.sol:ReflexInstaller |
+| \_\_gap            | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexInstaller.sol:ReflexInstaller |
 
 **ReflexModule**
 
-| Name             | Type                                                  | Slot | Offset | Bytes | Contract                          |
-| ---------------- | ----------------------------------------------------- | ---- | ------ | ----- | --------------------------------- |
-| \_reentrancyLock | uint256                                               | 0    | 0      | 32    | src/ReflexModule.sol:ReflexModule |
-| \_owner          | address                                               | 1    | 0      | 20    | src/ReflexModule.sol:ReflexModule |
-| \_pendingOwner   | address                                               | 2    | 0      | 20    | src/ReflexModule.sol:ReflexModule |
-| \_modules        | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexModule.sol:ReflexModule |
-| \_endpoints      | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexModule.sol:ReflexModule |
-| \_relations      | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexModule.sol:ReflexModule |
-| \_\_gap          | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexModule.sol:ReflexModule |
+| Name               | Type                                                  | Slot | Offset | Bytes | Contract                          |
+| ------------------ | ----------------------------------------------------- | ---- | ------ | ----- | --------------------------------- |
+| \_reentrancyStatus | uint256                                               | 0    | 0      | 32    | src/ReflexModule.sol:ReflexModule |
+| \_owner            | address                                               | 1    | 0      | 20    | src/ReflexModule.sol:ReflexModule |
+| \_pendingOwner     | address                                               | 2    | 0      | 20    | src/ReflexModule.sol:ReflexModule |
+| \_modules          | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexModule.sol:ReflexModule |
+| \_endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexModule.sol:ReflexModule |
+| \_relations        | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexModule.sol:ReflexModule |
+| \_\_gap            | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexModule.sol:ReflexModule |
 
 **ReflexEndpoint**
 
@@ -58,33 +58,33 @@
 
 **ReflexState**
 
-| Name             | Type                                                  | Slot | Offset | Bytes | Contract                        |
-| ---------------- | ----------------------------------------------------- | ---- | ------ | ----- | ------------------------------- |
-| \_reentrancyLock | uint256                                               | 0    | 0      | 32    | src/ReflexState.sol:ReflexState |
-| \_owner          | address                                               | 1    | 0      | 20    | src/ReflexState.sol:ReflexState |
-| \_pendingOwner   | address                                               | 2    | 0      | 20    | src/ReflexState.sol:ReflexState |
-| \_modules        | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexState.sol:ReflexState |
-| \_endpoints      | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexState.sol:ReflexState |
-| \_relations      | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexState.sol:ReflexState |
-| \_\_gap          | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexState.sol:ReflexState |
+| Name               | Type                                                  | Slot | Offset | Bytes | Contract                        |
+| ------------------ | ----------------------------------------------------- | ---- | ------ | ----- | ------------------------------- |
+| \_reentrancyStatus | uint256                                               | 0    | 0      | 32    | src/ReflexState.sol:ReflexState |
+| \_owner            | address                                               | 1    | 0      | 20    | src/ReflexState.sol:ReflexState |
+| \_pendingOwner     | address                                               | 2    | 0      | 20    | src/ReflexState.sol:ReflexState |
+| \_modules          | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexState.sol:ReflexState |
+| \_endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexState.sol:ReflexState |
+| \_relations        | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexState.sol:ReflexState |
+| \_\_gap            | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexState.sol:ReflexState |
 
 **ReflexBatch**
 
-| Name             | Type                                                  | Slot | Offset | Bytes | Contract                                  |
-| ---------------- | ----------------------------------------------------- | ---- | ------ | ----- | ----------------------------------------- |
-| \_reentrancyLock | uint256                                               | 0    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
-| \_owner          | address                                               | 1    | 0      | 20    | src/periphery/ReflexBatch.sol:ReflexBatch |
-| \_pendingOwner   | address                                               | 2    | 0      | 20    | src/periphery/ReflexBatch.sol:ReflexBatch |
-| \_modules        | mapping(uint32 => address)                            | 3    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
-| \_endpoints      | mapping(uint32 => address)                            | 4    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
-| \_relations      | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
-| \_\_gap          | uint256[44]                                           | 6    | 0      | 1408  | src/periphery/ReflexBatch.sol:ReflexBatch |
+| Name               | Type                                                  | Slot | Offset | Bytes | Contract                                  |
+| ------------------ | ----------------------------------------------------- | ---- | ------ | ----- | ----------------------------------------- |
+| \_reentrancyStatus | uint256                                               | 0    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
+| \_owner            | address                                               | 1    | 0      | 20    | src/periphery/ReflexBatch.sol:ReflexBatch |
+| \_pendingOwner     | address                                               | 2    | 0      | 20    | src/periphery/ReflexBatch.sol:ReflexBatch |
+| \_modules          | mapping(uint32 => address)                            | 3    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
+| \_endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
+| \_relations        | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
+| \_\_gap            | uint256[44]                                           | 6    | 0      | 1408  | src/periphery/ReflexBatch.sol:ReflexBatch |
 
 **MockImplementationDispatcher**
 
 | Name                   | Type                                                  | Slot | Offset | Bytes | Contract                                                                 |
 | ---------------------- | ----------------------------------------------------- | ---- | ------ | ----- | ------------------------------------------------------------------------ |
-| \_reentrancyLock       | uint256                                               | 0    | 0      | 32    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
+| \_reentrancyStatus     | uint256                                               | 0    | 0      | 32    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
 | \_owner                | address                                               | 1    | 0      | 20    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
 | \_pendingOwner         | address                                               | 2    | 0      | 20    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
 | \_modules              | mapping(uint32 => address)                            | 3    | 0      | 32    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |

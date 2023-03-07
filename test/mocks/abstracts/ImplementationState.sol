@@ -10,7 +10,7 @@ import {ReflexState} from "../../../src/ReflexState.sol";
  * @dev Storage layout:
  * | Name                    | Type                                                  | Slot | Offset | Bytes |
  * |-------------------------|-------------------------------------------------------|------|--------|-------|
- * | _reentrancyLock         | uint256                                               | 0    | 0      | 32    |
+ * | _reentrancyStatus       | uint256                                               | 0    | 0      | 32    |
  * | _owner                  | address                                               | 1    | 0      | 20    |
  * | _pendingOwner           | address                                               | 2    | 0      | 20    |
  * | _modules                | mapping(uint32 => address)                            | 3    | 0      | 32    |

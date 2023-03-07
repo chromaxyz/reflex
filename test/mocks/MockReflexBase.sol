@@ -23,7 +23,7 @@ contract MockReflexBase is ReflexBase {
     // ===========
 
     constructor() {
-        _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
+        _reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
     }
 
     // ==========
@@ -35,7 +35,11 @@ contract MockReflexBase is ReflexBase {
     }
 
     function getReentrancyStatus() public view returns (uint256) {
-        return _reentrancyLock;
+        return _reentrancyStatus;
+    }
+
+    function getReentrancyStatusLocked() public view returns (bool) {
+        return _reentrancyStatusLocked();
     }
 
     function callback() external nonReentrant {
@@ -68,11 +72,13 @@ contract MockReflexBase is ReflexBase {
     }
 
     function guardedCheckLocked() public nonReentrant {
-        assert(getReentrancyStatus() == _REENTRANCY_LOCK_LOCKED);
+        assert(getReentrancyStatusLocked() == true);
+        assert(getReentrancyStatus() == _REENTRANCY_GUARD_LOCKED);
     }
 
     function unguardedCheckUnlocked() public view {
-        assert(getReentrancyStatus() == _REENTRANCY_LOCK_UNLOCKED);
+        assert(getReentrancyStatusLocked() == false);
+        assert(getReentrancyStatus() == _REENTRANCY_GUARD_UNLOCKED);
     }
 
     function createEndpoint(

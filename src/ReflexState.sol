@@ -12,15 +12,15 @@ import {ReflexConstants} from "./ReflexConstants.sol";
  * @dev Append-only extendable, only after __gap: first 50 slots (0-49) are reserved!
  *
  * @dev Storage layout:
- * | Name            | Type                                                  | Slot | Offset | Bytes |
- * |-----------------|-------------------------------------------------------|------|--------|-------|
- * | _reentrancyLock | uint256                                               | 0    | 0      | 32    |
- * | _owner          | address                                               | 1    | 0      | 20    |
- * | _pendingOwner   | address                                               | 2    | 0      | 20    |
- * | _modules        | mapping(uint32 => address)                            | 3    | 0      | 32    |
- * | _endpoints      | mapping(uint32 => address)                            | 4    | 0      | 32    |
- * | _relations      | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    |
- * | __gap           | uint256[44]                                           | 6    | 0      | 1408  |
+ * | Name              | Type                                                  | Slot | Offset | Bytes |
+ * |-------------------|-------------------------------------------------------|------|--------|-------|
+ * | _reentrancyStatus | uint256                                               | 0    | 0      | 32    |
+ * | _owner            | address                                               | 1    | 0      | 20    |
+ * | _pendingOwner     | address                                               | 2    | 0      | 20    |
+ * | _modules          | mapping(uint32 => address)                            | 3    | 0      | 32    |
+ * | _endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    |
+ * | _relations        | mapping(address => struct TReflexState.TrustRelation) | 5    | 0      | 32    |
+ * | __gap             | uint256[44]                                           | 6    | 0      | 1408  |
  */
 abstract contract ReflexState is IReflexState, ReflexConstants {
     // =======
@@ -28,11 +28,11 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
     // =======
 
     /**
-     * @notice Global reentrancy lock.
+     * @notice Global reentrancy status tracker.
      *
      * @dev Slot 0 (32 bytes).
      */
-    uint256 internal _reentrancyLock;
+    uint256 internal _reentrancyStatus;
 
     /**
      * @notice Owner address.

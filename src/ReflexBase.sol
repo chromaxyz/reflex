@@ -30,16 +30,16 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * Calling a `nonReentrant` function from another `nonReentrant` function is not supported.
      */
     modifier nonReentrant() virtual {
-        // On the first call to `nonReentrant`, _status will be `_REENTRANCY_LOCK_UNLOCKED`.
-        if (_reentrancyLock != _REENTRANCY_LOCK_UNLOCKED) revert Reentrancy();
+        // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
+        if (_reentrancyStatus != _REENTRANCY_GUARD_UNLOCKED) revert Reentrancy();
 
         // Any calls to `nonReentrant` after this point will fail.
-        _reentrancyLock = _REENTRANCY_LOCK_LOCKED;
+        _reentrancyStatus = _REENTRANCY_GUARD_LOCKED;
 
         _;
 
         // By storing the original value once again, a refund is triggered.
-        _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
+        _reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
     }
 
     // ================
@@ -77,6 +77,15 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         emit EndpointCreated(endpointAddress);
 
         return endpointAddress;
+    }
+
+    /**
+     * @dev Returns true if the reentrancy guard is currently set to ` _REENTRANCY_GUARD_LOCKED`
+     * which indicates there is a `nonReentrant` function in the call stack.
+     * @return bool Whether the reentrancy guard is locked.
+     */
+    function _reentrancyStatusLocked() internal view virtual returns (bool) {
+        return _reentrancyStatus == _REENTRANCY_GUARD_LOCKED;
     }
 
     /**
