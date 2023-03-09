@@ -11,6 +11,22 @@ import {MockReflexModule} from "./MockReflexModule.sol";
  * @title Mock Reflex Batch
  */
 contract MockReflexBatch is ReflexBatch, MockReflexModule {
+    // =======
+    // Storage
+    // =======
+
+    /**
+     * @dev `bytes32(uint256(keccak256("before.batch.call.counter")) - 1))`
+     */
+    bytes32 internal constant _BEFORE_BATCH_CALL_COUNTER_SLOT =
+        0x3c5e0ffea8513071715642321743602785a5c6c585e0f916891665f4ca4543ec;
+
+    /**
+     * @dev `bytes32(uint256(keccak256("after.batch.call.counter")) - 1))`
+     */
+    bytes32 internal constant _AFTER_BATCH_CALL_COUNTER_SLOT =
+        0x204a962903d57234ad549571efe3fcf39c3904b5cb380e97ec4f91a693441f7c;
+
     // ===========
     // Constructor
     // ===========
@@ -19,4 +35,24 @@ contract MockReflexBatch is ReflexBatch, MockReflexModule {
      * @param moduleSettings_ Module settings.
      */
     constructor(ModuleSettings memory moduleSettings_) MockReflexModule(moduleSettings_) {}
+
+    // ==========
+    // Test stubs
+    // ==========
+
+    function beforeBatchCallCounter() public view returns (uint256 n_) {
+        n_ = _getCounter(_BEFORE_BATCH_CALL_COUNTER_SLOT);
+    }
+
+    function afterBatchCallCounter() public view returns (uint256 n_) {
+        n_ = _getCounter(_AFTER_BATCH_CALL_COUNTER_SLOT);
+    }
+
+    function _beforeBatchCall(address) internal override {
+        _increaseCounter(_BEFORE_BATCH_CALL_COUNTER_SLOT);
+    }
+
+    function _afterBatchCall(address) internal override {
+        _increaseCounter(_AFTER_BATCH_CALL_COUNTER_SLOT);
+    }
 }

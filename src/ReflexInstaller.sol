@@ -120,6 +120,9 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             // Verify that the module to add does not exist and is yet to be registered.
             if (_modules[moduleSettings_.moduleId] != address(0)) revert ModuleExistent(moduleSettings_.moduleId);
 
+            // Call pre-registration hook.
+            _beforeModuleRegistration(moduleSettings_, moduleAddress);
+
             // Register the module.
             _modules[moduleSettings_.moduleId] = moduleAddress;
 
@@ -167,6 +170,9 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             if (moduleSettings_.moduleType != IReflexModule(_modules[moduleSettings_.moduleId]).moduleType())
                 revert ModuleInvalidType(moduleSettings_.moduleId);
 
+            // Call pre-registration hook.
+            _beforeModuleRegistration(moduleSettings_, moduleAddress);
+
             // Register the module.
             _modules[moduleSettings_.moduleId] = moduleAddress;
 
@@ -181,4 +187,18 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             }
         }
     }
+
+    // ============
+    // Hook methods
+    // ============
+
+    /**
+     * @notice Hook that is called before a module is registered.
+     * @param moduleSettings_ Module settings.
+     * @param moduleAddress_ Module address.
+     */
+    function _beforeModuleRegistration(
+        IReflexModule.ModuleSettings memory moduleSettings_,
+        address moduleAddress_
+    ) internal virtual {}
 }

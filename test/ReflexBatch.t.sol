@@ -147,7 +147,10 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         );
     }
 
-    function testFuzzStaticCall(address target_, uint256 amount_) external withExternalToken(target_, amount_) {
+    function testFuzzStaticCall(
+        address target_,
+        uint256 amount_
+    ) external withHooks withExternalToken(target_, amount_) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -168,7 +171,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchEndpoint.performBatchCall(actions);
     }
 
-    function testUnitRevertStaticCall() external {
+    function testUnitRevertStaticCall() external withHooksRevert {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -188,7 +191,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         address target_,
         uint256 amount_,
         bytes32 message_
-    ) external withExternalToken(target_, amount_) {
+    ) external withHooks withExternalToken(target_, amount_) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](7);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -262,7 +265,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         address target_,
         uint256 amount_,
         bytes32 message_
-    ) external withExternalToken(target_, amount_) {
+    ) external withHooks withExternalToken(target_, amount_) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](7);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -340,14 +343,14 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         assertEq(multiModuleEndpoint.balanceOf(target_), amount_);
     }
 
-    function testUnitRevertInvalidBatchActionConfiguration() external {
+    function testUnitRevertInvalidBatchActionConfiguration() external withHooksRevert {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
 
         vm.expectRevert(InvalidModuleId.selector);
         batchEndpoint.simulateBatchCallReturn(actions);
     }
 
-    function testUnitRevertBatchSimulationFailed() external {
+    function testUnitRevertBatchSimulationFailed() external withHooksRevert {
         dispatcher.setModule(batch.moduleId(), address(0));
 
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
@@ -366,7 +369,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         address target_,
         uint256 amount_,
         bytes32 message_
-    ) external withExternalToken(target_, amount_) {
+    ) external withHooks withExternalToken(target_, amount_) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](7);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -421,7 +424,11 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         assertEq(multiModuleEndpoint.balanceOf(target_), amount_);
     }
 
-    function testFuzzPerformBatchCallAllowFailure(bytes32 message_, address target_, uint256 amount_) external {
+    function testFuzzPerformBatchCallAllowFailure(
+        bytes32 message_,
+        address target_,
+        uint256 amount_
+    ) external withHooks {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](3);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -445,7 +452,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchEndpoint.performBatchCall(actions);
     }
 
-    function testUnitRevertPerformBatchCallFailure() external {
+    function testUnitRevertPerformBatchCallFailure() external withHooksRevert {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -464,7 +471,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchEndpoint.performBatchCall(actions);
     }
 
-    function testUnitRevertPerformBatchCallInvalidModuleId() external {
+    function testUnitRevertPerformBatchCallInvalidModuleId() external withHooksRevert {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -483,7 +490,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchEndpoint.performBatchCall(actions);
     }
 
-    function testUnitRevertPerformBatchCallInternalModule() external {
+    function testUnitRevertPerformBatchCallInternalModule() external withHooksRevert {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -502,7 +509,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchEndpoint.performBatchCall(actions);
     }
 
-    function testUnitRevertPerformBatchCallNotRegisteredMultiModule() external {
+    function testUnitRevertPerformBatchCallNotRegisteredMultiModule() external withHooksRevert {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -532,6 +539,26 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
     // =========
     // Utilities
     // =========
+
+    modifier withHooks() {
+        assertEq(batchEndpoint.beforeBatchCallCounter(), 0);
+        assertEq(batchEndpoint.afterBatchCallCounter(), 0);
+
+        _;
+
+        assertEq(batchEndpoint.beforeBatchCallCounter(), 1);
+        assertEq(batchEndpoint.afterBatchCallCounter(), 1);
+    }
+
+    modifier withHooksRevert() {
+        assertEq(batchEndpoint.beforeBatchCallCounter(), 0);
+        assertEq(batchEndpoint.afterBatchCallCounter(), 0);
+
+        _;
+
+        assertEq(batchEndpoint.beforeBatchCallCounter(), 0);
+        assertEq(batchEndpoint.afterBatchCallCounter(), 0);
+    }
 
     modifier withExternalToken(address target_, uint256 amount_) {
         token.mint(target_, amount_);
