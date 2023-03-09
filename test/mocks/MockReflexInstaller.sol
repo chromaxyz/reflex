@@ -42,7 +42,10 @@ contract MockReflexInstaller is ReflexInstaller, MockReflexModule {
         n_ = _getCounter(_BEFORE_MODULE_REGISTRATION_COUNTER_SLOT);
     }
 
-    function _beforeModuleRegistration(IReflexModule.ModuleSettings memory, address) internal override {
+    function _beforeModuleRegistration(IReflexModule.ModuleSettings memory x_, address y_) internal override {
         _increaseCounter(_BEFORE_MODULE_REGISTRATION_COUNTER_SLOT);
+
+        // Force coverage to flag this branch as covered.
+        super._beforeModuleRegistration(x_, y_);
     }
 }

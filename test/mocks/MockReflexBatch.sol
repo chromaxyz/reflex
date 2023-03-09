@@ -48,11 +48,17 @@ contract MockReflexBatch is ReflexBatch, MockReflexModule {
         n_ = _getCounter(_AFTER_BATCH_CALL_COUNTER_SLOT);
     }
 
-    function _beforeBatchCall(address) internal override {
+    function _beforeBatchCall(address x_) internal override {
         _increaseCounter(_BEFORE_BATCH_CALL_COUNTER_SLOT);
+
+        // Force coverage to flag this branch as covered.
+        super._beforeBatchCall(x_);
     }
 
-    function _afterBatchCall(address) internal override {
+    function _afterBatchCall(address x_) internal override {
         _increaseCounter(_AFTER_BATCH_CALL_COUNTER_SLOT);
+
+        // Force coverage to flag this branch as covered.
+        super._afterBatchCall(x_);
     }
 }
