@@ -102,15 +102,13 @@ contract MockReflexBase is ReflexBase {
     // =========
 
     function _getCounter(bytes32 slot_) internal view returns (uint256 n_) {
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             n_ := sload(slot_)
         }
     }
 
     function _setCounter(bytes32 slot_, uint256 n_) internal {
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             sstore(slot_, n_)
         }
     }
