@@ -13,14 +13,14 @@ Impact: High
 Confidence: Medium
 
 - [ ] ID-0
-      [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L88-L94) uses delegatecall to a input-controlled function id - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L89)
+      [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L158-L177) uses delegatecall to a input-controlled function id - [(success*,returnData*) = moduleImplementation.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender*),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L174-L176)
 
-../src/ReflexBase.sol#L88-L94
+../src/periphery/ReflexBatch.sol#L158-L177
 
 - [ ] ID-1
-      [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L130-L149) uses delegatecall to a input-controlled function id - [(success*,returnData*) = moduleImplementation*.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender\_),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L146-L148)
+      [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L97-L103) uses delegatecall to a input-controlled function id - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L98)
 
-../src/periphery/ReflexBatch.sol#L130-L149
+../src/ReflexBase.sol#L97-L103
 
 ## uninitialized-state
 
@@ -28,12 +28,12 @@ Impact: High
 Confidence: High
 
 - [ ] ID-2
-      [ReflexState.\_modules](../src/ReflexState.sol#L57) is never initialized. It is used in: - [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L88-L94) - [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L97-L117) - [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L130-L149)
+      [ReflexState.\_modules](../src/ReflexState.sol#L57) is never initialized. It is used in: - [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L97-L103) - [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L106-L129) - [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L158-L177)
 
 ../src/ReflexState.sol#L57
 
 - [ ] ID-3
-      [ReflexState.\_modules](../src/ReflexState.sol#L57) is never initialized. It is used in: - [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L88-L94)
+      [ReflexState.\_modules](../src/ReflexState.sol#L57) is never initialized. It is used in: - [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L97-L103)
 
 ../src/ReflexState.sol#L57
 
@@ -48,9 +48,9 @@ Impact: Low
 Confidence: Medium
 
 - [ ] ID-5
-      [ReflexBatch.performStaticCall(address,bytes).contractAddress\_](../src/periphery/ReflexBatch.sol#L30) lacks a zero-check on : - [(success,result) = contractAddress*.staticcall(payload*)](../src/periphery/ReflexBatch.sol#L31)
+      [ReflexBatch.performStaticCall(address,bytes).contractAddress\_](../src/periphery/ReflexBatch.sol#L31) lacks a zero-check on : - [(success,result) = contractAddress*.staticcall(callData*)](../src/periphery/ReflexBatch.sol#L32)
 
-../src/periphery/ReflexBatch.sol#L30
+../src/periphery/ReflexBatch.sol#L31
 
 ## calls-loop
 
@@ -58,34 +58,34 @@ Impact: Low
 Confidence: Medium
 
 - [ ] ID-6
-      [ReflexInstaller.addModules(address[])](../src/ReflexInstaller.sol#L112-L136) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L118)
+      [ReflexInstaller.addModules(address[])](../src/ReflexInstaller.sol#L112-L139) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L118)
 
-../src/ReflexInstaller.sol#L112-L136
+../src/ReflexInstaller.sol#L112-L139
 
 - [ ] ID-7
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L147-L183) has external calls inside a loop: [moduleSettings*.moduleType != IReflexModule(\_modules[moduleSettings*.moduleId]).moduleType()](../src/ReflexInstaller.sol#L167)
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L150-L189) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L156)
 
-../src/ReflexInstaller.sol#L147-L183
+../src/ReflexInstaller.sol#L150-L189
 
 - [ ] ID-8
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L147-L183) has external calls inside a loop: [! IReflexModule(_modules[moduleSettings_.moduleId]).moduleUpgradeable()](../src/ReflexInstaller.sol#L159)
+      [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L158-L177) has external calls inside a loop: [(success*,returnData*) = moduleImplementation.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender*),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L174-L176)
 
-../src/ReflexInstaller.sol#L147-L183
+../src/periphery/ReflexBatch.sol#L158-L177
 
 - [ ] ID-9
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L147-L183) has external calls inside a loop: [moduleSettings\_ = IReflexModule(moduleAddress).moduleSettings()](../src/ReflexInstaller.sol#L153)
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L150-L189) has external calls inside a loop: [moduleSettings*.moduleType != IReflexModule(\_modules[moduleSettings*.moduleId]).moduleType()](../src/ReflexInstaller.sol#L170)
 
-../src/ReflexInstaller.sol#L147-L183
+../src/ReflexInstaller.sol#L150-L189
 
 - [ ] ID-10
-      [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L130-L149) has external calls inside a loop: [(success*,returnData*) = moduleImplementation*.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender\_),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L146-L148)
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L150-L189) has external calls inside a loop: [moduleSettings*.moduleVersion <= IReflexModule(\_modules[moduleSettings*.moduleId]).moduleVersion()](../src/ReflexInstaller.sol#L166)
 
-../src/periphery/ReflexBatch.sol#L130-L149
+../src/ReflexInstaller.sol#L150-L189
 
 - [ ] ID-11
-      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L147-L183) has external calls inside a loop: [moduleSettings*.moduleVersion <= IReflexModule(\_modules[moduleSettings*.moduleId]).moduleVersion()](../src/ReflexInstaller.sol#L163)
+      [ReflexInstaller.upgradeModules(address[])](../src/ReflexInstaller.sol#L150-L189) has external calls inside a loop: [! IReflexModule(_modules[moduleSettings_.moduleId]).moduleUpgradeable()](../src/ReflexInstaller.sol#L162)
 
-../src/ReflexInstaller.sol#L147-L183
+../src/ReflexInstaller.sol#L150-L189
 
 ## low-level-calls
 
@@ -93,14 +93,14 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-12
-      Low level call in [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L88-L94): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L89)
+      Low level call in [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L106-L129): - [(success,result) = _modules[\_moduleId].delegatecall(abi.encodePacked(abi.encodeWithSelector(IReflexBatch.simulateBatchCallRevert.selector,actions_),uint160(\_unpackMessageSender()),uint160(\_unpackEndpointAddress())))](../src/periphery/ReflexBatch.sol#L112-L118)
 
-../src/ReflexBase.sol#L88-L94
+../src/periphery/ReflexBatch.sol#L106-L129
 
 - [ ] ID-13
-      Low level call in [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L97-L117): - [(success,result) = _modules[\_moduleId].delegatecall(abi.encodePacked(abi.encodeWithSelector(ReflexBatch.simulateBatchCallRevert.selector,actions_),uint160(\_unpackMessageSender()),uint160(\_unpackEndpointAddress())))](../src/periphery/ReflexBatch.sol#L100-L106)
+      Low level call in [ReflexBatch.performStaticCall(address,bytes)](../src/periphery/ReflexBatch.sol#L31-L39): - [(success,result) = contractAddress*.staticcall(callData*)](../src/periphery/ReflexBatch.sol#L32)
 
-../src/periphery/ReflexBatch.sol#L97-L117
+../src/periphery/ReflexBatch.sol#L31-L39
 
 - [ ] ID-14
       Low level call in [ReflexEndpoint.implementation()](../src/ReflexEndpoint.sol#L60-L70): - [(success,response) = \_deployer.staticcall(abi.encodeWithSelector(\_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR,\_moduleId))](../src/ReflexEndpoint.sol#L61-L63)
@@ -108,14 +108,14 @@ Confidence: High
 ../src/ReflexEndpoint.sol#L60-L70
 
 - [ ] ID-15
-      Low level call in [ReflexBatch.performStaticCall(address,bytes)](../src/periphery/ReflexBatch.sol#L30-L38): - [(success,result) = contractAddress*.staticcall(payload*)](../src/periphery/ReflexBatch.sol#L31)
+      Low level call in [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L158-L177): - [(success*,returnData*) = moduleImplementation.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender*),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L174-L176)
 
-../src/periphery/ReflexBatch.sol#L30-L38
+../src/periphery/ReflexBatch.sol#L158-L177
 
 - [ ] ID-16
-      Low level call in [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L130-L149): - [(success*,returnData*) = moduleImplementation*.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender\_),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L146-L148)
+      Low level call in [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L97-L103): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L98)
 
-../src/periphery/ReflexBatch.sol#L130-L149
+../src/ReflexBase.sol#L97-L103
 
 ## similar-names
 

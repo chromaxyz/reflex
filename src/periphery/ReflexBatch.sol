@@ -46,6 +46,8 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         address messageSender = _unpackMessageSender();
         uint256 actionsLength = actions_.length;
 
+        _beforeBatchCall(messageSender);
+
         for (uint256 i = 0; i < actionsLength; ) {
             BatchAction calldata action = actions_[i];
 
@@ -57,6 +59,8 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
                 ++i;
             }
         }
+
+        _afterBatchCall(messageSender);
     }
 
     /**
@@ -69,6 +73,8 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     function simulateBatchCallRevert(BatchAction[] calldata actions_) public virtual reentrancyAllowed {
         address messageSender = _unpackMessageSender();
         uint256 actionsLength = actions_.length;
+
+        _beforeBatchCall(messageSender);
 
         BatchActionResponse[] memory simulation = new BatchActionResponse[](actions_.length);
 
@@ -83,6 +89,8 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
                 ++i;
             }
         }
+
+        _afterBatchCall(messageSender);
 
         revert BatchSimulation(simulation);
     }
@@ -119,6 +127,22 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
 
         simulation_ = abi.decode(result, (BatchActionResponse[]));
     }
+
+    // ============
+    // Hook methods
+    // ============
+
+    /**
+     * @notice Hook that is called before a batch call is made.
+     * @param messageSender_ Message sender.
+     */
+    function _beforeBatchCall(address messageSender_) internal virtual {}
+
+    /**
+     * @notice Hook that is called after a batch call is made.
+     * @param messageSender_ Message sender.
+     */
+    function _afterBatchCall(address messageSender_) internal virtual {}
 
     // ================
     // Internal methods

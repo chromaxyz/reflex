@@ -24,7 +24,7 @@ interface TReflexBase is TReflexState {
     // Events
     // ======
 
-    event EndpointCreated(address indexed endpointAddress_);
+    event EndpointCreated(address indexed endpointAddress);
 }
 
 /**

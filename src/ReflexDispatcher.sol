@@ -25,8 +25,8 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
      * @param installerModule_ Installer module address.
      */
     constructor(address owner_, address installerModule_) {
-        // Initialize the global reentrancy lock.
-        _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
+        // Initialize the global reentrancy guard as unlocked.
+        _reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
 
         if (owner_ == address(0)) revert InvalidOwner();
         if (installerModule_ == address(0)) revert InvalidModuleAddress();

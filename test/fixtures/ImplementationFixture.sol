@@ -119,8 +119,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
 
         // NOTE: vm.expectEmit does not work as topic1 is checked implicitly.
         // Therefore a workaround using record logs is being used to check manually.
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             let ptr := mload(0x40)
             mstore(ptr, message)
             log0(ptr, messageLength)
@@ -147,8 +146,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         bytes32 topic1 = bytes32(uint256(1));
 
         vm.expectEmit(false, false, false, true, address(endpoint_));
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             let ptr := mload(0x40)
             mstore(ptr, message)
             log1(ptr, messageLength, topic1)
@@ -166,8 +164,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         bytes32 topic2 = bytes32(uint256(2));
 
         vm.expectEmit(true, false, false, true, address(endpoint_));
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             let ptr := mload(0x40)
             mstore(ptr, message)
             log2(ptr, messageLength, topic1, topic2)
@@ -186,8 +183,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         bytes32 topic3 = bytes32(uint256(3));
 
         vm.expectEmit(true, true, false, true, address(endpoint_));
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             let ptr := mload(0x40)
             mstore(ptr, message)
             log3(ptr, messageLength, topic1, topic2, topic3)
@@ -207,8 +203,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         bytes32 topic4 = bytes32(uint256(4));
 
         vm.expectEmit(true, true, true, true, address(endpoint_));
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             let ptr := mload(0x40)
             mstore(ptr, message)
             log4(ptr, messageLength, topic1, topic2, topic3, topic4)

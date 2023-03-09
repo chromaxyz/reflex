@@ -149,8 +149,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
         assertFalse(success);
 
         vm.expectRevert(CallerNotTrusted.selector);
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             revert(add(32, result), mload(result))
         }
     }
@@ -163,8 +162,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
         assertFalse(success);
 
         vm.expectRevert(MessageTooShort.selector);
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             revert(add(32, result), mload(result))
         }
     }

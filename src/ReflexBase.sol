@@ -30,16 +30,16 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * Calling a `nonReentrant` function from another `nonReentrant` function is not supported.
      */
     modifier nonReentrant() virtual {
-        // On the first call to `nonReentrant`, _status will be `_REENTRANCY_LOCK_UNLOCKED`.
-        if (_reentrancyLock != _REENTRANCY_LOCK_UNLOCKED) revert Reentrancy();
+        // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
+        if (_reentrancyStatus != _REENTRANCY_GUARD_UNLOCKED) revert Reentrancy();
 
         // Any calls to `nonReentrant` after this point will fail.
-        _reentrancyLock = _REENTRANCY_LOCK_LOCKED;
+        _reentrancyStatus = _REENTRANCY_GUARD_LOCKED;
 
         _;
 
         // By storing the original value once again, a refund is triggered.
-        _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
+        _reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
     }
 
     // ================
@@ -80,6 +80,15 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
     }
 
     /**
+     * @dev Returns true if the reentrancy guard is currently set to ` _REENTRANCY_GUARD_LOCKED`
+     * which indicates there is a `nonReentrant` function in the call stack.
+     * @return bool Whether the reentrancy guard is locked.
+     */
+    function _reentrancyStatusLocked() internal view virtual returns (bool) {
+        return _reentrancyStatus == _REENTRANCY_GUARD_LOCKED;
+    }
+
+    /**
      * @dev Perform delegatecall to trusted internal module.
      * @param moduleId_ Module id.
      * @param input_ Input data.
@@ -99,8 +108,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      */
     function _unpackMessageSender() internal pure virtual returns (address messageSender_) {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][endpoint address (20 bytes)]
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             messageSender_ := shr(96, calldataload(sub(calldatasize(), 40)))
         }
     }
@@ -111,8 +119,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      */
     function _unpackEndpointAddress() internal pure virtual returns (address endpointAddress_) {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][endpoint address (20 bytes)]
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             endpointAddress_ := shr(96, calldataload(sub(calldatasize(), 20)))
         }
     }
@@ -129,8 +136,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         returns (address messageSender_, address endpointAddress_)
     {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][endpoint address (20 bytes)]
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             messageSender_ := shr(96, calldataload(sub(calldatasize(), 40)))
             endpointAddress_ := shr(96, calldataload(sub(calldatasize(), 20)))
         }
@@ -142,8 +148,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      */
     function _revertBytes(bytes memory errorMessage_) internal pure {
         if (errorMessage_.length > 0) {
-            /// @solidity memory-safe-assembly
-            assembly {
+            assembly ("memory-safe") {
                 revert(add(32, errorMessage_), mload(errorMessage_))
             }
         }

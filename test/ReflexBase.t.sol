@@ -31,7 +31,8 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
         base = new MockReflexBase();
         reentrancyAttack = new ReentrancyAttack();
 
-        assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
+        assertEq(base.getReentrancyStatusLocked(), false);
         assertEq(base.reentrancyCounter(), 0);
     }
 
@@ -76,19 +77,19 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
     // ======================
 
     function testUnitGuardedCheckLocked() external {
-        assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
 
         base.guardedCheckLocked();
 
-        assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
     }
 
     function testUnitUnguardedCheckUnlocked() external {
-        assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
 
         base.unguardedCheckUnlocked();
 
-        assertEq(base.getReentrancyStatus(), _REENTRANCY_LOCK_UNLOCKED);
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
     }
 
     function testUnitNonReentrantMethodCanBeCalled() external {

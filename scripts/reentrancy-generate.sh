@@ -51,7 +51,7 @@ do
     select(.kind=="function") |
     select(.stateMutability!="view") |
     select(.stateMutability!="pure") |
-    select(.visibility=="external") |
+    select(.visibility=="public") |
     { name: .name, modifiers: .modifiers }' >> "$FILENAME"
 
   echo -e "\`\`\`" >> "$FILENAME"

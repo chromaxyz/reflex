@@ -13,7 +13,7 @@ contract MockReflexBase is ReflexBase {
     // =======
 
     /**
-     * @dev `bytes32(uint256(keccak256("reentrancy.counter")) - 1))`
+     * @dev `bytes32(uint256(keccak256("reentrancy.counter")) - 1)`
      */
     bytes32 internal constant _REENTRANCY_COUNTER_SLOT =
         0xc2db8520a4cb85e45c0b428b71b461e7932f3b9c2b41fa1662675e79660783f2;
@@ -23,7 +23,7 @@ contract MockReflexBase is ReflexBase {
     // ===========
 
     constructor() {
-        _reentrancyLock = _REENTRANCY_LOCK_UNLOCKED;
+        _reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
     }
 
     // ==========
@@ -31,27 +31,31 @@ contract MockReflexBase is ReflexBase {
     // ==========
 
     function reentrancyCounter() public view returns (uint256 n_) {
-        n_ = _getCounter();
+        n_ = _getCounter(_REENTRANCY_COUNTER_SLOT);
     }
 
     function getReentrancyStatus() public view returns (uint256) {
-        return _reentrancyLock;
+        return _reentrancyStatus;
+    }
+
+    function getReentrancyStatusLocked() public view returns (bool) {
+        return _reentrancyStatusLocked();
     }
 
     function callback() external nonReentrant {
-        _increaseCounter();
+        _increaseCounter(_REENTRANCY_COUNTER_SLOT);
     }
 
     function countDirectRecursive(uint256 n_) public nonReentrant {
         if (n_ > 0) {
-            _increaseCounter();
+            _increaseCounter(_REENTRANCY_COUNTER_SLOT);
             countDirectRecursive(n_ - 1);
         }
     }
 
     function countIndirectRecursive(uint256 n_) public nonReentrant {
         if (n_ > 0) {
-            _increaseCounter();
+            _increaseCounter(_REENTRANCY_COUNTER_SLOT);
 
             (bool success, bytes memory data) = address(this).call(
                 abi.encodeWithSignature("countIndirectRecursive(uint256)", n_ - 1)
@@ -62,17 +66,19 @@ contract MockReflexBase is ReflexBase {
     }
 
     function countAndCall(ReentrancyAttack attacker_) public nonReentrant {
-        _increaseCounter();
+        _increaseCounter(_REENTRANCY_COUNTER_SLOT);
         bytes4 func = bytes4(keccak256("callback()"));
         attacker_.callSender(func);
     }
 
     function guardedCheckLocked() public nonReentrant {
-        assert(getReentrancyStatus() == _REENTRANCY_LOCK_LOCKED);
+        assert(getReentrancyStatusLocked() == true);
+        assert(getReentrancyStatus() == _REENTRANCY_GUARD_LOCKED);
     }
 
     function unguardedCheckUnlocked() public view {
-        assert(getReentrancyStatus() == _REENTRANCY_LOCK_UNLOCKED);
+        assert(getReentrancyStatusLocked() == false);
+        assert(getReentrancyStatus() == _REENTRANCY_GUARD_UNLOCKED);
     }
 
     function createEndpoint(
@@ -95,23 +101,21 @@ contract MockReflexBase is ReflexBase {
     // Utilities
     // =========
 
-    function _getCounter() internal view returns (uint256 n) {
-        /// @solidity memory-safe-assembly
-        assembly {
-            n := sload(_REENTRANCY_COUNTER_SLOT)
+    function _getCounter(bytes32 slot_) internal view returns (uint256 n_) {
+        assembly ("memory-safe") {
+            n_ := sload(slot_)
         }
     }
 
-    function _setCounter(uint256 n) internal {
-        /// @solidity memory-safe-assembly
-        assembly {
-            sstore(_REENTRANCY_COUNTER_SLOT, n)
+    function _setCounter(bytes32 slot_, uint256 n_) internal {
+        assembly ("memory-safe") {
+            sstore(slot_, n_)
         }
     }
 
-    function _increaseCounter() internal {
-        uint256 value = _getCounter();
-        _setCounter(value + 1);
+    function _increaseCounter(bytes32 slot_) internal {
+        uint256 value = _getCounter(slot_);
+        _setCounter(slot_, value + 1);
     }
 }
 

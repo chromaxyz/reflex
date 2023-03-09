@@ -12,15 +12,15 @@ interface TReflexInstaller is TReflexModule {
     // Errors
     // ======
 
-    error ModuleExistent(uint32 moduleId_);
+    error ModuleExistent(uint32 moduleId);
 
-    error ModuleInvalidVersion(uint32 moduleId_);
+    error ModuleInvalidVersion(uint32 moduleId);
 
-    error ModuleInvalidType(uint32 moduleId_);
+    error ModuleInvalidType(uint32 moduleId);
 
-    error ModuleNonexistent(uint32 moduleId_);
+    error ModuleNonexistent(uint32 moduleId);
 
-    error ModuleNotUpgradeable(uint32 moduleId_);
+    error ModuleNotUpgradeable(uint32 moduleId);
 
     error ZeroAddress();
 
@@ -28,17 +28,13 @@ interface TReflexInstaller is TReflexModule {
     // Events
     // ======
 
-    event ModuleAdded(uint32 indexed moduleId_, address indexed moduleImplementation_, uint32 indexed moduleVersion_);
+    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 indexed moduleVersion);
 
-    event ModuleUpgraded(
-        uint32 indexed moduleId_,
-        address indexed moduleImplementation_,
-        uint32 indexed moduleVersion_
-    );
+    event ModuleUpgraded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 indexed moduleVersion);
 
-    event OwnershipTransferStarted(address indexed previousOwner_, address indexed newOwner_);
+    event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
 
-    event OwnershipTransferred(address indexed previousOwner_, address indexed newOwner_);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 }
 
 /**
