@@ -16,9 +16,9 @@ contract MockImplementationGasModule is ReflexModule, ImplementationState {
     // =======
 
     /**
-     * @dev NOTE: DO NOT IMPLEMENT STORAGE INSIDE OF MODULES!
+     * @dev `bytes32(uint256(keccak256("number")) - 1))`
      */
-    uint8 internal _number;
+    bytes32 internal constant _NUMBER_SLOT = 0xf648814c67221440671fd7c2de979db4020a9320fb7985ff79ca8e7dced277f7;
 
     // ===========
     // Constructor
@@ -36,10 +36,16 @@ contract MockImplementationGasModule is ReflexModule, ImplementationState {
     function getEmpty() external view {}
 
     function setNumber(uint8 number_) external {
-        _number = number_;
+        /// @solidity memory-safe-assembly
+        assembly {
+            sstore(_NUMBER_SLOT, number_)
+        }
     }
 
-    function getNumber() external view returns (uint8) {
-        return _number;
+    function getNumber() external view returns (uint8 n_) {
+        /// @solidity memory-safe-assembly
+        assembly {
+            n_ := sload(_NUMBER_SLOT)
+        }
     }
 }

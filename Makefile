@@ -38,6 +38,9 @@ endif
 # Snapshot
 snapshot:; ./scripts/snapshot.sh -t testGas -p $(PROFILE)
 
+# Coverage
+coverage:; ./scripts/coverage.sh
+
 # Linting
 lint-check:; npm run lint:check
 lint-fix:; npm run lint:fix

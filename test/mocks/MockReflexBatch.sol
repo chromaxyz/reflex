@@ -19,13 +19,13 @@ contract MockReflexBatch is ReflexBatch, MockReflexModule {
      * @dev `bytes32(uint256(keccak256("before.batch.call.counter")) - 1))`
      */
     bytes32 internal constant _BEFORE_BATCH_CALL_COUNTER_SLOT =
-        0x3c5e0ffea8513071715642321743602785a5c6c585e0f916891665f4ca4543ec;
+        0x3c5e0ffea8513071715642321743602785a5c6c585e0f916891665f4ca4543eb;
 
     /**
      * @dev `bytes32(uint256(keccak256("after.batch.call.counter")) - 1))`
      */
     bytes32 internal constant _AFTER_BATCH_CALL_COUNTER_SLOT =
-        0x204a962903d57234ad549571efe3fcf39c3904b5cb380e97ec4f91a693441f7c;
+        0x204a962903d57234ad549571efe3fcf39c3904b5cb380e97ec4f91a693441f7b;
 
     // ===========
     // Constructor

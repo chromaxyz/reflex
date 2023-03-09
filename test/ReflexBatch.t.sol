@@ -150,7 +150,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
     function testFuzzStaticCall(
         address target_,
         uint256 amount_
-    ) external withHooks withExternalToken(target_, amount_) {
+    ) external withHooksExpected(1) withExternalToken(target_, amount_) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -171,7 +171,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchEndpoint.performBatchCall(actions);
     }
 
-    function testUnitRevertStaticCall() external withHooksRevert {
+    function testUnitRevertStaticCall() external withHooksExpected(0) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -191,7 +191,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         address target_,
         uint256 amount_,
         bytes32 message_
-    ) external withHooks withExternalToken(target_, amount_) {
+    ) external withHooksExpected(1) withExternalToken(target_, amount_) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](7);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -265,7 +265,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         address target_,
         uint256 amount_,
         bytes32 message_
-    ) external withHooks withExternalToken(target_, amount_) {
+    ) external withHooksExpected(1) withExternalToken(target_, amount_) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](7);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -343,14 +343,14 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         assertEq(multiModuleEndpoint.balanceOf(target_), amount_);
     }
 
-    function testUnitRevertInvalidBatchActionConfiguration() external withHooksRevert {
+    function testUnitRevertInvalidBatchActionConfiguration() external withHooksExpected(0) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
 
         vm.expectRevert(InvalidModuleId.selector);
         batchEndpoint.simulateBatchCallReturn(actions);
     }
 
-    function testUnitRevertBatchSimulationFailed() external withHooksRevert {
+    function testUnitRevertBatchSimulationFailed() external withHooksExpected(0) {
         dispatcher.setModule(batch.moduleId(), address(0));
 
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
@@ -369,7 +369,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         address target_,
         uint256 amount_,
         bytes32 message_
-    ) external withHooks withExternalToken(target_, amount_) {
+    ) external withHooksExpected(1) withExternalToken(target_, amount_) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](7);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -428,7 +428,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         bytes32 message_,
         address target_,
         uint256 amount_
-    ) external withHooks {
+    ) external withHooksExpected(1) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](3);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -452,7 +452,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchEndpoint.performBatchCall(actions);
     }
 
-    function testUnitRevertPerformBatchCallFailure() external withHooksRevert {
+    function testUnitRevertPerformBatchCallFailure() external withHooksExpected(0) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -471,7 +471,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchEndpoint.performBatchCall(actions);
     }
 
-    function testUnitRevertPerformBatchCallInvalidModuleId() external withHooksRevert {
+    function testUnitRevertPerformBatchCallInvalidModuleId() external withHooksExpected(0) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -490,7 +490,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchEndpoint.performBatchCall(actions);
     }
 
-    function testUnitRevertPerformBatchCallInternalModule() external withHooksRevert {
+    function testUnitRevertPerformBatchCallInternalModule() external withHooksExpected(0) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -509,7 +509,7 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
         batchEndpoint.performBatchCall(actions);
     }
 
-    function testUnitRevertPerformBatchCallNotRegisteredMultiModule() external withHooksRevert {
+    function testUnitRevertPerformBatchCallNotRegisteredMultiModule() external withHooksExpected(0) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -540,24 +540,14 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
     // Utilities
     // =========
 
-    modifier withHooks() {
+    modifier withHooksExpected(uint256 count_) {
         assertEq(batchEndpoint.beforeBatchCallCounter(), 0);
         assertEq(batchEndpoint.afterBatchCallCounter(), 0);
 
         _;
 
-        assertEq(batchEndpoint.beforeBatchCallCounter(), 1);
-        assertEq(batchEndpoint.afterBatchCallCounter(), 1);
-    }
-
-    modifier withHooksRevert() {
-        assertEq(batchEndpoint.beforeBatchCallCounter(), 0);
-        assertEq(batchEndpoint.afterBatchCallCounter(), 0);
-
-        _;
-
-        assertEq(batchEndpoint.beforeBatchCallCounter(), 0);
-        assertEq(batchEndpoint.afterBatchCallCounter(), 0);
+        assertEq(batchEndpoint.beforeBatchCallCounter(), count_);
+        assertEq(batchEndpoint.afterBatchCallCounter(), count_);
     }
 
     modifier withExternalToken(address target_, uint256 amount_) {
