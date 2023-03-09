@@ -77,8 +77,8 @@ abstract contract TestHarness is Users, Test {
         // tell the compiler that this assembly block is not in isolation.
         {
             uint256 zero;
-            /// @solidity memory-safe-assembly
-            assembly {
+
+            assembly ("memory-safe") {
                 let offset := mload(0x40) // Start the offset at the free memory pointer.
                 calldatacopy(offset, zero, calldatasize())
 
@@ -136,8 +136,7 @@ abstract contract TestHarness is Users, Test {
      * @dev Modifier to brutalize memory with custom data.
      */
     modifier brutalizeMemoryWith(bytes memory brutalizeWith) {
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             // Fill the 64 bytes of scratch space with the data.
             pop(
                 staticcall(
@@ -195,8 +194,7 @@ abstract contract TestHarness is Users, Test {
         address brutalizedAddress = _brutalizedAddress(address(0));
         bool brutalizedAddressIsBrutalized;
 
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             brutalizedAddressIsBrutalized := gt(shr(160, brutalizedAddress), 0)
         }
 
@@ -249,8 +247,7 @@ abstract contract TestHarness is Users, Test {
      * @dev Brutalize address space.
      */
     function _brutalizedAddress(address value_) private view returns (address result_) {
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             // Some acrobatics to make the brutalized bits psuedorandomly
             // different with every call.
             mstore(0x00, or(calldataload(0), mload(0x40)))
@@ -268,8 +265,7 @@ abstract contract TestHarness is Users, Test {
         bool zeroSlotIsNotZero;
         bool freeMemoryPointerOverflowed;
 
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             // Test at a lower, but reasonable limit for more safety room.
             if gt(mload(0x40), 0xffffffff) {
                 freeMemoryPointerOverflowed := 1
@@ -290,8 +286,7 @@ abstract contract TestHarness is Users, Test {
         bool fmpNotWordAligned;
         bool insufficientMalloc;
 
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             let length := mload(data_)
             let lastWord := mload(add(add(data_, 0x20), and(length, not(31))))
             let remainder := and(length, 31)

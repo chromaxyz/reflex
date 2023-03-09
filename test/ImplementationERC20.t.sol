@@ -288,8 +288,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         bytes32 topic3 = bytes32(uint256(uint160(to_)));
 
         vm.expectEmit(true, true, true, true, emitter_);
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             let ptr := mload(0x40)
             mstore(ptr, message)
             log3(ptr, messageLength, topic1, topic2, topic3)
@@ -310,8 +309,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         bytes32 topic3 = bytes32(uint256(uint160(spender_)));
 
         vm.expectEmit(true, true, true, true, emitter_);
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             let ptr := mload(0x40)
             mstore(ptr, message)
             log3(ptr, messageLength, topic1, topic2, topic3)
