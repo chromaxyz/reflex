@@ -108,8 +108,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      */
     function _unpackMessageSender() internal pure virtual returns (address messageSender_) {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][endpoint address (20 bytes)]
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             messageSender_ := shr(96, calldataload(sub(calldatasize(), 40)))
         }
     }
@@ -120,8 +119,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      */
     function _unpackEndpointAddress() internal pure virtual returns (address endpointAddress_) {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][endpoint address (20 bytes)]
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             endpointAddress_ := shr(96, calldataload(sub(calldatasize(), 20)))
         }
     }
@@ -138,8 +136,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         returns (address messageSender_, address endpointAddress_)
     {
         // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][endpoint address (20 bytes)]
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             messageSender_ := shr(96, calldataload(sub(calldatasize(), 40)))
             endpointAddress_ := shr(96, calldataload(sub(calldatasize(), 20)))
         }
@@ -151,8 +148,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      */
     function _revertBytes(bytes memory errorMessage_) internal pure {
         if (errorMessage_.length > 0) {
-            /// @solidity memory-safe-assembly
-            assembly {
+            assembly ("memory-safe") {
                 revert(add(32, errorMessage_), mload(errorMessage_))
             }
         }
