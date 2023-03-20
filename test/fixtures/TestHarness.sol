@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Vendor
+// solhint-disable-next-line no-console
 import {console2} from "forge-std/console2.sol";
 import {StdUtils} from "forge-std/StdUtils.sol";
 import {Test} from "forge-std/Test.sol";
@@ -135,28 +136,28 @@ abstract contract TestHarness is Users, Test {
     /**
      * @dev Modifier to brutalize memory with custom data.
      */
-    modifier brutalizeMemoryWith(bytes memory brutalizeWith) {
+    modifier brutalizeMemoryWith(bytes memory brutalizeWith_) {
         assembly ("memory-safe") {
             // Fill the 64 bytes of scratch space with the data.
             pop(
                 staticcall(
                     gas(), // Pass along all the gas in the call.
                     0x04, // Call the identity precompile address.
-                    brutalizeWith, // Offset is the bytes' pointer.
+                    brutalizeWith_, // Offset is the bytes' pointer.
                     64, // Copy enough to only fill the scratch space.
                     0, // Store the return value in the scratch space.
                     64 // Scratch space is only 64 bytes in size, we don't want to write further.
                 )
             )
 
-            let size := add(mload(brutalizeWith), 32) // Add 32 to include the 32 byte length slot.
+            let size := add(mload(brutalizeWith_), 32) // Add 32 to include the 32 byte length slot.
 
             // Fill the free memory pointer's destination with the data.
             pop(
                 staticcall(
                     gas(), // Pass along all the gas in the call.
                     0x04, // Call the identity precompile address.
-                    brutalizeWith, // Offset is the bytes' pointer.
+                    brutalizeWith_, // Offset is the bytes' pointer.
                     size, // We want to pass the length of the bytes.
                     mload(0x40), // Store the return value at the free memory pointer.
                     size // Since the precompile just returns its input, we reuse size.
@@ -240,6 +241,7 @@ abstract contract TestHarness is Users, Test {
     function _stopGasCapture() internal {
         _gasUsed = _gasStart - gasleft();
 
+        // solhint-disable-next-line no-console
         console2.log(string(abi.encodePacked("[GAS] ", _gasLabel, "()")), _gasUsed);
     }
 

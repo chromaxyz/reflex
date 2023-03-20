@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Exit if anything fails
-set -eo pipefail
+set -euo pipefail
 
 # Change directory to project root
 SCRIPT_PATH="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
@@ -19,12 +19,11 @@ function log () {
 }
 
 # Variables
-while getopts d:p:t: flag
+while getopts p:s: flag
 do
   case "${flag}" in
-    d) DIRECTORY=${OPTARG};;
     p) PROFILE=${OPTARG};;
-    t) TEST=${OPTARG};;
+    s) SCOPE=${OPTARG};;
   esac
 done
 
@@ -33,16 +32,15 @@ export FOUNDRY_PROFILE=$PROFILE
 
 log $GREEN "Creating snapshot with profile: $PROFILE"
 
-if [ -z "$TEST" ];
-then
-  if [ -z "$DIRECTORY" ];
-  then
-    forge snapshot --snap .gas-snapshot-$PROFILE;
-  else
-    forge snapshot --match-path "$DIRECTORY/*.t.sol" --snap .gas-snapshot-$PROFILE;
-  fi
-else
-  forge snapshot --match "$TEST" --snap .gas-snapshot-$PROFILE -vvvvv;
-fi
+# Back up old snapshot
+cp .gas-snapshot-$PROFILE .gas-snapshot-$PROFILE-old
+
+# Create snapshot
+forge snapshot \
+    --match-test $SCOPE \
+    --snap .gas-snapshot-$PROFILE
+
+# Generate diff
+diff .gas-snapshot-$PROFILE .gas-snapshot-$PROFILE-old > .gas-snapshot-$PROFILE-diff
 
 log $GREEN "Done"

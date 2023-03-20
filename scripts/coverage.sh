@@ -38,7 +38,7 @@ mkdir -p reports
 # Generate coverage report
 forge coverage --report lcov
 
-# Remove unnecessary traces
+# Remove redundant entries
 lcov --remove lcov.info 'test/*' 'script/*' --output-file lcov.info --rc lcov_branch_coverage=1
 
 # Generate HTML report from coverage report

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Vendor
+// solhint-disable-next-line no-console
 import {console2} from "forge-std/console2.sol";
 import {stdError} from "forge-std/StdError.sol";
 
@@ -543,6 +544,7 @@ contract BaseInvariantTest is TestHarness {
     }
 
     function _createLog() internal {
+        /* solhint-disable no-console */
         console2.log("\nCall Summary\n");
 
         console2.log("unbounded.mint", handler.getCallCount("unbounded.mint"));
@@ -556,6 +558,7 @@ contract BaseInvariantTest is TestHarness {
         console2.log("bounded.approve", handler.getCallCount("bounded.approve"));
         console2.log("bounded.transfer", handler.getCallCount("bounded.transfer"));
         console2.log("bounded.transferFrom", handler.getCallCount("bounded.transferFrom"));
+        /* solhint-enable no-console */
     }
 }
 

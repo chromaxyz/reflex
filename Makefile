@@ -23,20 +23,17 @@ clean:; forge clean
 build:; ./scripts/build.sh -p $(PROFILE)
 
 # Test
-test:; ./scripts/test.sh -p $(PROFILE)
-test-unit:; ./scripts/test.sh -t testUnit -p $(PROFILE)
-test-fuzz:; ./scripts/test.sh -t testFuzz -p $(PROFILE)
+test:; ./scripts/test.sh -p $(PROFILE) -s "test(Unit|Fuzz)"
+test-invariant-bounded:; ./scripts/test.sh -p bounded -c "Bounded"
+test-invariant-unbounded:; ./scripts/test.sh -p unbounded -c "Unbounded"
 
-ifeq ($(PROFILE),bounded)
-test-invariant:; ./scripts/test.sh -c Bounded -p $(PROFILE)
-else ifeq ($(PROFILE),unbounded)
-test-invariant:; ./scripts/test.sh -c Unbounded -p $(PROFILE)
-else
-test-invariant:; ./scripts/test.sh -t invariant -p $(PROFILE)
-endif
+# Test a single method
+# test-single:; ./scripts/test.sh -p PROFILE_NAME -s TEST_NAME
+# Where PROFILE_NAME is one of `default`, `bounded`, `unbounded`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`.
+# Where TEST_NAME is for example `testUnitMetadata`.
 
 # Snapshot
-snapshot:; ./scripts/snapshot.sh -t testGas -p $(PROFILE)
+snapshot:; ./scripts/snapshot.sh -p $(PROFILE) -s "test(Unit|Fuzz|Gas)"
 
 # Coverage
 coverage:; ./scripts/coverage.sh

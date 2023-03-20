@@ -5,7 +5,7 @@
 # Profile: `default`
 # ==================
 [profile.default]
-solc = "0.8.17"
+solc = "0.8.19"
 optimizer = true
 optimizer_runs = 10_000
 auto_detect_solc = false
@@ -13,7 +13,7 @@ verbosity = 3
 libs = ["node_modules", "lib"]
 
 [profile.default.fuzz]
-runs = 256
+runs = 1_000
 
 [profile.default.invariant]
 runs = 10

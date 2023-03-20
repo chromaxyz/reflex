@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Exit if anything fails
-set -eo pipefail
+set -euo pipefail
 
 # Change directory to project root
 SCRIPT_PATH="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
@@ -19,12 +19,11 @@ function log () {
 }
 
 # Variables
-while getopts d:p:t:c: flag
+while getopts p:s:c: flag
 do
   case "${flag}" in
-    d) DIRECTORY=${OPTARG};;
     p) PROFILE=${OPTARG};;
-    t) TEST=${OPTARG};;
+    s) SCOPE=${OPTARG};;
     c) CONTRACT=${OPTARG};;
   esac
 done
@@ -34,18 +33,14 @@ export FOUNDRY_PROFILE=$PROFILE
 
 log $GREEN "Running tests with profile: $PROFILE"
 
-if [ -z "$CONTRACT" ]; then
-  if [ -z "$TEST" ]; then
-    if [ -z "$DIRECTORY" ]; then
-      forge test;
-    else
-      forge test --match-path "$DIRECTORY/*.t.sol";
-    fi
-  else
-    forge test --match "$TEST";
-  fi
-else
-  forge test --match-contract "$CONTRACT";
+if [[ "$PROFILE" = "default" || "$PROFILE" = "intense" || "$PROFILE" = "min-solc" || "$PROFILE" = "via-ir" || "$PROFILE" = "min-solc-via-ir" ]]; then
+  forge test \
+    --match-test $SCOPE
+fi
+
+if [[ "$PROFILE" = "unbounded" || "$PROFILE" = "bounded" ]]; then
+  forge test \
+    --match-contract $CONTRACT
 fi
 
 log $GREEN "Done"
