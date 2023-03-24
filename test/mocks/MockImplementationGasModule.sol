@@ -36,15 +36,13 @@ contract MockImplementationGasModule is ReflexModule, ImplementationState {
     function getEmpty() external view {}
 
     function setNumber(uint8 number_) external {
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             sstore(_NUMBER_SLOT, number_)
         }
     }
 
     function getNumber() external view returns (uint8 n_) {
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             n_ := sload(_NUMBER_SLOT)
         }
     }

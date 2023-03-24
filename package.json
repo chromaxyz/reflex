@@ -1,6 +1,6 @@
 {
   "name": "reflex",
-  "description": "A first-generation Solidity framework for upgradeable modularized applications.",
+  "description": "A Solidity framework for upgradeable modularized applications.",
   "version": "0.1.0",
   "license": "GPL-3.0-or-later",
   "private": true,
