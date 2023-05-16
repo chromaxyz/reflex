@@ -20,6 +20,9 @@ runs = 10
 depth = 100
 fail_on_revert = false
 
+[doc]
+book = "./book.toml"
+
 # ==================
 # Profile: `bounded`
 # ==================
