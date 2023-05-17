@@ -72,15 +72,19 @@ xcuserdata/
 /env/
 /venv/
 
+# ABI
+/reports/abi/
+
 # Coverage
 lcov.info
 /reports/coverage/
 
+# Docs
+/docs/
+!/docs/*.md
+
 # Slither
 /reports/slither/
-
-# ABI
-/reports/abi/
 
 # Visualizer
 *.dot

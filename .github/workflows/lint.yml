@@ -7,9 +7,15 @@ on:
       - master
       - development
   pull_request:
-    branches:
-      - master
-      - development
+    paths:
+      - "lib/**"
+      - "script/**"
+      - "src/**"
+      - "test/**"
+      - "*.lock"
+      - "Makefile"
+      - "foundry.toml"
+      - "remappings.txt"
 
 jobs:
   lint:
