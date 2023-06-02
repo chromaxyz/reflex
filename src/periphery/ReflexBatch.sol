@@ -29,6 +29,8 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      * detailed information about the impacts of the simulated operation.
      */
     function performStaticCall(address contractAddress_, bytes memory callData_) public view returns (bytes memory) {
+        if (contractAddress_ == address(0)) revert ZeroAddress();
+
         (bool success, bytes memory result) = contractAddress_.staticcall(callData_);
 
         if (!success) _revertBytes(result);
@@ -160,7 +162,6 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         BatchAction calldata action_
     ) internal virtual returns (bool success_, bytes memory returnData_) {
         address endpointAddress = action_.endpointAddress;
-
         uint32 moduleId_ = _relations[endpointAddress].moduleId;
 
         if (moduleId_ == 0) revert InvalidModuleId();

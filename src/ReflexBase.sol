@@ -51,32 +51,42 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @param moduleId_ Module id.
      * @param moduleType_ Module type.
      * @param moduleImplementation_ Module implementation.
-     * @return address Endpoint address.
+     * @return endpointAddress_ Endpoint address.
      */
     function _createEndpoint(
         uint32 moduleId_,
         uint16 moduleType_,
         address moduleImplementation_
-    ) internal virtual returns (address) {
+    ) internal virtual returns (address endpointAddress_) {
         if (moduleId_ == 0) revert InvalidModuleId();
         if (moduleType_ != _MODULE_TYPE_SINGLE_ENDPOINT && moduleType_ != _MODULE_TYPE_MULTI_ENDPOINT)
             revert InvalidModuleType();
 
         if (_endpoints[moduleId_] != address(0)) return _endpoints[moduleId_];
 
-        address endpointAddress = address(new ReflexEndpoint(moduleId_));
+        bytes memory endpointCreationCode = _getEndpointCreationCode(moduleId_);
 
-        if (moduleType_ == _MODULE_TYPE_SINGLE_ENDPOINT) _endpoints[moduleId_] = endpointAddress;
+        assembly {
+            endpointAddress_ := create(0, add(endpointCreationCode, 0x20), mload(endpointCreationCode))
 
-        _relations[endpointAddress] = TrustRelation({
+            // If the code size of `endpointAddress_` is zero, revert.
+            if iszero(extcodesize(endpointAddress_)) {
+                // Store the function selector of `InvalidEndpoint()`.
+                mstore(0x00, 0xf1cbb567)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
+        }
+
+        if (moduleType_ == _MODULE_TYPE_SINGLE_ENDPOINT) _endpoints[moduleId_] = endpointAddress_;
+
+        _relations[endpointAddress_] = TrustRelation({
             moduleId: moduleId_,
             moduleType: moduleType_,
             moduleImplementation: moduleImplementation_
         });
 
-        emit EndpointCreated(endpointAddress);
-
-        return endpointAddress;
+        emit EndpointCreated(endpointAddress_);
     }
 
     /**
@@ -100,6 +110,16 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         if (!success) _revertBytes(result);
 
         return result;
+    }
+
+    /**
+     * @notice Called to get the endpoint implementation for endpoint creation.
+     * @dev Method intended to be overriden.
+     * @param moduleId_ Module id.
+     * @return bytes Endpoint creation code.
+     */
+    function _getEndpointCreationCode(uint32 moduleId_) internal pure virtual returns (bytes memory) {
+        return abi.encodePacked(type(ReflexEndpoint).creationCode, abi.encode(moduleId_));
     }
 
     /**

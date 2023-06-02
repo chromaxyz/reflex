@@ -8,15 +8,21 @@ import {ReflexBase} from "../../src/ReflexBase.sol";
  * @title Mock Reflex Base
  */
 contract MockReflexBase is ReflexBase {
-    // =======
-    // Storage
-    // =======
+    // =========
+    // Constants
+    // =========
 
     /**
      * @dev `bytes32(uint256(keccak256("reentrancy.counter")) - 1)`
      */
     bytes32 internal constant _REENTRANCY_COUNTER_SLOT =
         0xc2db8520a4cb85e45c0b428b71b461e7932f3b9c2b41fa1662675e79660783f2;
+
+    /**
+     * @dev `bytes32(uint256(keccak256("endpoint.creationcode")) - 1)`
+     */
+    bytes32 internal constant _ENDPOINT_CREATION_CODE_SLOT =
+        0xe457d861637fa5ebc47d9c3723447de9b1e115fb466ddb34ab93c8ad67b51444;
 
     // ===========
     // Constructor
@@ -89,6 +95,8 @@ contract MockReflexBase is ReflexBase {
         return _createEndpoint(moduleId_, moduleType_, moduleImplementation_);
     }
 
+    function setEndpointCreationCode(bytes memory endpointCreationCode_) public {}
+
     function callInternalModule(uint32 moduleId_, bytes memory input_) public returns (bytes memory) {
         return _callInternalModule(moduleId_, input_);
     }
@@ -96,6 +104,16 @@ contract MockReflexBase is ReflexBase {
     function revertBytes(bytes memory errorMessage_) public pure {
         return _revertBytes(errorMessage_);
     }
+
+    // =========
+    // Overrides
+    // =========
+
+    // function _getEndpointCreationCode(uint32 moduleId_) internal pure override(ReflexBase) returns (bytes memory) {
+    //     // TODO: conditionally replace endpoint creation code for test
+
+    //     return _getEndpointCreationCode(moduleId_);
+    // }
 
     // =========
     // Utilities

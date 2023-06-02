@@ -14,6 +14,8 @@ interface TReflexBase is TReflexState {
 
     error EmptyError();
 
+    error InvalidEndpoint();
+
     error InvalidModuleId();
 
     error InvalidModuleType();

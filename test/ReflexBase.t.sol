@@ -40,19 +40,6 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
     // Tests
     // =====
 
-    function testUnitRevertCreateEndpointInvalidModuleId() external {
-        vm.expectRevert(InvalidModuleId.selector);
-        base.createEndpoint(0, 0, address(0));
-    }
-
-    function testUnitRevertCreateEndpointInvalidModuleType() external {
-        vm.expectRevert(InvalidModuleType.selector);
-        base.createEndpoint(102, 0, address(0));
-
-        vm.expectRevert(InvalidModuleType.selector);
-        base.createEndpoint(102, _MODULE_TYPE_INTERNAL, address(0));
-    }
-
     function testFuzzEarlyReturnRegisteredModule(uint32 moduleId_) external {
         vm.assume(moduleId_ > _MODULE_ID_INSTALLER);
 
@@ -71,6 +58,25 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
         vm.expectRevert(EmptyError.selector);
         base.revertBytes("");
     }
+
+    // ==============
+    // Endpoint tests
+    // ==============
+
+    function testUnitRevertCreateEndpointInvalidModuleId() external {
+        vm.expectRevert(InvalidModuleId.selector);
+        base.createEndpoint(0, 0, address(0));
+    }
+
+    function testUnitRevertCreateEndpointInvalidModuleType() external {
+        vm.expectRevert(InvalidModuleType.selector);
+        base.createEndpoint(102, 0, address(0));
+
+        vm.expectRevert(InvalidModuleType.selector);
+        base.createEndpoint(102, _MODULE_TYPE_INTERNAL, address(0));
+    }
+
+    function testUnitRevertCreateEndpointInvalidEndpoint() external {}
 
     // ======================
     // Reentrancy guard tests

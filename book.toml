@@ -7,7 +7,6 @@ description = "Documentation for Reflex"
 
 [output.html]
 git-repository-url = "https://github.com/chroma-org/reflex.git"
-edit-url-template = "https://github.com/chroma-org/reflex.git/edit/master/{path}"
 default-theme = "ayu"
 no-section-label = true
 

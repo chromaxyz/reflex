@@ -38,6 +38,8 @@ contract ReflexEndpoint is IReflexEndpoint {
     // Constructor
     // ===========
 
+    // TODO: make payable?
+
     /**
      * @param moduleId_ Same as the implementations' module id.
      */
