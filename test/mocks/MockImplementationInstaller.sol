@@ -2,9 +2,11 @@
 pragma solidity ^0.8.13;
 
 // Sources
+import {ReflexBase} from "../../src/ReflexBase.sol";
 import {ReflexInstaller} from "../../src/ReflexInstaller.sol";
 
 // Mocks
+import {MockReflexModule} from "./MockReflexModule.sol";
 import {MockImplementationModule} from "./MockImplementationModule.sol";
 
 /**
@@ -19,4 +21,14 @@ contract MockImplementationInstaller is ReflexInstaller, MockImplementationModul
      * @param moduleSettings_ Module settings.
      */
     constructor(ModuleSettings memory moduleSettings_) MockImplementationModule(moduleSettings_) {}
+
+    // ============
+    // Overrides
+    // ============
+
+    function _beforeEndpointCreation(
+        uint32 moduleId_
+    ) internal pure virtual override(ReflexBase, MockReflexModule) returns (bytes memory) {
+        return super._beforeEndpointCreation(moduleId_);
+    }
 }

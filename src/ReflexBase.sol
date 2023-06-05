@@ -74,7 +74,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
 
         if (_endpoints[moduleId_] != address(0)) return _endpoints[moduleId_];
 
-        bytes memory endpointCreationCode = _getEndpointCreationCode(moduleId_);
+        bytes memory endpointCreationCode = _beforeEndpointCreation(moduleId_);
 
         assembly ("memory-safe") {
             endpointAddress_ := create(0, add(endpointCreationCode, 0x20), mload(endpointCreationCode))
@@ -114,22 +114,12 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @param input_ Input data.
      * @return bytes Call result.
      */
-    function _callInternalModule(uint32 moduleId_, bytes memory input_) internal returns (bytes memory) {
+    function _callInternalModule(uint32 moduleId_, bytes memory input_) internal virtual returns (bytes memory) {
         (bool success, bytes memory result) = _modules[moduleId_].delegatecall(input_);
 
         if (!success) _revertBytes(result);
 
         return result;
-    }
-
-    /**
-     * @notice Called to get the endpoint implementation for endpoint creation.
-     * @dev Method intended to be overriden.
-     * @param moduleId_ Module id.
-     * @return bytes Endpoint creation code.
-     */
-    function _getEndpointCreationCode(uint32 moduleId_) internal pure virtual returns (bytes memory) {
-        return abi.encodePacked(type(ReflexEndpoint).creationCode, abi.encode(moduleId_));
     }
 
     /**
@@ -176,7 +166,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @dev Bubble up revert with error message.
      * @param errorMessage_ Error message.
      */
-    function _revertBytes(bytes memory errorMessage_) internal pure {
+    function _revertBytes(bytes memory errorMessage_) internal pure virtual {
         if (errorMessage_.length > 0) {
             assembly ("memory-safe") {
                 revert(add(32, errorMessage_), mload(errorMessage_))
@@ -184,5 +174,16 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         }
 
         revert EmptyError();
+    }
+
+    // ============
+    // Hook methods
+    // ============
+
+    /**
+     * @notice Hook that is called before an endpoint is created.
+     */
+    function _beforeEndpointCreation(uint32 moduleId_) internal pure virtual returns (bytes memory) {
+        return abi.encodePacked(type(ReflexEndpoint).creationCode, abi.encode(moduleId_));
     }
 }

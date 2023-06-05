@@ -153,6 +153,14 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
             revert FailedToLog();
         }
     }
+
+    // ============
+    // Overrides
+    // ============
+
+    function _beforeEndpointCreation(uint32 moduleId_) internal pure virtual override returns (bytes memory) {
+        return super._beforeEndpointCreation(moduleId_);
+    }
 }
 
 // =========

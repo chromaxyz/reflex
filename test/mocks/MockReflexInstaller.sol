@@ -5,10 +5,12 @@ pragma solidity ^0.8.13;
 import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Sources
+import {ReflexBase} from "../../src/ReflexBase.sol";
 import {ReflexInstaller} from "../../src/ReflexInstaller.sol";
 import {ReflexModule} from "../../src/ReflexModule.sol";
 
 // Mocks
+import {MockReflexBase} from "./MockReflexBase.sol";
 import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
@@ -47,5 +49,15 @@ contract MockReflexInstaller is ReflexInstaller, MockReflexModule {
 
         // Force coverage to flag this branch as covered.
         super._beforeModuleRegistration(x_, y_);
+    }
+
+    // ============
+    // Overrides
+    // ============
+
+    function _beforeEndpointCreation(
+        uint32 moduleId_
+    ) internal pure virtual override(ReflexBase, MockReflexModule) returns (bytes memory) {
+        return super._beforeEndpointCreation(moduleId_);
     }
 }
