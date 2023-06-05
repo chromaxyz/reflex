@@ -181,10 +181,10 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
     // ============
 
     /**
-     * @notice Hook that is called before an endpoint is created.
+     * @notice Hook that is called upon creation of an endpoint to get its implementation.
      * @return endpointCreationCode_ Endpoint creation code.
      */
     function _getEndpointCreationCode(uint32 moduleId_) internal virtual returns (bytes memory endpointCreationCode_) {
-        return abi.encodePacked(type(ReflexEndpoint).creationCode, abi.encode(moduleId_));
+        endpointCreationCode_ = abi.encodePacked(type(ReflexEndpoint).creationCode, abi.encode(moduleId_));
     }
 }
