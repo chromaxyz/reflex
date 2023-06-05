@@ -73,17 +73,35 @@ contract MockReflexBase is ReflexBase {
 
     function countAndCall(ReentrancyAttack attacker_) public nonReentrant {
         _increaseCounter(_REENTRANCY_COUNTER_SLOT);
-        bytes4 func = bytes4(keccak256("callback()"));
-        attacker_.callSender(func);
+
+        attacker_.callSender(bytes4(keccak256("callback()")));
     }
 
     function guardedCheckLocked() public nonReentrant {
-        assert(getReentrancyStatusLocked() == true);
+        assert(getReentrancyStatusLocked());
         assert(getReentrancyStatus() == _REENTRANCY_GUARD_LOCKED);
     }
 
+    function readCallbackTargetUnprotected() public {}
+
+    function readCallbackTargetProtected() public nonReadReentrant {}
+
+    function readGuardedCheckProtected() public nonReentrant {
+        assert(getReentrancyStatusLocked());
+        assert(getReentrancyStatus() == _REENTRANCY_GUARD_LOCKED);
+
+        readCallbackTargetProtected();
+    }
+
+    function readGuardedCheckUnprotected() public nonReentrant {
+        assert(getReentrancyStatusLocked());
+        assert(getReentrancyStatus() == _REENTRANCY_GUARD_LOCKED);
+
+        readCallbackTargetUnprotected();
+    }
+
     function unguardedCheckUnlocked() public view {
-        assert(getReentrancyStatusLocked() == false);
+        assert(!getReentrancyStatusLocked());
         assert(getReentrancyStatus() == _REENTRANCY_GUARD_UNLOCKED);
     }
 

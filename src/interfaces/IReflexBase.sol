@@ -20,6 +20,8 @@ interface TReflexBase is TReflexState {
 
     error InvalidModuleType();
 
+    error ReadOnlyReentrancy();
+
     error Reentrancy();
 
     // ======

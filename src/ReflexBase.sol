@@ -42,6 +42,16 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         _reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
     }
 
+    /**
+     * @dev Prevents a contract from reading itself, directly or indirectly in a `nonReentrant` context.
+     * Calling a `nonReadReentrant` function from another `nonReadReentrant` function is not supported.
+     */
+    modifier nonReadReentrant() virtual {
+        if (_reentrancyStatusLocked()) revert ReadOnlyReentrancy();
+
+        _;
+    }
+
     // ================
     // Internal methods
     // ================
@@ -66,7 +76,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
 
         bytes memory endpointCreationCode = _getEndpointCreationCode(moduleId_);
 
-        assembly {
+        assembly ("memory-safe") {
             endpointAddress_ := create(0, add(endpointCreationCode, 0x20), mload(endpointCreationCode))
 
             // If the code size of `endpointAddress_` is zero, revert.

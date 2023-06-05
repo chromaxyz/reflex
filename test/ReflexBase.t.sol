@@ -98,12 +98,15 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
         assertEq(base.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
     }
 
-    function testUnitNonReentrantMethodCanBeCalled() external {
-        assertEq(base.reentrancyCounter(), 0);
+    function testUnitRevertReadGuardedCheckLocked() external {
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
 
-        base.callback();
+        vm.expectRevert(ReadOnlyReentrancy.selector);
+        base.readGuardedCheckProtected();
 
-        assertEq(base.reentrancyCounter(), 1);
+        base.readGuardedCheckUnprotected();
+
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
     }
 
     function testUnitRevertRemoteCallback() external {
