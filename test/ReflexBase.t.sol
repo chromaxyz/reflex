@@ -76,8 +76,6 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
         base.createEndpoint(102, _MODULE_TYPE_INTERNAL, address(0));
     }
 
-    function testUnitRevertCreateEndpointInvalidEndpoint() external {}
-
     // ======================
     // Reentrancy guard tests
     // ======================

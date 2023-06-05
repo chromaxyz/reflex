@@ -1,3 +1,4 @@
+**THIS CHECKLIST IS NOT COMPLETE**. Use `--show-ignored-findings` to show all the results.
 Summary
 
 - [controlled-delegatecall](#controlled-delegatecall) (2 results) (High)
@@ -5,7 +6,8 @@ Summary
 - [calls-loop](#calls-loop) (6 results) (Low)
 - [low-level-calls](#low-level-calls) (5 results) (Informational)
 - [similar-names](#similar-names) (1 results) (Informational)
-- [too-many-digits](#too-many-digits) (1 results) (Informational)
+- [constable-states](#constable-states) (2 results) (Optimization)
+- [immutable-states](#immutable-states) (1 results) (Optimization)
 
 ## controlled-delegatecall
 
@@ -13,14 +15,14 @@ Impact: High
 Confidence: Medium
 
 - [ ] ID-0
+      [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L117-L123) uses delegatecall to a input-controlled function id - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L118)
+
+../src/ReflexBase.sol#L117-L123
+
+- [ ] ID-1
       [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L160-L178) uses delegatecall to a input-controlled function id - [(success*,returnData*) = moduleImplementation.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender*),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L175-L177)
 
 ../src/periphery/ReflexBatch.sol#L160-L178
-
-- [ ] ID-1
-      [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L107-L113) uses delegatecall to a input-controlled function id - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L108)
-
-../src/ReflexBase.sol#L107-L113
 
 ## uninitialized-state
 
@@ -28,12 +30,12 @@ Impact: High
 Confidence: High
 
 - [ ] ID-2
-      [ReflexState.\_modules](../src/ReflexState.sol#L57) is never initialized. It is used in: - [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L107-L113) - [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L108-L131) - [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L160-L178)
+      [ReflexState.\_modules](../src/ReflexState.sol#L57) is never initialized. It is used in: - [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L117-L123) - [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L108-L131) - [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L160-L178)
 
 ../src/ReflexState.sol#L57
 
 - [ ] ID-3
-      [ReflexState.\_modules](../src/ReflexState.sol#L57) is never initialized. It is used in: - [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L107-L113)
+      [ReflexState.\_modules](../src/ReflexState.sol#L57) is never initialized. It is used in: - [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L117-L123)
 
 ../src/ReflexState.sol#L57
 
@@ -83,29 +85,29 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-11
+      Low level call in [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L117-L123): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L118)
+
+../src/ReflexBase.sol#L117-L123
+
+- [ ] ID-12
+      Low level call in [ReflexEndpoint.implementation()](../src/ReflexEndpoint.sol#L63-L73): - [(success,response) = \_deployer.staticcall(abi.encodeWithSelector(\_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR,\_moduleId))](../src/ReflexEndpoint.sol#L64-L66)
+
+../src/ReflexEndpoint.sol#L63-L73
+
+- [ ] ID-13
       Low level call in [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L108-L131): - [(success,result) = _modules[\_moduleId].delegatecall(abi.encodePacked(abi.encodeWithSelector(IReflexBatch.simulateBatchCallRevert.selector,actions_),uint160(\_unpackMessageSender()),uint160(\_unpackEndpointAddress())))](../src/periphery/ReflexBatch.sol#L114-L120)
 
 ../src/periphery/ReflexBatch.sol#L108-L131
 
-- [ ] ID-12
+- [ ] ID-14
       Low level call in [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L160-L178): - [(success*,returnData*) = moduleImplementation.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender*),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L175-L177)
 
 ../src/periphery/ReflexBatch.sol#L160-L178
 
-- [ ] ID-13
+- [ ] ID-15
       Low level call in [ReflexBatch.performStaticCall(address,bytes)](../src/periphery/ReflexBatch.sol#L31-L41): - [(success,result) = contractAddress*.staticcall(callData*)](../src/periphery/ReflexBatch.sol#L34)
 
 ../src/periphery/ReflexBatch.sol#L31-L41
-
-- [ ] ID-14
-      Low level call in [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L107-L113): - [(success,result) = _modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L108)
-
-../src/ReflexBase.sol#L107-L113
-
-- [ ] ID-15
-      Low level call in [ReflexEndpoint.implementation()](../src/ReflexEndpoint.sol#L62-L72): - [(success,response) = \_deployer.staticcall(abi.encodeWithSelector(\_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR,\_moduleId))](../src/ReflexEndpoint.sol#L63-L65)
-
-../src/ReflexEndpoint.sol#L62-L72
 
 ## similar-names
 
@@ -113,16 +115,31 @@ Impact: Informational
 Confidence: Medium
 
 - [ ] ID-16
-      Variable [ReflexModule.\_moduleType](../src/ReflexModule.sol#L29) is too similar to [ReflexBase._createEndpoint(uint32,uint16,address).moduleType_](../src/ReflexBase.sol#L58)
+      Variable [ReflexModule.\_moduleType](../src/ReflexModule.sol#L29) is too similar to [ReflexBase._createEndpoint(uint32,uint16,address).moduleType_](../src/ReflexBase.sol#L68)
 
 ../src/ReflexModule.sol#L29
 
-## too-many-digits
+## constable-states
 
-Impact: Informational
-Confidence: Medium
+Impact: Optimization
+Confidence: High
 
 - [ ] ID-17
-      [ReflexBase.\_getEndpointCreationCode(uint32)](../src/ReflexBase.sol#L121-L123) uses literals with too many digits: - [abi.encodePacked(type()(ReflexEndpoint).creationCode,abi.encode(moduleId\_))](../src/ReflexBase.sol#L122)
+      [ReflexState.\_owner](../src/ReflexState.sol#L42) should be constant
 
-../src/ReflexBase.sol#L121-L123
+../src/ReflexState.sol#L42
+
+- [ ] ID-18
+      [ReflexState.\_pendingOwner](../src/ReflexState.sol#L49) should be constant
+
+../src/ReflexState.sol#L49
+
+## immutable-states
+
+Impact: Optimization
+Confidence: High
+
+- [ ] ID-19
+      [ReflexState.\_owner](../src/ReflexState.sol#L42) should be immutable
+
+../src/ReflexState.sol#L42
