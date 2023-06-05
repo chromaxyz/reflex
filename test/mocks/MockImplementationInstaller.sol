@@ -29,13 +29,11 @@ contract MockImplementationInstaller is ReflexInstaller, MockImplementationModul
     /**
      * @dev NOTE: DO NOT IMPLEMENT INVALID ENDPOINT CREATION CODE!
      */
-
     function _getEndpointCreationCode(
         uint32 moduleId_
     ) internal virtual override(ReflexBase, MockReflexModule) returns (bytes memory) {
-        if (moduleId_ == 777) {
-            return abi.encodePacked(type(RevertingInvalidEndpoint).creationCode);
-        }
+        // Special case for to test invalid endpoint in `ImplementationEndpoint.t.sol`
+        if (moduleId_ == 777) return abi.encodePacked(type(RevertingInvalidEndpoint).creationCode);
 
         return super._getEndpointCreationCode(moduleId_);
     }
