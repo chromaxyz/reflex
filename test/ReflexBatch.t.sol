@@ -538,14 +538,14 @@ contract ReflexBatchTest is TReflexBatch, ReflexFixture {
     // Utilities
     // =========
 
-    modifier withHooksExpected(uint256 count_) {
+    modifier withHooksExpected(uint256 batchCallCounter_) {
         assertEq(batchEndpoint.beforeBatchCallCounter(), 0);
         assertEq(batchEndpoint.afterBatchCallCounter(), 0);
 
         _;
 
-        assertEq(batchEndpoint.beforeBatchCallCounter(), count_);
-        assertEq(batchEndpoint.afterBatchCallCounter(), count_);
+        assertEq(batchEndpoint.beforeBatchCallCounter(), batchCallCounter_);
+        assertEq(batchEndpoint.afterBatchCallCounter(), batchCallCounter_);
     }
 
     modifier withExternalToken(address target_, uint256 amount_) {

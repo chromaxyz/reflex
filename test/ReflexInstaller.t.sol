@@ -434,7 +434,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // Single-endpoint module tests
     // ============================
 
-    function testUnitAddModulesSingleEndpoint() public withHooksExpected(1) {
+    function testUnitAddModulesSingleEndpoint() public withHooksExpected(1, 1) {
         _addModule(singleModuleV1, _VALID);
 
         address singleModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID);
@@ -444,13 +444,13 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertTrue(singleModuleEndpointV1 != address(0));
     }
 
-    function testUnitRevertAddModulesExistentSingleEndpoint() external withHooksExpected(1) {
+    function testUnitRevertAddModulesExistentSingleEndpoint() external withHooksExpected(1, 1) {
         _addModule(singleModuleV1, _VALID);
 
         _addModule(singleModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
-    function testUnitUpgradeModulesSingleEndpoint() external withHooksExpected(2) {
+    function testUnitUpgradeModulesSingleEndpoint() external withHooksExpected(2, 1) {
         _addModule(singleModuleV1, _VALID);
 
         address singleModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID);
@@ -466,7 +466,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(singleModuleImplementationV2, address(singleModuleV2));
     }
 
-    function testUnitRevertUpgradeInvalidVersionSingleEndpoint() external withHooksExpected(2) {
+    function testUnitRevertUpgradeInvalidVersionSingleEndpoint() external withHooksExpected(2, 1) {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
 
@@ -474,7 +474,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(singleModuleV2, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
-    function testUnitRevertUpgradeInvalidTypeSingleEndpoint() external withHooksExpected(2) {
+    function testUnitRevertUpgradeInvalidTypeSingleEndpoint() external withHooksExpected(2, 1) {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
 
@@ -490,7 +490,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(singleModuleInvalidType, TReflexInstaller.ModuleInvalidType.selector);
     }
 
-    function testUnitRevertUpgradeModulesNonUpgradeableSingleEndpoint() external withHooksExpected(3) {
+    function testUnitRevertUpgradeModulesNonUpgradeableSingleEndpoint() external withHooksExpected(3, 1) {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
         _upgradeModule(singleModuleV3, _VALID);
@@ -512,7 +512,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // Multi-endpoint module tests
     // ===========================
 
-    function testUnitAddModulesMultiEndpoint() external withHooksExpected(1) {
+    function testUnitAddModulesMultiEndpoint() external withHooksExpected(1, 0) {
         _addModule(multiModuleV1, _VALID);
 
         address multiModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID);
@@ -522,13 +522,13 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(multiModuleEndpointV1, address(0));
     }
 
-    function testUnitRevertAddModulesExistentMultiEndpoint() external withHooksExpected(1) {
+    function testUnitRevertAddModulesExistentMultiEndpoint() external withHooksExpected(1, 0) {
         _addModule(multiModuleV1, _VALID);
 
         _addModule(multiModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
-    function testUnitUpgradeModulesMultiEndpoint() external withHooksExpected(2) {
+    function testUnitUpgradeModulesMultiEndpoint() external withHooksExpected(2, 0) {
         _addModule(multiModuleV1, _VALID);
 
         address multiModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID);
@@ -543,7 +543,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(multiModuleImplementationV2, address(multiModuleV2));
     }
 
-    function testUnitRevertUpgradeInvalidVersionMultiEndpoint() external withHooksExpected(2) {
+    function testUnitRevertUpgradeInvalidVersionMultiEndpoint() external withHooksExpected(2, 0) {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
 
@@ -551,7 +551,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(multiModuleV2, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
-    function testUnitRevertUpgradeInvalidTypeMultiEndpoint() external withHooksExpected(2) {
+    function testUnitRevertUpgradeInvalidTypeMultiEndpoint() external withHooksExpected(2, 0) {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
 
@@ -567,7 +567,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(multiModuleInvalidType, TReflexInstaller.ModuleInvalidType.selector);
     }
 
-    function testUnitRevertUpgradeModulesNonUpgradeableMultiEndpoint() external withHooksExpected(3) {
+    function testUnitRevertUpgradeModulesNonUpgradeableMultiEndpoint() external withHooksExpected(3, 0) {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
         _upgradeModule(multiModuleV3, _VALID);
@@ -589,7 +589,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // Internal module tests
     // =====================
 
-    function testUnitAddModulesInternal() external withHooksExpected(1) {
+    function testUnitAddModulesInternal() external withHooksExpected(1, 0) {
         _addModule(internalModuleV1, _VALID);
 
         address internalModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID);
@@ -599,13 +599,13 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(internalModuleEndpointV1, address(0));
     }
 
-    function testUnitRevertAddModulesExistentInternal() external withHooksExpected(1) {
+    function testUnitRevertAddModulesExistentInternal() external withHooksExpected(1, 0) {
         _addModule(internalModuleV1, _VALID);
 
         _addModule(internalModuleV1, TReflexInstaller.ModuleExistent.selector);
     }
 
-    function testUnitUpgradeModulesInternal() external withHooksExpected(2) {
+    function testUnitUpgradeModulesInternal() external withHooksExpected(2, 0) {
         _addModule(internalModuleV1, _VALID);
 
         address internalModuleImplementationV1 = dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID);
@@ -620,7 +620,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         assertEq(internalModuleImplementationV2, address(internalModuleV2));
     }
 
-    function testUnitRevertUpgradeInvalidVersionInternal() external withHooksExpected(2) {
+    function testUnitRevertUpgradeInvalidVersionInternal() external withHooksExpected(2, 0) {
         _addModule(internalModuleV1, _VALID);
         _upgradeModule(internalModuleV2, _VALID);
 
@@ -628,7 +628,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(internalModuleV2, TReflexInstaller.ModuleInvalidVersion.selector);
     }
 
-    function testUnitRevertUpgradeInvalidTypeInternal() external withHooksExpected(2) {
+    function testUnitRevertUpgradeInvalidTypeInternal() external withHooksExpected(2, 0) {
         _addModule(internalModuleV1, _VALID);
         _upgradeModule(internalModuleV2, _VALID);
 
@@ -644,7 +644,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _upgradeModule(internalModuleInvalidType, TReflexInstaller.ModuleInvalidType.selector);
     }
 
-    function testUnitRevertUpgradeModulesNonUpgradeableInternal() external withHooksExpected(3) {
+    function testUnitRevertUpgradeModulesNonUpgradeableInternal() external withHooksExpected(3, 0) {
         _addModule(internalModuleV1, _VALID);
         _upgradeModule(internalModuleV2, _VALID);
         _upgradeModule(internalModuleV3, _VALID);
@@ -666,7 +666,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // Installer tests
     // ===============
 
-    function testUnitUpgradeInstaller() external withHooksExpected(7) {
+    function testUnitUpgradeInstaller() external withHooksExpected(7, 1) {
         // Installer upgrade
 
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
@@ -728,12 +728,14 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     // Utilities
     // =========
 
-    modifier withHooksExpected(uint256 count_) {
+    modifier withHooksExpected(uint256 beforeModuleRegistrationCount_, uint256 getEndpointCreationCodeCount_) {
         assertEq(installerEndpoint.beforeModuleRegistrationCounter(), 0);
+        assertEq(installerEndpoint.getEndpointCreationCodeCounter(), 0);
 
         _;
 
-        assertEq(installerEndpoint.beforeModuleRegistrationCounter(), count_);
+        assertEq(installerEndpoint.beforeModuleRegistrationCounter(), beforeModuleRegistrationCount_);
+        assertEq(installerEndpoint.getEndpointCreationCodeCounter(), getEndpointCreationCodeCount_);
     }
 
     function _addModule(IReflexModule module_, bytes4 selector_) internal {

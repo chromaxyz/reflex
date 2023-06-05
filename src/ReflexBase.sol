@@ -74,15 +74,15 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
 
         if (_endpoints[moduleId_] != address(0)) return _endpoints[moduleId_];
 
-        bytes memory endpointCreationCode = _beforeEndpointCreation(moduleId_);
+        bytes memory endpointCreationCode = _getEndpointCreationCode(moduleId_);
 
         assembly ("memory-safe") {
             endpointAddress_ := create(0, add(endpointCreationCode, 0x20), mload(endpointCreationCode))
 
             // If the code size of `endpointAddress_` is zero, revert.
             if iszero(extcodesize(endpointAddress_)) {
-                // Store the function selector of `InvalidEndpoint()`.
-                mstore(0x00, 0xf1cbb567)
+                // Store the function selector of `EndpointInvalid()`.
+                mstore(0x00, 0x0b3b0bd1)
                 // Revert with (offset, size).
                 revert(0x1c, 0x04)
             }
@@ -182,8 +182,9 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
 
     /**
      * @notice Hook that is called before an endpoint is created.
+     * @return endpointCreationCode_ Endpoint creation code.
      */
-    function _beforeEndpointCreation(uint32 moduleId_) internal pure virtual returns (bytes memory) {
+    function _getEndpointCreationCode(uint32 moduleId_) internal virtual returns (bytes memory endpointCreationCode_) {
         return abi.encodePacked(type(ReflexEndpoint).creationCode, abi.encode(moduleId_));
     }
 }

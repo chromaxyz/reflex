@@ -22,13 +22,36 @@ contract MockImplementationInstaller is ReflexInstaller, MockImplementationModul
      */
     constructor(ModuleSettings memory moduleSettings_) MockImplementationModule(moduleSettings_) {}
 
-    // ============
+    // =========
     // Overrides
-    // ============
+    // =========
 
-    function _beforeEndpointCreation(
+    /**
+     * @dev NOTE: DO NOT IMPLEMENT INVALID ENDPOINT CREATION CODE!
+     */
+
+    function _getEndpointCreationCode(
         uint32 moduleId_
-    ) internal pure virtual override(ReflexBase, MockReflexModule) returns (bytes memory) {
-        return super._beforeEndpointCreation(moduleId_);
+    ) internal virtual override(ReflexBase, MockReflexModule) returns (bytes memory) {
+        if (moduleId_ == 777) {
+            return abi.encodePacked(type(RevertingInvalidEndpoint).creationCode);
+        }
+
+        return super._getEndpointCreationCode(moduleId_);
+    }
+}
+
+// =========
+// Utilities
+// =========
+
+/**
+ * @title Reverting Invalid Endpoint
+ */
+contract RevertingInvalidEndpoint {
+    constructor() {
+        assembly {
+            revert(0, 0)
+        }
     }
 }

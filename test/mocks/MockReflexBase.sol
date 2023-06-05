@@ -138,6 +138,14 @@ contract MockReflexBase is ReflexBase {
         uint256 value = _getCounter(slot_);
         _setCounter(slot_, value + 1);
     }
+
+    // =========
+    // Overrides
+    // =========
+
+    function _getEndpointCreationCode(uint32 moduleId_) internal virtual override returns (bytes memory) {
+        return super._getEndpointCreationCode(moduleId_);
+    }
 }
 
 // =========

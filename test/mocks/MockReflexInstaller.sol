@@ -22,10 +22,16 @@ contract MockReflexInstaller is ReflexInstaller, MockReflexModule {
     // =======
 
     /**
-     * @dev `bytes32(uint256(keccak256("before.module.registration.counter")) - 1))`
+     * @dev `bytes32(uint256(keccak256("before.module.registration.counter")) - 1)`
      */
     bytes32 internal constant _BEFORE_MODULE_REGISTRATION_COUNTER_SLOT =
         0x1b727d455ca13074852c4008c1e770610a44626677660029eca1c6d393a06641;
+
+    /**
+     * @dev `bytes32(uint256(keccak256("get.endpoint.creation.code.counter")) - 1)`
+     */
+    bytes32 internal constant _GET_ENDPOINT_CREATION_CODE_COUNTER_SLOT =
+        0xd5077e08d231237dc9ff99b01c8b83a05549425a32c5faf5f3e7da16cbeab176;
 
     // ===========
     // Constructor
@@ -51,13 +57,16 @@ contract MockReflexInstaller is ReflexInstaller, MockReflexModule {
         super._beforeModuleRegistration(x_, y_);
     }
 
-    // ============
-    // Overrides
-    // ============
+    function getEndpointCreationCodeCounter() public view returns (uint256 n_) {
+        n_ = _getCounter(_GET_ENDPOINT_CREATION_CODE_COUNTER_SLOT);
+    }
 
-    function _beforeEndpointCreation(
+    function _getEndpointCreationCode(
         uint32 moduleId_
-    ) internal pure virtual override(ReflexBase, MockReflexModule) returns (bytes memory) {
-        return super._beforeEndpointCreation(moduleId_);
+    ) internal virtual override(ReflexBase, MockReflexModule) returns (bytes memory) {
+        _increaseCounter(_GET_ENDPOINT_CREATION_CODE_COUNTER_SLOT);
+
+        // Force coverage to flag this branch as covered.
+        return super._getEndpointCreationCode(moduleId_);
     }
 }

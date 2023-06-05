@@ -63,13 +63,13 @@ contract MockReflexBatch is ReflexBatch, MockReflexModule {
         super._afterBatchCall(x_);
     }
 
-    // ============
+    // =========
     // Overrides
-    // ============
+    // =========
 
-    function _beforeEndpointCreation(
+    function _getEndpointCreationCode(
         uint32 moduleId_
-    ) internal pure virtual override(ReflexBase, MockReflexModule) returns (bytes memory) {
-        return super._beforeEndpointCreation(moduleId_);
+    ) internal virtual override(ReflexBase, MockReflexModule) returns (bytes memory) {
+        return super._getEndpointCreationCode(moduleId_);
     }
 }
