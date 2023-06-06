@@ -20,16 +20,14 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     // ============
 
     /**
-     * @notice Returns the address of the owner.
-     * @return address Owner address.
+     * @inheritdoc IReflexInstaller
      */
     function owner() public view virtual returns (address) {
         return _owner;
     }
 
     /**
-     * @notice Returns the address of the pending owner.
-     * @return address Pending owner address.
+     * @inheritdoc IReflexInstaller
      */
     function pendingOwner() public view virtual returns (address) {
         return _pendingOwner;
@@ -40,13 +38,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     // ====================
 
     /**
-     * @notice Transfer ownership in two steps.
-     * @param newOwner_ New pending owner.
-     *
-     * Requirements:
-     *
-     * - The caller must be the current owner.
-     * - Cannot be re-entered.
+     * @inheritdoc IReflexInstaller
      */
     function transferOwnership(address newOwner_) public virtual onlyOwner nonReentrant {
         if (newOwner_ == address(0)) revert ZeroAddress();
@@ -57,12 +49,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     }
 
     /**
-     * @notice Accept ownership.
-     *
-     * Requirements:
-     *
-     * - The caller must be the pending owner.
-     * - Cannot be re-entered.
+     * @inheritdoc IReflexInstaller
      */
     function acceptOwnership() public virtual nonReentrant {
         address newOwner = _unpackMessageSender();
@@ -78,16 +65,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     }
 
     /**
-     * @notice Renounce ownership.
-     *
-     * Requirements:
-     *
-     * - The caller must be the owner.
-     * - Cannot be re-entered.
-     *
-     * NOTE: Renouncing ownership will leave Reflex without an owner,
-     * thereby removing any functionality that is only available to the owner.
-     * It will not be possible to call methods with the `onlyOwner` modifier anymore.
+     * @inheritdoc IReflexInstaller
      */
     function renounceOwnership() public virtual onlyOwner nonReentrant {
         address newOwner = address(0);
@@ -101,13 +79,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     }
 
     /**
-     * @notice Add modules.
-     * @param moduleAddresses_ List of modules to add.
-     *
-     * Requirements:
-     *
-     * - The caller must be the current owner.
-     * - Cannot be re-entered.
+     * @inheritdoc IReflexInstaller
      */
     function addModules(address[] calldata moduleAddresses_) public virtual onlyOwner nonReentrant {
         uint256 moduleAddressLength = moduleAddresses_.length;
@@ -139,13 +111,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     }
 
     /**
-     * @notice Upgrade modules
-     * @param moduleAddresses_ List of modules to upgrade.
-     *
-     * Requirements:
-     *
-     * - The caller must be the current owner.
-     * - Cannot be re-entered.
+     * @inheritdoc IReflexInstaller
      */
     function upgradeModules(address[] calldata moduleAddresses_) public virtual onlyOwner nonReentrant {
         uint256 moduleAddressLength = moduleAddresses_.length;

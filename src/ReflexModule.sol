@@ -19,22 +19,22 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
     // ==========
 
     /**
-     * @notice Module id.
+     * @dev Module id.
      */
     uint32 internal immutable _moduleId;
 
     /**
-     * @notice Module type.
+     * @dev Module type.
      */
     uint16 internal immutable _moduleType;
 
     /**
-     * @notice Module version.
+     * @dev Module version.
      */
     uint32 internal immutable _moduleVersion;
 
     /**
-     * @notice Whether the module is upgradeable.
+     * @dev Whether the module is upgradeable.
      */
     bool internal immutable _moduleUpgradeable;
 
@@ -61,10 +61,10 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
      * @param moduleSettings_ Module settings.
      */
     constructor(ModuleSettings memory moduleSettings_) {
-        if (moduleSettings_.moduleId == 0) revert InvalidModuleId();
+        if (moduleSettings_.moduleId == 0) revert ModuleIdInvalid();
         if (moduleSettings_.moduleType == 0 || moduleSettings_.moduleType > _MODULE_TYPE_INTERNAL)
-            revert InvalidModuleType();
-        if (moduleSettings_.moduleVersion == 0) revert InvalidModuleVersion();
+            revert ModuleTypeInvalid();
+        if (moduleSettings_.moduleVersion == 0) revert ModuleVersionInvalid();
 
         _moduleId = moduleSettings_.moduleId;
         _moduleType = moduleSettings_.moduleType;
@@ -77,40 +77,35 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
     // ============
 
     /**
-     * @notice Get module id.
-     * @return uint32 Module id.
+     * @inheritdoc IReflexModule
      */
     function moduleId() public view virtual returns (uint32) {
         return _moduleId;
     }
 
     /**
-     * @notice Get module type.
-     * @return uint16 Module type.
+     * @inheritdoc IReflexModule
      */
     function moduleType() public view virtual returns (uint16) {
         return _moduleType;
     }
 
     /**
-     * @notice Get module version.
-     * @return uint32 Module version.
+     * @inheritdoc IReflexModule
      */
     function moduleVersion() public view virtual returns (uint32) {
         return _moduleVersion;
     }
 
     /**
-     * @notice Get whether module is upgradeable.
-     * @return bool Whether module is upgradeable.
+     * @inheritdoc IReflexModule
      */
     function moduleUpgradeable() public view virtual returns (bool) {
         return _moduleUpgradeable;
     }
 
     /**
-     * @notice Get the module settings.
-     * @return ModuleSettings Module settings.
+     * @inheritdoc IReflexModule
      */
     function moduleSettings() public view virtual returns (ModuleSettings memory) {
         return

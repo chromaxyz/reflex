@@ -9,7 +9,7 @@ import {VmSafe} from "forge-std/Vm.sol";
 import {ReflexConstants} from "../../src/ReflexConstants.sol";
 
 // Interfaces
-import {IReflexModule, TReflexModule} from "../../src/interfaces/IReflexModule.sol";
+import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Fixtures
 import {TestHarness} from "./TestHarness.sol";

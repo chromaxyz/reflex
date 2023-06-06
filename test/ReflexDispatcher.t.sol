@@ -5,7 +5,8 @@ pragma solidity ^0.8.13;
 import {VmSafe} from "forge-std/Vm.sol";
 
 // Interfaces
-import {TReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
+import {IReflexBase} from "../src/interfaces/IReflexBase.sol";
+import {IReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
@@ -18,7 +19,7 @@ import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 /**
  * @title Reflex Dispatcher Test
  */
-contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
+contract ReflexDispatcherTest is ReflexFixture {
     // =====
     // Setup
     // =====
@@ -32,12 +33,12 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
     // =====
 
     function testUnitRevertInvalidOwnerZeroAddress() external {
-        vm.expectRevert(InvalidOwner.selector);
+        vm.expectRevert(IReflexDispatcher.ZeroAddress.selector);
         new MockReflexDispatcher(address(0), address(installerModuleV1));
     }
 
     function testUnitRevertInvalidInstallerZeroAddress() external {
-        vm.expectRevert(InvalidModuleAddress.selector);
+        vm.expectRevert(IReflexDispatcher.ZeroAddress.selector);
         new MockReflexDispatcher(address(this), address(0));
     }
 
@@ -59,7 +60,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
             })
         );
 
-        vm.expectRevert(InvalidModuleId.selector);
+        vm.expectRevert(IReflexBase.ModuleIdInvalid.selector);
         new MockReflexDispatcher(address(this), address(module));
     }
 
@@ -73,7 +74,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
             })
         );
 
-        vm.expectRevert(InvalidModuleType.selector);
+        vm.expectRevert(IReflexBase.ModuleTypeInvalid.selector);
         new MockReflexDispatcher(address(this), address(module));
     }
 
@@ -86,32 +87,30 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
 
         VmSafe.Log[] memory entries = vm.getRecordedLogs();
 
+        // TODO: now only `indexed` parameters are checked
+
         // 3 logs are expected to be emitted.
         assertEq(entries.length, 3);
 
-        // emit EndpointCreated(address(installerModuleV1))
-        assertEq(entries[0].topics.length, 2);
-        assertEq(entries[0].topics[0], keccak256("EndpointCreated(address)"));
-        assertEq(entries[0].topics[1], bytes32(uint256(uint160(address(installerEndpoint)))));
+        // emit EndpointCreated(address,uint32)
+        assertEq(entries[0].topics.length, 3);
+        assertEq(entries[0].topics[0], keccak256("EndpointCreated(uint32,address)"));
+        assertEq(entries[0].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
+        assertEq(entries[0].topics[2], bytes32(uint256(uint160(address(installerEndpoint)))));
         assertEq(entries[0].emitter, address(dispatcher));
 
-        // emit OwnershipTransferred(address(0), address(this));
+        // emit OwnershipTransferred(address,address);
         assertEq(entries[1].topics.length, 3);
         assertEq(entries[1].topics[0], keccak256("OwnershipTransferred(address,address)"));
         assertEq(entries[1].topics[1], bytes32(uint256(uint160(address(0)))));
         assertEq(entries[1].topics[2], bytes32(uint256(uint160(address(this)))));
         assertEq(entries[1].emitter, address(dispatcher));
 
-        // emit ModuleAdded(
-        //     _MODULE_ID_INSTALLER,
-        //     address(installerModuleV1),
-        //     MockReflexInstaller(installer).moduleVersion()
-        // );
-        assertEq(entries[2].topics.length, 4);
+        // emit ModuleAdded(uint32,address,uint32);
+        assertEq(entries[2].topics.length, 3);
         assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint32,address,uint32)"));
         assertEq(entries[2].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
         assertEq(entries[2].topics[2], bytes32(uint256(uint160(address(installerModuleV1)))));
-        assertEq(entries[2].topics[3], bytes32(uint256(_MODULE_VERSION_INSTALLER_V1)));
         assertEq(entries[2].emitter, address(dispatcher));
     }
 
@@ -148,7 +147,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
 
         assertFalse(success);
 
-        vm.expectRevert(CallerNotTrusted.selector);
+        vm.expectRevert(IReflexDispatcher.CallerNotTrusted.selector);
         assembly ("memory-safe") {
             revert(add(32, result), mload(result))
         }
@@ -161,7 +160,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
 
         assertFalse(success);
 
-        vm.expectRevert(MessageTooShort.selector);
+        vm.expectRevert(IReflexDispatcher.MessageTooShort.selector);
         assembly ("memory-safe") {
             revert(add(32, result), mload(result))
         }

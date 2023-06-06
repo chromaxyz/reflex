@@ -16,9 +16,9 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
     // Error
     // =====
 
-    error InvalidEndpointAddress();
+    error EndpointAddressInvalid();
 
-    error InvalidMessageSender();
+    error MessageSenderInvalid();
 
     error FailedToLog();
 
@@ -36,8 +36,7 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
     // ==========
 
     function sentinel() external pure returns (bool) {
-        if (_unpackEndpointAddress() == address(0)) revert InvalidEndpointAddress();
-        if (_unpackMessageSender() == address(0)) revert InvalidMessageSender();
+        if (_unpackEndpointAddress() == address(0) || _unpackMessageSender() == address(0)) revert ZeroAddress();
 
         return true;
     }

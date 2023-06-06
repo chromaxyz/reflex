@@ -2,38 +2,54 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexState, TReflexState} from "./IReflexState.sol";
+import {IReflexState} from "./IReflexState.sol";
 
 /**
- * @title Reflex Base Test Interface
+ * @title Reflex Base Interface
  */
-interface TReflexBase is TReflexState {
+interface IReflexBase is IReflexState {
     // ======
     // Errors
     // ======
 
+    /**
+     * @notice Thrown when error message is empty.
+     */
     error EmptyError();
 
-    error InvalidEndpoint();
+    /**
+     * @notice Thrown when endpoint creation code reverts upon creation.
+     */
+    error EndpointInvalid();
 
-    error InvalidModuleId();
+    /**
+     * @notice Thrown when the module id is invalid.
+     */
+    error ModuleIdInvalid();
 
-    error InvalidModuleType();
+    /**
+     * @notice Thrown when the module type is invalid.
+     */
+    error ModuleTypeInvalid();
 
+    /**
+     * @notice Thrown when an attempt is made to re-enter the protected method.
+     */
     error ReadOnlyReentrancy();
 
+    /**
+     * @notice Thrown when an attempt is made to re-enter the protected method.
+     */
     error Reentrancy();
 
     // ======
     // Events
     // ======
 
-    event EndpointCreated(address indexed endpointAddress);
-}
-
-/**
- * @title Reflex Base Interface
- */
-interface IReflexBase is IReflexState, TReflexBase {
-
+    /**
+     * @notice Emitted when an endpoint is created.
+     * @param moduleId Module id.
+     * @param endpointAddress The address of the created endpoint.
+     */
+    event EndpointCreated(uint32 indexed moduleId, address indexed endpointAddress);
 }

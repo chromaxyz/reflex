@@ -8,7 +8,6 @@ import {IReflexModule} from "./interfaces/IReflexModule.sol";
 
 // Sources
 import {ReflexBase} from "./ReflexBase.sol";
-import {ReflexEndpoint} from "./ReflexEndpoint.sol";
 
 /**
  * @title Reflex Dispatcher
@@ -28,14 +27,13 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         // Initialize the global reentrancy guard as unlocked.
         _reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
 
-        if (owner_ == address(0)) revert InvalidOwner();
-        if (installerModule_ == address(0)) revert InvalidModuleAddress();
+        if (owner_ == address(0) || installerModule_ == address(0)) revert ZeroAddress();
 
         // Verify that the `Installer` module configuration is as expected.
         IReflexModule.ModuleSettings memory moduleSettings_ = IReflexInstaller(installerModule_).moduleSettings();
 
-        if (moduleSettings_.moduleId != _MODULE_ID_INSTALLER) revert InvalidModuleId();
-        if (moduleSettings_.moduleType != _MODULE_TYPE_SINGLE_ENDPOINT) revert InvalidModuleType();
+        if (moduleSettings_.moduleId != _MODULE_ID_INSTALLER) revert ModuleIdInvalid();
+        if (moduleSettings_.moduleType != _MODULE_TYPE_SINGLE_ENDPOINT) revert ModuleTypeInvalid();
 
         // Initialize the owner.
         _owner = owner_;
@@ -55,18 +53,14 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
     // ============
 
     /**
-     * @notice Returns the module implementation address by module id.
-     * @param moduleId_ Module id.
-     * @return address Module implementation address.
+     * @inheritdoc IReflexDispatcher
      */
     function moduleIdToModuleImplementation(uint32 moduleId_) public view virtual returns (address) {
         return _modules[moduleId_];
     }
 
     /**
-     * @notice Returns the endpoint address by module id.
-     * @param moduleId_ Module id.
-     * @return address Endpoint address.
+     * @inheritdoc IReflexDispatcher
      */
     function moduleIdToEndpoint(uint32 moduleId_) public view virtual returns (address) {
         return _endpoints[moduleId_];

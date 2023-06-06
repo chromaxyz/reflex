@@ -45,7 +45,7 @@ contract ReflexEndpoint is IReflexEndpoint {
      * @param moduleId_ Same as the implementations' module id.
      */
     constructor(uint32 moduleId_) {
-        if (moduleId_ == 0) revert InvalidModuleId();
+        if (moduleId_ == 0) revert ModuleIdInvalid();
 
         _moduleId = moduleId_;
         _deployer = msg.sender;
@@ -56,9 +56,7 @@ contract ReflexEndpoint is IReflexEndpoint {
     // ============
 
     /**
-     * @notice Returns implementation address by resolving through the `Dispatcher`.
-     * @dev To prevent selector clashing avoid using the `implementation()` selector inside of modules.
-     * @return address Implementation address or zero address if unresolved.
+     * @inheritdoc IReflexEndpoint
      */
     function implementation() public view virtual returns (address) {
         (bool success, bytes memory response) = _deployer.staticcall(
@@ -73,8 +71,7 @@ contract ReflexEndpoint is IReflexEndpoint {
     }
 
     /**
-     * @dev Sentinel DELEGATECALL opcode to nudge Etherscan to classify this as a proxy.
-     * @dev Function selector clashing is mitigated by falling through to the fallback.
+     * @inheritdoc IReflexEndpoint
      */
     function sentinel() public virtual {
         // HACK: replace with better solution, preferably permanent.

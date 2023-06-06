@@ -4,9 +4,6 @@ pragma solidity ^0.8.13;
 // Sources
 import {ReflexBase} from "../../src/ReflexBase.sol";
 
-// Mocks
-import {MockReflexEndpoint} from "./MockReflexEndpoint.sol";
-
 /**
  * @title Mock Reflex Base
  */

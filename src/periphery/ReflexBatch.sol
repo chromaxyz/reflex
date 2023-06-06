@@ -3,7 +3,6 @@ pragma solidity ^0.8.13;
 
 // Interfaces
 import {IReflexBatch} from "./interfaces/IReflexBatch.sol";
-import {IReflexModule} from "../interfaces/IReflexModule.sol";
 
 // Sources
 import {ReflexModule} from "../ReflexModule.sol";
@@ -20,13 +19,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     // ==============
 
     /**
-     * @notice Execute a staticcall to an arbitrary address with an arbitrary payload.
-     * @param contractAddress_ Address of the contract to call.
-     * @param callData_ Encoded call data.
-     * @return bytes Encoded return data.
-     *
-     * @dev Intended to be used in static-called batches, to e.g. provide
-     * detailed information about the impacts of the simulated operation.
+     * @inheritdoc IReflexBatch
      */
     function performStaticCall(address contractAddress_, bytes memory callData_) public view returns (bytes memory) {
         if (contractAddress_ == address(0)) revert ZeroAddress();
@@ -41,8 +34,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     }
 
     /**
-     * @notice Perform a batch call to interact with multiple modules in a single transaction.
-     * @param actions_ List of actions to perform.
+     * @inheritdoc IReflexBatch
      */
     function performBatchCall(BatchAction[] calldata actions_) public virtual reentrancyAllowed {
         address messageSender = _unpackMessageSender();
@@ -66,11 +58,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     }
 
     /**
-     * @notice Simulate a batch call to interact with multiple modules in a single transaction.
-     * @param actions_ List of actions to simulate.
-     *
-     * @dev During simulation all batch actions are executed, regardless of the `allowFailure` flag.
-     * @dev Reverts with simulation results.
+     * @inheritdoc IReflexBatch
      */
     function simulateBatchCallRevert(BatchAction[] calldata actions_) public virtual reentrancyAllowed {
         address messageSender = _unpackMessageSender();
@@ -98,12 +86,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     }
 
     /**
-     * @notice Simulate a batch call, catch the revert and parse it to BatchActionResponse[].
-     * @param actions_ List of actions to simulate.
-     * @return simulation_ The decoded simulation of the simulated batched actions.
-     *
-     * @dev During simulation all batch actions are executed, regardless of the `allowFailure` flag.
-     * @dev Returns with simulation results.
+     * @inheritdoc IReflexBatch
      */
     function simulateBatchCallReturn(
         BatchAction[] calldata actions_
@@ -164,7 +147,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         address endpointAddress = action_.endpointAddress;
         uint32 moduleId_ = _relations[endpointAddress].moduleId;
 
-        if (moduleId_ == 0) revert InvalidModuleId();
+        if (moduleId_ == 0) revert ModuleIdInvalid();
 
         address moduleImplementation = _relations[endpointAddress].moduleImplementation;
 
