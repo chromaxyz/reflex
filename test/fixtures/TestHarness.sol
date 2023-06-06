@@ -4,7 +4,6 @@ pragma solidity ^0.8.13;
 // Vendor
 // solhint-disable-next-line no-console
 import {console2} from "forge-std/console2.sol";
-import {StdUtils} from "forge-std/StdUtils.sol";
 import {Test} from "forge-std/Test.sol";
 
 // Fixtures
@@ -14,9 +13,6 @@ import {Users} from "./Users.sol";
  * @title Test Harness
  *
  * @dev A rigorous testing and invariant harness.
- *
- * @author `brutalizeMemoryWith` and `captureGas` has been modified from: Solmate
- * (https://github.com/transmissions11/solmate/blob/v7/src/test/utils/DSTestPlus.sol) (MIT)
  *
  * @author `brutalizeMemory` has been copied from: Solady
  * (https://github.com/Vectorized/solady/blob/main/test/utils/TestPlus.sol) (MIT)
