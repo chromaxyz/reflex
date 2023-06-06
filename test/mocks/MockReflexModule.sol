@@ -36,8 +36,7 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
     // ==========
 
     function sentinel() external pure returns (bool) {
-        if (_unpackEndpointAddress() == address(0)) revert EndpointAddressInvalid();
-        if (_unpackMessageSender() == address(0)) revert MessageSenderInvalid();
+        if (_unpackEndpointAddress() == address(0) || _unpackMessageSender() == address(0)) revert ZeroAddress();
 
         return true;
     }

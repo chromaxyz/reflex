@@ -12,9 +12,20 @@ interface IReflexModule is IReflexBase {
     // Errors
     // ======
 
+    /**
+     * @notice Thrown when the module version is invalid.
+     */
     error ModuleVersionInvalid();
 
+    /**
+     * @notice Thrown when an unauthorized user attempts to perform an action.
+     */
     error Unauthorized();
+
+    /**
+     * @notice Thrown when an address passed is address(0) and therefore invalid.
+     */
+    error ZeroAddress();
 
     // =======
     // Structs

@@ -12,21 +12,45 @@ interface IReflexBase is IReflexState {
     // Errors
     // ======
 
+    /**
+     * @notice Thrown when error message is empty.
+     */
     error EmptyError();
 
+    /**
+     * @notice Thrown when endpoint creation code reverts upon creation.
+     */
     error EndpointInvalid();
 
+    /**
+     * @notice Thrown when the module id is invalid.
+     */
     error ModuleIdInvalid();
 
+    /**
+     * @notice Thrown when the module type is invalid.
+     */
     error ModuleTypeInvalid();
 
+    /**
+     * @notice Thrown when an attempt is made to re-enter the protected method.
+     */
     error ReadOnlyReentrancy();
 
+    /**
+     * @notice Thrown when an attempt is made to re-enter the protected method.
+     */
     error Reentrancy();
 
     // ======
     // Events
     // ======
 
+    // TODO: should emit user?
+
+    /**
+     * @notice Emitted when an endpoint is created.
+     * @param endpointAddress The address of the created endpoint.
+     */
     event EndpointCreated(address indexed endpointAddress);
 }

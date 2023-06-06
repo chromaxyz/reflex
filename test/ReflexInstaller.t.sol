@@ -20,9 +20,9 @@ contract ReflexInstallerTest is ReflexFixture {
     // Events
     // ======
 
-    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 indexed moduleVersion);
+    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 moduleVersion);
 
-    event ModuleUpgraded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 indexed moduleVersion);
+    event ModuleUpgraded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 moduleVersion);
 
     event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
 
@@ -385,7 +385,7 @@ contract ReflexInstallerTest is ReflexFixture {
     }
 
     function testUnitRevertTransferOwnershipZeroAddress() external {
-        vm.expectRevert(IReflexInstaller.ZeroAddress.selector);
+        vm.expectRevert(IReflexModule.ZeroAddress.selector);
         installerEndpoint.transferOwnership(address(0));
     }
 

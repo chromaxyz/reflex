@@ -12,21 +12,39 @@ interface IReflexDispatcher is IReflexBase {
     // Errors
     // ======
 
+    /**
+     * @notice Thrown when an unregistered and untrusted user or endpoint calls the {ReflexDispatcher} directly.
+     */
     error CallerNotTrusted();
 
-    error OwnerInvalid();
-
-    error ModuleAddressInvalid();
-
+    /**
+     * @notice Thrown when a message doesn't have the correct formatting and is therefore too short.
+     */
     error MessageTooShort();
+
+    /**
+     * @notice Thrown when an address passed is address(0) and therefore invalid.
+     */
+    error ZeroAddress();
 
     // ======
     // Events
     // ======
 
-    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 indexed moduleVersion);
+    /**
+     * @notice Emitted when a module is added.
+     * @param moduleId Module id.
+     * @param moduleImplementation Module implementation.
+     * @param moduleVersion Module version.
+     */
+    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 moduleVersion);
 
-    event OwnershipTransferred(address indexed user, address indexed newOwner);
+    /**
+     * @notice Emitted when the ownership is transferred.
+     * @param previousOwner The previous owner who triggered the change.
+     * @param newOwner The new owner who was granted the ownership.
+     */
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     // =======
     // Methods

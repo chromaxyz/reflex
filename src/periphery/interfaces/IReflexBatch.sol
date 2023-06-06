@@ -18,8 +18,6 @@ interface IReflexBatch is IReflexModule {
 
     error ModuleNotRegistered(uint32 moduleId_);
 
-    error ZeroAddress();
-
     // =======
     // Structs
     // =======

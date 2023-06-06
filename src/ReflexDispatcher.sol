@@ -28,8 +28,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         // Initialize the global reentrancy guard as unlocked.
         _reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
 
-        if (owner_ == address(0)) revert OwnerInvalid();
-        if (installerModule_ == address(0)) revert ModuleAddressInvalid();
+        if (owner_ == address(0) || installerModule_ == address(0)) revert ZeroAddress();
 
         // Verify that the `Installer` module configuration is as expected.
         IReflexModule.ModuleSettings memory moduleSettings_ = IReflexInstaller(installerModule_).moduleSettings();

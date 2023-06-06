@@ -33,12 +33,12 @@ contract ReflexDispatcherTest is ReflexFixture {
     // =====
 
     function testUnitRevertInvalidOwnerZeroAddress() external {
-        vm.expectRevert(IReflexDispatcher.OwnerInvalid.selector);
+        vm.expectRevert(IReflexDispatcher.ZeroAddress.selector);
         new MockReflexDispatcher(address(0), address(installerModuleV1));
     }
 
     function testUnitRevertInvalidInstallerZeroAddress() external {
-        vm.expectRevert(IReflexDispatcher.ModuleAddressInvalid.selector);
+        vm.expectRevert(IReflexDispatcher.ZeroAddress.selector);
         new MockReflexDispatcher(address(this), address(0));
     }
 
@@ -87,6 +87,8 @@ contract ReflexDispatcherTest is ReflexFixture {
 
         VmSafe.Log[] memory entries = vm.getRecordedLogs();
 
+        // TODO: now only `indexed` parameters are checked
+
         // 3 logs are expected to be emitted.
         assertEq(entries.length, 3);
 
@@ -108,11 +110,10 @@ contract ReflexDispatcherTest is ReflexFixture {
         //     address(installerModuleV1),
         //     MockReflexInstaller(installer).moduleVersion()
         // );
-        assertEq(entries[2].topics.length, 4);
+        assertEq(entries[2].topics.length, 3);
         assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint32,address,uint32)"));
         assertEq(entries[2].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
         assertEq(entries[2].topics[2], bytes32(uint256(uint160(address(installerModuleV1)))));
-        assertEq(entries[2].topics[3], bytes32(uint256(_MODULE_VERSION_INSTALLER_V1)));
         assertEq(entries[2].emitter, address(dispatcher));
     }
 

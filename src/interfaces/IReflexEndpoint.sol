@@ -9,6 +9,9 @@ interface IReflexEndpoint {
     // Errors
     // ======
 
+    /**
+     * @notice Thrown when the module id is invalid.
+     */
     error ModuleIdInvalid();
 
     // =======

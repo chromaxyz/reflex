@@ -12,28 +12,63 @@ interface IReflexInstaller is IReflexModule {
     // Errors
     // ======
 
+    /**
+     * @notice Thrown when the module already has been registered.
+     */
     error ModuleExistent(uint32 moduleId);
 
+    /**
+     * @notice Thrown when the module version is invalid.
+     */
     error ModuleInvalidVersion(uint32 moduleId);
 
+    /**
+     * @notice Thrown when the module type is invalid.
+     */
     error ModuleInvalidType(uint32 moduleId);
 
+    /**
+     * @notice Thrown when the module has not been registered yet.
+     */
     error ModuleNonexistent(uint32 moduleId);
 
+    /**
+     * @notice Thrown when the module is attempted to be upgraded but is not upgradeable.
+     */
     error ModuleNotUpgradeable(uint32 moduleId);
-
-    error ZeroAddress();
 
     // ======
     // Events
     // ======
 
-    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 indexed moduleVersion);
+    /**
+     * @notice Emitted when a module is added.
+     * @param moduleId Module id.
+     * @param moduleImplementation Module implementation.
+     * @param moduleVersion Module version.
+     */
+    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 moduleVersion);
 
-    event ModuleUpgraded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 indexed moduleVersion);
+    /**
+     * @notice Emitted when a module is upgraded.
+     * @param moduleId Module id.
+     * @param moduleImplementation Module implementation.
+     * @param moduleVersion Module version.
+     */
+    event ModuleUpgraded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 moduleVersion);
 
+    /**
+     * @notice Emitted when the ownership transfer process is started.
+     * @param previousOwner The previous owner who triggered the change.
+     * @param newOwner The new owner who was granted the ownership.
+     */
     event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
 
+    /**
+     * @notice Emitted when the ownership is transferred.
+     * @param previousOwner The previous owner who triggered the change.
+     * @param newOwner The new owner who was granted the ownership.
+     */
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     // =======
