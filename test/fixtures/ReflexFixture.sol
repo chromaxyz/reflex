@@ -36,9 +36,7 @@ abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness
     // Setup
     // =====
 
-    function setUp() public virtual override {
-        super.setUp();
-
+    function setUp() public virtual {
         installerModuleV1 = new MockReflexInstaller(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INSTALLER,

@@ -21,9 +21,7 @@ contract ImplementationStateTest is TestHarness {
     // Setup
     // =====
 
-    function setUp() public virtual override {
-        super.setUp();
-
+    function setUp() public virtual {
         state = new MockImplementationState();
     }
 

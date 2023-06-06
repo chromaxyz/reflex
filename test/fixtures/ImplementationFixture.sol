@@ -36,9 +36,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
     // Setup
     // =====
 
-    function setUp() public virtual override {
-        super.setUp();
-
+    function setUp() public virtual {
         installer = new MockImplementationInstaller(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INSTALLER,

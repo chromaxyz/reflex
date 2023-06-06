@@ -30,9 +30,7 @@ contract ReflexEndpointTest is TReflexEndpoint, TestHarness {
     // Setup
     // =====
 
-    function setUp() public virtual override {
-        super.setUp();
-
+    function setUp() public virtual {
         endpoint = new MockReflexEndpoint(_MODULE_VALID_ID);
     }
 

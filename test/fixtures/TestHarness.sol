@@ -130,7 +130,20 @@ abstract contract TestHarness is Users, Test {
 
         _;
 
-        _checkMemory();
+        bool zeroSlotIsNotZero;
+        bool freeMemoryPointerOverflowed;
+
+        assembly ("memory-safe") {
+            // Test at a lower, but reasonable limit for more safety room.
+            if gt(mload(0x40), 0xffffffff) {
+                freeMemoryPointerOverflowed := 1
+            }
+            // Check the value of the zero slot.
+            zeroSlotIsNotZero := mload(0x60)
+        }
+
+        if (freeMemoryPointerOverflowed) revert FreeMemoryPointerOverflowed();
+        if (zeroSlotIsNotZero) revert ZeroSlotNotZero();
     }
 
     // ===========
@@ -139,21 +152,6 @@ abstract contract TestHarness is Users, Test {
 
     constructor() {
         _profile = vm.envOr("FOUNDRY_PROFILE", string("default"));
-    }
-
-    // =====
-    // Setup
-    // =====
-
-    function setUp() public virtual {
-        address brutalizedAddress = _brutalizedAddress(address(0));
-        bool brutalizedAddressIsBrutalized;
-
-        assembly ("memory-safe") {
-            brutalizedAddressIsBrutalized := gt(shr(160, brutalizedAddress), 0)
-        }
-
-        if (!brutalizedAddressIsBrutalized) revert FailedSetup();
     }
 
     // =========
@@ -183,40 +181,5 @@ abstract contract TestHarness is Users, Test {
 
         // solhint-disable-next-line no-console
         console2.log(string(abi.encodePacked("[GAS] ", _gasLabel, "()")), _gasUsed);
-    }
-
-    /**
-     * @dev Brutalize address space.
-     */
-    function _brutalizedAddress(address value_) private view returns (address result_) {
-        assembly ("memory-safe") {
-            // Some acrobatics to make the brutalized bits psuedorandomly
-            // different with every call.
-            mstore(0x00, or(calldataload(0), mload(0x40)))
-            mstore(0x20, or(caller(), mload(0x00)))
-            result_ := or(shl(160, keccak256(0x00, 0x40)), value_)
-            mstore(0x40, add(0x20, mload(0x40)))
-            mstore(0x00, result_)
-        }
-    }
-
-    /**
-     * @dev Internal memory check.
-     */
-    function _checkMemory() internal pure {
-        bool zeroSlotIsNotZero;
-        bool freeMemoryPointerOverflowed;
-
-        assembly ("memory-safe") {
-            // Test at a lower, but reasonable limit for more safety room.
-            if gt(mload(0x40), 0xffffffff) {
-                freeMemoryPointerOverflowed := 1
-            }
-            // Check the value of the zero slot.
-            zeroSlotIsNotZero := mload(0x60)
-        }
-
-        if (freeMemoryPointerOverflowed) revert FreeMemoryPointerOverflowed();
-        if (zeroSlotIsNotZero) revert ZeroSlotNotZero();
     }
 }
