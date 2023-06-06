@@ -4,7 +4,7 @@
 # Include .env file and export its variables
 -include .env
 
-# Profiles: `default`, `bounded`, `unbounded`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`
+# Profiles: `default`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`
 PROFILE?=default
 
 # Setup
@@ -27,7 +27,7 @@ test:; ./scripts/test.sh -p $(PROFILE) -s "test(Unit|Fuzz)"
 
 # Test a single method
 # test-single:; ./scripts/test.sh -p PROFILE_NAME -s TEST_NAME -v VERBOSITY
-# Where PROFILE_NAME is one of `default`, `bounded`, `unbounded`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`.
+# Where PROFILE_NAME is one of `default`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`.
 # Where TEST_NAME is for example `testUnitMetadata`.
 # Where VERBOSITY is for example `3`.
 
