@@ -2,17 +2,15 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexModule, TReflexModule} from "./IReflexModule.sol";
+import {IReflexModule} from "./IReflexModule.sol";
 
 /**
- * @title Reflex Installer Test Interface
+ * @title Reflex Installer Interface
  */
-interface TReflexInstaller is TReflexModule {
+interface IReflexInstaller is IReflexModule {
     // ======
     // Errors
     // ======
-
-    error EndpointInvalid();
 
     error ModuleExistent(uint32 moduleId);
 
@@ -37,27 +35,77 @@ interface TReflexInstaller is TReflexModule {
     event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-}
 
-/**
- * @title Reflex Installer Interface
- */
-interface IReflexInstaller is IReflexModule, TReflexInstaller {
     // =======
     // Methods
     // =======
 
-    function acceptOwnership() external;
-
-    function addModules(address[] memory moduleAddresses_) external;
-
+    /**
+     * @notice Returns the address of the owner.
+     * @return address Owner address.
+     */
     function owner() external view returns (address);
 
+    /**
+     * @notice Returns the address of the pending owner.
+     * @return address Pending owner address.
+     */
     function pendingOwner() external view returns (address);
 
-    function renounceOwnership() external;
-
+    /**
+     * @notice Transfer ownership in two steps.
+     * @param newOwner_ New pending owner.
+     *
+     * Requirements:
+     *
+     * - The caller must be the current owner.
+     * - Cannot be re-entered.
+     */
     function transferOwnership(address newOwner_) external;
 
+    /**
+     * @notice Accept ownership.
+     *
+     * Requirements:
+     *
+     * - The caller must be the pending owner.
+     * - Cannot be re-entered.
+     */
+    function acceptOwnership() external;
+
+    /**
+     * @notice Renounce ownership.
+     *
+     * Requirements:
+     *
+     * - The caller must be the owner.
+     * - Cannot be re-entered.
+     *
+     * NOTE: Renouncing ownership will leave Reflex without an owner,
+     * thereby removing any functionality that is only available to the owner.
+     * It will not be possible to call methods with the `onlyOwner` modifier anymore.
+     */
+    function renounceOwnership() external;
+
+    /**
+     * @notice Add modules.
+     * @param moduleAddresses_ List of modules to add.
+     *
+     * Requirements:
+     *
+     * - The caller must be the current owner.
+     * - Cannot be re-entered.
+     */
+    function addModules(address[] memory moduleAddresses_) external;
+
+    /**
+     * @notice Upgrade modules
+     * @param moduleAddresses_ List of modules to upgrade.
+     *
+     * Requirements:
+     *
+     * - The caller must be the current owner.
+     * - Cannot be re-entered.
+     */
     function upgradeModules(address[] memory moduleAddresses_) external;
 }

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
+import {IReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
@@ -15,7 +15,19 @@ import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 /**
  * @title Reflex Installer Test
  */
-contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
+contract ReflexInstallerTest is ReflexFixture {
+    // ======
+    // Events
+    // ======
+
+    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 indexed moduleVersion);
+
+    event ModuleUpgraded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 indexed moduleVersion);
+
+    event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
     // =========
     // Constants
     // =========
@@ -268,7 +280,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
 
         vm.startPrank(user_);
 
-        vm.expectRevert(Unauthorized.selector);
+        vm.expectRevert(IReflexModule.Unauthorized.selector);
         installerEndpoint.transferOwnership(_users.Alice);
 
         vm.stopPrank();
@@ -317,7 +329,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
 
         vm.startPrank(user_);
 
-        vm.expectRevert(Unauthorized.selector);
+        vm.expectRevert(IReflexModule.Unauthorized.selector);
         installerEndpoint.acceptOwnership();
 
         vm.stopPrank();
@@ -366,14 +378,14 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
 
         vm.startPrank(user_);
 
-        vm.expectRevert(Unauthorized.selector);
+        vm.expectRevert(IReflexModule.Unauthorized.selector);
         installerEndpoint.renounceOwnership();
 
         vm.stopPrank();
     }
 
     function testUnitRevertTransferOwnershipZeroAddress() external {
-        vm.expectRevert(ZeroAddress.selector);
+        vm.expectRevert(IReflexInstaller.ZeroAddress.selector);
         installerEndpoint.transferOwnership(address(0));
     }
 
@@ -410,7 +422,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             )
         );
 
-        vm.expectRevert(abi.encodeWithSelector(ModuleNonexistent.selector, 777));
+        vm.expectRevert(abi.encodeWithSelector(IReflexInstaller.ModuleNonexistent.selector, 777));
         installerEndpoint.upgradeModules(moduleAddresses);
     }
 
@@ -447,7 +459,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     function testUnitRevertAddModulesExistentSingleEndpoint() external withHooksExpected(1, 1) {
         _addModule(singleModuleV1, _VALID);
 
-        _addModule(singleModuleV1, TReflexInstaller.ModuleExistent.selector);
+        _addModule(singleModuleV1, IReflexInstaller.ModuleExistent.selector);
     }
 
     function testUnitUpgradeModulesSingleEndpoint() external withHooksExpected(2, 1) {
@@ -470,8 +482,8 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
 
-        _upgradeModule(singleModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
-        _upgradeModule(singleModuleV2, TReflexInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(singleModuleV1, IReflexInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(singleModuleV2, IReflexInstaller.ModuleInvalidVersion.selector);
     }
 
     function testUnitRevertUpgradeInvalidTypeSingleEndpoint() external withHooksExpected(2, 1) {
@@ -487,7 +499,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             })
         );
 
-        _upgradeModule(singleModuleInvalidType, TReflexInstaller.ModuleInvalidType.selector);
+        _upgradeModule(singleModuleInvalidType, IReflexInstaller.ModuleInvalidType.selector);
     }
 
     function testUnitRevertUpgradeModulesNonUpgradeableSingleEndpoint() external withHooksExpected(3, 1) {
@@ -504,7 +516,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                     moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V4
                 })
             ),
-            TReflexInstaller.ModuleNotUpgradeable.selector
+            IReflexInstaller.ModuleNotUpgradeable.selector
         );
     }
 
@@ -525,7 +537,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     function testUnitRevertAddModulesExistentMultiEndpoint() external withHooksExpected(1, 0) {
         _addModule(multiModuleV1, _VALID);
 
-        _addModule(multiModuleV1, TReflexInstaller.ModuleExistent.selector);
+        _addModule(multiModuleV1, IReflexInstaller.ModuleExistent.selector);
     }
 
     function testUnitUpgradeModulesMultiEndpoint() external withHooksExpected(2, 0) {
@@ -547,8 +559,8 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
 
-        _upgradeModule(multiModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
-        _upgradeModule(multiModuleV2, TReflexInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(multiModuleV1, IReflexInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(multiModuleV2, IReflexInstaller.ModuleInvalidVersion.selector);
     }
 
     function testUnitRevertUpgradeInvalidTypeMultiEndpoint() external withHooksExpected(2, 0) {
@@ -564,7 +576,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             })
         );
 
-        _upgradeModule(multiModuleInvalidType, TReflexInstaller.ModuleInvalidType.selector);
+        _upgradeModule(multiModuleInvalidType, IReflexInstaller.ModuleInvalidType.selector);
     }
 
     function testUnitRevertUpgradeModulesNonUpgradeableMultiEndpoint() external withHooksExpected(3, 0) {
@@ -581,7 +593,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                     moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V4
                 })
             ),
-            TReflexInstaller.ModuleNotUpgradeable.selector
+            IReflexInstaller.ModuleNotUpgradeable.selector
         );
     }
 
@@ -602,7 +614,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
     function testUnitRevertAddModulesExistentInternal() external withHooksExpected(1, 0) {
         _addModule(internalModuleV1, _VALID);
 
-        _addModule(internalModuleV1, TReflexInstaller.ModuleExistent.selector);
+        _addModule(internalModuleV1, IReflexInstaller.ModuleExistent.selector);
     }
 
     function testUnitUpgradeModulesInternal() external withHooksExpected(2, 0) {
@@ -624,8 +636,8 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
         _addModule(internalModuleV1, _VALID);
         _upgradeModule(internalModuleV2, _VALID);
 
-        _upgradeModule(internalModuleV1, TReflexInstaller.ModuleInvalidVersion.selector);
-        _upgradeModule(internalModuleV2, TReflexInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(internalModuleV1, IReflexInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(internalModuleV2, IReflexInstaller.ModuleInvalidVersion.selector);
     }
 
     function testUnitRevertUpgradeInvalidTypeInternal() external withHooksExpected(2, 0) {
@@ -641,7 +653,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
             })
         );
 
-        _upgradeModule(internalModuleInvalidType, TReflexInstaller.ModuleInvalidType.selector);
+        _upgradeModule(internalModuleInvalidType, IReflexInstaller.ModuleInvalidType.selector);
     }
 
     function testUnitRevertUpgradeModulesNonUpgradeableInternal() external withHooksExpected(3, 0) {
@@ -658,7 +670,7 @@ contract ReflexInstallerTest is TReflexInstaller, ReflexFixture {
                     moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V4
                 })
             ),
-            TReflexInstaller.ModuleNotUpgradeable.selector
+            IReflexInstaller.ModuleNotUpgradeable.selector
         );
     }
 

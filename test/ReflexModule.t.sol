@@ -2,7 +2,8 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexModule, TReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {IReflexBase} from "../src/interfaces/IReflexBase.sol";
+import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
 import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
@@ -13,7 +14,7 @@ import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 /**
  * @title Reflex Module Test
  */
-contract ReflexModuleTest is TReflexModule, ReflexFixture {
+contract ReflexModuleTest is ReflexFixture {
     // =========
     // Constants
     // =========
@@ -67,7 +68,7 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
     }
 
     function testUnitRevertInvalidModuleIdZeroValue() external {
-        vm.expectRevert(InvalidModuleId.selector);
+        vm.expectRevert(IReflexBase.ModuleIdInvalid.selector);
         module = new MockReflexModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INVALID_ID,
@@ -79,7 +80,7 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
     }
 
     function testUnitRevertInvalidModuleTypeZeroValue() external {
-        vm.expectRevert(InvalidModuleType.selector);
+        vm.expectRevert(IReflexBase.ModuleTypeInvalid.selector);
         module = new MockReflexModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_VALID_ID,
@@ -91,7 +92,7 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
     }
 
     function testUnitRevertInvalidModuleTypeOverflowValue() external {
-        vm.expectRevert(InvalidModuleType.selector);
+        vm.expectRevert(IReflexBase.ModuleTypeInvalid.selector);
         module = new MockReflexModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_VALID_ID,
@@ -103,7 +104,7 @@ contract ReflexModuleTest is TReflexModule, ReflexFixture {
     }
 
     function testUnitRevertInvalidModuleVersionZeroValue() external {
-        vm.expectRevert(InvalidModuleVersion.selector);
+        vm.expectRevert(IReflexModule.ModuleVersionInvalid.selector);
         module = new MockReflexModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_VALID_ID,

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
+import {IReflexBase} from "../src/interfaces/IReflexBase.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
@@ -56,7 +56,7 @@ contract ImplementationEndpointTest is ImplementationFixture {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV1);
 
-        vm.expectRevert(TReflexInstaller.EndpointInvalid.selector);
+        vm.expectRevert(IReflexBase.EndpointInvalid.selector);
         installerEndpoint.addModules(moduleAddresses);
 
         singleModuleEndpoint = MockImplementationModule(dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID));

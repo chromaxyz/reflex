@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexEndpoint} from "../src/interfaces/IReflexEndpoint.sol";
+import {IReflexEndpoint} from "../src/interfaces/IReflexEndpoint.sol";
 
 // Fixtures
 import {TestHarness} from "./fixtures/TestHarness.sol";
@@ -13,7 +13,7 @@ import {MockReflexEndpoint} from "./mocks/MockReflexEndpoint.sol";
 /**
  * @title Reflex Endpoint Test
  */
-contract ReflexEndpointTest is TReflexEndpoint, TestHarness {
+contract ReflexEndpointTest is TestHarness {
     // =========
     // Constants
     // =========
@@ -39,7 +39,7 @@ contract ReflexEndpointTest is TReflexEndpoint, TestHarness {
     // =====
 
     function testUnitRevertInvalidModuleId() external {
-        vm.expectRevert(InvalidModuleId.selector);
+        vm.expectRevert(IReflexEndpoint.ModuleIdInvalid.selector);
         new MockReflexEndpoint(0);
     }
 

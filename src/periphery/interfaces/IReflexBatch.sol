@@ -2,25 +2,12 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexModule, TReflexModule} from "../../interfaces/IReflexModule.sol";
-
-/**
- * @title Reflex Batch Test Interface
- */
-interface TReflexBatch is TReflexModule {
-    // ======
-    // Errors
-    // ======
-
-    error ModuleNotRegistered(uint32 moduleId_);
-
-    error ZeroAddress();
-}
+import {IReflexModule} from "../../interfaces/IReflexModule.sol";
 
 /**
  * @title Reflex Batch Interface
  */
-interface IReflexBatch is IReflexModule, TReflexBatch {
+interface IReflexBatch is IReflexModule {
     // ======
     // Errors
     // ======
@@ -28,6 +15,10 @@ interface IReflexBatch is IReflexModule, TReflexBatch {
     error BatchSimulation(BatchActionResponse[] simulation);
 
     error BatchSimulationFailed();
+
+    error ModuleNotRegistered(uint32 moduleId_);
+
+    error ZeroAddress();
 
     // =======
     // Structs

@@ -5,7 +5,8 @@ pragma solidity ^0.8.13;
 import {VmSafe} from "forge-std/Vm.sol";
 
 // Interfaces
-import {TReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
+import {IReflexBase} from "../src/interfaces/IReflexBase.sol";
+import {IReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
@@ -18,7 +19,7 @@ import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 /**
  * @title Reflex Dispatcher Test
  */
-contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
+contract ReflexDispatcherTest is ReflexFixture {
     // =====
     // Setup
     // =====
@@ -32,12 +33,12 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
     // =====
 
     function testUnitRevertInvalidOwnerZeroAddress() external {
-        vm.expectRevert(InvalidOwner.selector);
+        vm.expectRevert(IReflexDispatcher.OwnerInvalid.selector);
         new MockReflexDispatcher(address(0), address(installerModuleV1));
     }
 
     function testUnitRevertInvalidInstallerZeroAddress() external {
-        vm.expectRevert(InvalidModuleAddress.selector);
+        vm.expectRevert(IReflexDispatcher.ModuleAddressInvalid.selector);
         new MockReflexDispatcher(address(this), address(0));
     }
 
@@ -59,7 +60,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
             })
         );
 
-        vm.expectRevert(InvalidModuleId.selector);
+        vm.expectRevert(IReflexBase.ModuleIdInvalid.selector);
         new MockReflexDispatcher(address(this), address(module));
     }
 
@@ -73,7 +74,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
             })
         );
 
-        vm.expectRevert(InvalidModuleType.selector);
+        vm.expectRevert(IReflexBase.ModuleTypeInvalid.selector);
         new MockReflexDispatcher(address(this), address(module));
     }
 
@@ -148,7 +149,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
 
         assertFalse(success);
 
-        vm.expectRevert(CallerNotTrusted.selector);
+        vm.expectRevert(IReflexDispatcher.CallerNotTrusted.selector);
         assembly ("memory-safe") {
             revert(add(32, result), mload(result))
         }
@@ -161,7 +162,7 @@ contract ReflexDispatcherTest is TReflexDispatcher, ReflexFixture {
 
         assertFalse(success);
 
-        vm.expectRevert(MessageTooShort.selector);
+        vm.expectRevert(IReflexDispatcher.MessageTooShort.selector);
         assembly ("memory-safe") {
             revert(add(32, result), mload(result))
         }

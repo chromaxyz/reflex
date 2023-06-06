@@ -2,25 +2,20 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexBase, TReflexBase} from "./IReflexBase.sol";
-
-/**
- * @title Reflex Module Test Interface
- */
-interface TReflexModule is TReflexBase {
-    // ======
-    // Errors
-    // ======
-
-    error InvalidModuleVersion();
-
-    error Unauthorized();
-}
+import {IReflexBase} from "./IReflexBase.sol";
 
 /**
  * @title Reflex Module Interface
  */
-interface IReflexModule is IReflexBase, TReflexModule {
+interface IReflexModule is IReflexBase {
+    // ======
+    // Errors
+    // ======
+
+    error ModuleVersionInvalid();
+
+    error Unauthorized();
+
     // =======
     // Structs
     // =======
@@ -53,13 +48,33 @@ interface IReflexModule is IReflexBase, TReflexModule {
     // Methods
     // =======
 
+    /**
+     * @notice Get module id.
+     * @return uint32 Module id.
+     */
     function moduleId() external view returns (uint32);
 
+    /**
+     * @notice Get the module settings.
+     * @return ModuleSettings Module settings.
+     */
     function moduleSettings() external view returns (ModuleSettings memory);
 
+    /**
+     * @notice Get module type.
+     * @return uint16 Module type.
+     */
     function moduleType() external view returns (uint16);
 
+    /**
+     * @notice Get whether module is upgradeable.
+     * @return bool Whether module is upgradeable.
+     */
     function moduleUpgradeable() external view returns (bool);
 
+    /**
+     * @notice Get module type.
+     * @return uint16 Module type.
+     */
     function moduleVersion() external view returns (uint32);
 }

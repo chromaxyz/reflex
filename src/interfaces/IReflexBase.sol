@@ -2,23 +2,23 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexState, TReflexState} from "./IReflexState.sol";
+import {IReflexState} from "./IReflexState.sol";
 
 /**
- * @title Reflex Base Test Interface
+ * @title Reflex Base Interface
  */
-interface TReflexBase is TReflexState {
+interface IReflexBase is IReflexState {
     // ======
     // Errors
     // ======
 
     error EmptyError();
 
-    error InvalidEndpoint();
+    error EndpointInvalid();
 
-    error InvalidModuleId();
+    error ModuleIdInvalid();
 
-    error InvalidModuleType();
+    error ModuleTypeInvalid();
 
     error ReadOnlyReentrancy();
 
@@ -29,11 +29,4 @@ interface TReflexBase is TReflexState {
     // ======
 
     event EndpointCreated(address indexed endpointAddress);
-}
-
-/**
- * @title Reflex Base Interface
- */
-interface IReflexBase is IReflexState, TReflexBase {
-
 }

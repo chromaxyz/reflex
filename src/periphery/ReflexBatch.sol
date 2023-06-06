@@ -164,7 +164,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         address endpointAddress = action_.endpointAddress;
         uint32 moduleId_ = _relations[endpointAddress].moduleId;
 
-        if (moduleId_ == 0) revert InvalidModuleId();
+        if (moduleId_ == 0) revert ModuleIdInvalid();
 
         address moduleImplementation = _relations[endpointAddress].moduleImplementation;
 

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {TReflexBase} from "../src/interfaces/IReflexBase.sol";
+import {IReflexBase} from "../src/interfaces/IReflexBase.sol";
 
 // Fixtures
 import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
@@ -13,7 +13,7 @@ import {MockReflexBase, ReentrancyAttack} from "./mocks/MockReflexBase.sol";
 /**
  * @title Reflex Base Test
  */
-contract ReflexBaseTest is TReflexBase, ReflexFixture {
+contract ReflexBaseTest is ReflexFixture {
     // =======
     // Storage
     // =======
@@ -55,7 +55,7 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
     }
 
     function testUnitRevertBytesEmptyError() external {
-        vm.expectRevert(EmptyError.selector);
+        vm.expectRevert(IReflexBase.EmptyError.selector);
         base.revertBytes("");
     }
 
@@ -64,15 +64,15 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
     // ==============
 
     function testUnitRevertCreateEndpointInvalidModuleId() external {
-        vm.expectRevert(InvalidModuleId.selector);
+        vm.expectRevert(IReflexBase.ModuleIdInvalid.selector);
         base.createEndpoint(0, 0, address(0));
     }
 
     function testUnitRevertCreateEndpointInvalidModuleType() external {
-        vm.expectRevert(InvalidModuleType.selector);
+        vm.expectRevert(IReflexBase.ModuleTypeInvalid.selector);
         base.createEndpoint(102, 0, address(0));
 
-        vm.expectRevert(InvalidModuleType.selector);
+        vm.expectRevert(IReflexBase.ModuleTypeInvalid.selector);
         base.createEndpoint(102, _MODULE_TYPE_INTERNAL, address(0));
     }
 
@@ -99,7 +99,7 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
     function testUnitRevertReadGuardedCheckLocked() external {
         assertEq(base.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
 
-        vm.expectRevert(ReadOnlyReentrancy.selector);
+        vm.expectRevert(IReflexBase.ReadOnlyReentrancy.selector);
         base.readGuardedCheckProtected();
 
         base.readGuardedCheckUnprotected();
@@ -113,12 +113,12 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
     }
 
     function testUnitRevertRecursiveDirectCall() external {
-        vm.expectRevert(Reentrancy.selector);
+        vm.expectRevert(IReflexBase.Reentrancy.selector);
         base.countDirectRecursive(10);
     }
 
     function testUnitRevertRecursiveIndirectCall() external {
-        vm.expectRevert(Reentrancy.selector);
+        vm.expectRevert(IReflexBase.Reentrancy.selector);
         base.countIndirectRecursive(10);
     }
 }
