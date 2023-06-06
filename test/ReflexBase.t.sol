@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
+// Vendor
+import {VmSafe} from "forge-std/Vm.sol";
+
 // Interfaces
 import {IReflexBase} from "../src/interfaces/IReflexBase.sol";
 
@@ -43,8 +46,30 @@ contract ReflexBaseTest is ReflexFixture {
     function testFuzzEarlyReturnRegisteredModule(uint32 moduleId_) external {
         vm.assume(moduleId_ > _MODULE_ID_INSTALLER);
 
+        vm.recordLogs();
+
+        address endpoint = base.createEndpoint(moduleId_, _MODULE_TYPE_SINGLE_ENDPOINT, address(0));
+
+        VmSafe.Log[] memory entries = vm.getRecordedLogs();
+
+        // 1 log is expected to be emitted.
+        assertEq(entries.length, 1);
+
+        // emit EndpointCreated(address,uint32)
+        assertEq(entries[0].topics.length, 3);
+        assertEq(entries[0].topics[0], keccak256("EndpointCreated(uint32,address)"));
+        assertEq(entries[0].topics[1], bytes32(uint256(moduleId_)));
+        assertEq(entries[0].topics[2], bytes32(uint256(uint160(address(endpoint)))));
+        assertEq(entries[0].emitter, address(base));
+
+        vm.recordLogs();
+
         base.createEndpoint(moduleId_, _MODULE_TYPE_SINGLE_ENDPOINT, address(0));
-        base.createEndpoint(moduleId_, _MODULE_TYPE_SINGLE_ENDPOINT, address(0));
+
+        entries = vm.getRecordedLogs();
+
+        // No log is expected to be emitted.
+        assertEq(entries.length, 0);
     }
 
     function testFuzzRevertBytes(bytes memory errorMessage_) external {

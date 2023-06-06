@@ -46,11 +46,10 @@ interface IReflexBase is IReflexState {
     // Events
     // ======
 
-    // TODO: should emit user?
-
     /**
      * @notice Emitted when an endpoint is created.
+     * @param moduleId Module id.
      * @param endpointAddress The address of the created endpoint.
      */
-    event EndpointCreated(address indexed endpointAddress);
+    event EndpointCreated(uint32 indexed moduleId, address indexed endpointAddress);
 }

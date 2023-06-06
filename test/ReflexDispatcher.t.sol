@@ -92,24 +92,21 @@ contract ReflexDispatcherTest is ReflexFixture {
         // 3 logs are expected to be emitted.
         assertEq(entries.length, 3);
 
-        // emit EndpointCreated(address(installerModuleV1))
-        assertEq(entries[0].topics.length, 2);
-        assertEq(entries[0].topics[0], keccak256("EndpointCreated(address)"));
-        assertEq(entries[0].topics[1], bytes32(uint256(uint160(address(installerEndpoint)))));
+        // emit EndpointCreated(address,uint32)
+        assertEq(entries[0].topics.length, 3);
+        assertEq(entries[0].topics[0], keccak256("EndpointCreated(uint32,address)"));
+        assertEq(entries[0].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
+        assertEq(entries[0].topics[2], bytes32(uint256(uint160(address(installerEndpoint)))));
         assertEq(entries[0].emitter, address(dispatcher));
 
-        // emit OwnershipTransferred(address(0), address(this));
+        // emit OwnershipTransferred(address,address);
         assertEq(entries[1].topics.length, 3);
         assertEq(entries[1].topics[0], keccak256("OwnershipTransferred(address,address)"));
         assertEq(entries[1].topics[1], bytes32(uint256(uint160(address(0)))));
         assertEq(entries[1].topics[2], bytes32(uint256(uint160(address(this)))));
         assertEq(entries[1].emitter, address(dispatcher));
 
-        // emit ModuleAdded(
-        //     _MODULE_ID_INSTALLER,
-        //     address(installerModuleV1),
-        //     MockReflexInstaller(installer).moduleVersion()
-        // );
+        // emit ModuleAdded(uint32,address,uint32);
         assertEq(entries[2].topics.length, 3);
         assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint32,address,uint32)"));
         assertEq(entries[2].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));

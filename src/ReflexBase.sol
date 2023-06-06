@@ -98,7 +98,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
             moduleImplementation: moduleImplementation_
         });
 
-        emit EndpointCreated(endpointAddress_);
+        emit EndpointCreated(moduleId_, endpointAddress_);
     }
 
     /**
