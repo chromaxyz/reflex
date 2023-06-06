@@ -133,58 +133,12 @@ abstract contract TestHarness is Users, Test {
         _checkMemory();
     }
 
-    /**
-     * @dev Modifier to brutalize memory with custom data.
-     */
-    modifier brutalizeMemoryWith(bytes memory brutalizeWith_) {
-        assembly ("memory-safe") {
-            // Fill the 64 bytes of scratch space with the data.
-            pop(
-                staticcall(
-                    gas(), // Pass along all the gas in the call.
-                    0x04, // Call the identity precompile address.
-                    brutalizeWith_, // Offset is the bytes' pointer.
-                    64, // Copy enough to only fill the scratch space.
-                    0, // Store the return value in the scratch space.
-                    64 // Scratch space is only 64 bytes in size, we don't want to write further.
-                )
-            )
-
-            let size := add(mload(brutalizeWith_), 32) // Add 32 to include the 32 byte length slot.
-
-            // Fill the free memory pointer's destination with the data.
-            pop(
-                staticcall(
-                    gas(), // Pass along all the gas in the call.
-                    0x04, // Call the identity precompile address.
-                    brutalizeWith_, // Offset is the bytes' pointer.
-                    size, // We want to pass the length of the bytes.
-                    mload(0x40), // Store the return value at the free memory pointer.
-                    size // Since the precompile just returns its input, we reuse size.
-                )
-            )
-        }
-
-        _;
-    }
-
-    /**
-     * @dev Modifier to warp to cached timestamp for invariants.
-     */
-    modifier useCurrentTimestamp() {
-        vm.warp(_currentTimestamp);
-        _;
-    }
-
     // ===========
     // Constructor
     // ===========
 
     constructor() {
         _profile = vm.envOr("FOUNDRY_PROFILE", string("default"));
-
-        // solhint-disable-next-line not-rely-on-time
-        _currentTimestamp = block.timestamp;
     }
 
     // =====
@@ -200,20 +154,6 @@ abstract contract TestHarness is Users, Test {
         }
 
         if (!brutalizedAddressIsBrutalized) revert FailedSetup();
-    }
-
-    // ==============
-    // Public methods
-    // ==============
-
-    function currentTimestamp() external view returns (uint256) {
-        return _currentTimestamp;
-    }
-
-    function setCurrentTimestamp(uint256 currentTimestamp_) external {
-        _timestamps.push(currentTimestamp_);
-        _timestampCount++;
-        _currentTimestamp = currentTimestamp_;
     }
 
     // =========
@@ -279,83 +219,4 @@ abstract contract TestHarness is Users, Test {
         if (freeMemoryPointerOverflowed) revert FreeMemoryPointerOverflowed();
         if (zeroSlotIsNotZero) revert ZeroSlotNotZero();
     }
-
-    /**
-     * @dev Internal memory check.
-     */
-    function _checkMemory(bytes memory data_) internal pure {
-        bool notZeroRightPadded;
-        bool fmpNotWordAligned;
-        bool insufficientMalloc;
-
-        assembly ("memory-safe") {
-            let length := mload(data_)
-            let lastWord := mload(add(add(data_, 0x20), and(length, not(31))))
-            let remainder := and(length, 31)
-            if remainder {
-                if shl(mul(8, remainder), lastWord) {
-                    notZeroRightPadded := 1
-                }
-            }
-            // Check if the free memory pointer is a multiple of 32.
-            fmpNotWordAligned := and(mload(0x40), 31)
-            // Write some garbage to the free memory.
-            mstore(mload(0x40), keccak256(0x00, 0x60))
-            // Check if the memory allocated is sufficient.
-            if length {
-                if gt(add(add(data_, 0x20), length), mload(0x40)) {
-                    insufficientMalloc := 1
-                }
-            }
-        }
-
-        if (notZeroRightPadded) revert NotZeroRightPadded();
-        if (fmpNotWordAligned) revert Not32ByteWordAligned();
-        if (insufficientMalloc) revert InsufficientMemoryAllocation();
-
-        _checkMemory();
-    }
-
-    /**
-     * @dev Internal memory check.
-     */
-    function _checkMemory(string memory data_) internal pure {
-        _checkMemory(bytes(data_));
-    }
-}
-
-/**
- * @title Unbounded Handler
- *
- * @dev Abstract unbounded handler to inherit in invariant tests.
- * @dev Returns on failure.
- */
-abstract contract UnboundedHandler is Users, StdUtils {
-    // =======
-    // Storage
-    // =======
-
-    mapping(bytes32 => uint256) internal _callCounters;
-
-    // =========
-    // Utilities
-    // =========
-
-    function increaseCallCount(bytes32 message_) public virtual {
-        _callCounters[message_]++;
-    }
-
-    function getCallCount(bytes32 message_) public view virtual returns (uint256) {
-        return _callCounters[message_];
-    }
-}
-
-/**
- * @title Bounded Handler
- *
- * @dev Abstract bounded handler to inherit in invariant tests.
- * @dev Reverts on failure.
- */
-abstract contract BoundedHandler is UnboundedHandler {
-
 }

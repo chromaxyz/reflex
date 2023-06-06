@@ -47,6 +47,8 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * Calling a `nonReadReentrant` function from another `nonReadReentrant` function is not supported.
      */
     modifier nonReadReentrant() virtual {
+        // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
+        // Any calls to `nonReadReentrant` after this point will fail.
         if (_reentrancyStatusLocked()) revert ReadOnlyReentrancy();
 
         _;

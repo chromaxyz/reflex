@@ -24,8 +24,6 @@ build:; ./scripts/build.sh -p $(PROFILE)
 
 # Test
 test:; ./scripts/test.sh -p $(PROFILE) -s "test(Unit|Fuzz)"
-test-invariant-bounded:; ./scripts/test.sh -p bounded -c "Bounded"
-test-invariant-unbounded:; ./scripts/test.sh -p unbounded -c "Unbounded"
 
 # Test a single method
 # test-single:; ./scripts/test.sh -p PROFILE_NAME -s TEST_NAME -v VERBOSITY
