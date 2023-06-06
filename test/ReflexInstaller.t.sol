@@ -9,7 +9,6 @@ import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
 // Mocks
-import {MockReflexInstaller} from "./mocks/MockReflexInstaller.sol";
 import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 
 /**

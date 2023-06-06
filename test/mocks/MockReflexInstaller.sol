@@ -7,10 +7,8 @@ import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 // Sources
 import {ReflexBase} from "../../src/ReflexBase.sol";
 import {ReflexInstaller} from "../../src/ReflexInstaller.sol";
-import {ReflexModule} from "../../src/ReflexModule.sol";
 
 // Mocks
-import {MockReflexBase} from "./MockReflexBase.sol";
 import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**

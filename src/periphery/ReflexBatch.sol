@@ -3,7 +3,6 @@ pragma solidity ^0.8.13;
 
 // Interfaces
 import {IReflexBatch} from "./interfaces/IReflexBatch.sol";
-import {IReflexModule} from "../interfaces/IReflexModule.sol";
 
 // Sources
 import {ReflexModule} from "../ReflexModule.sol";

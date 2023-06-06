@@ -8,7 +8,6 @@ import {IReflexModule} from "./interfaces/IReflexModule.sol";
 
 // Sources
 import {ReflexBase} from "./ReflexBase.sol";
-import {ReflexEndpoint} from "./ReflexEndpoint.sol";
 
 /**
  * @title Reflex Dispatcher

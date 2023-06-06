@@ -38,6 +38,9 @@ contract ReflexEndpoint is IReflexEndpoint {
     // Constructor
     // ===========
 
+    // TODO: make payable?
+    // TODO: can we make this a cheap clone with immutable args
+
     /**
      * @param moduleId_ Same as the implementations' module id.
      */
