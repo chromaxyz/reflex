@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Sources
+import {ReflexBase} from "../../src/ReflexBase.sol";
 import {ReflexModule} from "../../src/ReflexModule.sol";
 
 // Mocks
@@ -152,6 +153,16 @@ contract MockReflexModule is ReflexModule, MockReflexBase {
         if (!success) {
             revert FailedToLog();
         }
+    }
+
+    // =========
+    // Overrides
+    // =========
+
+    function _getEndpointCreationCode(
+        uint32 moduleId_
+    ) internal virtual override(MockReflexBase, ReflexBase) returns (bytes memory) {
+        return super._getEndpointCreationCode(moduleId_);
     }
 }
 

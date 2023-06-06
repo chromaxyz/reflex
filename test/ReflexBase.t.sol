@@ -40,19 +40,6 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
     // Tests
     // =====
 
-    function testUnitRevertCreateEndpointInvalidModuleId() external {
-        vm.expectRevert(InvalidModuleId.selector);
-        base.createEndpoint(0, 0, address(0));
-    }
-
-    function testUnitRevertCreateEndpointInvalidModuleType() external {
-        vm.expectRevert(InvalidModuleType.selector);
-        base.createEndpoint(102, 0, address(0));
-
-        vm.expectRevert(InvalidModuleType.selector);
-        base.createEndpoint(102, _MODULE_TYPE_INTERNAL, address(0));
-    }
-
     function testFuzzEarlyReturnRegisteredModule(uint32 moduleId_) external {
         vm.assume(moduleId_ > _MODULE_ID_INSTALLER);
 
@@ -70,6 +57,23 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
     function testUnitRevertBytesEmptyError() external {
         vm.expectRevert(EmptyError.selector);
         base.revertBytes("");
+    }
+
+    // ==============
+    // Endpoint tests
+    // ==============
+
+    function testUnitRevertCreateEndpointInvalidModuleId() external {
+        vm.expectRevert(InvalidModuleId.selector);
+        base.createEndpoint(0, 0, address(0));
+    }
+
+    function testUnitRevertCreateEndpointInvalidModuleType() external {
+        vm.expectRevert(InvalidModuleType.selector);
+        base.createEndpoint(102, 0, address(0));
+
+        vm.expectRevert(InvalidModuleType.selector);
+        base.createEndpoint(102, _MODULE_TYPE_INTERNAL, address(0));
     }
 
     // ======================
@@ -92,12 +96,15 @@ contract ReflexBaseTest is TReflexBase, ReflexFixture {
         assertEq(base.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
     }
 
-    function testUnitNonReentrantMethodCanBeCalled() external {
-        assertEq(base.reentrancyCounter(), 0);
+    function testUnitRevertReadGuardedCheckLocked() external {
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
 
-        base.callback();
+        vm.expectRevert(ReadOnlyReentrancy.selector);
+        base.readGuardedCheckProtected();
 
-        assertEq(base.reentrancyCounter(), 1);
+        base.readGuardedCheckUnprotected();
+
+        assertEq(base.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
     }
 
     function testUnitRevertRemoteCallback() external {

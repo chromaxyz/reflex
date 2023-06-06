@@ -4,11 +4,11 @@ pragma solidity ^0.8.13;
 // Interfaces
 import {TReflexEndpoint} from "../src/interfaces/IReflexEndpoint.sol";
 
-// Sources
-import {ReflexEndpoint} from "../src/ReflexEndpoint.sol";
-
 // Fixtures
 import {TestHarness} from "./fixtures/TestHarness.sol";
+
+// Mocks
+import {MockReflexEndpoint} from "./mocks/MockReflexEndpoint.sol";
 
 /**
  * @title Reflex Endpoint Test
@@ -24,16 +24,14 @@ contract ReflexEndpointTest is TReflexEndpoint, TestHarness {
     // Storage
     // =======
 
-    ReflexEndpoint public endpoint;
+    MockReflexEndpoint public endpoint;
 
     // =====
     // Setup
     // =====
 
-    function setUp() public virtual override {
-        super.setUp();
-
-        endpoint = new ReflexEndpoint(_MODULE_VALID_ID);
+    function setUp() public virtual {
+        endpoint = new MockReflexEndpoint(_MODULE_VALID_ID);
     }
 
     // =====
@@ -42,7 +40,7 @@ contract ReflexEndpointTest is TReflexEndpoint, TestHarness {
 
     function testUnitRevertInvalidModuleId() external {
         vm.expectRevert(InvalidModuleId.selector);
-        new ReflexEndpoint(0);
+        new MockReflexEndpoint(0);
     }
 
     function testUnitResolveInvalidImplementationToZeroAddress() external {

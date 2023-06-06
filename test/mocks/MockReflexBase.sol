@@ -4,13 +4,16 @@ pragma solidity ^0.8.13;
 // Sources
 import {ReflexBase} from "../../src/ReflexBase.sol";
 
+// Mocks
+import {MockReflexEndpoint} from "./MockReflexEndpoint.sol";
+
 /**
  * @title Mock Reflex Base
  */
 contract MockReflexBase is ReflexBase {
-    // =======
-    // Storage
-    // =======
+    // =========
+    // Constants
+    // =========
 
     /**
      * @dev `bytes32(uint256(keccak256("reentrancy.counter")) - 1)`
@@ -67,17 +70,35 @@ contract MockReflexBase is ReflexBase {
 
     function countAndCall(ReentrancyAttack attacker_) public nonReentrant {
         _increaseCounter(_REENTRANCY_COUNTER_SLOT);
-        bytes4 func = bytes4(keccak256("callback()"));
-        attacker_.callSender(func);
+
+        attacker_.callSender(bytes4(keccak256("callback()")));
     }
 
     function guardedCheckLocked() public nonReentrant {
-        assert(getReentrancyStatusLocked() == true);
+        assert(getReentrancyStatusLocked());
         assert(getReentrancyStatus() == _REENTRANCY_GUARD_LOCKED);
     }
 
+    function readCallbackTargetUnprotected() public {}
+
+    function readCallbackTargetProtected() public nonReadReentrant {}
+
+    function readGuardedCheckProtected() public nonReentrant {
+        assert(getReentrancyStatusLocked());
+        assert(getReentrancyStatus() == _REENTRANCY_GUARD_LOCKED);
+
+        readCallbackTargetProtected();
+    }
+
+    function readGuardedCheckUnprotected() public nonReentrant {
+        assert(getReentrancyStatusLocked());
+        assert(getReentrancyStatus() == _REENTRANCY_GUARD_LOCKED);
+
+        readCallbackTargetUnprotected();
+    }
+
     function unguardedCheckUnlocked() public view {
-        assert(getReentrancyStatusLocked() == false);
+        assert(!getReentrancyStatusLocked());
         assert(getReentrancyStatus() == _REENTRANCY_GUARD_UNLOCKED);
     }
 
@@ -116,6 +137,14 @@ contract MockReflexBase is ReflexBase {
     function _increaseCounter(bytes32 slot_) internal {
         uint256 value = _getCounter(slot_);
         _setCounter(slot_, value + 1);
+    }
+
+    // =========
+    // Overrides
+    // =========
+
+    function _getEndpointCreationCode(uint32 moduleId_) internal virtual override returns (bytes memory) {
+        return super._getEndpointCreationCode(moduleId_);
     }
 }
 

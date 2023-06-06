@@ -12,6 +12,8 @@ interface TReflexInstaller is TReflexModule {
     // Errors
     // ======
 
+    error EndpointInvalid();
+
     error ModuleExistent(uint32 moduleId);
 
     error ModuleInvalidVersion(uint32 moduleId);

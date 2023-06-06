@@ -103,7 +103,7 @@ TODO: ADD LINK
 
 ## Usage
 
-Reflex includes a suite of fuzzing and invariant tests written in Solidity with Foundry.
+Reflex includes a suite of unit and fuzz tests written in Solidity with Foundry.
 
 Please refer to the [IMPLEMENTERS](docs/IMPLEMENTERS.md) guide for an in-depth breakdown of the framework.
 
@@ -142,16 +142,13 @@ Usage: `PROFILE=default make build`.
 
 Build profiles: `default`, `min-solc`, `via-ir`, `min-solc-via-ir`.
 
-Test profiles: `default`, `intense`, `bounded`, `unbounded`.
+Test profiles: `default`, `intense`.
 
 Usage: `PROFILE=default make test`.
 
-| Command                                                        | Action                                              |
-| -------------------------------------------------------------- | --------------------------------------------------- |
-| `make test` or `PROFILE=default make test`                     | Run all tests with the `default` profile.           |
-| `make test-unit` or `PROFILE=default make test-unit`           | Run all unit tests with the `default` profile.      |
-| `make test-fuzz` or `PROFILE=default make test-fuzz`           | Run all fuzz tests with the `default` profile.      |
-| `make test-invariant` or `PROFILE=default make test-invariant` | Run all invariant tests with the `default` profile. |
+| Command                                    | Action                                    |
+| ------------------------------------------ | ----------------------------------------- |
+| `make test` or `PROFILE=default make test` | Run all tests with the `default` profile. |
 
 ## Safety
 

@@ -24,13 +24,12 @@ build:; ./scripts/build.sh -p $(PROFILE)
 
 # Test
 test:; ./scripts/test.sh -p $(PROFILE) -s "test(Unit|Fuzz)"
-test-invariant-bounded:; ./scripts/test.sh -p bounded -c "Bounded"
-test-invariant-unbounded:; ./scripts/test.sh -p unbounded -c "Unbounded"
 
 # Test a single method
-# test-single:; ./scripts/test.sh -p PROFILE_NAME -s TEST_NAME
+# test-single:; ./scripts/test.sh -p PROFILE_NAME -s TEST_NAME -v VERBOSITY
 # Where PROFILE_NAME is one of `default`, `bounded`, `unbounded`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`.
 # Where TEST_NAME is for example `testUnitMetadata`.
+# Where VERBOSITY is for example `3`.
 
 # ABI
 abi:; ./scripts/abi-generate.sh
