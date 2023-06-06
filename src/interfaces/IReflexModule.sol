@@ -55,16 +55,16 @@ interface IReflexModule is IReflexBase {
     function moduleId() external view returns (uint32);
 
     /**
-     * @notice Get the module settings.
-     * @return ModuleSettings Module settings.
+     * @notice Get module type.
+     * @return uint16 Module type.
      */
-    function moduleSettings() external view returns (ModuleSettings memory);
+    function moduleType() external view returns (uint16);
 
     /**
      * @notice Get module type.
      * @return uint16 Module type.
      */
-    function moduleType() external view returns (uint16);
+    function moduleVersion() external view returns (uint32);
 
     /**
      * @notice Get whether module is upgradeable.
@@ -73,8 +73,8 @@ interface IReflexModule is IReflexBase {
     function moduleUpgradeable() external view returns (bool);
 
     /**
-     * @notice Get module type.
-     * @return uint16 Module type.
+     * @notice Get the module settings.
+     * @return ModuleSettings Module settings.
      */
-    function moduleVersion() external view returns (uint32);
+    function moduleSettings() external view returns (ModuleSettings memory);
 }
