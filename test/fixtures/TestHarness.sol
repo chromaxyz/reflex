@@ -130,14 +130,21 @@ abstract contract TestHarness is Users, Test {
 
         _;
 
+        // Check if the free memory pointer and the zero slot are not contaminated.
+        // Useful for cases where these slots are used for temporary storage.
         bool zeroSlotIsNotZero;
         bool freeMemoryPointerOverflowed;
 
         assembly ("memory-safe") {
+            // Write ones to the free memory, to make subsequent checks fail if
+            // insufficient memory is allocated.
+            mstore(mload(0x40), not(0))
+
             // Test at a lower, but reasonable limit for more safety room.
             if gt(mload(0x40), 0xffffffff) {
                 freeMemoryPointerOverflowed := 1
             }
+
             // Check the value of the zero slot.
             zeroSlotIsNotZero := mload(0x60)
         }
