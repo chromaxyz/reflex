@@ -92,7 +92,8 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         BatchAction[] calldata actions_
     ) public virtual reentrancyAllowed returns (BatchActionResponse[] memory simulation_) {
         // NOTE: it is assumed user will never be able to control _modules (storage) nor _moduleId (immutable).
-        // TODO: _unpackEndpointAddress could be replaced by msg.sender.
+        // TODO: gas optimization: `_unpackEndpointAddress` could be replaced by msg.sender.
+        // TODO: gas optimization: `success` check is strictly not necessary and may interfere.
 
         (bool success, bytes memory result) = _modules[_moduleId].delegatecall(
             abi.encodePacked(
