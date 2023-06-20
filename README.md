@@ -47,7 +47,7 @@ A Solidity framework for upgradeable modularized applications.
   - [~100](test/ImplementationGas.t.sol) gas on subsequent warm calls inside of a warm batched transaction call.
 - A built-in upgradeable installer allowing you to add, upgrade and deprecate modules throughout the application lifespan.
 
-Noteably this is a so-called framework, a single well-tested audited implementation rather than a specification.
+Noteably this is a so-called framework, a single well-tested implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
 
 ## Contracts
@@ -60,7 +60,7 @@ The framework serves as the foundation of your modular application allowing you 
 ├── ReflexEndpoint.sol "Non-upgradeable `Endpoint`, internal proxy-like indirection layer."
 ├── ReflexInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
 ├── ReflexModule.sol
-├── ReflexState.sol "Extendable `State`, foundational state store of the framework."
+├── ReflexState.sol "Extendable `State`, state store of the framework inherited in all modules."
 ├── interfaces
     ├── IReflexBase.sol "Interface for the `Base`."
     ├── IReflexDispatcher.sol "Interface for the `Dispatcher`."
@@ -76,7 +76,7 @@ The framework serves as the foundation of your modular application allowing you 
 
 ```mermaid
 graph TD
-    subgraph Framework [ ]
+    subgraph Reflex [ ]
 
     ReflexInstaller --> ReflexModule
     ReflexDispatcher --> ReflexBase
@@ -89,13 +89,13 @@ graph TD
 
 ## Install
 
-To install with [**Foundry**](https://github.com/foundry-rs/foundry):
+To install for [**Foundry**](https://github.com/foundry-rs/foundry):
 
 ```sh
 TODO: ADD LINK
 ```
 
-To install with [**Hardhat**](https://github.com/nomiclabs/hardhat) or [**Truffle**](https://github.com/trufflesuite/truffle):
+To install for [**Hardhat**](https://github.com/nomiclabs/hardhat):
 
 ```sh
 TODO: ADD LINK
@@ -155,6 +155,8 @@ Usage: `PROFILE=default make test`.
 This is **experimental software** and is provided on an "as is" and "as available" basis.
 
 We **do not give any warranties** and **will not be liable for any loss** incurred through any use of this codebase.
+
+At this point in time Reflex **has not yet been audited** and must therefore not yet be used in production.
 
 ## Contributing
 
