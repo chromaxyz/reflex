@@ -35,7 +35,7 @@ rm -f "$CHECKLIST_FILENAME"
 # Output checklist
 slither . \
   --filter-path "node_modules|lib|test|script" \
-  --exclude "solc-version,assembly,naming-convention" \
+  --show-ignored-findings \
   --markdown-root "../" \
   --checklist \
   --solc-remaps '$(cat remappings.txt)' \
