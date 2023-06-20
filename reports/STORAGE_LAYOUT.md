@@ -8,7 +8,7 @@
 | \_modules          | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexBase.sol:ReflexBase |
 | \_endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexBase.sol:ReflexBase |
 | \_relations        | mapping(address => struct IReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexBase.sol:ReflexBase |
-| \_\_gap            | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexBase.sol:ReflexBase |
+| \_\_REFLEX_GAP     | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexBase.sol:ReflexBase |
 
 **ReflexConstants**
 
@@ -25,7 +25,7 @@
 | \_modules          | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexDispatcher.sol:ReflexDispatcher |
 | \_endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexDispatcher.sol:ReflexDispatcher |
 | \_relations        | mapping(address => struct IReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexDispatcher.sol:ReflexDispatcher |
-| \_\_gap            | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexDispatcher.sol:ReflexDispatcher |
+| \_\_REFLEX_GAP     | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexDispatcher.sol:ReflexDispatcher |
 
 **ReflexInstaller**
 
@@ -37,7 +37,7 @@
 | \_modules          | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexInstaller.sol:ReflexInstaller |
 | \_endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexInstaller.sol:ReflexInstaller |
 | \_relations        | mapping(address => struct IReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexInstaller.sol:ReflexInstaller |
-| \_\_gap            | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexInstaller.sol:ReflexInstaller |
+| \_\_REFLEX_GAP     | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexInstaller.sol:ReflexInstaller |
 
 **ReflexModule**
 
@@ -49,7 +49,7 @@
 | \_modules          | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexModule.sol:ReflexModule |
 | \_endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexModule.sol:ReflexModule |
 | \_relations        | mapping(address => struct IReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexModule.sol:ReflexModule |
-| \_\_gap            | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexModule.sol:ReflexModule |
+| \_\_REFLEX_GAP     | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexModule.sol:ReflexModule |
 
 **ReflexEndpoint**
 
@@ -66,7 +66,7 @@
 | \_modules          | mapping(uint32 => address)                            | 3    | 0      | 32    | src/ReflexState.sol:ReflexState |
 | \_endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    | src/ReflexState.sol:ReflexState |
 | \_relations        | mapping(address => struct IReflexState.TrustRelation) | 5    | 0      | 32    | src/ReflexState.sol:ReflexState |
-| \_\_gap            | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexState.sol:ReflexState |
+| \_\_REFLEX_GAP     | uint256[44]                                           | 6    | 0      | 1408  | src/ReflexState.sol:ReflexState |
 
 **ReflexBatch**
 
@@ -78,7 +78,7 @@
 | \_modules          | mapping(uint32 => address)                            | 3    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
 | \_endpoints        | mapping(uint32 => address)                            | 4    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
 | \_relations        | mapping(address => struct IReflexState.TrustRelation) | 5    | 0      | 32    | src/periphery/ReflexBatch.sol:ReflexBatch |
-| \_\_gap            | uint256[44]                                           | 6    | 0      | 1408  | src/periphery/ReflexBatch.sol:ReflexBatch |
+| \_\_REFLEX_GAP     | uint256[44]                                           | 6    | 0      | 1408  | src/periphery/ReflexBatch.sol:ReflexBatch |
 
 **MockImplementationDispatcher**
 
@@ -90,7 +90,7 @@
 | \_modules              | mapping(uint32 => address)                            | 3    | 0      | 32    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
 | \_endpoints            | mapping(uint32 => address)                            | 4    | 0      | 32    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
 | \_relations            | mapping(address => struct IReflexState.TrustRelation) | 5    | 0      | 32    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
-| \_\_gap                | uint256[44]                                           | 6    | 0      | 1408  | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
+| \_\_REFLEX_GAP         | uint256[44]                                           | 6    | 0      | 1408  | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
 | \_implementationState0 | bytes32                                               | 50   | 0      | 32    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
 | \_implementationState1 | uint256                                               | 51   | 0      | 32    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
 | \_implementationState2 | address                                               | 52   | 0      | 20    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
