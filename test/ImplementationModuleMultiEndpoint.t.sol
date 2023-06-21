@@ -368,6 +368,17 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         _verifyGetStateSlot(message_);
     }
 
+    function testUnitUpgradeMultiModuleToMaliciousSelfDestructModule() external brutalizeMemory {
+        // TODO: add test
+    }
+
+    function testFuzzUpgradeMultiModuleToMaliciousStorageModule(
+        bytes32 message_,
+        uint8 number_
+    ) external brutalizeMemory {
+        // TODO: add test
+    }
+
     function testUnitEndpointSentinelFallback() external {
         _testEndpointSentinelFallback(multiModuleEndpointA);
         _testEndpointSentinelFallback(multiModuleEndpointB);
