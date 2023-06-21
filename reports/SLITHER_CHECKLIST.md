@@ -290,9 +290,9 @@ Confidence: High
 ../src/ReflexModule.sol#L39
 
 - [ ] ID-49
-      Variable [ReflexState.\_\_REFLEX_GAP](../src/ReflexState.sol#L90) is not in mixedCase
+      Variable [ReflexState.\_\_REFLEX_GAP](../src/ReflexState.sol#L91) is not in mixedCase
 
-../src/ReflexState.sol#L90
+../src/ReflexState.sol#L91
 
 - [ ] ID-50
       Variable [ReflexState.\_reentrancyStatus](../src/ReflexState.sol#L35) is not in mixedCase

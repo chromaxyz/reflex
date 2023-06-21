@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
-// Vendor
-import {console2} from "forge-std/console2.sol";
-import {stdStorageSafe, StdStorage} from "forge-std/StdStorage.sol";
-
 // Interfaces
 import {IReflexEndpoint} from "../src/interfaces/IReflexEndpoint.sol";
 import {IReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
@@ -23,8 +19,6 @@ import {MockImplementationMaliciousStorageModule} from "./mocks/MockImplementati
  * @title Implementation Module Multi Endpoint Test
  */
 contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
-    using stdStorageSafe for StdStorage;
-
     // =========
     // Constants
     // =========
