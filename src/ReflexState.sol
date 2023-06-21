@@ -87,5 +87,6 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
      * @dev Reflex occupies storage slots 0 to 49 (50 in total).
      * @dev Storage slot: 6 (1408 bytes).
      */
+    // solhint-disable-next-line var-name-mixedcase
     uint256[44] private __REFLEX_GAP;
 }

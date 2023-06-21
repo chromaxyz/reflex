@@ -15,7 +15,6 @@ import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 // Mocks
 import {ImplementationERC20} from "./mocks/abstracts/ImplementationERC20.sol";
 import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
-import {MockERC20} from "./mocks/MockERC20.sol";
 import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
 import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 import {MockReflexBatch} from "./mocks/MockReflexBatch.sol";
@@ -66,7 +65,7 @@ contract ReflexBatchTest is ReflexFixture {
     // Storage
     // =======
 
-    MockERC20 public token;
+    ExternalTarget public externalTarget;
 
     MockReflexBatch public batch;
     MockReflexBatch public batchEndpoint;
@@ -86,7 +85,7 @@ contract ReflexBatchTest is ReflexFixture {
     function setUp() public virtual override {
         super.setUp();
 
-        token = new MockERC20(_MODULE_MULTI_NAME_A, _MODULE_MULTI_SYMBOL_A, _MODULE_MULTI_DECIMALS_A);
+        externalTarget = new ExternalTarget();
 
         batch = new MockReflexBatch(
             IReflexModule.ModuleSettings({
@@ -146,10 +145,7 @@ contract ReflexBatchTest is ReflexFixture {
         );
     }
 
-    function testFuzzStaticCall(
-        address target_,
-        uint256 amount_
-    ) external withHooksExpected(1) withExternalToken(target_, amount_) {
+    function testFuzzStaticCall(uint256 amount_) external withHooksExpected(1) withExternalTarget(amount_) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -157,7 +153,7 @@ contract ReflexBatchTest is ReflexFixture {
             endpointAddress: address(batchEndpoint),
             callData: abi.encodeCall(
                 batchEndpoint.performStaticCall,
-                (address(token), abi.encodeCall(IERC20.balanceOf, (target_)))
+                (address(externalTarget), abi.encodeCall(ExternalTarget.getNumber, ()))
             )
         });
 
@@ -178,11 +174,11 @@ contract ReflexBatchTest is ReflexFixture {
             endpointAddress: address(batchEndpoint),
             callData: abi.encodeCall(
                 batchEndpoint.performStaticCall,
-                (address(token), abi.encodeCall(MockERC20.getRevert, ()))
+                (address(externalTarget), abi.encodeCall(ExternalTarget.getRevertStaticCall, ()))
             )
         });
 
-        vm.expectRevert(MockERC20.KnownViewError.selector);
+        vm.expectRevert(ExternalTarget.KnownViewError.selector);
         batchEndpoint.performBatchCall(actions);
     }
 
@@ -190,7 +186,7 @@ contract ReflexBatchTest is ReflexFixture {
         address target_,
         uint256 amount_,
         bytes32 message_
-    ) external withHooksExpected(1) withExternalToken(target_, amount_) {
+    ) external withHooksExpected(1) withExternalTarget(amount_) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](7);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -234,7 +230,7 @@ contract ReflexBatchTest is ReflexFixture {
             endpointAddress: address(batchEndpoint),
             callData: abi.encodeCall(
                 batchEndpoint.performStaticCall,
-                (address(token), abi.encodeCall(IERC20.balanceOf, (target_)))
+                (address(externalTarget), abi.encodeCall(ExternalTarget.getNumber, ()))
             )
         });
 
@@ -264,7 +260,7 @@ contract ReflexBatchTest is ReflexFixture {
         address target_,
         uint256 amount_,
         bytes32 message_
-    ) external withHooksExpected(1) withExternalToken(target_, amount_) {
+    ) external withHooksExpected(1) withExternalTarget(amount_) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](7);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -308,7 +304,7 @@ contract ReflexBatchTest is ReflexFixture {
             endpointAddress: address(batchEndpoint),
             callData: abi.encodeCall(
                 batchEndpoint.performStaticCall,
-                (address(token), abi.encodeCall(IERC20.balanceOf, (target_)))
+                (address(externalTarget), abi.encodeCall(ExternalTarget.getNumber, ()))
             )
         });
 
@@ -368,7 +364,7 @@ contract ReflexBatchTest is ReflexFixture {
         address target_,
         uint256 amount_,
         bytes32 message_
-    ) external withHooksExpected(1) withExternalToken(target_, amount_) {
+    ) external withHooksExpected(1) withExternalTarget(amount_) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](7);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -412,7 +408,7 @@ contract ReflexBatchTest is ReflexFixture {
             endpointAddress: address(batchEndpoint),
             callData: abi.encodeCall(
                 batchEndpoint.performStaticCall,
-                (address(token), abi.encodeCall(IERC20.balanceOf, (target_)))
+                (address(externalTarget), abi.encodeCall(ExternalTarget.getNumber, ()))
             )
         });
 
@@ -549,16 +545,48 @@ contract ReflexBatchTest is ReflexFixture {
         assertEq(batchEndpoint.afterBatchCallCounter(), batchCallCounter_);
     }
 
-    modifier withExternalToken(address target_, uint256 amount_) {
-        token.mint(target_, amount_);
-
-        (bool success, bytes memory result) = address(token).staticcall(abi.encodeCall(IERC20.balanceOf, (target_)));
-
-        assertTrue(success);
-        assertEq(abi.decode(result, (uint256)), amount_);
+    modifier withExternalTarget(uint256 number_) {
+        externalTarget.setNumber(number_);
 
         _;
 
-        assertEq(token.balanceOf(target_), amount_);
+        assertEq(externalTarget.getNumber(), number_);
+    }
+}
+
+// =========
+// Utilities
+// =========
+
+/**
+ * @title External Target
+ */
+contract ExternalTarget {
+    // ======
+    // Errors
+    // ======
+
+    error KnownViewError();
+
+    // =======
+    // Storage
+    // =======
+
+    uint256 internal _number;
+
+    // ==========
+    // Test stubs
+    // ==========
+
+    function getRevertStaticCall() external pure {
+        revert KnownViewError();
+    }
+
+    function getNumber() external view returns (uint256) {
+        return _number;
+    }
+
+    function setNumber(uint256 number_) external {
+        _number = number_;
     }
 }

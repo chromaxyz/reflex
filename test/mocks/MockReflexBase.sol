@@ -149,6 +149,9 @@ contract MockReflexBase is ReflexBase {
 // Utilities
 // =========
 
+/**
+ * @title Reentrancy Attack
+ */
 contract ReentrancyAttack {
     // ======
     // Errors

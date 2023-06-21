@@ -2,8 +2,9 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 import {IReflexEndpoint} from "../src/interfaces/IReflexEndpoint.sol";
+import {IReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
+import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
@@ -12,6 +13,7 @@ import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 import {MockImplementationDeprecatedModule} from "./mocks/MockImplementationDeprecatedModule.sol";
 import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
 import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
+import {MockImplementationMaliciousStorageModule} from "./mocks/MockImplementationMaliciousStorageModule.sol";
 
 /**
  * @title Implementation Module Multi Endpoint Test
@@ -33,9 +35,11 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
     uint16 internal constant _MODULE_MULTI_VERSION_V1 = 1;
     uint16 internal constant _MODULE_MULTI_VERSION_V2 = 2;
     uint16 internal constant _MODULE_MULTI_VERSION_V3 = 3;
+    uint16 internal constant _MODULE_MULTI_VERSION_V4 = 4;
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V2 = true;
     bool internal constant _MODULE_MULTI_UPGRADEABLE_V3 = false;
+    bool internal constant _MODULE_MULTI_UPGRADEABLE_V4 = true;
 
     string internal constant _MODULE_MULTI_NAME_A = "TOKEN A";
     string internal constant _MODULE_MULTI_SYMBOL_A = "TKNA";
@@ -61,7 +65,9 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
 
     MockImplementationERC20 public multiModuleV1;
     MockImplementationERC20 public multiModuleV2;
-    MockImplementationDeprecatedModule public multiModuleV3;
+    MockImplementationDeprecatedModule public multiModuleDeprecatedV3;
+    MockImplementationMaliciousStorageModule public multiModuleMaliciousStorageV3;
+    MockImplementationERC20 public multiModuleV4;
 
     MockImplementationERC20 public multiModuleEndpointA;
     MockImplementationERC20 public multiModuleEndpointB;
@@ -110,12 +116,30 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
             })
         );
 
-        multiModuleV3 = new MockImplementationDeprecatedModule(
+        multiModuleDeprecatedV3 = new MockImplementationDeprecatedModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
                 moduleVersion: _MODULE_MULTI_VERSION_V3,
                 moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V3
+            })
+        );
+
+        multiModuleMaliciousStorageV3 = new MockImplementationMaliciousStorageModule(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_MULTI_ID,
+                moduleType: _MODULE_MULTI_TYPE,
+                moduleVersion: _MODULE_MULTI_VERSION_V3,
+                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V3
+            })
+        );
+
+        multiModuleV4 = new MockImplementationERC20(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_MULTI_ID,
+                moduleType: _MODULE_MULTI_TYPE,
+                moduleVersion: _MODULE_MULTI_VERSION_V4,
+                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V4
             })
         );
 
@@ -242,11 +266,27 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            multiModuleV3,
+            multiModuleDeprecatedV3,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V3,
             _MODULE_MULTI_UPGRADEABLE_V3
+        );
+
+        _verifyModuleConfiguration(
+            multiModuleMaliciousStorageV3,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V3,
+            _MODULE_MULTI_UPGRADEABLE_V3
+        );
+
+        _verifyModuleConfiguration(
+            multiModuleV4,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V4,
+            _MODULE_MULTI_UPGRADEABLE_V4
         );
     }
 
@@ -336,7 +376,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         // Upgrade to deprecate multi-endpoint module.
 
         moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(multiModuleV3);
+        moduleAddresses[0] = address(multiModuleDeprecatedV3);
         installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
@@ -366,6 +406,111 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
         _verifyGetStateSlot(message_);
+
+        // Attempt to upgrade multi-endpoint module that was marked as deprecated, this should fail.
+
+        moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(multiModuleV4);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(IReflexInstaller.ModuleNotUpgradeable.selector, multiModuleV4.moduleId())
+        );
+        installerEndpoint.upgradeModules(moduleAddresses);
+
+        // Verify multi-endpoint module was not upgraded.
+
+        _verifyModuleConfiguration(
+            multiModuleEndpointA,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V3,
+            _MODULE_MULTI_UPGRADEABLE_V3
+        );
+
+        _verifyModuleConfiguration(
+            multiModuleEndpointB,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V3,
+            _MODULE_MULTI_UPGRADEABLE_V3
+        );
+
+        _verifyModuleConfiguration(
+            multiModuleEndpointC,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V3,
+            _MODULE_MULTI_UPGRADEABLE_V3
+        );
+
+        // Verify storage is not modified by upgrades in `Dispatcher` context.
+
+        _verifyGetStateSlot(message_);
+    }
+
+    function testFuzzUpgradeMultiEndpointToMaliciousStorageModule(
+        bytes32 message_,
+        uint8 number_
+    ) external brutalizeMemory {
+        vm.assume(uint8(uint256(message_)) != number_);
+
+        // Verify storage sets in `Dispatcher` context.
+
+        _verifySetStateSlot(message_);
+
+        // Upgrade multi-endpoint module to malicious storage module.
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(multiModuleMaliciousStorageV3);
+        installerEndpoint.upgradeModules(moduleAddresses);
+
+        _verifyModuleConfiguration(
+            multiModuleEndpointA,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V3,
+            _MODULE_MULTI_UPGRADEABLE_V3
+        );
+
+        _verifyModuleConfiguration(
+            multiModuleEndpointB,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V3,
+            _MODULE_MULTI_UPGRADEABLE_V3
+        );
+
+        _verifyModuleConfiguration(
+            multiModuleEndpointC,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V3,
+            _MODULE_MULTI_UPGRADEABLE_V3
+        );
+
+        // Overwrite storage in the `Dispatcher` context from the malicious module.
+
+        MockImplementationMaliciousStorageModule(address(multiModuleEndpointA)).setNumber(number_);
+
+        // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
+
+        assertEq(MockImplementationMaliciousStorageModule(address(multiModuleEndpointA)).getNumber(), number_);
+        assertEq(MockImplementationMaliciousStorageModule(address(multiModuleEndpointB)).getNumber(), number_);
+        assertEq(MockImplementationMaliciousStorageModule(address(multiModuleEndpointC)).getNumber(), number_);
+
+        // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
+
+        assertEq(uint8(uint256(dispatcher.getImplementationState0())), number_);
+        assertFalse(dispatcher.getImplementationState0() == message_);
+
+        // Overwrite storage in the `Dispatcher` context.
+
+        dispatcher.setImplementationState0(message_);
+
+        // Verify that the storage in the `Dispatcher` context has been overwritten.
+
+        assertEq(dispatcher.getImplementationState0(), message_);
+        assertFalse(uint8(uint256(dispatcher.getImplementationState0())) == number_);
     }
 
     function testUnitEndpointSentinelFallback() external {
@@ -473,7 +618,8 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
 
         assertEq(multiModuleV1.getImplementationState0(), 0);
         assertEq(multiModuleV2.getImplementationState0(), 0);
-        assertEq(multiModuleV3.getImplementationState0(), 0);
+        assertEq(multiModuleDeprecatedV3.getImplementationState0(), 0);
+        assertEq(multiModuleV4.getImplementationState0(), 0);
 
         assertEq(multiModuleEndpointA.getImplementationState0(), message_);
         assertEq(multiModuleEndpointB.getImplementationState0(), message_);

@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 // Vendor
-// solhint-disable-next-line no-console
 import {stdError} from "forge-std/StdError.sol";
 
 // Interfaces
