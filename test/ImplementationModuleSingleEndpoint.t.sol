@@ -257,8 +257,6 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         _verifySetStateSlot(message_);
 
-        assertEq(dispatcher.getImplementationState0(), message_);
-
         _verifyModuleConfiguration(
             singleModuleEndpoint,
             _MODULE_SINGLE_ID,
@@ -266,6 +264,8 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
             _MODULE_SINGLE_VERSION_V1,
             _MODULE_SINGLE_UPGRADEABLE_V1
         );
+
+        // Upgrade single-endpoint module to malicious storage module.
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleMaliciousStorageV3);

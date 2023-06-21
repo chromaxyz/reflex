@@ -13,6 +13,7 @@ import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 import {MockImplementationDeprecatedModule} from "./mocks/MockImplementationDeprecatedModule.sol";
 import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
 import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
+import {MockImplementationERC20MaliciousStorageModule} from "./mocks/MockImplementationERC20MaliciousStorageModule.sol";
 
 /**
  * @title Implementation Module Multi Endpoint Test
@@ -65,6 +66,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
     MockImplementationERC20 public multiModuleV1;
     MockImplementationERC20 public multiModuleV2;
     MockImplementationDeprecatedModule public multiModuleDeprecatedV3;
+    MockImplementationERC20MaliciousStorageModule public multiModuleMaliciousStorageV3;
     MockImplementationERC20 public multiModuleV4;
 
     MockImplementationERC20 public multiModuleEndpointA;
@@ -115,6 +117,15 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         );
 
         multiModuleDeprecatedV3 = new MockImplementationDeprecatedModule(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_MULTI_ID,
+                moduleType: _MODULE_MULTI_TYPE,
+                moduleVersion: _MODULE_MULTI_VERSION_V3,
+                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V3
+            })
+        );
+
+        multiModuleMaliciousStorageV3 = new MockImplementationERC20MaliciousStorageModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
@@ -256,6 +267,14 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
 
         _verifyModuleConfiguration(
             multiModuleDeprecatedV3,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V3,
+            _MODULE_MULTI_UPGRADEABLE_V3
+        );
+
+        _verifyModuleConfiguration(
+            multiModuleMaliciousStorageV3,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V3,
@@ -433,7 +452,68 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         bytes32 message_,
         uint8 number_
     ) external brutalizeMemory {
-        // TODO: add test
+        vm.assume(uint8(uint256(message_)) != number_);
+
+        // Verify storage sets in `Dispatcher` context.
+
+        _verifySetStateSlot(message_);
+
+        // Upgrade multi-endpoint module to malicious storage module.
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(multiModuleMaliciousStorageV3);
+        installerEndpoint.upgradeModules(moduleAddresses);
+
+        _verifyModuleConfiguration(
+            multiModuleEndpointA,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V3,
+            _MODULE_MULTI_UPGRADEABLE_V3
+        );
+
+        _verifyModuleConfiguration(
+            multiModuleEndpointB,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V3,
+            _MODULE_MULTI_UPGRADEABLE_V3
+        );
+
+        _verifyModuleConfiguration(
+            multiModuleEndpointC,
+            _MODULE_MULTI_ID,
+            _MODULE_MULTI_TYPE,
+            _MODULE_MULTI_VERSION_V3,
+            _MODULE_MULTI_UPGRADEABLE_V3
+        );
+
+        // Overwrite storage in the `Dispatcher` context from the malicious module.
+
+        MockImplementationERC20MaliciousStorageModule(address(multiModuleMaliciousStorageV3)).setNumber(number_);
+
+        // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
+
+        assertEq(
+            MockImplementationERC20MaliciousStorageModule(address(multiModuleMaliciousStorageV3)).getNumber(),
+            number_
+        );
+
+        // TODO: it overwrites not the first slot, unclear which one it does overwrite
+
+        // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
+
+        // assertEq(uint8(uint256(dispatcher.getImplementationState0())), number_);
+        // assertFalse(dispatcher.getImplementationState0() == message_);
+
+        // Overwrite storage in the `Dispatcher` context.
+
+        // /        dispatcher.setImplementationState0(message_);
+
+        // Verify that the storage in the `Dispatcher` context has been overwritten.
+
+        // assertEq(dispatcher.getImplementationState0(), message_);
+        // assertFalse(uint8(uint256(dispatcher.getImplementationState0())) == number_);
     }
 
     function testUnitEndpointSentinelFallback() external {
