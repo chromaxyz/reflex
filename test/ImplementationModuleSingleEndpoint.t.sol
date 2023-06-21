@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
+import {IReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 import {IReflexEndpoint} from "../src/interfaces/IReflexEndpoint.sol";
 
@@ -10,6 +11,7 @@ import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
 import {MockImplementationDeprecatedModule} from "./mocks/MockImplementationDeprecatedModule.sol";
+import {MockImplementationMaliciousStorageModule} from "./mocks/MockImplementationMaliciousStorageModule.sol";
 import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 
 /**
@@ -25,9 +27,11 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
     uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
     uint16 internal constant _MODULE_SINGLE_VERSION_V3 = 3;
+    uint16 internal constant _MODULE_SINGLE_VERSION_V4 = 4;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V1 = true;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V2 = true;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE_V3 = false;
+    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V4 = true;
 
     // =======
     // Storage
@@ -36,6 +40,8 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     MockImplementationModule public singleModuleV1;
     MockImplementationModule public singleModuleV2;
     MockImplementationDeprecatedModule public singleModuleDeprecatedV3;
+    MockImplementationMaliciousStorageModule public singleModuleMaliciousStorageV3;
+    MockImplementationModule public singleModuleV4;
 
     MockImplementationModule public singleModuleEndpoint;
 
@@ -70,6 +76,24 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
                 moduleType: _MODULE_SINGLE_TYPE,
                 moduleVersion: _MODULE_SINGLE_VERSION_V3,
                 moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V3
+            })
+        );
+
+        singleModuleMaliciousStorageV3 = new MockImplementationMaliciousStorageModule(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_SINGLE_ID,
+                moduleType: _MODULE_SINGLE_TYPE,
+                moduleVersion: _MODULE_SINGLE_VERSION_V3,
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V3
+            })
+        );
+
+        singleModuleV4 = new MockImplementationModule(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_SINGLE_ID,
+                moduleType: _MODULE_SINGLE_TYPE,
+                moduleVersion: _MODULE_SINGLE_VERSION_V4,
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V4
             })
         );
 
@@ -129,14 +153,28 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
             _MODULE_SINGLE_VERSION_V3,
             _MODULE_SINGLE_UPGRADEABLE_V3
         );
+
+        _verifyModuleConfiguration(
+            singleModuleMaliciousStorageV3,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V3,
+            _MODULE_SINGLE_UPGRADEABLE_V3
+        );
+
+        _verifyModuleConfiguration(
+            singleModuleV4,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V4,
+            _MODULE_SINGLE_UPGRADEABLE_V4
+        );
     }
 
     function testFuzzUpgradeSingleEndpointAndDeprecate(bytes32 message_) external brutalizeMemory {
         // Verify storage sets in `Dispatcher` context.
 
         _verifySetStateSlot(message_);
-
-        assertEq(dispatcher.getImplementationState0(), message_);
 
         // Verify single-endpoint module.
 
@@ -184,18 +222,84 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         _verifyGetStateSlot(message_);
 
-        assertEq(dispatcher.getImplementationState0(), message_);
-    }
+        // Attempt to upgrade single-endpoint module that was marked as deprecated, this should fail.
 
-    function testUnitUpgradeSingleModuleToMaliciousSelfDestructModule() external brutalizeMemory {
-        // TODO: add test
+        moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(singleModuleV4);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(IReflexInstaller.ModuleNotUpgradeable.selector, singleModuleV4.moduleId())
+        );
+        installerEndpoint.upgradeModules(moduleAddresses);
+
+        // Verify single-endpoint module was not upgraded.
+
+        _verifyModuleConfiguration(
+            singleModuleEndpoint,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V3,
+            _MODULE_SINGLE_UPGRADEABLE_V3
+        );
+
+        // Verify storage is not modified by upgrades in `Dispatcher` context.
+
+        _verifyGetStateSlot(message_);
     }
 
     function testFuzzUpgradeSingleModuleToMaliciousStorageModule(
         bytes32 message_,
         uint8 number_
     ) external brutalizeMemory {
-        // TODO: add test
+        vm.assume(uint8(uint256(message_)) != number_);
+
+        // Verify storage sets in `Dispatcher` context.
+
+        _verifySetStateSlot(message_);
+
+        assertEq(dispatcher.getImplementationState0(), message_);
+
+        _verifyModuleConfiguration(
+            singleModuleEndpoint,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V1,
+            _MODULE_SINGLE_UPGRADEABLE_V1
+        );
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(singleModuleMaliciousStorageV3);
+        installerEndpoint.upgradeModules(moduleAddresses);
+
+        _verifyModuleConfiguration(
+            singleModuleEndpoint,
+            _MODULE_SINGLE_ID,
+            _MODULE_SINGLE_TYPE,
+            _MODULE_SINGLE_VERSION_V3,
+            _MODULE_SINGLE_UPGRADEABLE_V3
+        );
+
+        // Overwrite storage in the `Dispatcher` context from the malicious module.
+
+        MockImplementationMaliciousStorageModule(address(singleModuleEndpoint)).setNumber(number_);
+
+        // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
+
+        assertEq(MockImplementationMaliciousStorageModule(address(singleModuleEndpoint)).getNumber(), number_);
+
+        // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
+
+        assertEq(uint8(uint256(dispatcher.getImplementationState0())), number_);
+        assertFalse(dispatcher.getImplementationState0() == message_);
+
+        // Overwrite storage in the `Dispatcher` context.
+
+        dispatcher.setImplementationState0(message_);
+
+        // Verify that the storage in the `Dispatcher` context has been overwritten.
+
+        assertEq(dispatcher.getImplementationState0(), message_);
+        assertFalse(uint8(uint256(dispatcher.getImplementationState0())) == number_);
     }
 
     function testUnitEndpointSentinelFallback() external {

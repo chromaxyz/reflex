@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
+import {IReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
@@ -9,7 +10,6 @@ import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
 import {MockImplementationDeprecatedModule} from "./mocks/MockImplementationDeprecatedModule.sol";
-import {MockImplementationMaliciousSelfDestructModule} from "./mocks/MockImplementationMaliciousSelfDestructModule.sol";
 import {MockImplementationMaliciousStorageModule} from "./mocks/MockImplementationMaliciousStorageModule.sol";
 import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 
@@ -50,7 +50,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     MockImplementationModule public internalModuleV1;
     MockImplementationModule public internalModuleV2;
     MockImplementationDeprecatedModule public internalModuleV3;
-    MockImplementationMaliciousSelfDestructModule public internalModuleMaliciousSelfDestructV4;
+    MockImplementationModule public internalModuleV4;
     MockImplementationMaliciousStorageModule public internalModuleMaliciousStorageV4;
 
     // =====
@@ -105,7 +105,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
-        internalModuleMaliciousSelfDestructV4 = new MockImplementationMaliciousSelfDestructModule(
+        internalModuleV4 = new MockImplementationModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
@@ -197,7 +197,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            internalModuleMaliciousSelfDestructV4,
+            internalModuleV4,
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
             _MODULE_INTERNAL_VERSION_V4,
@@ -319,34 +319,31 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
         _verifyGetStateSlot(message_);
-    }
 
-    function testUnitUpgradeInternalModuleToMaliciousSelfDestructModule() external brutalizeMemory {
-        _verifyModuleConfiguration(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_INTERNAL_ID,
-                moduleType: _MODULE_INTERNAL_TYPE,
-                moduleVersion: _MODULE_INTERNAL_VERSION_V1,
-                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V1
-            })
+        // Attempt to upgrade internal module that was marked as deprecated, this should fail.
+
+        moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(internalModuleV4);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(IReflexInstaller.ModuleNotUpgradeable.selector, internalModuleV4.moduleId())
         );
-
-        address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(internalModuleMaliciousSelfDestructV4);
         installerEndpoint.upgradeModules(moduleAddresses);
 
+        // Verify internal module was not upgraded.
+
         _verifyModuleConfiguration(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
-                moduleVersion: _MODULE_INTERNAL_VERSION_V4,
-                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V4
+                moduleVersion: _MODULE_INTERNAL_VERSION_V3,
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V3
             })
         );
 
-        singleModuleEndpoint.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("destroy", msg.sender));
+        // Verify storage is not modified by upgrades in `Dispatcher` context.
 
-        // Verify that the `Dispatcher` has been self-destructed, this is disastrous.
+        _verifyGetStateSlot(message_);
     }
 
     function testFuzzUpgradeInternalModuleToMaliciousStorageModule(
