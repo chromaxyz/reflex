@@ -548,13 +548,6 @@ contract ReflexBatchTest is ReflexFixture {
     modifier withExternalTarget(uint256 number_) {
         externalTarget.setNumber(number_);
 
-        (bool success, bytes memory result) = address(externalTarget).staticcall(
-            abi.encodeCall(ExternalTarget.getNumber, ())
-        );
-
-        assertTrue(success);
-        assertEq(abi.decode(result, (uint256)), number_);
-
         _;
 
         assertEq(externalTarget.getNumber(), number_);
