@@ -186,7 +186,8 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @notice Hook that is called upon creation of an endpoint to get its implementation.
      * @dev This method may be overridden to customize the endpoint implementation.
      * In the common case you use a single-endpoint you will override this method in your `Installer` contract.
-     * In the exceptional case you use a multi-endpoint module you will override this method in your `Module` contract.
+     * In the exceptional case you use a multi-endpoint module you will override this method in
+     * the place you instantiate the endpoint, one of your `Module` contracts.
      * @param moduleId_ Module id.
      * @return endpointCreationCode_ Endpoint creation code.
      */
