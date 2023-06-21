@@ -501,16 +501,16 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
 
         // TODO: it overwrites not the first slot, unclear which one it does overwrite
 
-        // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
+        // // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
 
-        // assertEq(uint8(uint256(dispatcher.getImplementationState0())), number_);
-        // assertFalse(dispatcher.getImplementationState0() == message_);
+        // assertEq(uint8(uint256(singleModuleEndpoint.getImplementationState0())), number_);
+        // assertFalse(singleModuleEndpoint.getImplementationState0() == message_);
 
-        // Overwrite storage in the `Dispatcher` context.
+        // // Overwrite storage in the `Dispatcher` context.
 
-        // /        dispatcher.setImplementationState0(message_);
+        // dispatcher.setImplementationState0(message_);
 
-        // Verify that the storage in the `Dispatcher` context has been overwritten.
+        // // Verify that the storage in the `Dispatcher` context has been overwritten.
 
         // assertEq(dispatcher.getImplementationState0(), message_);
         // assertFalse(uint8(uint256(dispatcher.getImplementationState0())) == number_);
