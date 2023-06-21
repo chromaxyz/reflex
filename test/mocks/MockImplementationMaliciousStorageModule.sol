@@ -5,9 +5,9 @@ pragma solidity ^0.8.13;
 import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
- * @title Mock Implementation Malicious Module
+ * @title Mock Implementation Malicious Storage Module
  */
-contract MockImplementationMaliciousModule is MockReflexModule {
+contract MockImplementationMaliciousStorageModule is MockReflexModule {
     // =======
     // Storage
     // =======

@@ -9,7 +9,8 @@ import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
 import {MockImplementationDeprecatedModule} from "./mocks/MockImplementationDeprecatedModule.sol";
-import {MockImplementationMaliciousModule} from "./mocks/MockImplementationMaliciousModule.sol";
+import {MockImplementationMaliciousSelfDestructModule} from "./mocks/MockImplementationMaliciousSelfDestructModule.sol";
+import {MockImplementationMaliciousStorageModule} from "./mocks/MockImplementationMaliciousStorageModule.sol";
 import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 
 /**
@@ -49,7 +50,8 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     MockImplementationModule public internalModuleV1;
     MockImplementationModule public internalModuleV2;
     MockImplementationDeprecatedModule public internalModuleV3;
-    MockImplementationMaliciousModule public internalModuleV4;
+    MockImplementationMaliciousSelfDestructModule public internalModuleMaliciousSelfDestructV4;
+    MockImplementationMaliciousStorageModule public internalModuleMaliciousStorageV4;
 
     // =====
     // Setup
@@ -103,7 +105,16 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
-        internalModuleV4 = new MockImplementationMaliciousModule(
+        internalModuleMaliciousSelfDestructV4 = new MockImplementationMaliciousSelfDestructModule(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_INTERNAL_ID,
+                moduleType: _MODULE_INTERNAL_TYPE,
+                moduleVersion: _MODULE_INTERNAL_VERSION_V4,
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V4
+            })
+        );
+
+        internalModuleMaliciousStorageV4 = new MockImplementationMaliciousStorageModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
@@ -186,7 +197,15 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            internalModuleV4,
+            internalModuleMaliciousSelfDestructV4,
+            _MODULE_INTERNAL_ID,
+            _MODULE_INTERNAL_TYPE,
+            _MODULE_INTERNAL_VERSION_V4,
+            _MODULE_INTERNAL_UPGRADEABLE_V4
+        );
+
+        _verifyModuleConfiguration(
+            internalModuleMaliciousStorageV4,
             _MODULE_INTERNAL_ID,
             _MODULE_INTERNAL_TYPE,
             _MODULE_INTERNAL_VERSION_V4,
@@ -235,14 +254,6 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         _verifySetStateSlot(message_);
 
         // Verify internal module.
-
-        _verifyModuleConfiguration(
-            singleModuleEndpoint,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1
-        );
 
         _verifyModuleConfiguration(
             IReflexModule.ModuleSettings({
@@ -310,7 +321,38 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         _verifyGetStateSlot(message_);
     }
 
-    function testFuzzUpgradeInternalModuleToMaliciousModule(bytes32 message_, uint8 number_) external brutalizeMemory {
+    function testUnitUpgradeInternalModuleToMaliciousSelfDestructModule() external brutalizeMemory {
+        _verifyModuleConfiguration(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_INTERNAL_ID,
+                moduleType: _MODULE_INTERNAL_TYPE,
+                moduleVersion: _MODULE_INTERNAL_VERSION_V1,
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V1
+            })
+        );
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(internalModuleMaliciousSelfDestructV4);
+        installerEndpoint.upgradeModules(moduleAddresses);
+
+        _verifyModuleConfiguration(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_INTERNAL_ID,
+                moduleType: _MODULE_INTERNAL_TYPE,
+                moduleVersion: _MODULE_INTERNAL_VERSION_V4,
+                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V4
+            })
+        );
+
+        singleModuleEndpoint.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("destroy", msg.sender));
+
+        // Verify that the `Dispatcher` has been self-destructed, this is disastrous.
+    }
+
+    function testFuzzUpgradeInternalModuleToMaliciousStorageModule(
+        bytes32 message_,
+        uint8 number_
+    ) external brutalizeMemory {
         vm.assume(uint8(uint256(message_)) != number_);
 
         // Verify storage sets in `Dispatcher` context.
@@ -318,14 +360,6 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         _verifySetStateSlot(message_);
 
         assertEq(dispatcher.getImplementationState0(), message_);
-
-        _verifyModuleConfiguration(
-            singleModuleEndpoint,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1
-        );
 
         _verifyModuleConfiguration(
             IReflexModule.ModuleSettings({
@@ -337,7 +371,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
 
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(internalModuleV4);
+        moduleAddresses[0] = address(internalModuleMaliciousStorageV4);
         installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
@@ -366,7 +400,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             number_
         );
 
-        // Verify that the storage in the `Dispatcher` context has been overwritten.
+        // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
 
         assertEq(uint8(uint256(dispatcher.getImplementationState0())), number_);
         assertFalse(dispatcher.getImplementationState0() == message_);
