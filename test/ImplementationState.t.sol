@@ -29,9 +29,9 @@ contract ImplementationStateTest is TestHarness {
     // Tests
     // =====
 
-    function testFuzzVerifyStorageSlot(bytes32 message_) external brutalizeMemory {
-        state.setStorageSlot(message_);
-        state.verifyStorageSlot(message_);
+    function testFuzzVerifyStorageSlot0(bytes32 message_) external brutalizeMemory {
+        state.setStorageSlot0(message_);
+        state.verifyStorageSlot0(message_);
     }
 
     function testFuzzVerifyStorageSlots(

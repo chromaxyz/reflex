@@ -19,8 +19,18 @@ contract MockImplementationState is ImplementationState, StdAssertions, CommonBa
     // Test stubs
     // ==========
 
-    function setStorageSlot(bytes32 message_) public {
+    function setStorageSlot0(bytes32 message_) public {
         setImplementationState0(message_);
+    }
+
+    function verifyStorageSlot0(bytes32 message_) public {
+        /**
+         * | Name                    | Type                                                 | Slot | Offset | Bytes |
+         * |-------------------------|------------------------------------------------------|------|--------|-------|
+         * | _implementationState0   | bytes32                                              | 50   | 0      | 32    |
+         */
+        assertEq(stdstore.target(address(this)).sig("getImplementationState0()").find(), 50);
+        assertEq(stdstore.target(address(this)).sig("getImplementationState0()").read_bytes32(), message_);
     }
 
     function setStorageSlots(
@@ -40,16 +50,6 @@ contract MockImplementationState is ImplementationState, StdAssertions, CommonBa
 
         setToken(tokenA_, "Token A", "TKNA", 18);
         setToken(tokenB_, "Token B", "TKNB", 18);
-    }
-
-    function verifyStorageSlot(bytes32 message_) public {
-        /**
-         * | Name                    | Type                                                 | Slot | Offset | Bytes |
-         * |-------------------------|------------------------------------------------------|------|--------|-------|
-         * | _implementationState0   | bytes32                                              | 50   | 0      | 32    |
-         */
-        assertEq(stdstore.target(address(this)).sig("getImplementationState0()").find(), 50);
-        assertEq(stdstore.target(address(this)).sig("getImplementationState0()").read_bytes32(), message_);
     }
 
     function verifyStorageSlots(

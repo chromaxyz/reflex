@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
+// Vendor
+import {console2} from "forge-std/console2.sol";
+import {stdStorageSafe, StdStorage} from "forge-std/StdStorage.sol";
+
 // Interfaces
 import {IReflexEndpoint} from "../src/interfaces/IReflexEndpoint.sol";
 import {IReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
@@ -13,12 +17,14 @@ import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 import {MockImplementationDeprecatedModule} from "./mocks/MockImplementationDeprecatedModule.sol";
 import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
 import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
-import {MockImplementationERC20MaliciousStorageModule} from "./mocks/MockImplementationERC20MaliciousStorageModule.sol";
+import {MockImplementationMaliciousStorageModule} from "./mocks/MockImplementationMaliciousStorageModule.sol";
 
 /**
  * @title Implementation Module Multi Endpoint Test
  */
 contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
+    using stdStorageSafe for StdStorage;
+
     // =========
     // Constants
     // =========
@@ -66,7 +72,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
     MockImplementationERC20 public multiModuleV1;
     MockImplementationERC20 public multiModuleV2;
     MockImplementationDeprecatedModule public multiModuleDeprecatedV3;
-    MockImplementationERC20MaliciousStorageModule public multiModuleMaliciousStorageV3;
+    MockImplementationMaliciousStorageModule public multiModuleMaliciousStorageV3;
     MockImplementationERC20 public multiModuleV4;
 
     MockImplementationERC20 public multiModuleEndpointA;
@@ -125,7 +131,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
             })
         );
 
-        multiModuleMaliciousStorageV3 = new MockImplementationERC20MaliciousStorageModule(
+        multiModuleMaliciousStorageV3 = new MockImplementationMaliciousStorageModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
@@ -448,7 +454,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         _verifyGetStateSlot(message_);
     }
 
-    function testFuzzUpgradeMultiModuleToMaliciousStorageModule(
+    function testFuzzUpgradeMultiEndpointToMaliciousStorageModule(
         bytes32 message_,
         uint8 number_
     ) external brutalizeMemory {
@@ -490,30 +496,27 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
 
         // Overwrite storage in the `Dispatcher` context from the malicious module.
 
-        MockImplementationERC20MaliciousStorageModule(address(multiModuleMaliciousStorageV3)).setNumber(number_);
+        MockImplementationMaliciousStorageModule(address(multiModuleEndpointA)).setNumber(number_);
 
         // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
 
-        assertEq(
-            MockImplementationERC20MaliciousStorageModule(address(multiModuleMaliciousStorageV3)).getNumber(),
-            number_
-        );
+        assertEq(MockImplementationMaliciousStorageModule(address(multiModuleEndpointA)).getNumber(), number_);
+        assertEq(MockImplementationMaliciousStorageModule(address(multiModuleEndpointB)).getNumber(), number_);
+        assertEq(MockImplementationMaliciousStorageModule(address(multiModuleEndpointC)).getNumber(), number_);
 
-        // TODO: it overwrites not the first slot, unclear which one it does overwrite
+        // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
 
-        // // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
+        assertEq(uint8(uint256(dispatcher.getImplementationState0())), number_);
+        assertFalse(dispatcher.getImplementationState0() == message_);
 
-        // assertEq(uint8(uint256(singleModuleEndpoint.getImplementationState0())), number_);
-        // assertFalse(singleModuleEndpoint.getImplementationState0() == message_);
+        // Overwrite storage in the `Dispatcher` context.
 
-        // // Overwrite storage in the `Dispatcher` context.
+        dispatcher.setImplementationState0(message_);
 
-        // dispatcher.setImplementationState0(message_);
+        // Verify that the storage in the `Dispatcher` context has been overwritten.
 
-        // // Verify that the storage in the `Dispatcher` context has been overwritten.
-
-        // assertEq(dispatcher.getImplementationState0(), message_);
-        // assertFalse(uint8(uint256(dispatcher.getImplementationState0())) == number_);
+        assertEq(dispatcher.getImplementationState0(), message_);
+        assertFalse(uint8(uint256(dispatcher.getImplementationState0())) == number_);
     }
 
     function testUnitEndpointSentinelFallback() external {
