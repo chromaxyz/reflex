@@ -50,6 +50,18 @@ A Solidity framework for upgradeable modularized applications.
 Noteably this is a so-called framework, a single well-tested implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
 
+## Why?
+
+In the public discourse there is a lot of valid critique towards the use of (upgradeable) proxy patterns namely that they are difficult to manage, vulnerable if configured incorrectly, broadly unnecessary and in general over-complex and over-engineered.
+
+If you can get away without having to use a proxy please do so, it is better to do so in almost all cases. Build libre, permissionless and immutable systems whenever you can.
+
+There are however situations where you run into contract size limitations and you are looking for a reasonable way to modularize your architecture, you would like to expand the feature set of your product over time, allow bugs to be fixed in the early days of a protocol or you want to separate your business logic from your architecture to reduce mental overhead.
+
+Until now some projects have relied on the [Diamond Proxy](https://eips.ethereum.org/EIPS/eip-2535) pattern in an effort to address these issues. Reflex aims to be a better solution to the core problem the Diamond Proxy standard aims to resolve but fails to address.
+
+The Solidity ecosystem has been using libraries and collections of code snippets intended to be composed together. We propose that the natural evolution are barebone, comprehesive and opiniated frameworks and this is the first of its kind.
+
 ## Contracts
 
 ```
@@ -168,7 +180,9 @@ Please refer to the [CONTRIBUTORS](docs/CONTRIBUTORS.md) guide for more informat
 
 The goal of the framework is to provide an alternative, and in some aspects superior, solution to the fundamental problem EIP-2535: [Diamond, Multi-Facet Proxy](https://eips.ethereum.org/EIPS/eip-2535) aims to solve namely to enable the creation of modular smart contract systems that can be extended after deployment.
 
-The architecture is directly inspired by [Euler's Proxy Protocol](https://docs.euler.finance/developers/endpoint-protocol) and we are thankful for their extensive documentation and novel modularization architecture.
+The architecture is directly inspired by [Euler's Proxy Protocol](https://docs.euler.finance/developers/proxy-protocol) and we are thankful for their extensive documentation and novel modularization architecture.
+
+The original idea of what a Solidity framework may look like has been inspired by [Olympus DAO's Default Framework](https://github.com/fullyallocated/Default).
 
 The contracts and tests were inspired by or directly modified from many sources, primarily:
 
