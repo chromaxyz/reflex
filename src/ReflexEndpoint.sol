@@ -70,6 +70,10 @@ contract ReflexEndpoint is IReflexEndpoint {
         }
     }
 
+    // ==============
+    // Public methods
+    // ==============
+
     /**
      * @inheritdoc IReflexEndpoint
      */
