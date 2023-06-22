@@ -23,7 +23,7 @@ contract MockReflexBase is ReflexBase {
     // ===========
 
     constructor() {
-        _reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
+        _s().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
     }
 
     // ==========
@@ -35,7 +35,7 @@ contract MockReflexBase is ReflexBase {
     }
 
     function getReentrancyStatus() public view returns (uint256) {
-        return _reentrancyStatus;
+        return _s().reentrancyStatus;
     }
 
     function getReentrancyStatusLocked() public view returns (bool) {

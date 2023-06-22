@@ -11,6 +11,8 @@ abstract contract ReflexConstants {
     // Globals
     // =======
 
+    bytes32 internal constant _REFLEX_STORAGE = keccak256("diamond.storage.reflex");
+
     /**
      * @dev Reentrancy guard unlocked state.
      */

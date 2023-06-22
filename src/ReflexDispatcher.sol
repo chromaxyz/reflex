@@ -26,7 +26,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
      */
     constructor(address owner_, address installerModule_) {
         // Initialize the global reentrancy guard as unlocked.
-        _reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
+        _s().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
 
         if (owner_ == address(0) || installerModule_ == address(0)) revert ZeroAddress();
 
@@ -37,10 +37,10 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         if (moduleSettings_.moduleType != _MODULE_TYPE_SINGLE_ENDPOINT) revert ModuleTypeInvalid();
 
         // Initialize the owner.
-        _owner = owner_;
+        _s().owner = owner_;
 
         // Register the built-in `Installer` module.
-        _modules[_MODULE_ID_INSTALLER] = installerModule_;
+        _s().modules[_MODULE_ID_INSTALLER] = installerModule_;
 
         // Create and register the `Installer` endpoint.
         _createEndpoint(moduleSettings_.moduleId, moduleSettings_.moduleType, installerModule_);
@@ -57,14 +57,14 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
      * @inheritdoc IReflexDispatcher
      */
     function moduleIdToModuleImplementation(uint32 moduleId_) public view virtual returns (address) {
-        return _modules[moduleId_];
+        return _s().modules[moduleId_];
     }
 
     /**
      * @inheritdoc IReflexDispatcher
      */
     function moduleIdToEndpoint(uint32 moduleId_) public view virtual returns (address) {
-        return _endpoints[moduleId_];
+        return _s().endpoints[moduleId_];
     }
 
     // ================
@@ -76,12 +76,12 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
      */
     // solhint-disable-next-line payable-fallback, no-complex-fallback
     fallback() external virtual reentrancyAllowed {
-        uint32 moduleId = _relations[msg.sender].moduleId;
-        address moduleImplementation = _relations[msg.sender].moduleImplementation;
+        uint32 moduleId = _s().relations[msg.sender].moduleId;
+        address moduleImplementation = _s().relations[msg.sender].moduleImplementation;
 
         if (moduleId == 0) revert CallerNotTrusted();
 
-        if (moduleImplementation == address(0)) moduleImplementation = _modules[moduleId];
+        if (moduleImplementation == address(0)) moduleImplementation = _s().modules[moduleId];
 
         // Message length >= (4 + 20)
         // 4 bytes for selector used to call the endpoint.

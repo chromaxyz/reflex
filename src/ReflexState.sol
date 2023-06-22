@@ -24,69 +24,47 @@ import {ReflexConstants} from "./ReflexConstants.sol";
  */
 
 abstract contract ReflexState is IReflexState, ReflexConstants {
-    // ======
-    // Global
-    // ======
+    struct ReflexStorage {
+        /**
+         * @dev Global reentrancy status tracker.
+         * @dev Slot 0 (32 bytes).
+         */
+        uint256 reentrancyStatus;
+        /**
+         * @dev Owner address.
+         * @dev Storage slot: 1 (20 bytes).
+         */
+        address owner;
+        /**
+         * @dev Pending owner address.
+         * @dev Storage slot: 2 (20 bytes).
+         */
+        address pendingOwner;
+        /**
+         * @dev Internal module mapping.
+         * @dev Module id => module implementation.
+         * @dev Storage slot: 3 (32 bytes).
+         */
+        mapping(uint32 => address) modules;
+        /**
+         * @dev Internal endpoint mapping.
+         * @dev Module id => endpoint address (only for single-endpoint modules).
+         * @dev Storage slot: 4 (32 bytes).
+         */
+        mapping(uint32 => address) endpoints;
+        /**
+         * @dev Internal endpoint to module relation mapping.
+         * @dev Endpoint address => TrustRelation { moduleId, moduleType, moduleImplementation }.
+         * @dev Storage slot: 5 (32 bytes).
+         */
+        mapping(address => TrustRelation) relations;
+    }
 
-    /**
-     * @dev Global reentrancy status tracker.
-     * @dev Slot 0 (32 bytes).
-     */
-    uint256 internal _reentrancyStatus;
+    function _s() internal pure returns (ReflexStorage storage s_) {
+        bytes32 slot = _REFLEX_STORAGE;
 
-    // =========
-    // Ownership
-    // =========
-
-    /**
-     * @dev Owner address.
-     * @dev Storage slot: 1 (20 bytes).
-     */
-    address internal _owner;
-
-    /**
-     * @dev Pending owner address.
-     * @dev Storage slot: 2 (20 bytes).
-     */
-    address internal _pendingOwner;
-
-    // =======
-    // Modules
-    // =======
-
-    /**
-     * @dev Internal module mapping.
-     * @dev Module id => module implementation.
-     * @dev Storage slot: 3 (32 bytes).
-     */
-    mapping(uint32 => address) internal _modules;
-
-    /**
-     * @dev Internal endpoint mapping.
-     * @dev Module id => endpoint address (only for single-endpoint modules).
-     * @dev Storage slot: 4 (32 bytes).
-     */
-    mapping(uint32 => address) internal _endpoints;
-
-    /**
-     * @dev Internal endpoint to module relation mapping.
-     * @dev Endpoint address => TrustRelation { moduleId, moduleType, moduleImplementation }.
-     * @dev Storage slot: 5 (32 bytes).
-     */
-    mapping(address => TrustRelation) internal _relations;
-
-    // ======
-    // Spacer
-    // ======
-
-    /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
-     * variables without shifting down storage in the inheritance chain.
-     * The size of the `__REFLEX_GAP` array is calculated so that the amount of storage used by a
-     * contract always adds up to the same number.
-     * @dev Reflex occupies storage slots 0 to 49 (50 in total).
-     * @dev Storage slot: 6 (1408 bytes).
-     */
-    // solhint-disable-next-line var-name-mixedcase
-    uint256[44] private __REFLEX_GAP;
+        assembly {
+            s_.slot := slot
+        }
+    }
 }

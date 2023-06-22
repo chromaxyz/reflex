@@ -95,7 +95,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         // TODO: gas optimization: `_unpackEndpointAddress` could be replaced by msg.sender.
         // TODO: gas optimization: `success` check is strictly not necessary and may interfere.
 
-        (bool success, bytes memory result) = _modules[_moduleId].delegatecall(
+        (bool success, bytes memory result) = _s().modules[_moduleId].delegatecall(
             abi.encodePacked(
                 abi.encodeWithSelector(IReflexBatch.simulateBatchCallRevert.selector, actions_),
                 uint160(_unpackMessageSender()),
@@ -146,13 +146,13 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         BatchAction calldata action_
     ) internal virtual returns (bool success_, bytes memory returnData_) {
         address endpointAddress = action_.endpointAddress;
-        uint32 moduleId_ = _relations[endpointAddress].moduleId;
+        uint32 moduleId_ = _s().relations[endpointAddress].moduleId;
 
         if (moduleId_ == 0) revert ModuleIdInvalid();
 
-        address moduleImplementation = _relations[endpointAddress].moduleImplementation;
+        address moduleImplementation = _s().relations[endpointAddress].moduleImplementation;
 
-        if (moduleImplementation == address(0)) moduleImplementation = _modules[moduleId_];
+        if (moduleImplementation == address(0)) moduleImplementation = _s().modules[moduleId_];
 
         if (moduleImplementation == address(0)) revert ModuleNotRegistered(moduleId_);
 
