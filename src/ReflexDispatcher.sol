@@ -12,6 +12,7 @@ import {ReflexBase} from "./ReflexBase.sol";
 /**
  * @title Reflex Dispatcher
  *
+ * @dev Execution takes place within the Dispatcher's storage context.
  * @dev Non-upgradeable, extendable.
  */
 abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {

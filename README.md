@@ -172,9 +172,9 @@ At this point in time Reflex **has not yet been audited** and must therefore not
 
 ## Contributing
 
-Contributions to Reflex are welcome by anyone interested in writing more tests, improving readability, optimizing for gas efficiency, extending the core protocol or periphery modules.
-
 Please refer to the [CONTRIBUTORS](docs/CONTRIBUTORS.md) guide for more information.
+
+We are currently still in an experimental phase leading up to a first audit and would love to hear your feedback on how we can improve Reflex. Contributions are welcome by anyone interested in writing more tests, improving readability, optimizing for gas efficiency, simplifying the core protocol further or adding periphery modules.
 
 ## Acknowledgements
 

@@ -87,9 +87,9 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-11
-      [ReflexDispatcher.fallback()](../src/ReflexDispatcher.sol#L77-L115) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L91-L114)
+      [ReflexEndpoint.sentinel()](../src/ReflexEndpoint.sol#L76-L92) uses assembly - [INLINE ASM](../src/ReflexEndpoint.sol#L84-L87)
 
-../src/ReflexDispatcher.sol#L77-L115
+../src/ReflexEndpoint.sol#L76-L92
 
 - [ ] ID-12
       [ReflexBase.\_revertBytes(bytes)](../src/ReflexBase.sol#L171-L179) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L173-L175)
@@ -102,29 +102,29 @@ Confidence: High
 ../src/ReflexBase.sol#L154-L165
 
 - [ ] ID-14
-      [ReflexEndpoint.\_fallback()](../src/ReflexEndpoint.sol#L100-L182) uses assembly - [INLINE ASM](../src/ReflexEndpoint.sol#L106-L151) - [INLINE ASM](../src/ReflexEndpoint.sol#L154-L180)
-
-../src/ReflexEndpoint.sol#L100-L182
-
-- [ ] ID-15
       [ReflexBase.\_unpackEndpointAddress()](../src/ReflexBase.sol#L142-L147) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L144-L146)
 
 ../src/ReflexBase.sol#L142-L147
 
-- [ ] ID-16
+- [ ] ID-15
       [ReflexBase.\_unpackMessageSender()](../src/ReflexBase.sol#L131-L136) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L133-L135)
 
 ../src/ReflexBase.sol#L131-L136
 
-- [ ] ID-17
+- [ ] ID-16
       [ReflexBase.\_createEndpoint(uint32,uint16,address)](../src/ReflexBase.sol#L68-L102) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L81-L91)
 
 ../src/ReflexBase.sol#L68-L102
 
-- [ ] ID-18
-      [ReflexEndpoint.sentinel()](../src/ReflexEndpoint.sol#L76-L91) uses assembly - [INLINE ASM](../src/ReflexEndpoint.sol#L83-L86)
+- [ ] ID-17
+      [ReflexDispatcher.fallback()](../src/ReflexDispatcher.sol#L78-L116) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L92-L115)
 
-../src/ReflexEndpoint.sol#L76-L91
+../src/ReflexDispatcher.sol#L78-L116
+
+- [ ] ID-18
+      [ReflexEndpoint.\_fallback()](../src/ReflexEndpoint.sol#L101-L183) uses assembly - [INLINE ASM](../src/ReflexEndpoint.sol#L107-L152) - [INLINE ASM](../src/ReflexEndpoint.sol#L155-L181)
+
+../src/ReflexEndpoint.sol#L101-L183
 
 - [ ] ID-19
       [ReflexBatch.performStaticCall(address,bytes)](../src/periphery/ReflexBatch.sol#L24-L34) uses assembly - [INLINE ASM](../src/periphery/ReflexBatch.sol#L31-L33)

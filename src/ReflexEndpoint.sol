@@ -74,6 +74,7 @@ contract ReflexEndpoint is IReflexEndpoint {
      * @inheritdoc IReflexEndpoint
      */
     function sentinel() public virtual {
+        // NOTE: this method only exists so that Etherscan allows the endpoint to be recognized as a proxy.
         // HACK: replace with better solution, preferably permanent.
 
         if (msg.sender == address(0)) {
