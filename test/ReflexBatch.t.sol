@@ -146,7 +146,7 @@ contract ReflexBatchTest is ReflexFixture {
     }
 
     function testFuzzStaticCall(uint256 amount_) external withHooksExpected(1) withExternalTarget(amount_) {
-        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
             allowFailure: false,
@@ -157,8 +157,18 @@ contract ReflexBatchTest is ReflexFixture {
             )
         });
 
-        IReflexBatch.BatchActionResponse[] memory responses = new IReflexBatch.BatchActionResponse[](1);
+        actions[1] = IReflexBatch.BatchAction({
+            allowFailure: true,
+            endpointAddress: address(batchEndpoint),
+            callData: abi.encodeCall(batchEndpoint.performStaticCall, (address(0), ""))
+        });
+
+        IReflexBatch.BatchActionResponse[] memory responses = new IReflexBatch.BatchActionResponse[](2);
         responses[0] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(amount_)});
+        responses[1] = IReflexBatch.BatchActionResponse({
+            success: false,
+            returnData: abi.encodeWithSelector(IReflexModule.ZeroAddress.selector)
+        });
 
         vm.expectRevert(abi.encodeWithSelector(IReflexBatch.BatchSimulation.selector, responses));
         batchEndpoint.simulateBatchCallRevert(actions);

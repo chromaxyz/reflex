@@ -220,9 +220,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
     }
 
     function _testUnpackMessageSender(MockReflexModule endpoint_, address sender_) internal brutalizeMemory {
-        address messageSender = endpoint_.unpackMessageSender();
-
-        assertEq(messageSender, sender_);
+        assertEq(endpoint_.unpackMessageSender(), sender_);
     }
 
     function _testUnpackEndpointAddress(MockReflexModule endpoint_) internal brutalizeMemory {

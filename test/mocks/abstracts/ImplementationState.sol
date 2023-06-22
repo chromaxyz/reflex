@@ -25,7 +25,7 @@ import {ReflexState} from "../../../src/ReflexState.sol";
  * | _implementationState5   | mapping(address => uint256)                           | 54   | 0      | 32    |
  * | _tokens                 | mapping(address => struct ImplementationState.Token)  | 55   | 0      | 32    |
  */
-contract ImplementationState is ReflexState {
+abstract contract ImplementationState is ReflexState {
     // =======
     // Structs
     // =======
