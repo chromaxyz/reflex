@@ -11,15 +11,6 @@ import {IReflexEndpoint} from "./interfaces/IReflexEndpoint.sol";
  * @dev Non-upgradeable, extendable.
  */
 contract ReflexEndpoint is IReflexEndpoint {
-    // =========
-    // Constants
-    // =========
-
-    /**
-     * @dev `bytes4(keccak256("moduleIdToModuleImplementation(uint32)"))`.
-     */
-    bytes4 private constant _MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR = 0x75ea225d;
-
     // ==========
     // Immutables
     // ==========
@@ -38,71 +29,26 @@ contract ReflexEndpoint is IReflexEndpoint {
     // Constructor
     // ===========
 
-    // TODO: make payable?
-    // TODO: can we make this a cheap clone with immutable args
-
     /**
      * @param moduleId_ Same as the implementations' module id.
+     * @dev Payable to save gas when deploying, do not send value!
      */
-    constructor(uint32 moduleId_) {
+    constructor(uint32 moduleId_) payable {
         if (moduleId_ == 0) revert ModuleIdInvalid();
 
         _moduleId = moduleId_;
         _deployer = msg.sender;
     }
 
-    // ============
-    // View methods
-    // ============
-
-    /**
-     * @inheritdoc IReflexEndpoint
-     */
-    function implementation() external view virtual returns (address) {
-        (bool success, bytes memory response) = _deployer.staticcall(
-            abi.encodeWithSelector(_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR, _moduleId)
-        );
-
-        if (success) {
-            return abi.decode(response, (address));
-        } else {
-            return address(0);
-        }
-    }
-
-    // ==============
-    // Public methods
-    // ==============
-
-    /**
-     * @inheritdoc IReflexEndpoint
-     */
-    function sentinel() external virtual {
-        // NOTE: this method only exists so that Etherscan allows the endpoint to be recognized as a proxy.
-        // HACK: replace with better solution, preferably permanent.
-
-        if (msg.sender == address(0)) {
-            // This branch is expected to never be executed as `msg.sender` can never be 0.
-            // If this branch ever were to be executed it is expected to be harmless and have no side-effects.
-            // A `delegatecall` to non-contract address 0 yields `true` and is ignored.
-            assembly {
-                // Ignore return value.
-                pop(delegatecall(gas(), 0, 0, 0, 0, 0))
-            }
-        } else {
-            // If the function selector clashes fall through to the fallback.
-            _fallback();
-        }
-    }
-
     // ================
-    // Internal methods
+    // Fallback methods
     // ================
 
     /**
      * @dev Will run if no other function in the contract matches the call data.
      */
-    function _fallback() internal virtual {
+    // solhint-disable-next-line payable-fallback, no-complex-fallback
+    fallback() external virtual {
         address deployer_ = _deployer;
 
         // If the caller is the deployer, instead of re-enter - issue a log message.
@@ -184,17 +130,5 @@ contract ReflexEndpoint is IReflexEndpoint {
                 }
             }
         }
-    }
-
-    // ================
-    // Fallback methods
-    // ================
-
-    /**
-     * @dev Will run if no other function in the contract matches the call data.
-     */
-    // solhint-disable-next-line payable-fallback
-    fallback() external virtual {
-        _fallback();
     }
 }

@@ -187,9 +187,6 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
 
     function testUnitModuleIdToImplementation() external {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID), address(multiModuleV1));
-        assertEq(IReflexEndpoint(address(multiModuleEndpointA)).implementation(), address(multiModuleV1));
-        assertEq(IReflexEndpoint(address(multiModuleEndpointB)).implementation(), address(multiModuleV1));
-        assertEq(IReflexEndpoint(address(multiModuleEndpointC)).implementation(), address(multiModuleV1));
     }
 
     function testUnitModuleIdToEndpoint() external {
@@ -511,12 +508,6 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
 
         assertEq(dispatcher.getImplementationState0(), message_);
         assertFalse(uint8(uint256(dispatcher.getImplementationState0())) == number_);
-    }
-
-    function testUnitEndpointSentinelFallback() external {
-        _testEndpointSentinelFallback(multiModuleEndpointA);
-        _testEndpointSentinelFallback(multiModuleEndpointB);
-        _testEndpointSentinelFallback(multiModuleEndpointC);
     }
 
     function testFuzzRevertBytesCustomError(uint256 code_, string memory message_) external {

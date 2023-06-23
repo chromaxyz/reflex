@@ -72,13 +72,6 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         assertEq(module_.moduleUpgradeable(), moduleUpgradeable_);
     }
 
-    function _testEndpointSentinelFallback(MockReflexModule endpoint_) internal {
-        (bool success, bytes memory data) = address(endpoint_).call(abi.encodeWithSignature("sentinel()"));
-
-        assertTrue(success);
-        assertTrue(abi.decode(data, (bool)));
-    }
-
     function _testRevertBytesCustomError(MockReflexModule endpoint_, uint256 code_, string memory message_) internal {
         vm.expectRevert(
             abi.encodeWithSelector(

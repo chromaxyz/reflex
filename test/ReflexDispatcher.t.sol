@@ -42,7 +42,7 @@ contract ReflexDispatcherTest is ReflexFixture {
         new MockReflexDispatcher(address(this), address(0));
     }
 
-    function testUnitRevertInvalidInstallerModuleIdSentinel() external {
+    function testUnitRevertInvalidInstallerModuleId() external {
         vm.expectRevert();
         new MockReflexDispatcher(address(this), address(_users.Alice));
     }

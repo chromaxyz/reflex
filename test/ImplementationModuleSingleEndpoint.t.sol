@@ -110,7 +110,6 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
     function testUnitModuleIdToImplementation() external {
         assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_SINGLE_ID), address(singleModuleV1));
-        assertEq(IReflexEndpoint(address(singleModuleEndpoint)).implementation(), address(singleModuleV1));
     }
 
     function testUnitModuleIdToEndpoint() external {
@@ -300,10 +299,6 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         assertEq(dispatcher.getImplementationState0(), message_);
         assertFalse(uint8(uint256(dispatcher.getImplementationState0())) == number_);
-    }
-
-    function testUnitEndpointSentinelFallback() external {
-        _testEndpointSentinelFallback(singleModuleEndpoint);
     }
 
     function testFuzzRevertBytesCustomError(uint256 code_, string memory message_) external {
