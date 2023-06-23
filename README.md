@@ -42,9 +42,8 @@ A Solidity framework for upgradeable modularized applications.
 - Relatively minimal overhead for the features it provides:
   - [~8116](test/ImplementationGas.t.sol) gas on the initial cold call.
   - [~1116](test/ImplementationGas.t.sol) gas on the subsequent warm call.
-  - [TO UPDATE](test/ImplementationGas.t.sol) gas on the initial cold batched transaction call.
-  - [TO UPDATE](test/ImplementationGas.t.sol) gas on the subsequent warm batched transaction call.
-  - [TO UPDATE](test/ImplementationGas.t.sol) gas on subsequent warm calls inside of a warm batched transaction call.
+  - [~15073](test/ImplementationGas.t.sol) gas on the initial cold batched transaction call.
+  - [~3573](test/ImplementationGas.t.sol) gas on the subsequent warm batched transaction call.
 - A built-in upgradeable installer allowing you to add, upgrade and deprecate modules throughout the application lifespan.
 - Has a global reentrancy lock capable of covering every storage-modifying method in the inheriting application.
 

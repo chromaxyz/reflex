@@ -10,7 +10,7 @@ import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
 import {MockImplementationGasModule} from "./mocks/MockImplementationGasModule.sol";
-import {MockReflexBatch} from "./mocks/MockReflexBatch.sol";
+import {MockImplementationGasBatch} from "./mocks/MockImplementationGasBatch.sol";
 
 /**
  * @title Implementation Gas Test
@@ -31,8 +31,8 @@ contract ImplementationGasTest is ImplementationFixture {
     // Storage
     // =======
 
-    MockReflexBatch public batch;
-    MockReflexBatch public batchEndpoint;
+    MockImplementationGasBatch public batch;
+    MockImplementationGasBatch public batchEndpoint;
 
     MockImplementationGasModule public singleModule;
     MockImplementationGasModule public singleModuleEndpoint;
@@ -44,7 +44,7 @@ contract ImplementationGasTest is ImplementationFixture {
     function setUp() public virtual override {
         super.setUp();
 
-        batch = new MockReflexBatch(
+        batch = new MockImplementationGasBatch(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_BATCH,
                 moduleType: _MODULE_SINGLE_TYPE,
@@ -67,7 +67,7 @@ contract ImplementationGasTest is ImplementationFixture {
         moduleAddresses[1] = address(singleModule);
         installerEndpoint.addModules(moduleAddresses);
 
-        batchEndpoint = MockReflexBatch(dispatcher.moduleIdToEndpoint(_MODULE_ID_BATCH));
+        batchEndpoint = MockImplementationGasBatch(dispatcher.moduleIdToEndpoint(_MODULE_ID_BATCH));
         singleModuleEndpoint = MockImplementationGasModule(dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID));
     }
 
@@ -156,31 +156,38 @@ contract ImplementationGasTest is ImplementationFixture {
     }
 
     function testGasBatchCall() external {
-        // TODO: re-measure
-
-        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](3);
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
 
         actions[0] = IReflexBatch.BatchAction({
-            allowFailure: false,
-            endpointAddress: address(singleModuleEndpoint),
-            callData: abi.encodeCall(MockImplementationGasModule.setNumber, (1))
-        });
-
-        actions[1] = IReflexBatch.BatchAction({
-            allowFailure: false,
-            endpointAddress: address(singleModuleEndpoint),
-            callData: abi.encodeCall(MockImplementationGasModule.getNumber, ())
-        });
-
-        actions[2] = IReflexBatch.BatchAction({
             allowFailure: false,
             endpointAddress: address(singleModuleEndpoint),
             callData: abi.encodeCall(MockImplementationGasModule.getEmpty, ())
         });
 
+        // Cold: 15073 gas (15216-143)
+        //
+        // ├─ [15216] ReflexEndpoint::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
+        // │   ├─ [12408] MockImplementationDispatcher::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
+        // │   │   ├─ [7010] MockImplementationGasBatch::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)]) [delegatecall]
+        // │   │   │   ├─ [143] MockImplementationGasModule::getEmpty() [delegatecall]
+        // │   │   │   │   └─ ← ()
+        // │   │   │   └─ ← ()
+        // │   │   └─ ← ()
+        // │   └─ ← ()
+
         batchEndpoint.performBatchCall(actions);
 
-        // TODO: re-measure
+        // Hot: 3573 gas (3716-143)
+        //
+        // ├─ [3716] ReflexEndpoint::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
+        // │   ├─ [3408] MockImplementationDispatcher::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
+        // │   │   ├─ [2510] MockImplementationGasBatch::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)]) [delegatecall]
+        // │   │   │   ├─ [143] MockImplementationGasModule::getEmpty() [delegatecall]
+        // │   │   │   │   └─ ← ()
+        // │   │   │   └─ ← ()
+        // │   │   └─ ← ()
+        // │   └─ ← ()
+        // └─ ← ()
 
         batchEndpoint.performBatchCall(actions);
     }
