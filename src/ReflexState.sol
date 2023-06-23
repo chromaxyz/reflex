@@ -7,8 +7,6 @@ import {IReflexState} from "./interfaces/IReflexState.sol";
 // Sources
 import {ReflexConstants} from "./ReflexConstants.sol";
 
-// TODO: can we merge this into ReflexBase, including the constants?
-
 /**
  * @title Reflex State
  * @dev Append-only extendable.
