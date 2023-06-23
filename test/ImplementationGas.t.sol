@@ -78,7 +78,7 @@ contract ImplementationGasTest is ImplementationFixture {
     /* solhint-disable max-line-length */
 
     function testGasEndpointGetEmpty() external view {
-        // Cold:  gas (8259-143)
+        // Cold: 8116 gas (8259-143)
         //
         //   [15168] ImplementationGasTest::testGasEndpointGetEmpty()
         //     ├─ [8259] ReflexEndpoint::getEmpty() [staticcall]
@@ -90,7 +90,7 @@ contract ImplementationGasTest is ImplementationFixture {
 
         singleModuleEndpoint.getEmpty();
 
-        // Hot:  gas (1259-143)
+        // Hot: 1116 gas (1259-143)
         //
         //     ├─ [1259] ReflexEndpoint::getEmpty() [staticcall]
         //     │   ├─ [996] MockImplementationDispatcher::getEmpty()
@@ -104,7 +104,7 @@ contract ImplementationGasTest is ImplementationFixture {
     }
 
     function testGasEndpointSetValue() external {
-        // Cold:  gas (30469-22347)
+        // Cold: 8122 gas (30469-22347)
         //
         //   [37555] ImplementationGasTest::testGasEndpointSetValue()
         //     ├─ [30469] ReflexEndpoint::setNumber(1)
@@ -116,7 +116,7 @@ contract ImplementationGasTest is ImplementationFixture {
 
         singleModuleEndpoint.setNumber(1);
 
-        // Hot: gas (1469-347)
+        // Hot: 1122 gas (1469-347)
         //
         //     ├─ [1469] ReflexEndpoint::setNumber(2)
         //     │   ├─ [1203] MockImplementationDispatcher::setNumber(2)
@@ -130,7 +130,7 @@ contract ImplementationGasTest is ImplementationFixture {
     }
 
     function testGasEndpointGetValue() external view {
-        // Cold:  gas (10475-2355)
+        // Cold: 8120 gas (10475-2355)
         //
         //   [17700] ImplementationGasTest::testGasEndpointGetValue()
         //     ├─ [10475] ReflexEndpoint::getNumber() [staticcall]
@@ -142,7 +142,7 @@ contract ImplementationGasTest is ImplementationFixture {
 
         singleModuleEndpoint.getNumber();
 
-        // Hot:  gas (1475-355)
+        // Hot: 1120 gas (1475-355)
         //
         //     ├─ [1475] ReflexEndpoint::getNumber() [staticcall]
         //     │   ├─ [1209] MockImplementationDispatcher::getNumber()
@@ -156,20 +156,7 @@ contract ImplementationGasTest is ImplementationFixture {
     }
 
     function testGasBatchCall() external {
-        // Cold: 19179 gas (21688-2509)
-        //
-        // ├─ [21688] ReflexEndpoint::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
-        // │   ├─ [18708] MockImplementationDispatcher::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
-        // │   │   ├─ [13375] MockReflexBatch::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)]) [delegatecall]
-        // │   │   │   ├─ [2509] MockImplementationGasModule::setNumber(1) [delegatecall]
-        // │   │   │   │   └─ ← ()
-        // │   │   │   ├─ [355] MockImplementationGasModule::getNumber() [delegatecall]
-        // │   │   │   │   └─ ← 1
-        // │   │   │   ├─ [143] MockImplementationGasModule::getEmpty() [delegatecall]
-        // │   │   │   │   └─ ← ()
-        // │   │   │   └─ ← ()
-        // │   │   └─ ← ()
-        // │   └─ ← ()
+        // TODO: re-measure
 
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](3);
 
@@ -193,21 +180,7 @@ contract ImplementationGasTest is ImplementationFixture {
 
         batchEndpoint.performBatchCall(actions);
 
-        // Hot: 7679 gas (8188-509)
-        //
-        // ├─ [8188] ReflexEndpoint::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
-        // │   ├─ [7708] MockImplementationDispatcher::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)])
-        // │   │   ├─ [6875] MockReflexBatch::performBatchCall([(0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x18559e190000000000000000000000000000000000000000000000000000000000000001), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0xf2c9ecd8), (0x3C8Ca53ee5661D29d3d3C0732689a4b86947EAF0, false, 0x44733ae1)]) [delegatecall]
-        // │   │   │   ├─ [509] MockImplementationGasModule::setNumber(1) [delegatecall]
-        // │   │   │   │   └─ ← ()
-        // │   │   │   ├─ [355] MockImplementationGasModule::getNumber() [delegatecall]
-        // │   │   │   │   └─ ← 1
-        // │   │   │   ├─ [143] MockImplementationGasModule::getEmpty() [delegatecall]
-        // │   │   │   │   └─ ← ()
-        // │   │   │   └─ ← ()
-        // │   │   └─ ← ()
-        // │   └─ ← ()
-        // └─ ← ()
+        // TODO: re-measure
 
         batchEndpoint.performBatchCall(actions);
     }
