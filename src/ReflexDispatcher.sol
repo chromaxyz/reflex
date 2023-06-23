@@ -147,15 +147,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
     /**
      * @notice Hook that is called upon creation of an endpoint to get its implementation.
      * @dev This method may be overridden to customize the endpoint implementation.
-     *
-     * In the case you want to customize the endpoint for the `Installer` you
-     * override this method in your `Dispatcher` contract.
-     *
-     * In the common case you use a `single-endpoint` you override this method in your `Installer` contract.
-     *
-     * In the exceptional case you use a `multi-endpoint` module you
-     * override this method in the place you instantiate the endpoint, one of your `Module` contracts.
-     *
+     * To override the `Installer` endpoint implementation you override this method in your `Dispatcher` contract.
      * @param moduleId_ Module id.
      * @return endpointCreationCode_ Endpoint creation code.
      */
