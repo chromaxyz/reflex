@@ -32,6 +32,7 @@ export FOUNDRY_PROFILE=$PROFILE
 
 log $GREEN "Creating snapshot with profile: $PROFILE"
 
+# Register if old snapshot exists
 HAS_OLD_SNAPSHOT=false
 
 # Back up old snapshot
