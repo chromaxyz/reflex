@@ -46,7 +46,7 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() virtual {
-        if (_unpackMessageSender() != _s().owner) revert Unauthorized();
+        if (_unpackMessageSender() != _REFLEX_STORAGE().owner) revert Unauthorized();
 
         _;
     }

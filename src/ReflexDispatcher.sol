@@ -7,7 +7,8 @@ import {IReflexInstaller} from "./interfaces/IReflexInstaller.sol";
 import {IReflexModule} from "./interfaces/IReflexModule.sol";
 
 // Sources
-import {ReflexBase} from "./ReflexBase.sol";
+import {ReflexEndpoint} from "./ReflexEndpoint.sol";
+import {ReflexState} from "./ReflexState.sol";
 
 /**
  * @title Reflex Dispatcher
@@ -15,7 +16,7 @@ import {ReflexBase} from "./ReflexBase.sol";
  * @dev Execution takes place within the Dispatcher's storage context.
  * @dev Non-upgradeable, extendable.
  */
-abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
+abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
     // ===========
     // Constructor
     // ===========
@@ -26,7 +27,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
      */
     constructor(address owner_, address installerModule_) {
         // Initialize the global reentrancy guard as unlocked.
-        _s().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
+        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
 
         if (owner_ == address(0) || installerModule_ == address(0)) revert ZeroAddress();
 
@@ -37,14 +38,37 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
         if (moduleSettings_.moduleType != _MODULE_TYPE_SINGLE_ENDPOINT) revert ModuleTypeInvalid();
 
         // Initialize the owner.
-        _s().owner = owner_;
+        _REFLEX_STORAGE().owner = owner_;
 
         // Register the built-in `Installer` module.
-        _s().modules[_MODULE_ID_INSTALLER] = installerModule_;
+        _REFLEX_STORAGE().modules[_MODULE_ID_INSTALLER] = installerModule_;
 
         // Create and register the `Installer` endpoint.
-        _createEndpoint(moduleSettings_.moduleId, moduleSettings_.moduleType, installerModule_);
+        bytes memory endpointCreationCode = _getEndpointCreationCode(_MODULE_ID_INSTALLER);
 
+        address endpointAddress;
+
+        assembly ("memory-safe") {
+            endpointAddress := create(0, add(endpointCreationCode, 0x20), mload(endpointCreationCode))
+
+            // If the code size of `endpointAddress_` is zero, revert.
+            if iszero(extcodesize(endpointAddress)) {
+                // Store the function selector of `EndpointInvalid()`.
+                mstore(0x00, 0x0b3b0bd1)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
+        }
+
+        _REFLEX_STORAGE().endpoints[_MODULE_ID_INSTALLER] = endpointAddress;
+
+        _REFLEX_STORAGE().relations[endpointAddress] = TrustRelation({
+            moduleId: _MODULE_ID_INSTALLER,
+            moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
+            moduleImplementation: installerModule_
+        });
+
+        emit EndpointCreated(_MODULE_ID_INSTALLER, endpointAddress);
         emit OwnershipTransferred(address(0), owner_);
         emit ModuleAdded(_MODULE_ID_INSTALLER, installerModule_, IReflexInstaller(installerModule_).moduleVersion());
     }
@@ -57,14 +81,14 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
      * @inheritdoc IReflexDispatcher
      */
     function moduleIdToModuleImplementation(uint32 moduleId_) public view virtual returns (address) {
-        return _s().modules[moduleId_];
+        return _REFLEX_STORAGE().modules[moduleId_];
     }
 
     /**
      * @inheritdoc IReflexDispatcher
      */
     function moduleIdToEndpoint(uint32 moduleId_) public view virtual returns (address) {
-        return _s().endpoints[moduleId_];
+        return _REFLEX_STORAGE().endpoints[moduleId_];
     }
 
     // ================
@@ -75,13 +99,13 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
      * @notice Dispatch call to module implementation.
      */
     // solhint-disable-next-line payable-fallback, no-complex-fallback
-    fallback() external virtual reentrancyAllowed {
-        uint32 moduleId = _s().relations[msg.sender].moduleId;
-        address moduleImplementation = _s().relations[msg.sender].moduleImplementation;
+    fallback() external virtual {
+        uint32 moduleId = _REFLEX_STORAGE().relations[msg.sender].moduleId;
+        address moduleImplementation = _REFLEX_STORAGE().relations[msg.sender].moduleImplementation;
 
         if (moduleId == 0) revert CallerNotTrusted();
 
-        if (moduleImplementation == address(0)) moduleImplementation = _s().modules[moduleId];
+        if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[moduleId];
 
         // Message length >= (4 + 20)
         // 4 bytes for selector used to call the endpoint.
@@ -113,5 +137,22 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexBase {
                 return(0, returndatasize())
             }
         }
+    }
+
+    // ============
+    // Hook methods
+    // ============
+
+    /**
+     * @notice Hook that is called upon creation of an endpoint to get its implementation.
+     * @dev This method may be overridden to customize the endpoint implementation.
+     * In the common case you use a single-endpoint you will override this method in your `Installer` contract.
+     * In the exceptional case you use a multi-endpoint module you will override this method in
+     * the place you instantiate the endpoint, one of your `Module` contracts.
+     * @param moduleId_ Module id.
+     * @return endpointCreationCode_ Endpoint creation code.
+     */
+    function _getEndpointCreationCode(uint32 moduleId_) internal virtual returns (bytes memory endpointCreationCode_) {
+        endpointCreationCode_ = abi.encodePacked(type(ReflexEndpoint).creationCode, abi.encode(moduleId_));
     }
 }

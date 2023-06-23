@@ -3,15 +3,12 @@ pragma solidity ^0.8.13;
 
 /**
  * @title Reflex Constants
- *
- * @dev Append-only extendable, only use internal constants!
+ * @dev Append-only extendable.
  */
 abstract contract ReflexConstants {
-    // =======
-    // Globals
-    // =======
-
-    bytes32 internal constant _REFLEX_STORAGE = keccak256("diamond.storage.reflex");
+    // ================
+    // Reentrancy guard
+    // ================
 
     /**
      * @dev Reentrancy guard unlocked state.
@@ -23,9 +20,9 @@ abstract contract ReflexConstants {
      */
     uint256 internal constant _REENTRANCY_GUARD_LOCKED = 2;
 
-    // =============
-    // Configuration
-    // =============
+    // ============
+    // Module types
+    // ============
 
     /**
      * @dev Modules that have a single endpoint to a single implementation relation.
@@ -42,9 +39,9 @@ abstract contract ReflexConstants {
      */
     uint16 internal constant _MODULE_TYPE_INTERNAL = 3;
 
-    // =======
-    // Modules
-    // =======
+    // ==========
+    // Module ids
+    // ==========
 
     /**
      * @dev Module id of built-in upgradeable installer module.

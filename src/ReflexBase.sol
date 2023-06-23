@@ -31,15 +31,15 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      */
     modifier nonReentrant() virtual {
         // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
-        if (_s().reentrancyStatus != _REENTRANCY_GUARD_UNLOCKED) revert Reentrancy();
+        if (_REFLEX_STORAGE().reentrancyStatus != _REENTRANCY_GUARD_UNLOCKED) revert Reentrancy();
 
         // Any calls to `nonReentrant` after this point will fail.
-        _s().reentrancyStatus = _REENTRANCY_GUARD_LOCKED;
+        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_LOCKED;
 
         _;
 
         // By storing the original value once again, a refund is triggered.
-        _s().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
+        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
     }
 
     /**
@@ -74,7 +74,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         if (moduleType_ != _MODULE_TYPE_SINGLE_ENDPOINT && moduleType_ != _MODULE_TYPE_MULTI_ENDPOINT)
             revert ModuleTypeInvalid();
 
-        if (_s().endpoints[moduleId_] != address(0)) return _s().endpoints[moduleId_];
+        if (_REFLEX_STORAGE().endpoints[moduleId_] != address(0)) return _REFLEX_STORAGE().endpoints[moduleId_];
 
         bytes memory endpointCreationCode = _getEndpointCreationCode(moduleId_);
 
@@ -90,9 +90,9 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
             }
         }
 
-        if (moduleType_ == _MODULE_TYPE_SINGLE_ENDPOINT) _s().endpoints[moduleId_] = endpointAddress_;
+        if (moduleType_ == _MODULE_TYPE_SINGLE_ENDPOINT) _REFLEX_STORAGE().endpoints[moduleId_] = endpointAddress_;
 
-        _s().relations[endpointAddress_] = TrustRelation({
+        _REFLEX_STORAGE().relations[endpointAddress_] = TrustRelation({
             moduleId: moduleId_,
             moduleType: moduleType_,
             moduleImplementation: moduleImplementation_
@@ -107,7 +107,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @return bool Whether the reentrancy guard is locked.
      */
     function _reentrancyStatusLocked() internal view virtual returns (bool) {
-        return _s().reentrancyStatus == _REENTRANCY_GUARD_LOCKED;
+        return _REFLEX_STORAGE().reentrancyStatus == _REENTRANCY_GUARD_LOCKED;
     }
 
     /**
@@ -117,7 +117,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @return bytes Call result.
      */
     function _callInternalModule(uint32 moduleId_, bytes memory input_) internal virtual returns (bytes memory) {
-        (bool success, bytes memory result) = _s().modules[moduleId_].delegatecall(input_);
+        (bool success, bytes memory result) = _REFLEX_STORAGE().modules[moduleId_].delegatecall(input_);
 
         if (!success) _revertBytes(result);
 

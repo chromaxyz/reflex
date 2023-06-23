@@ -58,7 +58,7 @@ contract ReflexEndpoint is IReflexEndpoint {
     /**
      * @inheritdoc IReflexEndpoint
      */
-    function implementation() public view virtual returns (address) {
+    function implementation() external view virtual returns (address) {
         (bool success, bytes memory response) = _deployer.staticcall(
             abi.encodeWithSelector(_MODULE_ID_TO_MODULE_IMPLEMENTATION_SELECTOR, _moduleId)
         );
@@ -77,7 +77,7 @@ contract ReflexEndpoint is IReflexEndpoint {
     /**
      * @inheritdoc IReflexEndpoint
      */
-    function sentinel() public virtual {
+    function sentinel() external virtual {
         // NOTE: this method only exists so that Etherscan allows the endpoint to be recognized as a proxy.
         // HACK: replace with better solution, preferably permanent.
 

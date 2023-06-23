@@ -19,6 +19,6 @@ contract MockReflexDispatcher is ReflexDispatcher {
     // ==========
 
     function setModule(uint32 moduleId_, address moduleImplementation_) public {
-        _s().modules[moduleId_] = moduleImplementation_;
+        _REFLEX_STORAGE().modules[moduleId_] = moduleImplementation_;
     }
 }
