@@ -54,8 +54,8 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
     // ================
 
     /**
-     * @dev Get the storage pointer.
-     * @return storage_ Storage pointer.
+     * @dev Get the Reflex storage pointer.
+     * @return storage_ Pointer to the Reflex storage state.
      */
     function _REFLEX_STORAGE() internal pure returns (ReflexStorage storage storage_) {
         assembly {
