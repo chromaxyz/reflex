@@ -31,9 +31,8 @@ contract ReflexEndpoint is IReflexEndpoint {
 
     /**
      * @param moduleId_ Same as the implementations' module id.
-     * @dev Payable to save gas when deploying, do not send value!
      */
-    constructor(uint32 moduleId_) payable {
+    constructor(uint32 moduleId_) {
         if (moduleId_ == 0) revert ModuleIdInvalid();
 
         _moduleId = moduleId_;
