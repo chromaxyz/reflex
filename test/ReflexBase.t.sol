@@ -35,7 +35,7 @@ contract ReflexBaseTest is ReflexFixture {
         reentrancyAttack = new ReentrancyAttack();
 
         assertEq(base.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
-        assertEq(base.getReentrancyStatusLocked(), false);
+        assertEq(base.isReentrancyStatusLocked(), false);
         assertEq(base.reentrancyCounter(), 0);
     }
 

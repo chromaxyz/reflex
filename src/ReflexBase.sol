@@ -49,7 +49,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
     modifier nonReadReentrant() virtual {
         // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
         // Any calls to `nonReadReentrant` after this point will fail.
-        if (_reentrancyStatusLocked()) revert ReadOnlyReentrancy();
+        if (_REFLEX_STORAGE().reentrancyStatus == _REENTRANCY_GUARD_LOCKED) revert ReadOnlyReentrancy();
 
         _;
     }
@@ -99,15 +99,6 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         });
 
         emit EndpointCreated(moduleId_, endpointAddress_);
-    }
-
-    /**
-     * @dev Returns true if the reentrancy guard is currently set to ` _REENTRANCY_GUARD_LOCKED`
-     * which indicates there is a `nonReentrant` function in the call stack.
-     * @return bool Whether the reentrancy guard is locked.
-     */
-    function _reentrancyStatusLocked() internal view virtual returns (bool) {
-        return _REFLEX_STORAGE().reentrancyStatus == _REENTRANCY_GUARD_LOCKED;
     }
 
     /**
