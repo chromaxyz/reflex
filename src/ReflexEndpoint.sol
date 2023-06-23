@@ -33,7 +33,7 @@ contract ReflexEndpoint is IReflexEndpoint {
      * @param moduleId_ Same as the implementations' module id.
      */
     constructor(uint32 moduleId_) {
-        if (moduleId_ == 0) revert ModuleIdInvalid();
+        if (moduleId_ == 0) revert ModuleIdInvalid(moduleId_);
 
         _moduleId = moduleId_;
         _deployer = msg.sender;

@@ -18,16 +18,6 @@ interface IReflexInstaller is IReflexModule {
     error ModuleExistent(uint32 moduleId);
 
     /**
-     * @notice Thrown when the module version is invalid.
-     */
-    error ModuleInvalidVersion(uint32 moduleId);
-
-    /**
-     * @notice Thrown when the module type is invalid.
-     */
-    error ModuleInvalidType(uint32 moduleId);
-
-    /**
      * @notice Thrown when the module has not been registered yet.
      */
     error ModuleNonexistent(uint32 moduleId);

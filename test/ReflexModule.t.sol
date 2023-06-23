@@ -68,7 +68,7 @@ contract ReflexModuleTest is ReflexFixture {
     }
 
     function testUnitRevertInvalidModuleIdZeroValue() external {
-        vm.expectRevert(IReflexBase.ModuleIdInvalid.selector);
+        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleIdInvalid.selector, _MODULE_INVALID_ID));
         module = new MockReflexModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INVALID_ID,
@@ -80,7 +80,7 @@ contract ReflexModuleTest is ReflexFixture {
     }
 
     function testUnitRevertInvalidModuleTypeZeroValue() external {
-        vm.expectRevert(IReflexBase.ModuleTypeInvalid.selector);
+        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleTypeInvalid.selector, _MODULE_INVALID_TYPE_ZERO));
         module = new MockReflexModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_VALID_ID,
@@ -92,7 +92,7 @@ contract ReflexModuleTest is ReflexFixture {
     }
 
     function testUnitRevertInvalidModuleTypeOverflowValue() external {
-        vm.expectRevert(IReflexBase.ModuleTypeInvalid.selector);
+        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleTypeInvalid.selector, _MODULE_INVALID_TYPE));
         module = new MockReflexModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_VALID_ID,
@@ -104,7 +104,7 @@ contract ReflexModuleTest is ReflexFixture {
     }
 
     function testUnitRevertInvalidModuleVersionZeroValue() external {
-        vm.expectRevert(IReflexModule.ModuleVersionInvalid.selector);
+        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleVersionInvalid.selector, _MODULE_INVALID_VERSION));
         module = new MockReflexModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_VALID_ID,

@@ -39,7 +39,7 @@ contract ReflexEndpointTest is TestHarness {
     // =====
 
     function testUnitRevertInvalidModuleId() external {
-        vm.expectRevert(IReflexEndpoint.ModuleIdInvalid.selector);
+        vm.expectRevert(abi.encodeWithSelector(IReflexEndpoint.ModuleIdInvalid.selector, 0));
         new MockReflexEndpoint(0);
     }
 }

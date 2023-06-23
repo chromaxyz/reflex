@@ -70,9 +70,9 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         uint16 moduleType_,
         address moduleImplementation_
     ) internal virtual returns (address endpointAddress_) {
-        if (moduleId_ == 0) revert ModuleIdInvalid();
+        if (moduleId_ == 0) revert ModuleIdInvalid(moduleId_);
         if (moduleType_ != _MODULE_TYPE_SINGLE_ENDPOINT && moduleType_ != _MODULE_TYPE_MULTI_ENDPOINT)
-            revert ModuleTypeInvalid();
+            revert ModuleTypeInvalid(moduleType_);
 
         if (_REFLEX_STORAGE().endpoints[moduleId_] != address(0)) return _REFLEX_STORAGE().endpoints[moduleId_];
 

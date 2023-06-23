@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
+import {IReflexBase} from "../src/interfaces/IReflexBase.sol";
 import {IReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
@@ -481,15 +482,15 @@ contract ReflexInstallerTest is ReflexFixture {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
 
-        _upgradeModule(singleModuleV1, IReflexInstaller.ModuleInvalidVersion.selector);
-        _upgradeModule(singleModuleV2, IReflexInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(singleModuleV1, IReflexModule.ModuleVersionInvalid.selector);
+        _upgradeModule(singleModuleV2, IReflexModule.ModuleVersionInvalid.selector);
     }
 
     function testUnitRevertUpgradeInvalidTypeSingleEndpoint() external withHooksExpected(2, 1) {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
 
-        MockReflexModule singleModuleInvalidType = new MockReflexModule(
+        MockReflexModule singleModuleTypeInvalid = new MockReflexModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_MULTI_TYPE,
@@ -498,7 +499,7 @@ contract ReflexInstallerTest is ReflexFixture {
             })
         );
 
-        _upgradeModule(singleModuleInvalidType, IReflexInstaller.ModuleInvalidType.selector);
+        _upgradeModule(singleModuleTypeInvalid, IReflexBase.ModuleTypeInvalid.selector);
     }
 
     function testUnitRevertUpgradeModulesNonUpgradeableSingleEndpoint() external withHooksExpected(3, 1) {
@@ -558,15 +559,15 @@ contract ReflexInstallerTest is ReflexFixture {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
 
-        _upgradeModule(multiModuleV1, IReflexInstaller.ModuleInvalidVersion.selector);
-        _upgradeModule(multiModuleV2, IReflexInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(multiModuleV1, IReflexModule.ModuleVersionInvalid.selector);
+        _upgradeModule(multiModuleV2, IReflexModule.ModuleVersionInvalid.selector);
     }
 
     function testUnitRevertUpgradeInvalidTypeMultiEndpoint() external withHooksExpected(2, 0) {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
 
-        MockReflexModule multiModuleInvalidType = new MockReflexModule(
+        MockReflexModule multiModuleTypeInvalid = new MockReflexModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
@@ -575,7 +576,7 @@ contract ReflexInstallerTest is ReflexFixture {
             })
         );
 
-        _upgradeModule(multiModuleInvalidType, IReflexInstaller.ModuleInvalidType.selector);
+        _upgradeModule(multiModuleTypeInvalid, IReflexBase.ModuleTypeInvalid.selector);
     }
 
     function testUnitRevertUpgradeModulesNonUpgradeableMultiEndpoint() external withHooksExpected(3, 0) {
@@ -635,15 +636,15 @@ contract ReflexInstallerTest is ReflexFixture {
         _addModule(internalModuleV1, _VALID);
         _upgradeModule(internalModuleV2, _VALID);
 
-        _upgradeModule(internalModuleV1, IReflexInstaller.ModuleInvalidVersion.selector);
-        _upgradeModule(internalModuleV2, IReflexInstaller.ModuleInvalidVersion.selector);
+        _upgradeModule(internalModuleV1, IReflexModule.ModuleVersionInvalid.selector);
+        _upgradeModule(internalModuleV2, IReflexModule.ModuleVersionInvalid.selector);
     }
 
     function testUnitRevertUpgradeInvalidTypeInternal() external withHooksExpected(2, 0) {
         _addModule(internalModuleV1, _VALID);
         _upgradeModule(internalModuleV2, _VALID);
 
-        MockReflexModule internalModuleInvalidType = new MockReflexModule(
+        MockReflexModule internalModuleTypeInvalid = new MockReflexModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
@@ -652,7 +653,7 @@ contract ReflexInstallerTest is ReflexFixture {
             })
         );
 
-        _upgradeModule(internalModuleInvalidType, IReflexInstaller.ModuleInvalidType.selector);
+        _upgradeModule(internalModuleTypeInvalid, IReflexBase.ModuleTypeInvalid.selector);
     }
 
     function testUnitRevertUpgradeModulesNonUpgradeableInternal() external withHooksExpected(3, 0) {
@@ -756,6 +757,10 @@ contract ReflexInstallerTest is ReflexFixture {
         if (selector_ == _VALID) {
             vm.expectEmit(true, true, false, false);
             emit ModuleAdded(module_.moduleId(), address(module_), module_.moduleVersion());
+        } else if (selector_ == IReflexBase.ModuleTypeInvalid.selector) {
+            vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleType()));
+        } else if (selector_ == IReflexModule.ModuleVersionInvalid.selector) {
+            vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleVersion()));
         } else {
             vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleId()));
         }
@@ -770,6 +775,10 @@ contract ReflexInstallerTest is ReflexFixture {
         if (selector_ == _VALID) {
             vm.expectEmit(true, true, false, false);
             emit ModuleUpgraded(module_.moduleId(), address(module_), module_.moduleVersion());
+        } else if (selector_ == IReflexBase.ModuleTypeInvalid.selector) {
+            vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleType()));
+        } else if (selector_ == IReflexModule.ModuleVersionInvalid.selector) {
+            vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleVersion()));
         } else {
             vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleId()));
         }

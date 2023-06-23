@@ -59,10 +59,10 @@ abstract contract ReflexModule is IReflexModule, ReflexBase {
      * @param moduleSettings_ Module settings.
      */
     constructor(ModuleSettings memory moduleSettings_) {
-        if (moduleSettings_.moduleId == 0) revert ModuleIdInvalid();
+        if (moduleSettings_.moduleId == 0) revert ModuleIdInvalid(moduleSettings_.moduleId);
         if (moduleSettings_.moduleType == 0 || moduleSettings_.moduleType > _MODULE_TYPE_INTERNAL)
-            revert ModuleTypeInvalid();
-        if (moduleSettings_.moduleVersion == 0) revert ModuleVersionInvalid();
+            revert ModuleTypeInvalid(moduleSettings_.moduleType);
+        if (moduleSettings_.moduleVersion == 0) revert ModuleVersionInvalid(moduleSettings_.moduleVersion);
 
         _moduleId = moduleSettings_.moduleId;
         _moduleType = moduleSettings_.moduleType;

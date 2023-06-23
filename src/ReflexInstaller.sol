@@ -134,13 +134,13 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             if (
                 moduleSettings_.moduleVersion <=
                 IReflexModule(_REFLEX_STORAGE().modules[moduleSettings_.moduleId]).moduleVersion()
-            ) revert ModuleInvalidVersion(moduleSettings_.moduleId);
+            ) revert ModuleVersionInvalid(moduleSettings_.moduleVersion);
 
             // Verify that the next module type is the same as the current module type.
             if (
                 moduleSettings_.moduleType !=
                 IReflexModule(_REFLEX_STORAGE().modules[moduleSettings_.moduleId]).moduleType()
-            ) revert ModuleInvalidType(moduleSettings_.moduleId);
+            ) revert ModuleTypeInvalid(moduleSettings_.moduleType);
 
             // Call pre-registration hook.
             _beforeModuleRegistration(moduleSettings_, moduleAddress);

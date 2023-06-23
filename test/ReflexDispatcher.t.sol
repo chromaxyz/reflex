@@ -60,7 +60,7 @@ contract ReflexDispatcherTest is ReflexFixture {
             })
         );
 
-        vm.expectRevert(IReflexBase.ModuleIdInvalid.selector);
+        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleIdInvalid.selector, moduleId_));
         new MockReflexDispatcher(address(this), address(module));
     }
 
@@ -74,7 +74,7 @@ contract ReflexDispatcherTest is ReflexFixture {
             })
         );
 
-        vm.expectRevert(IReflexBase.ModuleTypeInvalid.selector);
+        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleTypeInvalid.selector, _MODULE_TYPE_MULTI_ENDPOINT));
         new MockReflexDispatcher(address(this), address(module));
     }
 

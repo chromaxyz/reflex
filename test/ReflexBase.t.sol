@@ -89,15 +89,15 @@ contract ReflexBaseTest is ReflexFixture {
     // ==============
 
     function testUnitRevertCreateEndpointInvalidModuleId() external {
-        vm.expectRevert(IReflexBase.ModuleIdInvalid.selector);
+        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleIdInvalid.selector, 0));
         base.createEndpoint(0, 0, address(0));
     }
 
     function testUnitRevertCreateEndpointInvalidModuleType() external {
-        vm.expectRevert(IReflexBase.ModuleTypeInvalid.selector);
+        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleTypeInvalid.selector, 0));
         base.createEndpoint(102, 0, address(0));
 
-        vm.expectRevert(IReflexBase.ModuleTypeInvalid.selector);
+        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleTypeInvalid.selector, _MODULE_TYPE_INTERNAL));
         base.createEndpoint(102, _MODULE_TYPE_INTERNAL, address(0));
     }
 

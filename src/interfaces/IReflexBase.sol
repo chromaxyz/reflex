@@ -25,12 +25,12 @@ interface IReflexBase is IReflexState {
     /**
      * @notice Thrown when the module id is invalid.
      */
-    error ModuleIdInvalid();
+    error ModuleIdInvalid(uint32 moduleId);
 
     /**
      * @notice Thrown when the module type is invalid.
      */
-    error ModuleTypeInvalid();
+    error ModuleTypeInvalid(uint16 moduleType);
 
     /**
      * @notice Thrown when an attempt is made to re-enter the protected method.
