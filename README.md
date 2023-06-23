@@ -53,8 +53,8 @@ The framework serves as the foundation of your modular application allowing you 
 
 ## Known limitations
 
-- Endpoint is currently not recognized as `proxy` on Etherscan.
-- Does not support native currency to avoid reentrancy risk.
+- Endpoint is currently not recognized as `proxy` on Etherscan due to it using `CALL`, not `DELEGATECALL`.
+- Does not support native tokens to avoid reentrancy risk.
 
 ## Why?
 
