@@ -78,11 +78,11 @@ contract ImplementationGasTest is ImplementationFixture {
     /* solhint-disable max-line-length */
 
     function testGasEndpointGetEmpty() external view {
-        // Cold: 8065 gas (8208-143)
+        // Cold:  gas (8259-143)
         //
-        //   [15043] ImplementationGasTest::testGasEndpointGetEmpty()
-        //     ├─ [8208] ReflexEndpoint::getEmpty() [staticcall]
-        //     │   ├─ [5352] MockImplementationDispatcher::getEmpty()
+        //   [15168] ImplementationGasTest::testGasEndpointGetEmpty()
+        //     ├─ [8259] ReflexEndpoint::getEmpty() [staticcall]
+        //     │   ├─ [5496] MockImplementationDispatcher::getEmpty()
         //     │   │   ├─ [143] MockImplementationGasModule::getEmpty() [delegatecall]
         //     │   │   │   └─ ← ()
         //     │   │   └─ ← ()
@@ -90,10 +90,10 @@ contract ImplementationGasTest is ImplementationFixture {
 
         singleModuleEndpoint.getEmpty();
 
-        // Hot: 1065 gas (1208-143)
+        // Hot:  gas (1259-143)
         //
-        //     ├─ [1208] ReflexEndpoint::getEmpty() [staticcall]
-        //     │   ├─ [852] MockImplementationDispatcher::getEmpty()
+        //     ├─ [1259] ReflexEndpoint::getEmpty() [staticcall]
+        //     │   ├─ [996] MockImplementationDispatcher::getEmpty()
         //     │   │   ├─ [143] MockImplementationGasModule::getEmpty() [delegatecall]
         //     │   │   │   └─ ← ()
         //     │   │   └─ ← ()
@@ -104,23 +104,23 @@ contract ImplementationGasTest is ImplementationFixture {
     }
 
     function testGasEndpointSetValue() external {
-        // Cold: 8071 gas (10580-2509)
+        // Cold:  gas (30469-22347)
         //
-        //   [20554] ImplementationGasTest::testGasEndpointSetValue()
-        //     ├─ [10580] ReflexEndpoint::setNumber(1)
-        //     │   ├─ [7721] MockImplementationDispatcher::setNumber(1)
-        //     │   │   ├─ [2509] MockImplementationGasModule::setNumber(1) [delegatecall]
+        //   [37555] ImplementationGasTest::testGasEndpointSetValue()
+        //     ├─ [30469] ReflexEndpoint::setNumber(1)
+        //     │   ├─ [27703] MockImplementationDispatcher::setNumber(1)
+        //     │   │   ├─ [22347] MockImplementationGasModule::setNumber(1) [delegatecall]
         //     │   │   │   └─ ← ()
         //     │   │   └─ ← ()
         //     │   └─ ← ()
 
         singleModuleEndpoint.setNumber(1);
 
-        // Hot: 1071 gas (4380-3309)
+        // Hot: gas (1469-347)
         //
-        //     ├─ [4380] ReflexEndpoint::setNumber(2)
-        //     │   ├─ [4021] MockImplementationDispatcher::setNumber(2)
-        //     │   │   ├─ [3309] MockImplementationGasModule::setNumber(2) [delegatecall]
+        //     ├─ [1469] ReflexEndpoint::setNumber(2)
+        //     │   ├─ [1203] MockImplementationDispatcher::setNumber(2)
+        //     │   │   ├─ [347] MockImplementationGasModule::setNumber(2) [delegatecall]
         //     │   │   │   └─ ← ()
         //     │   │   └─ ← ()
         //     │   └─ ← ()
@@ -130,11 +130,11 @@ contract ImplementationGasTest is ImplementationFixture {
     }
 
     function testGasEndpointGetValue() external view {
-        // Cold: 8069 gas (10424-2355)
+        // Cold:  gas (10475-2355)
         //
-        //   [17577] ImplementationGasTest::testGasEndpointGetValue()
-        //     ├─ [10424] ReflexEndpoint::getNumber() [staticcall]
-        //     │   ├─ [7565] MockImplementationDispatcher::getNumber()
+        //   [17700] ImplementationGasTest::testGasEndpointGetValue()
+        //     ├─ [10475] ReflexEndpoint::getNumber() [staticcall]
+        //     │   ├─ [7709] MockImplementationDispatcher::getNumber()
         //     │   │   ├─ [2355] MockImplementationGasModule::getNumber() [delegatecall]
         //     │   │   │   └─ ← 1
         //     │   │   └─ ← 1
@@ -142,10 +142,10 @@ contract ImplementationGasTest is ImplementationFixture {
 
         singleModuleEndpoint.getNumber();
 
-        // Hot: 1069 gas (1424-355)
+        // Hot:  gas (1475-355)
         //
-        //     ├─ [1424] ReflexEndpoint::getNumber() [staticcall]
-        //     │   ├─ [1065] MockImplementationDispatcher::getNumber()
+        //     ├─ [1475] ReflexEndpoint::getNumber() [staticcall]
+        //     │   ├─ [1209] MockImplementationDispatcher::getNumber()
         //     │   │   ├─ [355] MockImplementationGasModule::getNumber() [delegatecall]
         //     │   │   │   └─ ← 1
         //     │   │   └─ ← 1
