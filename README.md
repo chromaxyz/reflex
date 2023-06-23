@@ -46,7 +46,7 @@ A Solidity framework for upgradeable modularized applications.
   - [TO UPDATE](test/ImplementationGas.t.sol) gas on the subsequent warm batched transaction call.
   - [TO UPDATE](test/ImplementationGas.t.sol) gas on subsequent warm calls inside of a warm batched transaction call.
 - A built-in upgradeable installer allowing you to add, upgrade and deprecate modules throughout the application lifespan.
-- Has a global reentrancy lock capable of covering every storage-modifying method in the protocol.
+- Has a global reentrancy lock capable of covering every storage-modifying method in the inheriting application.
 
 Noteably this is a so-called framework, a single well-tested implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
