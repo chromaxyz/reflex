@@ -51,6 +51,11 @@ A Solidity framework for upgradeable modularized applications.
 Noteably this is a so-called framework, a single well-tested implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
 
+## Known limitations
+
+- Endpoint is currently not recognized as `proxy` on Etherscan.
+- Does not support native currency to avoid reentrancy risk.
+
 ## Why?
 
 In the public discourse there is a lot of valid critique towards the use of (upgradeable) proxy patterns namely that they are difficult to manage, vulnerable if configured incorrectly, broadly unnecessary and in general over-complex and over-engineered.
