@@ -40,15 +40,5 @@
 
 **MockImplementationDispatcher**
 
-| Name                   | Type                                                 | Slot | Offset | Bytes | Contract                                                                 |
-| ---------------------- | ---------------------------------------------------- | ---- | ------ | ----- | ------------------------------------------------------------------------ |
-| \_implementationState0 | bytes32                                              | 0    | 0      | 32    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
-| \_implementationState1 | uint256                                              | 1    | 0      | 32    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
-| \_implementationState2 | address                                              | 2    | 0      | 20    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
-| \_implementationState3 | address                                              | 3    | 0      | 20    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
-| \_implementationState4 | bool                                                 | 3    | 20     | 1     | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
-| \_implementationState5 | mapping(address => uint256)                          | 4    | 0      | 32    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
-| \_tokens               | mapping(address => struct ImplementationState.Token) | 5    | 0      | 32    | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
-| IS_TEST                | bool                                                 | 6    | 0      | 1     | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
-| \_failed               | bool                                                 | 6    | 1      | 1     | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
-| stdstore               | struct StdStorage                                    | 7    | 0      | 224   | test/mocks/MockImplementationDispatcher.sol:MockImplementationDispatcher |
+| Name | Type | Slot | Offset | Bytes | Contract |
+| ---- | ---- | ---- | ------ | ----- | -------- |

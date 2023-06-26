@@ -356,7 +356,7 @@ contract ReflexBatchTest is ReflexFixture {
     }
 
     function testUnitRevertBatchSimulationFailed() external withHooksExpected(0) {
-        dispatcher.setModule(batch.moduleId(), address(0));
+        dispatcher.setModuleToImplementation(batch.moduleId(), address(0));
 
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
 

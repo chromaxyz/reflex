@@ -45,9 +45,10 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
         // Register the built-in `Installer` module.
         _REFLEX_STORAGE().modules[_MODULE_ID_INSTALLER] = installerModule_;
 
-        // Create and register the `Installer` endpoint.
+        // Fetch the endpoint implementation creation code for the `Installer` module.
         bytes memory endpointCreationCode = _getEndpointCreationCode(_MODULE_ID_INSTALLER);
 
+        // Create and register the `Installer` endpoint.
         address endpointAddress;
 
         assembly ("memory-safe") {

@@ -21,7 +21,7 @@ contract MockReflexDispatcher is MockHarness, ReflexDispatcher {
     // Test stubs
     // ==========
 
-    function setModule(uint32 moduleId_, address moduleImplementation_) public {
+    function setModuleToImplementation(uint32 moduleId_, address moduleImplementation_) public {
         _REFLEX_STORAGE().modules[moduleId_] = moduleImplementation_;
     }
 }
