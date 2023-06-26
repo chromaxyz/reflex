@@ -222,7 +222,7 @@ contract MockImplementationGasModule is ReflexModule, ImplementationState {
     // =======
 
     /**
-     * @dev `bytes32(uint256(keccak256("number")) - 1))`
+     * @dev `bytes32(uint256(keccak256("_NUMBER_SLOT")) - 1)`
      */
     bytes32 internal constant _NUMBER_SLOT = 0x74df73f62091511be85a1d4aa85b90a3b3ce25fdca122468743a9a4661137bb7;
 
