@@ -5,6 +5,7 @@ pragma solidity ^0.8.13;
 import {IReflexEndpoint} from "../src/interfaces/IReflexEndpoint.sol";
 import {IReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {IReflexState} from "../src/interfaces/IReflexState.sol";
 
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
@@ -148,7 +149,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         moduleAddresses[1] = address(multiModuleV1);
         installerEndpoint.addModules(moduleAddresses);
 
-        singleModuleEndpoint = MockImplementationERC20Hub(dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID));
+        singleModuleEndpoint = MockImplementationERC20Hub(dispatcher.getEndpoint(_MODULE_SINGLE_ID));
 
         multiModuleEndpointA = MockImplementationERC20(
             singleModuleEndpoint.addERC20(
@@ -185,12 +186,30 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
     // Tests
     // =====
 
-    function testUnitModuleIdToImplementation() external {
-        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_MULTI_ID), address(multiModuleV1));
+    function testUnitGetModuleImplementation() external {
+        assertEq(dispatcher.getModuleImplementation(_MODULE_MULTI_ID), address(multiModuleV1));
     }
 
-    function testUnitModuleIdToEndpoint() external {
-        assertEq(dispatcher.moduleIdToEndpoint(_MODULE_MULTI_ID), address(0));
+    function testUnitGetEndpoint() external {
+        assertEq(dispatcher.getEndpoint(_MODULE_MULTI_ID), address(0));
+    }
+
+    function testUnitGetTrustRelation() external {
+        IReflexState.TrustRelation memory relationA = dispatcher.getTrustRelation(address(multiModuleEndpointA));
+        IReflexState.TrustRelation memory relationB = dispatcher.getTrustRelation(address(multiModuleEndpointB));
+        IReflexState.TrustRelation memory relationC = dispatcher.getTrustRelation(address(multiModuleEndpointC));
+
+        assertEq(relationA.moduleId, _MODULE_MULTI_ID);
+        assertEq(relationB.moduleId, _MODULE_MULTI_ID);
+        assertEq(relationC.moduleId, _MODULE_MULTI_ID);
+
+        assertEq(relationA.moduleImplementation, address(0));
+        assertEq(relationB.moduleImplementation, address(0));
+        assertEq(relationC.moduleImplementation, address(0));
+
+        assertEq(relationA.moduleType, _MODULE_MULTI_TYPE);
+        assertEq(relationB.moduleType, _MODULE_MULTI_TYPE);
+        assertEq(relationC.moduleType, _MODULE_MULTI_TYPE);
     }
 
     function testUnitModuleSettings() external {

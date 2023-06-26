@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 // Interfaces
 import {IReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {IReflexState} from "../src/interfaces/IReflexState.sol";
 
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
@@ -128,19 +129,27 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         moduleAddresses[1] = address(internalModuleV1);
         installerEndpoint.addModules(moduleAddresses);
 
-        singleModuleEndpoint = MockImplementationModule(dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID));
+        singleModuleEndpoint = MockImplementationModule(dispatcher.getEndpoint(_MODULE_SINGLE_ID));
     }
 
     // =====
     // Tests
     // =====
 
-    function testUnitModuleIdToImplementation() external {
-        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_INTERNAL_ID), address(internalModuleV1));
+    function testUnitGetModuleImplementation() external {
+        assertEq(dispatcher.getModuleImplementation(_MODULE_INTERNAL_ID), address(internalModuleV1));
     }
 
-    function testUnitModuleIdToEndpoint() external {
-        assertEq(dispatcher.moduleIdToEndpoint(_MODULE_INTERNAL_ID), address(0));
+    function testUnitGetEndpoint() external {
+        assertEq(dispatcher.getEndpoint(_MODULE_INTERNAL_ID), address(0));
+    }
+
+    function testUnitGetTrustRelation() external {
+        IReflexState.TrustRelation memory relation = dispatcher.getTrustRelation(address(internalModuleV1));
+
+        assertEq(relation.moduleId, 0);
+        assertEq(relation.moduleImplementation, address(0));
+        assertEq(relation.moduleType, 0);
     }
 
     function testUnitModuleSettings() external {

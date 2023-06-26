@@ -59,6 +59,6 @@ contract ImplementationEndpointTest is ImplementationFixture {
         vm.expectRevert(IReflexBase.EndpointInvalid.selector);
         installerEndpoint.addModules(moduleAddresses);
 
-        singleModuleEndpoint = MockImplementationModule(dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID));
+        singleModuleEndpoint = MockImplementationModule(dispatcher.getEndpoint(_MODULE_SINGLE_ID));
     }
 }

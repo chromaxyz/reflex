@@ -46,7 +46,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
             })
         );
         dispatcher = new MockImplementationDispatcher(address(this), address(installer));
-        installerEndpoint = MockImplementationInstaller(dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER));
+        installerEndpoint = MockImplementationInstaller(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
     }
 
     // ==========

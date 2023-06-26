@@ -27,8 +27,11 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
      */
     constructor(address owner_, address installerModule_) {
         // Initialize the global reentrancy guard as unlocked.
-        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
+        assembly ("memory-safe") {
+            sstore(_REFLEX_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_UNLOCKED)
+        }
 
+        // Verify that the `owner_` and `installerModule_` addresses are valid.
         if (owner_ == address(0) || installerModule_ == address(0)) revert ZeroAddress();
 
         // Verify that the `Installer` module configuration is as expected.
@@ -81,15 +84,22 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
     /**
      * @inheritdoc IReflexDispatcher
      */
-    function moduleIdToModuleImplementation(uint32 moduleId_) public view virtual returns (address) {
+    function getModuleImplementation(uint32 moduleId_) public view virtual returns (address) {
         return _REFLEX_STORAGE().modules[moduleId_];
     }
 
     /**
      * @inheritdoc IReflexDispatcher
      */
-    function moduleIdToEndpoint(uint32 moduleId_) public view virtual returns (address) {
+    function getEndpoint(uint32 moduleId_) public view virtual returns (address) {
         return _REFLEX_STORAGE().endpoints[moduleId_];
+    }
+
+    /**
+     * @inheritdoc IReflexDispatcher
+     */
+    function getTrustRelation(address endpoint_) public view virtual returns (TrustRelation memory) {
+        return _REFLEX_STORAGE().relations[endpoint_];
     }
 
     // ================

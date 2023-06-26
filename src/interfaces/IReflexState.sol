@@ -26,7 +26,7 @@ interface IReflexState {
         uint16 moduleType;
         /**
          * @dev Module implementation.
-         * @dev Only non-0 for single-endpoint modules.
+         * @dev 0 for multi-endpoint and internal modules.
          */
         address moduleImplementation;
     }

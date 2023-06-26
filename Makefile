@@ -24,13 +24,14 @@ build:; ./scripts/build.sh -p $(PROFILE)
 
 # Test
 test:; ./scripts/test.sh -p $(PROFILE) -s "test(Unit|Fuzz)"
-gas:; ./scripts/test.sh -p $(PROFILE) -s "test(Gas)" -v 3
+gas:; ./scripts/test.sh -p $(PROFILE) -s "test(Gas)" -v 3 -g 1
 
 # Test a single method
 # test-single:; ./scripts/test.sh -p PROFILE_NAME -s TEST_NAME -v VERBOSITY
-# Where PROFILE_NAME is one of `default`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`.
-# Where TEST_NAME is for example `testUnitMetadata`.
-# Where VERBOSITY is for example `3`.
+# Where PROFILE_NAME (-p) is one of `default`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`.
+# Where SCOPE (-s) is for example `testUnitMetadata`.
+# Where VERBOSITY (-v) is for example `3`.
+# wHERE GAS_REPORT (-g) is either `0` or `1`.
 
 # ABI
 abi:; ./scripts/abi-generate.sh

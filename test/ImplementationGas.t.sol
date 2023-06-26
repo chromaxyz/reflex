@@ -67,8 +67,8 @@ contract ImplementationGasTest is ImplementationFixture {
         moduleAddresses[1] = address(singleModule);
         installerEndpoint.addModules(moduleAddresses);
 
-        batchEndpoint = MockImplementationGasBatch(dispatcher.moduleIdToEndpoint(_MODULE_ID_BATCH));
-        singleModuleEndpoint = MockImplementationGasModule(dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID));
+        batchEndpoint = MockImplementationGasBatch(dispatcher.getEndpoint(_MODULE_ID_BATCH));
+        singleModuleEndpoint = MockImplementationGasModule(dispatcher.getEndpoint(_MODULE_SINGLE_ID));
     }
 
     // =====

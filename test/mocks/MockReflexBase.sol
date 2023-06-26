@@ -23,7 +23,9 @@ contract MockReflexBase is ReflexBase {
     // ===========
 
     constructor() {
-        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
+        assembly {
+            sstore(_REFLEX_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_UNLOCKED)
+        }
     }
 
     // ==========
@@ -34,12 +36,16 @@ contract MockReflexBase is ReflexBase {
         n_ = _getCounter(_REENTRANCY_COUNTER_SLOT);
     }
 
-    function getReentrancyStatus() public view returns (uint256) {
-        return _REFLEX_STORAGE().reentrancyStatus;
+    function getReentrancyStatus() public view returns (uint256 s_) {
+        assembly {
+            s_ := sload(_REFLEX_REENTRANCY_STATUS_SLOT)
+        }
     }
 
-    function isReentrancyStatusLocked() public view returns (bool) {
-        return _REFLEX_STORAGE().reentrancyStatus == _REENTRANCY_GUARD_LOCKED;
+    function isReentrancyStatusLocked() public view returns (bool s_) {
+        assembly {
+            s_ := eq(sload(_REFLEX_REENTRANCY_STATUS_SLOT), _REENTRANCY_GUARD_LOCKED)
+        }
     }
 
     function callback() external nonReentrant {

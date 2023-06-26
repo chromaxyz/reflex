@@ -75,7 +75,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         moduleAddresses[1] = address(token);
         installerEndpoint.addModules(moduleAddresses);
 
-        tokenHubEndpoint = MockImplementationERC20Hub(dispatcher.moduleIdToEndpoint(_TOKEN_HUB_MODULE_ID));
+        tokenHubEndpoint = MockImplementationERC20Hub(dispatcher.getEndpoint(_TOKEN_HUB_MODULE_ID));
 
         tokenEndpoint = MockImplementationERC20(
             tokenHubEndpoint.addERC20(

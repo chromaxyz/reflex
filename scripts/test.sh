@@ -20,15 +20,17 @@ function log () {
 
 # Default settings
 VERBOSITY_LEVEL=2
+GAS_REPORT=0
 
 # Variables
-while getopts p:s:c:v: flag
+while getopts p:s:c:v:g: flag
 do
   case "${flag}" in
     p) PROFILE=${OPTARG};;
     s) SCOPE=${OPTARG};;
     c) CONTRACT=${OPTARG};;
     v) VERBOSITY_LEVEL=${OPTARG};;
+    g) GAS_REPORT=${OPTARG};;
   esac
 done
 
@@ -40,7 +42,12 @@ export FOUNDRY_PROFILE=$PROFILE
 
 log $GREEN "Running tests with profile: $PROFILE"
 
-if [[ "$PROFILE" = "default" || "$PROFILE" = "intense" || "$PROFILE" = "min-solc" || "$PROFILE" = "via-ir" || "$PROFILE" = "min-solc-via-ir" ]]; then
+if [[ "$GAS_REPORT" = 1 ]]; then
+  forge test \
+    --match-test $SCOPE \
+    --verbosity $VERBOSITY \
+    --gas-report
+elif [[ "$PROFILE" = "default" || "$PROFILE" = "intense" || "$PROFILE" = "min-solc" || "$PROFILE" = "via-ir" || "$PROFILE" = "min-solc-via-ir" ]]; then
   forge test \
     --match-test $SCOPE \
     --verbosity $VERBOSITY

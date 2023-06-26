@@ -83,7 +83,7 @@ contract ReflexDispatcherTest is ReflexFixture {
 
         MockReflexDispatcher dispatcher = new MockReflexDispatcher(address(this), address(installerModuleV1));
 
-        address installerEndpoint = dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER);
+        address installerEndpoint = dispatcher.getEndpoint(_MODULE_ID_INSTALLER);
 
         VmSafe.Log[] memory entries = vm.getRecordedLogs();
 
@@ -115,8 +115,8 @@ contract ReflexDispatcherTest is ReflexFixture {
     }
 
     function testUnitInstallerConfiguration() external {
-        assertEq(dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER), address(installerEndpoint));
-        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
+        assertEq(dispatcher.getEndpoint(_MODULE_ID_INSTALLER), address(installerEndpoint));
+        assertEq(dispatcher.getModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
     }
 
     function testUnitGetOwnerThroughInstallerEndpoint() external {

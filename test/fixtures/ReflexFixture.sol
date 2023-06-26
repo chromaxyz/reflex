@@ -56,7 +56,7 @@ abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness
         );
 
         dispatcher = new MockReflexDispatcher(address(this), address(installerModuleV1));
-        installerEndpoint = MockReflexInstaller(dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER));
+        installerEndpoint = MockReflexInstaller(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
     }
 
     // ==========

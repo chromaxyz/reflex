@@ -130,9 +130,9 @@ contract ReflexBatchTest is ReflexFixture {
         moduleAddresses[3] = address(internalModule);
         installerEndpoint.addModules(moduleAddresses);
 
-        batchEndpoint = MockReflexBatch(dispatcher.moduleIdToEndpoint(_MODULE_ID_BATCH));
+        batchEndpoint = MockReflexBatch(dispatcher.getEndpoint(_MODULE_ID_BATCH));
 
-        singleModuleEndpoint = MockImplementationERC20Hub(dispatcher.moduleIdToEndpoint(_MODULE_SINGLE_ID));
+        singleModuleEndpoint = MockImplementationERC20Hub(dispatcher.getEndpoint(_MODULE_SINGLE_ID));
 
         multiModuleEndpoint = MockImplementationERC20(
             singleModuleEndpoint.addERC20(
