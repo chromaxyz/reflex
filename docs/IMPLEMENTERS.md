@@ -66,8 +66,8 @@ graph TD
   subgraph InternalModule [ ]
   Endpoint1["Endpoint"] --> Dispatcher
   Dispatcher --> Module1["Module Implementation"]
-  Module1["Module Implementation"] --> Module1["Internal Module"]
-  Module1["Module Implementation"] --> Module2["Internal Module"]
+  Module1["Module Implementation"] <--> InternalModule1["Internal Module 1"]
+  Module1["Module Implementation"] <--> InternalModule2["Internal Module 2"]
   end
 ```
 
