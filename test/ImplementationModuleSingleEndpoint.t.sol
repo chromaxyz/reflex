@@ -179,9 +179,9 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     }
 
     function testFuzzUpgradeSingleEndpointAndDeprecate(bytes32 message_) external brutalizeMemory {
-        // Verify storage sets in `Dispatcher` context.
+        // Initialize the storage in the `Dispatcher` context.
 
-        _verifySetStateSlot(message_);
+        dispatcher.setImplementationState0(message_);
 
         // Verify single-endpoint module.
 
@@ -209,7 +209,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
-        _verifyGetStateSlot(message_);
+        _verifyUnmodifiedStateSlots(message_);
 
         // Upgrade to deprecate single-endpoint module.
 
@@ -227,7 +227,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
-        _verifyGetStateSlot(message_);
+        _verifyUnmodifiedStateSlots(message_);
 
         // Attempt to upgrade single-endpoint module that was marked as deprecated, this should fail.
 
@@ -251,18 +251,20 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
-        _verifyGetStateSlot(message_);
+        _verifyUnmodifiedStateSlots(message_);
     }
 
     function testFuzzUpgradeSingleModuleToMaliciousStorageModule(
         bytes32 messageA_,
         bytes32 messageB_
     ) external brutalizeMemory {
+        // TODO: verify this is broken if implementation storage is not implemented correctly.
+
         vm.assume(messageA_ != messageB_);
 
-        // Verify storage sets in `Dispatcher` context.
+        // Initialize the storage in the `Dispatcher` context.
 
-        _verifySetStateSlot(messageA_);
+        dispatcher.setImplementationState0(messageA_);
 
         _verifyModuleConfiguration(
             singleModuleEndpoint,
@@ -375,20 +377,10 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     // Utilities
     // =========
 
-    function _verifyGetStateSlot(bytes32 message_) internal {
+    function _verifyUnmodifiedStateSlots(bytes32 message_) internal {
         assertEq((singleModuleV1).getImplementationState0(), 0);
         assertEq((singleModuleV2).getImplementationState0(), 0);
         assertEq(singleModuleEndpoint.getImplementationState0(), message_);
         assertEq(dispatcher.getImplementationState0(), message_);
-    }
-
-    function _verifySetStateSlot(bytes32 message_) internal {
-        dispatcher.setImplementationState0(0);
-
-        _verifyGetStateSlot(0);
-
-        dispatcher.setImplementationState0(message_);
-
-        _verifyGetStateSlot(message_);
     }
 }

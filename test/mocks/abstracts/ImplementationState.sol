@@ -70,8 +70,12 @@ abstract contract ImplementationState is ReflexState {
      */
     function _IMPLEMENTATION_STORAGE() internal pure returns (ImplementationStorage storage storage_) {
         assembly {
-            // keccak256("diamond.storage.implementation");
-            storage_.slot := 0x0bb48b320f315d19be28d4978081415a136259679ad5feb20491088c12441c20
+            /**
+             * @dev `bytes32(uint256(keccak256("_IMPLEMENTATION_STORAGE")) - 1)`
+             * A `-1` offset is added so the preimage of the hash cannot be known,
+             * reducing the chances of a possible attack.
+             */
+            storage_.slot := 0xf8509337ad8a230e85046288664a1364ac578e6500ef88157efd044485b8c20a
         }
     }
 }
