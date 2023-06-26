@@ -21,7 +21,7 @@ abstract contract MockHarness {
     // ===========
 
     constructor() {
-        address brutalizedAddress = _brutalized(address(0));
+        address brutalizedAddress = _brutalize(address(0));
 
         bool brutalizedAddressIsBrutalized;
 
@@ -36,13 +36,12 @@ abstract contract MockHarness {
     // Utilities
     // =========
 
-    function _brutalized(address address_) internal view returns (address result_) {
+    function _brutalize(address target_) internal view returns (address result_) {
         assembly ("memory-safe") {
-            // Some acrobatics to make the brutalized bits psuedorandomly
-            // different with every call.
+            // Some acrobatics to make the brutalized bits psuedorandomly different with every call.
             mstore(0x00, or(calldataload(0), mload(0x40)))
             mstore(0x20, or(caller(), mload(0x00)))
-            result_ := or(shl(160, keccak256(0x00, 0x40)), address_)
+            result_ := or(shl(160, keccak256(0x00, 0x40)), target_)
             mstore(0x40, add(0x20, mload(0x40)))
             mstore(0x00, result_)
         }

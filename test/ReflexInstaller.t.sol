@@ -267,11 +267,11 @@ contract ReflexInstallerTest is ReflexFixture {
         assertEq(installerEndpoint.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
-        emit OwnershipTransferStarted(address(this), user_);
-        installerEndpoint.transferOwnership(user_);
+        emit OwnershipTransferStarted(address(this), _brutalize(user_));
+        installerEndpoint.transferOwnership(_brutalize(user_));
 
         assertEq(installerEndpoint.owner(), address(this));
-        assertEq(installerEndpoint.pendingOwner(), user_);
+        assertEq(installerEndpoint.pendingOwner(), _brutalize(user_));
     }
 
     function testFuzzRevertTransferOwnershipNotOwner(address user_) external {
@@ -294,16 +294,16 @@ contract ReflexInstallerTest is ReflexFixture {
         assertEq(installerEndpoint.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
-        emit OwnershipTransferStarted(address(this), user_);
+        emit OwnershipTransferStarted(address(this), _brutalize(user_));
         installerEndpoint.transferOwnership(user_);
 
         assertEq(installerEndpoint.owner(), address(this));
-        assertEq(installerEndpoint.pendingOwner(), user_);
+        assertEq(installerEndpoint.pendingOwner(), _brutalize(user_));
 
         vm.startPrank(user_);
 
         vm.expectEmit(true, false, false, false);
-        emit OwnershipTransferred(address(this), user_);
+        emit OwnershipTransferred(address(this), _brutalize(user_));
         installerEndpoint.acceptOwnership();
 
         vm.stopPrank();
@@ -321,11 +321,11 @@ contract ReflexInstallerTest is ReflexFixture {
         assertEq(installerEndpoint.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
-        emit OwnershipTransferStarted(address(this), target_);
-        installerEndpoint.transferOwnership(target_);
+        emit OwnershipTransferStarted(address(this), _brutalize(target_));
+        installerEndpoint.transferOwnership(_brutalize(target_));
 
         assertEq(installerEndpoint.owner(), address(this));
-        assertEq(installerEndpoint.pendingOwner(), target_);
+        assertEq(installerEndpoint.pendingOwner(), _brutalize(target_));
 
         vm.startPrank(user_);
 
@@ -335,7 +335,7 @@ contract ReflexInstallerTest is ReflexFixture {
         vm.stopPrank();
 
         assertEq(installerEndpoint.owner(), address(this));
-        assertEq(installerEndpoint.pendingOwner(), target_);
+        assertEq(installerEndpoint.pendingOwner(), _brutalize(target_));
     }
 
     function testUnitRenounceOwnership() external {
@@ -358,11 +358,11 @@ contract ReflexInstallerTest is ReflexFixture {
         assertEq(installerEndpoint.pendingOwner(), address(0));
 
         vm.expectEmit(true, false, false, false);
-        emit OwnershipTransferStarted(address(this), user_);
-        installerEndpoint.transferOwnership(user_);
+        emit OwnershipTransferStarted(address(this), _brutalize(user_));
+        installerEndpoint.transferOwnership(_brutalize(user_));
 
         assertEq(installerEndpoint.owner(), address(this));
-        assertEq(installerEndpoint.pendingOwner(), user_);
+        assertEq(installerEndpoint.pendingOwner(), _brutalize(user_));
 
         vm.expectEmit(true, false, false, false);
         emit OwnershipTransferred(address(this), address(0));

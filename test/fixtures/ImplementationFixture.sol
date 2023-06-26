@@ -13,6 +13,7 @@ import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Fixtures
 import {TestHarness} from "./TestHarness.sol";
+import {MockHarness} from "./MockHarness.sol";
 
 // Mocks
 import {MockImplementationDispatcher} from "../mocks/MockImplementationDispatcher.sol";
@@ -22,7 +23,7 @@ import {MockReflexModule, ICustomError} from "../mocks/MockReflexModule.sol";
 /**
  * @title Implementation Fixture
  */
-abstract contract ImplementationFixture is ReflexConstants, TestHarness {
+abstract contract ImplementationFixture is ReflexConstants, TestHarness, MockHarness {
     // =======
     // Storage
     // =======
