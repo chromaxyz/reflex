@@ -41,12 +41,12 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
          * @dev Endpoint mapping.
          * @dev Module id => endpoint address (only for single-endpoint modules).
          */
-        mapping(uint32 moduleId => address endpoint) endpoints;
+        mapping(uint32 moduleId => address endpointAddress) endpoints;
         /**
          * @dev Endpoint to module relation mapping.
          * @dev Endpoint address => TrustRelation { moduleId, moduleType, moduleImplementation }.
          */
-        mapping(address endpoint => TrustRelation) relations;
+        mapping(address endpointAddress => TrustRelation) relations;
     }
 
     // ================

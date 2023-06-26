@@ -48,7 +48,7 @@ contract ReflexBaseTest is ReflexFixture {
 
         vm.recordLogs();
 
-        address endpoint = base.createEndpoint(moduleId_, _MODULE_TYPE_SINGLE_ENDPOINT, address(0));
+        address endpointAddress = base.createEndpoint(moduleId_, _MODULE_TYPE_SINGLE_ENDPOINT, address(0));
 
         VmSafe.Log[] memory entries = vm.getRecordedLogs();
 
@@ -59,7 +59,7 @@ contract ReflexBaseTest is ReflexFixture {
         assertEq(entries[0].topics.length, 3);
         assertEq(entries[0].topics[0], keccak256("EndpointCreated(uint32,address)"));
         assertEq(entries[0].topics[1], bytes32(uint256(moduleId_)));
-        assertEq(entries[0].topics[2], bytes32(uint256(uint160(address(endpoint)))));
+        assertEq(entries[0].topics[2], bytes32(uint256(uint160(address(endpointAddress)))));
         assertEq(entries[0].emitter, address(base));
 
         vm.recordLogs();
