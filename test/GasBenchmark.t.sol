@@ -5,53 +5,62 @@ pragma solidity ^0.8.13;
 import {IReflexBatch} from "../src/periphery/interfaces/IReflexBatch.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
-// Fixtures
-import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
+// Sources
+import {ReflexBatch} from "../src/periphery/ReflexBatch.sol";
+import {ReflexBase} from "../src/ReflexBase.sol";
+import {ReflexConstants} from "../src/ReflexConstants.sol";
+import {ReflexModule} from "../src/ReflexModule.sol";
 
 // Mocks
-import {MockImplementationGasModule} from "./mocks/MockImplementationGasModule.sol";
-import {MockImplementationGasBatch} from "./mocks/MockImplementationGasBatch.sol";
+import {ImplementationState} from "./mocks/abstracts/ImplementationState.sol";
+import {MockImplementationDispatcher} from "./mocks/MockImplementationDispatcher.sol";
+import {MockImplementationInstaller} from "./mocks/MockImplementationInstaller.sol";
 
 /**
- * @title Implementation Gas Test
+ * @title Gas Benchmark Test
  */
-contract ImplementationGasTest is ImplementationFixture {
+contract GasBenchmarkTest is ReflexConstants {
     // =========
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_ID_BATCH = 2;
-
-    uint32 internal constant _MODULE_SINGLE_ID = 100;
+    uint32 internal constant _MODULE_SINGLE_ID = 2;
     uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
     uint16 internal constant _MODULE_SINGLE_VERSION = 1;
     bool internal constant _MODULE_SINGLE_UPGRADEABLE = true;
+
+    uint32 internal constant _MODULE_ID_BATCH = 3;
 
     // =======
     // Storage
     // =======
 
-    MockImplementationGasBatch public batch;
-    MockImplementationGasBatch public batchEndpoint;
+    MockImplementationDispatcher public dispatcher;
+
+    MockImplementationInstaller public installer;
+    MockImplementationInstaller public installerEndpoint;
 
     MockImplementationGasModule public singleModule;
     MockImplementationGasModule public singleModuleEndpoint;
+
+    MockImplementationGasBatch public batch;
+    MockImplementationGasBatch public batchEndpoint;
 
     // =====
     // Setup
     // =====
 
-    function setUp() public virtual override {
-        super.setUp();
-
-        batch = new MockImplementationGasBatch(
+    function setUp() public virtual {
+        installer = new MockImplementationInstaller(
             IReflexModule.ModuleSettings({
-                moduleId: _MODULE_ID_BATCH,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE
+                moduleId: _MODULE_ID_INSTALLER,
+                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
+                moduleVersion: 1,
+                moduleUpgradeable: true
             })
         );
+        dispatcher = new MockImplementationDispatcher(address(this), address(installer));
+        installerEndpoint = MockImplementationInstaller(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
 
         singleModule = new MockImplementationGasModule(
             IReflexModule.ModuleSettings({
@@ -62,13 +71,22 @@ contract ImplementationGasTest is ImplementationFixture {
             })
         );
 
+        batch = new MockImplementationGasBatch(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_ID_BATCH,
+                moduleType: _MODULE_SINGLE_TYPE,
+                moduleVersion: _MODULE_SINGLE_VERSION,
+                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE
+            })
+        );
+
         address[] memory moduleAddresses = new address[](2);
-        moduleAddresses[0] = address(batch);
-        moduleAddresses[1] = address(singleModule);
+        moduleAddresses[0] = address(singleModule);
+        moduleAddresses[1] = address(batch);
         installerEndpoint.addModules(moduleAddresses);
 
-        batchEndpoint = MockImplementationGasBatch(dispatcher.getEndpoint(_MODULE_ID_BATCH));
         singleModuleEndpoint = MockImplementationGasModule(dispatcher.getEndpoint(_MODULE_SINGLE_ID));
+        batchEndpoint = MockImplementationGasBatch(dispatcher.getEndpoint(_MODULE_ID_BATCH));
     }
 
     // =====
@@ -193,4 +211,59 @@ contract ImplementationGasTest is ImplementationFixture {
     }
 
     /* solhint-enable max-line-length */
+}
+
+/**
+ * @title Mock Implementation Gas Module
+ */
+contract MockImplementationGasModule is ReflexModule, ImplementationState {
+    // =======
+    // Storage
+    // =======
+
+    /**
+     * @dev `bytes32(uint256(keccak256("number")) - 1))`
+     */
+    bytes32 internal constant _NUMBER_SLOT = 0xf648814c67221440671fd7c2de979db4020a9320fb7985ff79ca8e7dced277f7;
+
+    // ===========
+    // Constructor
+    // ===========
+
+    /**
+     * @param moduleSettings_ Module settings.
+     */
+    constructor(ModuleSettings memory moduleSettings_) ReflexModule(moduleSettings_) {}
+
+    // ==========
+    // Test stubs
+    // ==========
+
+    function getEmpty() external view {}
+
+    function setNumber(uint8 number_) external {
+        assembly ("memory-safe") {
+            sstore(_NUMBER_SLOT, number_)
+        }
+    }
+
+    function getNumber() external view returns (uint8 n_) {
+        assembly ("memory-safe") {
+            n_ := sload(_NUMBER_SLOT)
+        }
+    }
+}
+
+/**
+ * @title Mock Implementation Gas Batch
+ */
+contract MockImplementationGasBatch is ReflexBatch, MockImplementationGasModule {
+    // ===========
+    // Constructor
+    // ===========
+
+    /**
+     * @param moduleSettings_ Module settings.
+     */
+    constructor(ModuleSettings memory moduleSettings_) MockImplementationGasModule(moduleSettings_) {}
 }

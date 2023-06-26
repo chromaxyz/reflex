@@ -23,10 +23,10 @@ contract MockImplementationModule is MockReflexModule, ImplementationState {
     // ==========
 
     function setImplementationState0(bytes32 message_) public {
-        _implementationState0 = message_;
+        _IMPLEMENTATION_STORAGE().implementationState0 = message_;
     }
 
     function getImplementationState0() public view returns (bytes32) {
-        return _implementationState0;
+        return _IMPLEMENTATION_STORAGE().implementationState0;
     }
 }

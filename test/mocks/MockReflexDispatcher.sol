@@ -4,10 +4,13 @@ pragma solidity ^0.8.13;
 // Sources
 import {ReflexDispatcher} from "../../src/ReflexDispatcher.sol";
 
+// Fixtures
+import {MockHarness} from "../fixtures/MockHarness.sol";
+
 /**
  * @title Mock Reflex Dispatcher
  */
-contract MockReflexDispatcher is ReflexDispatcher {
+contract MockReflexDispatcher is MockHarness, ReflexDispatcher {
     // ===========
     // Constructor
     // ===========

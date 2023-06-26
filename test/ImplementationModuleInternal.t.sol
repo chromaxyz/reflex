@@ -10,7 +10,6 @@ import {IReflexState} from "../src/interfaces/IReflexState.sol";
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {MockImplementationDeprecatedModule} from "./mocks/MockImplementationDeprecatedModule.sol";
 import {MockImplementationMaliciousStorageModule} from "./mocks/MockImplementationMaliciousStorageModule.sol";
 import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 
@@ -50,7 +49,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
     MockImplementationModule public internalModuleV1;
     MockImplementationModule public internalModuleV2;
-    MockImplementationDeprecatedModule public internalModuleV3;
+    MockImplementationModule public internalModuleV3;
     MockImplementationModule public internalModuleV4;
     MockImplementationMaliciousStorageModule public internalModuleMaliciousStorageV4;
 
@@ -97,7 +96,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
-        internalModuleV3 = new MockImplementationDeprecatedModule(
+        internalModuleV3 = new MockImplementationModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_INTERNAL_ID,
                 moduleType: _MODULE_INTERNAL_TYPE,
@@ -356,16 +355,16 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     }
 
     function testFuzzUpgradeInternalModuleToMaliciousStorageModule(
-        bytes32 message_,
-        uint8 number_
+        bytes32 messageA_,
+        bytes32 messageB_
     ) external brutalizeMemory {
-        vm.assume(uint8(uint256(message_)) != number_);
+        vm.assume(messageA_ != messageB_);
 
         // Verify storage sets in `Dispatcher` context.
 
-        _verifySetStateSlot(message_);
+        _verifySetStateSlot(messageA_);
 
-        assertEq(dispatcher.getImplementationState0(), message_);
+        assertEq(dispatcher.getImplementationState0(), messageA_);
 
         _verifyModuleConfiguration(
             IReflexModule.ModuleSettings({
@@ -393,32 +392,35 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         singleModuleEndpoint.callInternalModule(
             _MODULE_INTERNAL_ID,
-            abi.encodeWithSignature("setNumber(uint8)", number_)
+            abi.encodeWithSignature("setImplementationState0(bytes32)", messageB_)
         );
 
         // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
 
         assertEq(
             abi.decode(
-                singleModuleEndpoint.callInternalModule(_MODULE_INTERNAL_ID, abi.encodeWithSignature("getNumber()")),
-                (uint8)
+                singleModuleEndpoint.callInternalModule(
+                    _MODULE_INTERNAL_ID,
+                    abi.encodeWithSignature("getImplementationState0()")
+                ),
+                (bytes32)
             ),
-            number_
+            messageB_
         );
 
         // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
 
-        assertEq(uint8(uint256(dispatcher.getImplementationState0())), number_);
-        assertFalse(dispatcher.getImplementationState0() == message_);
+        assertEq(dispatcher.getImplementationState0(), messageB_);
+        assertFalse(dispatcher.getImplementationState0() == messageA_);
 
         // Overwrite storage in the `Dispatcher` context.
 
-        dispatcher.setImplementationState0(message_);
+        dispatcher.setImplementationState0(messageA_);
 
-        // Verify that the storage in the `Dispatcher` context has been overwritten.
+        // // Verify that the storage in the `Dispatcher` context has been overwritten.
 
-        assertEq(dispatcher.getImplementationState0(), message_);
-        assertFalse(uint8(uint256(dispatcher.getImplementationState0())) == number_);
+        assertEq(dispatcher.getImplementationState0(), messageA_);
+        assertFalse(dispatcher.getImplementationState0() == messageB_);
     }
 
     // =========

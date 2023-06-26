@@ -5,13 +5,16 @@ pragma solidity ^0.8.13;
 import {ReflexBase} from "../../src/ReflexBase.sol";
 import {ReflexBatch} from "../../src/periphery/ReflexBatch.sol";
 
+// Fixtures
+import {MockHarness} from "../fixtures/MockHarness.sol";
+
 // Mocks
 import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
  * @title Mock Reflex Batch
  */
-contract MockReflexBatch is ReflexBatch, MockReflexModule {
+contract MockReflexBatch is MockHarness, ReflexBatch, MockReflexModule {
     // =======
     // Storage
     // =======

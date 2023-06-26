@@ -17,23 +17,13 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
     // =========
 
     // TODO: -1 from hash to limit possibility of imaging attack
+    // bytes32(uint256(keccak256("number")) - 1))
 
     /**
      * @dev keccak256("_REFLEX_REENTRANCY_STATUS_SLOT")
      */
     uint256 internal constant _REFLEX_REENTRANCY_STATUS_SLOT =
         0x1bff8ab3819afe054abaaba433fee942dbce1acbdd3ad44b63eb7f3d7e3d7c6e;
-
-    /**
-     * @dev keccak256("_REFLEX_OWNER_SLOT")
-     */
-    uint256 internal constant _REFLEX_OWNER_SLOT = 0x66fab7470a1b172d24d8ec1c1d3df505a4d1eb23185fb8f2159b4246aee78dd6;
-
-    /**
-     * @dev keccak256("_REFLEX_PENDING_OWNER_SLOT")
-     */
-    uint256 internal constant _REFLEX_PENDING_OWNER_SLOT =
-        0x43d58e38ef34a5f762d9d672aafc2d706086180fe1fcf198e09ba43e8d7a3c5e;
 
     /**
      * @dev keccak256("_REFLEX_MODULES_SLOT_SEED")

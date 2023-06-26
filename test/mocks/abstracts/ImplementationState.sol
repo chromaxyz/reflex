@@ -5,25 +5,7 @@ pragma solidity ^0.8.13;
 import {ReflexState} from "../../../src/ReflexState.sol";
 
 /**
- * @title Mock Implementation State
- *
- * @dev Storage layout:
- * | Name                    | Type                                                  | Slot | Offset | Bytes |
- * |-------------------------|-------------------------------------------------------|------|--------|-------|
- * | _reentrancyStatus       | uint256                                               | 0    | 0      | 32    |
- * | _owner                  | address                                               | 1    | 0      | 20    |
- * | _pendingOwner           | address                                               | 2    | 0      | 20    |
- * | _modules                | mapping(uint32 => address)                            | 3    | 0      | 32    |
- * | _endpoints              | mapping(uint32 => address)                            | 4    | 0      | 32    |
- * | _relations              | mapping(address => struct IReflexState.TrustRelation) | 5    | 0      | 32    |
- * | __gap                   | uint256[44]                                           | 6    | 0      | 1408  |
- * | _implementationState0   | bytes32                                               | 50   | 0      | 32    |
- * | _implementationState1   | uint256                                               | 51   | 0      | 32    |
- * | _implementationState2   | address                                               | 52   | 0      | 20    |
- * | getImplementationState3 | address                                               | 53   | 0      | 20    |
- * | getImplementationState4 | bool                                                  | 53   | 20     | 1     |
- * | _implementationState5   | mapping(address => uint256)                           | 54   | 0      | 32    |
- * | _tokens                 | mapping(address => struct ImplementationState.Token)  | 55   | 0      | 32    |
+ * @title Implementation State
  */
 abstract contract ImplementationState is ReflexState {
     // =======
@@ -45,55 +27,51 @@ abstract contract ImplementationState is ReflexState {
     // =======
 
     /**
-     * @notice Implementation state 0.
-     *
-     * @dev Slot 50 (32 bytes).
+     * @dev Append-only extendable.
      */
-    bytes32 internal _implementationState0;
+    struct ImplementationStorage {
+        /**
+         * @notice Implementation state 0.
+         */
+        bytes32 implementationState0;
+        /**
+         * @notice Implementation state 1.
+         */
+        uint256 implementationState1;
+        /**
+         * @notice Implementation state 2.
+         */
+        address implementationState2;
+        /**
+         * @notice Implementation state 3.
+         */
+        address implementationState3;
+        /**
+         * @notice Implementation state 4.
+         */
+        bool implementationState4;
+        /**
+         * @notice Implementation state 5.
+         */
+        mapping(address => uint256) implementationState5;
+        /**
+         * @notice Token mapping.
+         */
+        mapping(address => Token) tokens;
+    }
+
+    // ================
+    // Internal methods
+    // ================
 
     /**
-     * @notice Implementation state 1.
-     *
-     * @dev Slot 51 (32 bytes).
+     * @dev Get the Implementation storage pointer.
+     * @return storage_ Pointer to the Implementation storage state.
      */
-    uint256 internal _implementationState1;
-
-    /**
-     * @notice Implementation state 2.
-     *
-     * @dev Slot 52 (20 bytes).
-     */
-    address internal _implementationState2;
-
-    /**
-     * @notice Implementation state 3.
-     *
-     * @dev Slot 53 (20 bytes).
-     */
-    address internal _implementationState3;
-
-    /**
-     * @notice Implementation state 4.
-     *
-     * @dev Slot 53 (20 byte offset, 1 byte).
-     */
-    bool internal _implementationState4;
-
-    /**
-     * @notice Implementation state 5.
-     *
-     * @dev Slot 54 (32 bytes).
-     */
-    mapping(address => uint256) internal _implementationState5;
-
-    // =============
-    // Token Storage
-    // =============
-
-    /**
-     * @notice Token mapping.
-     *
-     * @dev Slot 55 (32 bytes)
-     */
-    mapping(address => Token) internal _tokens;
+    function _IMPLEMENTATION_STORAGE() internal pure returns (ImplementationStorage storage storage_) {
+        assembly {
+            // keccak256("diamond.storage.implementation");
+            storage_.slot := 0x0bb48b320f315d19be28d4978081415a136259679ad5feb20491088c12441c20
+        }
+    }
 }

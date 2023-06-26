@@ -4,10 +4,13 @@ pragma solidity ^0.8.13;
 // Sources
 import {ReflexBase} from "../../src/ReflexBase.sol";
 
+// Fixtures
+import {MockHarness} from "../fixtures/MockHarness.sol";
+
 /**
  * @title Mock Reflex Base
  */
-contract MockReflexBase is ReflexBase {
+contract MockReflexBase is MockHarness, ReflexBase {
     // =========
     // Constants
     // =========

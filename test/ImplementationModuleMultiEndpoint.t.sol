@@ -11,7 +11,7 @@ import {IReflexState} from "../src/interfaces/IReflexState.sol";
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {MockImplementationDeprecatedModule} from "./mocks/MockImplementationDeprecatedModule.sol";
+import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
 import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
 import {MockImplementationMaliciousStorageModule} from "./mocks/MockImplementationMaliciousStorageModule.sol";
@@ -66,7 +66,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
 
     MockImplementationERC20 public multiModuleV1;
     MockImplementationERC20 public multiModuleV2;
-    MockImplementationDeprecatedModule public multiModuleDeprecatedV3;
+    MockImplementationModule public multiModuleV3;
     MockImplementationMaliciousStorageModule public multiModuleMaliciousStorageV3;
     MockImplementationERC20 public multiModuleV4;
 
@@ -117,7 +117,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
             })
         );
 
-        multiModuleDeprecatedV3 = new MockImplementationDeprecatedModule(
+        multiModuleV3 = new MockImplementationModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_MULTI_ID,
                 moduleType: _MODULE_MULTI_TYPE,
@@ -282,7 +282,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            multiModuleDeprecatedV3,
+            multiModuleV3,
             _MODULE_MULTI_ID,
             _MODULE_MULTI_TYPE,
             _MODULE_MULTI_VERSION_V3,
@@ -392,7 +392,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         // Upgrade to deprecate multi-endpoint module.
 
         moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(multiModuleDeprecatedV3);
+        moduleAddresses[0] = address(multiModuleV3);
         installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
@@ -465,14 +465,14 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
     }
 
     function testFuzzUpgradeMultiEndpointToMaliciousStorageModule(
-        bytes32 message_,
-        uint8 number_
+        bytes32 messageA_,
+        bytes32 messageB_
     ) external brutalizeMemory {
-        vm.assume(uint8(uint256(message_)) != number_);
+        vm.assume(messageA_ != messageB_);
 
         // Verify storage sets in `Dispatcher` context.
 
-        _verifySetStateSlot(message_);
+        _verifySetStateSlot(messageA_);
 
         // Upgrade multi-endpoint module to malicious storage module.
 
@@ -506,27 +506,36 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
 
         // Overwrite storage in the `Dispatcher` context from the malicious module.
 
-        MockImplementationMaliciousStorageModule(address(multiModuleEndpointA)).setNumber(number_);
+        MockImplementationMaliciousStorageModule(address(multiModuleEndpointA)).setImplementationState0(messageB_);
 
         // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
 
-        assertEq(MockImplementationMaliciousStorageModule(address(multiModuleEndpointA)).getNumber(), number_);
-        assertEq(MockImplementationMaliciousStorageModule(address(multiModuleEndpointB)).getNumber(), number_);
-        assertEq(MockImplementationMaliciousStorageModule(address(multiModuleEndpointC)).getNumber(), number_);
+        assertEq(
+            MockImplementationMaliciousStorageModule(address(multiModuleEndpointA)).getImplementationState0(),
+            messageB_
+        );
+        assertEq(
+            MockImplementationMaliciousStorageModule(address(multiModuleEndpointB)).getImplementationState0(),
+            messageB_
+        );
+        assertEq(
+            MockImplementationMaliciousStorageModule(address(multiModuleEndpointC)).getImplementationState0(),
+            messageB_
+        );
 
         // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
 
-        assertEq(uint8(uint256(dispatcher.getImplementationState0())), number_);
-        assertFalse(dispatcher.getImplementationState0() == message_);
+        assertEq(dispatcher.getImplementationState0(), messageB_);
+        assertFalse(dispatcher.getImplementationState0() == messageA_);
 
         // Overwrite storage in the `Dispatcher` context.
 
-        dispatcher.setImplementationState0(message_);
+        dispatcher.setImplementationState0(messageA_);
 
         // Verify that the storage in the `Dispatcher` context has been overwritten.
 
-        assertEq(dispatcher.getImplementationState0(), message_);
-        assertFalse(uint8(uint256(dispatcher.getImplementationState0())) == number_);
+        assertEq(dispatcher.getImplementationState0(), messageA_);
+        assertFalse(dispatcher.getImplementationState0() == messageB_);
     }
 
     function testFuzzRevertBytesCustomError(uint256 code_, string memory message_) external {
@@ -628,7 +637,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
 
         assertEq(multiModuleV1.getImplementationState0(), 0);
         assertEq(multiModuleV2.getImplementationState0(), 0);
-        assertEq(multiModuleDeprecatedV3.getImplementationState0(), 0);
+        assertEq(multiModuleV3.getImplementationState0(), 0);
         assertEq(multiModuleV4.getImplementationState0(), 0);
 
         assertEq(multiModuleEndpointA.getImplementationState0(), message_);

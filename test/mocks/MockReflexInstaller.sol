@@ -8,13 +8,16 @@ import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 import {ReflexBase} from "../../src/ReflexBase.sol";
 import {ReflexInstaller} from "../../src/ReflexInstaller.sol";
 
+// Fixtures
+import {MockHarness} from "../fixtures/MockHarness.sol";
+
 // Mocks
 import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
  * @title Mock Reflex Installer
  */
-contract MockReflexInstaller is ReflexInstaller, MockReflexModule {
+contract MockReflexInstaller is MockHarness, ReflexInstaller, MockReflexModule {
     // =======
     // Storage
     // =======

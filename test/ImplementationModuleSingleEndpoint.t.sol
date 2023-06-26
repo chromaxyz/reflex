@@ -11,7 +11,6 @@ import {IReflexState} from "../src/interfaces/IReflexState.sol";
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {MockImplementationDeprecatedModule} from "./mocks/MockImplementationDeprecatedModule.sol";
 import {MockImplementationMaliciousStorageModule} from "./mocks/MockImplementationMaliciousStorageModule.sol";
 import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 
@@ -40,7 +39,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
     MockImplementationModule public singleModuleV1;
     MockImplementationModule public singleModuleV2;
-    MockImplementationDeprecatedModule public singleModuleDeprecatedV3;
+    MockImplementationModule public singleModuleV3;
     MockImplementationMaliciousStorageModule public singleModuleMaliciousStorageV3;
     MockImplementationModule public singleModuleV4;
 
@@ -71,7 +70,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
             })
         );
 
-        singleModuleDeprecatedV3 = new MockImplementationDeprecatedModule(
+        singleModuleV3 = new MockImplementationModule(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_SINGLE_ID,
                 moduleType: _MODULE_SINGLE_TYPE,
@@ -155,7 +154,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
         );
 
         _verifyModuleConfiguration(
-            singleModuleDeprecatedV3,
+            singleModuleV3,
             _MODULE_SINGLE_ID,
             _MODULE_SINGLE_TYPE,
             _MODULE_SINGLE_VERSION_V3,
@@ -215,7 +214,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
         // Upgrade to deprecate single-endpoint module.
 
         moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(singleModuleDeprecatedV3);
+        moduleAddresses[0] = address(singleModuleV3);
         installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
@@ -256,14 +255,14 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     }
 
     function testFuzzUpgradeSingleModuleToMaliciousStorageModule(
-        bytes32 message_,
-        uint8 number_
+        bytes32 messageA_,
+        bytes32 messageB_
     ) external brutalizeMemory {
-        vm.assume(uint8(uint256(message_)) != number_);
+        vm.assume(messageA_ != messageB_);
 
         // Verify storage sets in `Dispatcher` context.
 
-        _verifySetStateSlot(message_);
+        _verifySetStateSlot(messageA_);
 
         _verifyModuleConfiguration(
             singleModuleEndpoint,
@@ -289,25 +288,27 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         // Overwrite storage in the `Dispatcher` context from the malicious module.
 
-        MockImplementationMaliciousStorageModule(address(singleModuleEndpoint)).setNumber(number_);
+        MockImplementationMaliciousStorageModule(address(singleModuleEndpoint)).setImplementationState0(messageB_);
 
         // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
 
-        assertEq(MockImplementationMaliciousStorageModule(address(singleModuleEndpoint)).getNumber(), number_);
+        assertEq(
+            MockImplementationMaliciousStorageModule(address(singleModuleEndpoint)).getImplementationState0(),
+            messageB_
+        );
 
         // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
 
-        assertEq(uint8(uint256(dispatcher.getImplementationState0())), number_);
-        assertFalse(dispatcher.getImplementationState0() == message_);
+        assertEq(dispatcher.getImplementationState0(), messageB_);
 
         // Overwrite storage in the `Dispatcher` context.
 
-        dispatcher.setImplementationState0(message_);
+        dispatcher.setImplementationState0(messageA_);
 
         // Verify that the storage in the `Dispatcher` context has been overwritten.
 
-        assertEq(dispatcher.getImplementationState0(), message_);
-        assertFalse(uint8(uint256(dispatcher.getImplementationState0())) == number_);
+        assertEq(dispatcher.getImplementationState0(), messageA_);
+        assertFalse(dispatcher.getImplementationState0() == messageB_);
     }
 
     function testFuzzRevertBytesCustomError(uint256 code_, string memory message_) external {
@@ -378,7 +379,6 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
         assertEq((singleModuleV1).getImplementationState0(), 0);
         assertEq((singleModuleV2).getImplementationState0(), 0);
         assertEq(singleModuleEndpoint.getImplementationState0(), message_);
-
         assertEq(dispatcher.getImplementationState0(), message_);
     }
 
