@@ -64,7 +64,10 @@ Internal modules have the benefit that they are upgradeable where the `Dispatche
 ```mermaid
 graph TD
   subgraph InternalModule [ ]
-  Dispatcher --> Module["Module Implementation"]
+  Endpoint1["Endpoint"] --> Dispatcher
+  Dispatcher --> Module1["Module Implementation"]
+  Module1["Module Implementation"] <-> Module1["Internal Module"]
+  Module1["Module Implementation"] <-> Module2["Internal Module"]
   end
 ```
 
