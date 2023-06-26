@@ -12,53 +12,6 @@ import {ReflexConstants} from "./ReflexConstants.sol";
  * @dev Append-only extendable.
  */
 abstract contract ReflexState is IReflexState, ReflexConstants {
-    // =========
-    // Constants
-    // =========
-
-    // TODO: -1 from hash to limit possibility of imaging attack
-    // bytes32(uint256(keccak256("number")) - 1))
-
-    /**
-     * @dev keccak256("_REFLEX_REENTRANCY_STATUS_SLOT")
-     */
-    uint256 internal constant _REFLEX_REENTRANCY_STATUS_SLOT =
-        0x1bff8ab3819afe054abaaba433fee942dbce1acbdd3ad44b63eb7f3d7e3d7c6e;
-
-    /**
-     * @dev keccak256("_REFLEX_MODULES_SLOT_SEED")
-     */
-    uint256 internal constant _REFLEX_MODULES_SLOT_SEED =
-        0x91a1f036e880e7c8244fba94379b4206a47facaa75abae2de806d1a7ad5a370a;
-
-    /**
-     * @dev keccak256("_REFLEX_ENDPOINTS_SLOT_SEED")
-     */
-    uint256 internal constant _REFLEX_ENDPOINTS_SLOT_SEED =
-        0x0b7d34a26331cb481013b0f921f34eb65d6d805e87ae8b1c26c5322189bd01f0;
-
-    /**
-     * @dev keccak256("_REFLEX_RELATIONS_SLOT_SEED")
-     */
-    uint256 internal constant _REFLEX_RELATIONS_SLOT_SEED =
-        0xd4327baa3012917a5cc22095ac31337b16e8e246050939e4c43f84e2b2dfed28;
-
-    // ========
-    // Pointers
-    // ========
-
-    function _reentrancyStatus() internal view returns (uint256 status_) {
-        assembly ("memory-safe") {
-            status_ := sload(_REFLEX_REENTRANCY_STATUS_SLOT)
-        }
-    }
-
-    function _modules(uint32 moduleId_) internal view returns (address module_) {}
-
-    function _endpoints(uint32 moduleId_) internal view returns (address endpoint_) {}
-
-    function _relations(address endpointAddress_) internal view returns (TrustRelation memory relation_) {}
-
     // =======
     // Storage
     // =======
@@ -70,7 +23,7 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
         /**
          * @dev Global reentrancy status tracker.
          */
-        // uint256 reentrancyStatus;
+        uint256 reentrancyStatus;
         /**
          * @dev Owner address.
          */
@@ -106,8 +59,12 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
      */
     function _REFLEX_STORAGE() internal pure returns (ReflexStorage storage storage_) {
         assembly {
-            // keccak256("diamond.storage.reflex");
-            storage_.slot := 0x9f740cd913da282c2da6d110fbad427f7416cb449a0c4a3d267e106487084557
+            /**
+             * @dev `bytes32(uint256(keccak256("_REFLEX_STORAGE")) - 1)`
+             * A `-1` offset is added so the preimage of the hash cannot be known,
+             * reducing the chances of a possible attack.
+             */
+            storage_.slot := 0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09
         }
     }
 }

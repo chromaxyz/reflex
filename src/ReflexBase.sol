@@ -31,24 +31,15 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      */
     modifier nonReentrant() virtual {
         // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
-        assembly ("memory-safe") {
-            if eq(sload(_REFLEX_REENTRANCY_STATUS_SLOT), _REENTRANCY_GUARD_LOCKED) {
-                // Store the function selector of `Reentrancy()`.
-                mstore(0x00, 0xab143c06)
-                // Revert with (offset, size).
-                revert(0x1c, 0x04)
-            }
+        if (_REFLEX_STORAGE().reentrancyStatus != _REENTRANCY_GUARD_UNLOCKED) revert Reentrancy();
 
-            // Any calls to `nonReentrant` after this point will fail.
-            sstore(_REFLEX_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_LOCKED)
-        }
+        // Any calls to `nonReentrant` after this point will fail.
+        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_LOCKED;
 
         _;
 
         // By storing the original value once again, a refund is triggered.
-        assembly ("memory-safe") {
-            sstore(_REFLEX_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_UNLOCKED)
-        }
+        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
     }
 
     /**
@@ -58,14 +49,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
     modifier nonReadReentrant() virtual {
         // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
         // Any calls to `nonReadReentrant` after this point will fail.
-        assembly ("memory-safe") {
-            if eq(sload(_REFLEX_REENTRANCY_STATUS_SLOT), _REENTRANCY_GUARD_LOCKED) {
-                // Store the function selector of `ReadOnlyReentrancy()`.
-                mstore(0x00, 0x49ce9485)
-                // Revert with (offset, size).
-                revert(0x1c, 0x04)
-            }
-        }
+        if (_reentrancyStatusLocked()) revert ReadOnlyReentrancy();
 
         _;
     }
@@ -115,6 +99,15 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
         });
 
         emit EndpointCreated(moduleId_, endpointAddress_);
+    }
+
+    /**
+     * @dev Returns true if the reentrancy guard is currently set to ` _REENTRANCY_GUARD_LOCKED`
+     * which indicates there is a `nonReentrant` function in the call stack.
+     * @return bool Whether the reentrancy guard is locked.
+     */
+    function _reentrancyStatusLocked() internal view virtual returns (bool) {
+        return _REFLEX_STORAGE().reentrancyStatus == _REENTRANCY_GUARD_LOCKED;
     }
 
     /**

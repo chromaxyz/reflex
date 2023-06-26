@@ -16,19 +16,17 @@ contract MockReflexBase is MockHarness, ReflexBase {
     // =========
 
     /**
-     * @dev `bytes32(uint256(keccak256("reentrancy.counter")) - 1)`
+     * @dev `bytes32(uint256(keccak256("_REENTRANCY_COUNTER_SLOT")) - 1)`
      */
     bytes32 internal constant _REENTRANCY_COUNTER_SLOT =
-        0xc2db8520a4cb85e45c0b428b71b461e7932f3b9c2b41fa1662675e79660783f2;
+        0x5f809fe156313a375467a4992bdaab633eaa036b3c3ff04934ffb3aba7d3cc9d;
 
     // ===========
     // Constructor
     // ===========
 
     constructor() {
-        assembly {
-            sstore(_REFLEX_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_UNLOCKED)
-        }
+        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
     }
 
     // ==========
@@ -39,16 +37,12 @@ contract MockReflexBase is MockHarness, ReflexBase {
         n_ = _getCounter(_REENTRANCY_COUNTER_SLOT);
     }
 
-    function getReentrancyStatus() public view returns (uint256 s_) {
-        assembly {
-            s_ := sload(_REFLEX_REENTRANCY_STATUS_SLOT)
-        }
+    function getReentrancyStatus() public view returns (uint256) {
+        return _REFLEX_STORAGE().reentrancyStatus;
     }
 
-    function isReentrancyStatusLocked() public view returns (bool s_) {
-        assembly {
-            s_ := eq(sload(_REFLEX_REENTRANCY_STATUS_SLOT), _REENTRANCY_GUARD_LOCKED)
-        }
+    function isReentrancyStatusLocked() public view returns (bool) {
+        return _reentrancyStatusLocked();
     }
 
     function callback() external nonReentrant {

@@ -27,9 +27,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
      */
     constructor(address owner_, address installerModule_) {
         // Initialize the global reentrancy guard as unlocked.
-        assembly ("memory-safe") {
-            sstore(_REFLEX_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_UNLOCKED)
-        }
+        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
 
         // Verify that the `owner_` and `installerModule_` addresses are valid.
         if (owner_ == address(0) || installerModule_ == address(0)) revert ZeroAddress();
