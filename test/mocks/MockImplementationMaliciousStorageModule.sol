@@ -15,9 +15,9 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
     // =========
 
     /**
-     * @dev NOTE: DO NOT OVERRIDE THE DIAMOND STORAGE SLOT INSIDE OF MODULES!
+     * @dev NOTE: DO NOT RE-USE THE SAME STORAGE SLOT!
      */
-    bytes32 internal constant _IMPLEMENTATION_STORAGE_SLOT =
+    bytes32 internal constant _MALICIOUS_IMPLEMENTATION_STORAGE_SLOT =
         0xf8509337ad8a230e85046288664a1364ac578e6500ef88157efd044485b8c20a;
 
     // =======
@@ -43,11 +43,11 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
     // ==========
 
     function setMaliciousImplementationState0(bytes32 message_) public {
-        _IMPLEMENTATION_STORAGE().implementationState0 = message_;
+        _MALICIOUS_IMPLEMENTATION_STORAGE().implementationState0 = message_;
     }
 
     function getMaliciousImplementationState0() public view returns (bytes32) {
-        return _IMPLEMENTATION_STORAGE().implementationState0;
+        return _MALICIOUS_IMPLEMENTATION_STORAGE().implementationState0;
     }
 
     // =======
@@ -57,7 +57,7 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
     /**
      * @dev Append-only extendable.
      */
-    struct ImplementationStorage {
+    struct MaliciousImplementationStorage {
         /**
          * @notice Implementation state 0.
          */
@@ -69,16 +69,20 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
     // ================
 
     /**
-     * @dev NOTE: DO NOT OVERRIDE THE DIAMOND STORAGE SLOT INSIDE OF MODULES!
+     * @dev NOTE: DO NOT RE-USE THE SAME STORAGE SLOT!
      */
-    function _IMPLEMENTATION_STORAGE() internal pure returns (ImplementationStorage storage storage_) {
+    function _MALICIOUS_IMPLEMENTATION_STORAGE()
+        internal
+        pure
+        returns (MaliciousImplementationStorage storage storage_)
+    {
         assembly {
             /**
              * @dev `bytes32(uint256(keccak256("_IMPLEMENTATION_STORAGE")) - 1)`
              * A `-1` offset is added so the preimage of the hash cannot be known,
              * reducing the chances of a possible attack.
              */
-            storage_.slot := _IMPLEMENTATION_STORAGE_SLOT
+            storage_.slot := _MALICIOUS_IMPLEMENTATION_STORAGE_SLOT
         }
     }
 
@@ -87,6 +91,6 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
     // ==========
 
     function MALICIOUS_IMPLEMENTATION_STORAGE_SLOT() public pure returns (bytes32) {
-        return _IMPLEMENTATION_STORAGE_SLOT;
+        return _MALICIOUS_IMPLEMENTATION_STORAGE_SLOT;
     }
 }
