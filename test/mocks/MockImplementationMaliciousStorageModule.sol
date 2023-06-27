@@ -10,6 +10,16 @@ import {MockReflexModule} from "./MockReflexModule.sol";
  * @dev Instead it implements storage directly in the module.
  */
 contract MockImplementationMaliciousStorageModule is MockReflexModule {
+    // =========
+    // Constants
+    // =========
+
+    /**
+     * @dev NOTE: DO NOT OVERRIDE THE DIAMOND STORAGE SLOT INSIDE OF MODULES!
+     */
+    bytes32 internal constant _IMPLEMENTATION_STORAGE_SLOT =
+        0xf8509337ad8a230e85046288664a1364ac578e6500ef88157efd044485b8c20a;
+
     // =======
     // Storage
     // =======
@@ -32,11 +42,11 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
     // Test stubs
     // ==========
 
-    function setImplementationState0(bytes32 message_) public {
+    function setMaliciousImplementationState0(bytes32 message_) public {
         _IMPLEMENTATION_STORAGE().implementationState0 = message_;
     }
 
-    function getImplementationState0() public view returns (bytes32) {
+    function getMaliciousImplementationState0() public view returns (bytes32) {
         return _IMPLEMENTATION_STORAGE().implementationState0;
     }
 
@@ -68,9 +78,15 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
              * A `-1` offset is added so the preimage of the hash cannot be known,
              * reducing the chances of a possible attack.
              */
-            // storage_.slot := 0xf8509337ad8a230e85046288664a1364ac578e6500ef88157efd044485b8c20a
-            storage_.slot := 0xffff9337ad8a230e85046288664a1364ac578e6500ef88157efd044485b8ffff
-            // TODO: expects reverts in all modules if storage clashed
+            storage_.slot := _IMPLEMENTATION_STORAGE_SLOT
         }
+    }
+
+    // ==========
+    // Test stubs
+    // ==========
+
+    function MALICIOUS_IMPLEMENTATION_STORAGE_SLOT() public pure returns (bytes32) {
+        return _IMPLEMENTATION_STORAGE_SLOT;
     }
 }

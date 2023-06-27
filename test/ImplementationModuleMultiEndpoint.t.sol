@@ -464,7 +464,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         _verifyUnmodifiedStateSlots(message_);
     }
 
-    function testFuzzUpgradeMultiEndpointToMaliciousStorageModule(
+    function testFuzzUpgradeMultiModuleToMaliciousStorageModule(
         bytes32 messageA_,
         bytes32 messageB_
     ) external brutalizeMemory {
@@ -472,9 +472,11 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
 
         vm.assume(messageA_ != messageB_);
 
-        // Initialize the storage in the `Dispatcher` context.
+        // Initialize and verify the storage in the `Dispatcher` context.
 
         dispatcher.setImplementationState0(messageA_);
+
+        assertEq(dispatcher.getImplementationState0(), messageA_);
 
         // Upgrade multi-endpoint module to malicious storage module.
 
@@ -506,29 +508,50 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
             _MODULE_MULTI_UPGRADEABLE_V3
         );
 
+        // Verify that the malicious module indeed causes a conflict with the one used in the `Dispatcher` context.
+
+        assertEq(
+            dispatcher.IMPLEMENTATION_STORAGE_SLOT(),
+            MockImplementationMaliciousStorageModule(address(multiModuleEndpointA))
+                .MALICIOUS_IMPLEMENTATION_STORAGE_SLOT()
+        );
+
+        assertEq(
+            dispatcher.IMPLEMENTATION_STORAGE_SLOT(),
+            MockImplementationMaliciousStorageModule(address(multiModuleEndpointB))
+                .MALICIOUS_IMPLEMENTATION_STORAGE_SLOT()
+        );
+
+        assertEq(
+            dispatcher.IMPLEMENTATION_STORAGE_SLOT(),
+            MockImplementationMaliciousStorageModule(address(multiModuleEndpointC))
+                .MALICIOUS_IMPLEMENTATION_STORAGE_SLOT()
+        );
+
         // Overwrite storage in the `Dispatcher` context from the malicious module.
 
-        MockImplementationMaliciousStorageModule(address(multiModuleEndpointA)).setImplementationState0(messageB_);
+        MockImplementationMaliciousStorageModule(address(multiModuleEndpointA)).setMaliciousImplementationState0(
+            messageB_
+        );
 
         // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
 
         assertEq(
-            MockImplementationMaliciousStorageModule(address(multiModuleEndpointA)).getImplementationState0(),
+            MockImplementationMaliciousStorageModule(address(multiModuleEndpointA)).getMaliciousImplementationState0(),
             messageB_
         );
         assertEq(
-            MockImplementationMaliciousStorageModule(address(multiModuleEndpointB)).getImplementationState0(),
+            MockImplementationMaliciousStorageModule(address(multiModuleEndpointB)).getMaliciousImplementationState0(),
             messageB_
         );
         assertEq(
-            MockImplementationMaliciousStorageModule(address(multiModuleEndpointC)).getImplementationState0(),
+            MockImplementationMaliciousStorageModule(address(multiModuleEndpointC)).getMaliciousImplementationState0(),
             messageB_
         );
 
         // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
 
         assertEq(dispatcher.getImplementationState0(), messageB_);
-        assertFalse(dispatcher.getImplementationState0() == messageA_);
 
         // Overwrite storage in the `Dispatcher` context.
 
@@ -537,7 +560,19 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         // Verify that the storage in the `Dispatcher` context has been overwritten.
 
         assertEq(dispatcher.getImplementationState0(), messageA_);
-        assertFalse(dispatcher.getImplementationState0() == messageB_);
+
+        assertEq(
+            MockImplementationMaliciousStorageModule(address(multiModuleEndpointA)).getMaliciousImplementationState0(),
+            messageA_
+        );
+        assertEq(
+            MockImplementationMaliciousStorageModule(address(multiModuleEndpointB)).getMaliciousImplementationState0(),
+            messageA_
+        );
+        assertEq(
+            MockImplementationMaliciousStorageModule(address(multiModuleEndpointC)).getMaliciousImplementationState0(),
+            messageA_
+        );
     }
 
     function testFuzzRevertBytesCustomError(uint256 code_, string memory message_) external {

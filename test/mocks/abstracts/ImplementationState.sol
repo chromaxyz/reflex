@@ -8,6 +8,13 @@ import {ReflexState} from "../../../src/ReflexState.sol";
  * @title Implementation State
  */
 abstract contract ImplementationState is ReflexState {
+    // =========
+    // Constants
+    // =========
+
+    bytes32 internal constant _IMPLEMENTATION_STORAGE_SLOT =
+        0xf8509337ad8a230e85046288664a1364ac578e6500ef88157efd044485b8c20a;
+
     // =======
     // Structs
     // =======
@@ -75,7 +82,15 @@ abstract contract ImplementationState is ReflexState {
              * A `-1` offset is added so the preimage of the hash cannot be known,
              * reducing the chances of a possible attack.
              */
-            storage_.slot := 0xf8509337ad8a230e85046288664a1364ac578e6500ef88157efd044485b8c20a
+            storage_.slot := _IMPLEMENTATION_STORAGE_SLOT
         }
+    }
+
+    // ==========
+    // Test stubs
+    // ==========
+
+    function IMPLEMENTATION_STORAGE_SLOT() public pure returns (bytes32) {
+        return _IMPLEMENTATION_STORAGE_SLOT;
     }
 }

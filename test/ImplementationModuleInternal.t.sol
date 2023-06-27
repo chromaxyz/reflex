@@ -363,12 +363,9 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     ) external brutalizeMemory {
         vm.assume(messageA_ != messageB_);
 
-        // Initialize the storage in the `Dispatcher` context.
+        // Initialize and verify the storage in the `Dispatcher` context.
 
-        singleModuleEndpoint.callInternalModule(
-            _MODULE_INTERNAL_ID,
-            abi.encodeWithSignature("setImplementationState0(bytes32)", messageA_)
-        );
+        dispatcher.setImplementationState0(messageA_);
 
         assertEq(dispatcher.getImplementationState0(), messageA_);
 
@@ -380,6 +377,8 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
                 moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V1
             })
         );
+
+        // Upgrade internal module to malicious storage module.
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(internalModuleMaliciousStorageV4);
@@ -394,11 +393,24 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             })
         );
 
+        // Verify that the malicious module indeed causes a conflict with the one used in the `Dispatcher` context.
+
+        assertEq(
+            dispatcher.IMPLEMENTATION_STORAGE_SLOT(),
+            abi.decode(
+                singleModuleEndpoint.callInternalModule(
+                    _MODULE_INTERNAL_ID,
+                    abi.encodeWithSignature("MALICIOUS_IMPLEMENTATION_STORAGE_SLOT()")
+                ),
+                (bytes32)
+            )
+        );
+
         // Overwrite storage in the `Dispatcher` context from the malicious module.
 
         singleModuleEndpoint.callInternalModule(
             _MODULE_INTERNAL_ID,
-            abi.encodeWithSignature("setImplementationState0(bytes32)", messageB_)
+            abi.encodeWithSignature("setMaliciousImplementationState0(bytes32)", messageB_)
         );
 
         // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
@@ -407,7 +419,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             abi.decode(
                 singleModuleEndpoint.callInternalModule(
                     _MODULE_INTERNAL_ID,
-                    abi.encodeWithSignature("getImplementationState0()")
+                    abi.encodeWithSignature("getMaliciousImplementationState0()")
                 ),
                 (bytes32)
             ),
@@ -417,16 +429,25 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
 
         assertEq(dispatcher.getImplementationState0(), messageB_);
-        assertFalse(dispatcher.getImplementationState0() == messageA_);
 
         // Overwrite storage in the `Dispatcher` context.
 
         dispatcher.setImplementationState0(messageA_);
 
-        // // Verify that the storage in the `Dispatcher` context has been overwritten.
+        // Verify that the storage in the `Dispatcher` context has been overwritten.
 
         assertEq(dispatcher.getImplementationState0(), messageA_);
-        assertFalse(dispatcher.getImplementationState0() == messageB_);
+
+        assertEq(
+            abi.decode(
+                singleModuleEndpoint.callInternalModule(
+                    _MODULE_INTERNAL_ID,
+                    abi.encodeWithSignature("getMaliciousImplementationState0()")
+                ),
+                (bytes32)
+            ),
+            messageA_
+        );
     }
 
     // =========
