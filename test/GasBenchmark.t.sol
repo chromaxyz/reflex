@@ -121,7 +121,7 @@ contract GasBenchmarkTest is ReflexConstants {
         singleModuleEndpoint.getEmpty();
     }
 
-    function testGasEndpointSetValue() external {
+    function testGasEndpointSetNumber() external {
         // Cold: 30401-22347 = 8048 gas
         //
         // ├─ [30401] ReflexEndpoint::setNumber(1)
@@ -145,7 +145,7 @@ contract GasBenchmarkTest is ReflexConstants {
         singleModuleEndpoint.setNumber(2);
     }
 
-    function testGasEndpointGetValue() external view {
+    function testGasEndpointGetNumber() external view {
         // Cold: 10419-2355 = 8064 gas
         //
         // ├─ [10419] ReflexEndpoint::getNumber() [staticcall]
@@ -169,7 +169,7 @@ contract GasBenchmarkTest is ReflexConstants {
         singleModuleEndpoint.getNumber();
     }
 
-    function testGasBatchCall() external {
+    function testGasBatchCallGetEmpty() external {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
 
         actions[0] = IReflexBatch.BatchAction({
