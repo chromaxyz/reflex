@@ -50,11 +50,6 @@ A Solidity framework for upgradeable modularized applications.
 Noteably this is a so-called framework, a single well-tested implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
 
-## Known limitations
-
-- Endpoint is currently not recognized as `proxy` on Etherscan due to it using `CALL`, not `DELEGATECALL`.
-- Does not support native tokens to avoid reentrancy risk.
-
 ## Why?
 
 In the public discourse there is a lot of valid critique towards the use of (upgradeable) proxy patterns namely that they are difficult to manage, vulnerable if configured incorrectly, broadly unnecessary and in general over-complex and over-engineered.
@@ -174,6 +169,10 @@ This is **experimental software** and is provided on an "as is" and "as availabl
 We **do not give any warranties** and **will not be liable for any loss** incurred through any use of this codebase.
 
 At this point in time Reflex **has not yet been audited** and must therefore not yet be used in production.
+
+## Known limitations
+
+Please refer to the [IMPLEMENTERS](docs/IMPLEMENTERS.md#security-assumptions-and-known-limitations) guide for a list of known limitations and security assumptions.
 
 ## Contributing
 
