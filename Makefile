@@ -31,7 +31,6 @@ gas:; ./scripts/test.sh -p $(PROFILE) -s "test(Gas)" -v 3
 # Where PROFILE_NAME (-p) is one of `default`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`.
 # Where SCOPE (-s) is for example `testUnitMetadata`.
 # Where VERBOSITY (-v) is for example `3`.
-# wHERE GAS_REPORT (-g) is either `0` or `1`.
 
 # ABI
 abi:; ./scripts/abi-generate.sh
