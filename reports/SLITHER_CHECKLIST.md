@@ -6,7 +6,6 @@ Summary
 - [low-level-calls](#low-level-calls) (4 results) (Informational)
 - [naming-convention](#naming-convention) (7 results) (Informational)
 - [similar-names](#similar-names) (1 results) (Informational)
-- [too-many-digits](#too-many-digits) (2 results) (Informational)
 
 ## calls-loop
 
@@ -49,49 +48,49 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-6
-      [ReflexState.\_REFLEX_STORAGE()](../src/ReflexState.sol#L62-L67) uses assembly - [INLINE ASM](../src/ReflexState.sol#L63-L66)
+      [ReflexState.\_REFLEX_STORAGE()](../src/ReflexState.sol#L60-L69) uses assembly - [INLINE ASM](../src/ReflexState.sol#L61-L68)
 
-../src/ReflexState.sol#L62-L67
+../src/ReflexState.sol#L60-L69
 
 - [ ] ID-7
-      [ReflexDispatcher.constructor(address,address)](../src/ReflexDispatcher.sol#L28-L74) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L51-L61)
+      [ReflexDispatcher.constructor(address,address)](../src/ReflexDispatcher.sol#L28-L77) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L54-L64)
 
-../src/ReflexDispatcher.sol#L28-L74
+../src/ReflexDispatcher.sol#L28-L77
 
 - [ ] ID-8
-      [ReflexEndpoint.fallback()](../src/ReflexEndpoint.sol#L51-L133) uses assembly - [INLINE ASM](../src/ReflexEndpoint.sol#L57-L102) - [INLINE ASM](../src/ReflexEndpoint.sol#L105-L131)
+      [ReflexDispatcher.fallback()](../src/ReflexDispatcher.sol#L112-L151) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L127-L150)
 
-../src/ReflexEndpoint.sol#L51-L133
+../src/ReflexDispatcher.sol#L112-L151
 
 - [ ] ID-9
-      [ReflexBase.\_revertBytes(bytes)](../src/ReflexBase.sol#L162-L170) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L164-L166)
+      [ReflexBase.\_revertBytes(bytes)](../src/ReflexBase.sol#L171-L179) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L173-L175)
 
-../src/ReflexBase.sol#L162-L170
+../src/ReflexBase.sol#L171-L179
 
 - [ ] ID-10
-      [ReflexBase.\_unpackMessageSender()](../src/ReflexBase.sol#L122-L127) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L124-L126)
+      [ReflexBase.\_unpackTrailingParameters()](../src/ReflexBase.sol#L154-L165) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L161-L164)
 
-../src/ReflexBase.sol#L122-L127
+../src/ReflexBase.sol#L154-L165
 
 - [ ] ID-11
-      [ReflexBase.\_unpackEndpointAddress()](../src/ReflexBase.sol#L133-L138) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L135-L137)
+      [ReflexBase.\_unpackEndpointAddress()](../src/ReflexBase.sol#L142-L147) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L144-L146)
 
-../src/ReflexBase.sol#L133-L138
+../src/ReflexBase.sol#L142-L147
 
 - [ ] ID-12
+      [ReflexBase.\_unpackMessageSender()](../src/ReflexBase.sol#L131-L136) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L133-L135)
+
+../src/ReflexBase.sol#L131-L136
+
+- [ ] ID-13
       [ReflexBase.\_createEndpoint(uint32,uint16,address)](../src/ReflexBase.sol#L68-L102) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L81-L91)
 
 ../src/ReflexBase.sol#L68-L102
 
-- [ ] ID-13
-      [ReflexDispatcher.fallback()](../src/ReflexDispatcher.sol#L102-L140) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L116-L139)
-
-../src/ReflexDispatcher.sol#L102-L140
-
 - [ ] ID-14
-      [ReflexBase.\_unpackTrailingParameters()](../src/ReflexBase.sol#L145-L156) uses assembly - [INLINE ASM](../src/ReflexBase.sol#L152-L155)
+      [ReflexEndpoint.fallback()](../src/ReflexEndpoint.sol#L50-L132) uses assembly - [INLINE ASM](../src/ReflexEndpoint.sol#L56-L101) - [INLINE ASM](../src/ReflexEndpoint.sol#L104-L130)
 
-../src/ReflexBase.sol#L145-L156
+../src/ReflexEndpoint.sol#L50-L132
 
 - [ ] ID-15
       [ReflexBatch.performStaticCall(address,bytes)](../src/periphery/ReflexBatch.sol#L24-L34) uses assembly - [INLINE ASM](../src/periphery/ReflexBatch.sol#L31-L33)
@@ -197,14 +196,14 @@ Confidence: High
 ../src/periphery/ReflexBatch.sol#L24-L34
 
 - [ ] ID-34
+      Low level call in [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L119-L125): - [(success,result) = _REFLEX_STORAGE().modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L120)
+
+../src/ReflexBase.sol#L119-L125
+
+- [ ] ID-35
       Low level call in [ReflexBatch.\_performBatchAction(address,IReflexBatch.BatchAction)](../src/periphery/ReflexBatch.sol#L144-L162): - [(success*,returnData*) = moduleImplementation.delegatecall(abi.encodePacked(action*.callData,uint160(messageSender*),uint160(endpointAddress)))](../src/periphery/ReflexBatch.sol#L159-L161)
 
 ../src/periphery/ReflexBatch.sol#L144-L162
-
-- [ ] ID-35
-      Low level call in [ReflexBase.\_callInternalModule(uint32,bytes)](../src/ReflexBase.sol#L110-L116): - [(success,result) = _REFLEX_STORAGE().modules[moduleId_].delegatecall(input\_)](../src/ReflexBase.sol#L111)
-
-../src/ReflexBase.sol#L110-L116
 
 - [ ] ID-36
       Low level call in [ReflexBatch.simulateBatchCallReturn(IReflexBatch.BatchAction[])](../src/periphery/ReflexBatch.sol#L91-L115): - [(success,result) = _REFLEX_STORAGE().modules[\_moduleId].delegatecall(abi.encodePacked(abi.encodeWithSelector(IReflexBatch.simulateBatchCallRevert.selector,actions_),uint160(\_unpackMessageSender()),uint160(\_unpackEndpointAddress())))](../src/periphery/ReflexBatch.sol#L98-L104)
@@ -222,9 +221,9 @@ Confidence: High
 ../src/ReflexModule.sol#L24
 
 - [ ] ID-38
-      Function [ReflexState.\_REFLEX_STORAGE()](../src/ReflexState.sol#L62-L67) is not in mixedCase
+      Function [ReflexState.\_REFLEX_STORAGE()](../src/ReflexState.sol#L60-L69) is not in mixedCase
 
-../src/ReflexState.sol#L62-L67
+../src/ReflexState.sol#L60-L69
 
 - [ ] ID-39
       Variable [ReflexEndpoint.\_deployer](../src/ReflexEndpoint.sol#L26) is not in mixedCase
@@ -260,18 +259,3 @@ Confidence: Medium
       Variable [ReflexModule.\_moduleType](../src/ReflexModule.sol#L29) is too similar to [ReflexBase._createEndpoint(uint32,uint16,address).moduleType_](../src/ReflexBase.sol#L70)
 
 ../src/ReflexModule.sol#L29
-
-## too-many-digits
-
-Impact: Informational
-Confidence: Medium
-
-- [ ] ID-45
-      [ReflexDispatcher.\_getEndpointCreationCode(uint32)](../src/ReflexDispatcher.sol#L155-L157) uses literals with too many digits: - [endpointCreationCode* = abi.encodePacked(type()(ReflexEndpoint).creationCode,abi.encode(moduleId*))](../src/ReflexDispatcher.sol#L156)
-
-../src/ReflexDispatcher.sol#L155-L157
-
-- [ ] ID-46
-      [ReflexBase.\_getEndpointCreationCode(uint32)](../src/ReflexBase.sol#L185-L187) uses literals with too many digits: - [endpointCreationCode* = abi.encodePacked(type()(ReflexEndpoint).creationCode,abi.encode(moduleId*))](../src/ReflexBase.sol#L186)
-
-../src/ReflexBase.sol#L185-L187

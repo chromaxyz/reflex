@@ -18,6 +18,8 @@ import {MockImplementationInstaller} from "./mocks/MockImplementationInstaller.s
 
 /**
  * @title Gas Benchmark Test
+ * @dev This contract is used to benchmark the gas costs of Reflex.
+ * @dev Used compiler version: solc 0.8.19+commit.c4cbbb05
  */
 contract GasBenchmarkTest is ReflexConstants {
     // =========
