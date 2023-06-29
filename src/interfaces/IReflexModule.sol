@@ -15,7 +15,7 @@ interface IReflexModule is IReflexBase {
     /**
      * @notice Thrown when the module version is invalid.
      */
-    error ModuleVersionInvalid();
+    error ModuleVersionInvalid(uint32 moduleVersion);
 
     /**
      * @notice Thrown when an unauthorized user attempts to perform an action.

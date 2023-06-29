@@ -13,6 +13,7 @@ import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Fixtures
 import {TestHarness} from "./TestHarness.sol";
+import {MockHarness} from "./MockHarness.sol";
 
 // Mocks
 import {MockImplementationDispatcher} from "../mocks/MockImplementationDispatcher.sol";
@@ -22,7 +23,7 @@ import {MockReflexModule, ICustomError} from "../mocks/MockReflexModule.sol";
 /**
  * @title Implementation Fixture
  */
-abstract contract ImplementationFixture is ReflexConstants, TestHarness {
+abstract contract ImplementationFixture is ReflexConstants, TestHarness, MockHarness {
     // =======
     // Storage
     // =======
@@ -46,7 +47,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
             })
         );
         dispatcher = new MockImplementationDispatcher(address(this), address(installer));
-        installerEndpoint = MockImplementationInstaller(dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER));
+        installerEndpoint = MockImplementationInstaller(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
     }
 
     // ==========
@@ -70,13 +71,6 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness {
         assertEq(module_.moduleVersion(), moduleVersion_);
         assertEq(moduleSettings.moduleUpgradeable, moduleUpgradeable_);
         assertEq(module_.moduleUpgradeable(), moduleUpgradeable_);
-    }
-
-    function _testEndpointSentinelFallback(MockReflexModule endpoint_) internal {
-        (bool success, bytes memory data) = address(endpoint_).call(abi.encodeWithSignature("sentinel()"));
-
-        assertTrue(success);
-        assertTrue(abi.decode(data, (bool)));
     }
 
     function _testRevertBytesCustomError(MockReflexModule endpoint_, uint256 code_, string memory message_) internal {

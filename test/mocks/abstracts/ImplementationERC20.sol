@@ -285,6 +285,6 @@ abstract contract ImplementationERC20 is MockImplementationModule {
         returns (Token storage token_, address endpointAddress_, address messageSender_)
     {
         (messageSender_, endpointAddress_) = _unpackTrailingParameters();
-        token_ = _tokens[endpointAddress_];
+        token_ = _IMPLEMENTATION_STORAGE().tokens[endpointAddress_];
     }
 }

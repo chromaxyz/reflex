@@ -75,7 +75,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         moduleAddresses[1] = address(token);
         installerEndpoint.addModules(moduleAddresses);
 
-        tokenHubEndpoint = MockImplementationERC20Hub(dispatcher.moduleIdToEndpoint(_TOKEN_HUB_MODULE_ID));
+        tokenHubEndpoint = MockImplementationERC20Hub(dispatcher.getEndpoint(_TOKEN_HUB_MODULE_ID));
 
         tokenEndpoint = MockImplementationERC20(
             tokenHubEndpoint.addERC20(
@@ -196,10 +196,10 @@ contract ImplementationERC20Test is ImplementationFixture {
         assumeNoPrecompiles(to_);
         vm.assume(burnAmount_ > mintAmount_);
 
-        tokenEndpoint.mint(to_, mintAmount_);
+        tokenEndpoint.mint(_brutalize(to_), mintAmount_);
 
         vm.expectRevert(stdError.arithmeticError);
-        tokenEndpoint.burn(to_, burnAmount_);
+        tokenEndpoint.burn(_brutalize(to_), burnAmount_);
     }
 
     function testFuzzMintBurn(uint256 amount_) external {
@@ -260,7 +260,7 @@ contract ImplementationERC20Test is ImplementationFixture {
         vm.stopPrank();
     }
 
-    function testFuzzRevertFailedEndpointLog() external {
+    function testUnitRevertFailedEndpointLog() external {
         vm.expectRevert(ImplementationERC20.EndpointEventEmittanceFailed.selector);
         tokenEndpoint.emitTransferEvent(address(dispatcher), address(0), address(0), 100e18);
 

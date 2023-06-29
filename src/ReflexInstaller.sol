@@ -23,14 +23,14 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * @inheritdoc IReflexInstaller
      */
     function owner() public view virtual returns (address) {
-        return _owner;
+        return _REFLEX_STORAGE().owner;
     }
 
     /**
      * @inheritdoc IReflexInstaller
      */
     function pendingOwner() public view virtual returns (address) {
-        return _pendingOwner;
+        return _REFLEX_STORAGE().pendingOwner;
     }
 
     // ====================
@@ -43,9 +43,9 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     function transferOwnership(address newOwner_) public virtual onlyOwner nonReentrant {
         if (newOwner_ == address(0)) revert ZeroAddress();
 
-        _pendingOwner = newOwner_;
+        _REFLEX_STORAGE().pendingOwner = newOwner_;
 
-        emit OwnershipTransferStarted(_owner, newOwner_);
+        emit OwnershipTransferStarted(_REFLEX_STORAGE().owner, newOwner_);
     }
 
     /**
@@ -54,12 +54,12 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     function acceptOwnership() public virtual nonReentrant {
         address newOwner = _unpackMessageSender();
 
-        if (newOwner != _pendingOwner) revert Unauthorized();
+        if (newOwner != _REFLEX_STORAGE().pendingOwner) revert Unauthorized();
 
-        delete _pendingOwner;
+        delete _REFLEX_STORAGE().pendingOwner;
 
-        address previousOwner = _owner;
-        _owner = newOwner;
+        address previousOwner = _REFLEX_STORAGE().owner;
+        _REFLEX_STORAGE().owner = newOwner;
 
         emit OwnershipTransferred(previousOwner, newOwner);
     }
@@ -70,10 +70,10 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     function renounceOwnership() public virtual onlyOwner nonReentrant {
         address newOwner = address(0);
 
-        delete _pendingOwner;
+        delete _REFLEX_STORAGE().pendingOwner;
 
-        address previousOwner = _owner;
-        _owner = newOwner;
+        address previousOwner = _REFLEX_STORAGE().owner;
+        _REFLEX_STORAGE().owner = newOwner;
 
         emit OwnershipTransferred(previousOwner, newOwner);
     }
@@ -90,13 +90,14 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
 
             // Verify that the module to add does not exist and is yet to be registered.
-            if (_modules[moduleSettings_.moduleId] != address(0)) revert ModuleExistent(moduleSettings_.moduleId);
+            if (_REFLEX_STORAGE().modules[moduleSettings_.moduleId] != address(0))
+                revert ModuleExistent(moduleSettings_.moduleId);
 
             // Call pre-registration hook.
             _beforeModuleRegistration(moduleSettings_, moduleAddress);
 
             // Register the module.
-            _modules[moduleSettings_.moduleId] = moduleAddress;
+            _REFLEX_STORAGE().modules[moduleSettings_.moduleId] = moduleAddress;
 
             // Create and register the endpoint for the module.
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_ENDPOINT)
@@ -122,29 +123,36 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
 
             // Verify that the module to upgrade exists and is registered.
-            if (_modules[moduleSettings_.moduleId] == address(0)) revert ModuleNonexistent(moduleSettings_.moduleId);
+            if (_REFLEX_STORAGE().modules[moduleSettings_.moduleId] == address(0))
+                revert ModuleNonexistent(moduleSettings_.moduleId);
 
             // Verify that current module allows for upgrades.
-            if (!IReflexModule(_modules[moduleSettings_.moduleId]).moduleUpgradeable())
+            if (!IReflexModule(_REFLEX_STORAGE().modules[moduleSettings_.moduleId]).moduleUpgradeable())
                 revert ModuleNotUpgradeable(moduleSettings_.moduleId);
 
             // Verify that the next module version is greater than the current module version.
-            if (moduleSettings_.moduleVersion <= IReflexModule(_modules[moduleSettings_.moduleId]).moduleVersion())
-                revert ModuleInvalidVersion(moduleSettings_.moduleId);
+            if (
+                moduleSettings_.moduleVersion <=
+                IReflexModule(_REFLEX_STORAGE().modules[moduleSettings_.moduleId]).moduleVersion()
+            ) revert ModuleVersionInvalid(moduleSettings_.moduleVersion);
 
             // Verify that the next module type is the same as the current module type.
-            if (moduleSettings_.moduleType != IReflexModule(_modules[moduleSettings_.moduleId]).moduleType())
-                revert ModuleInvalidType(moduleSettings_.moduleId);
+            if (
+                moduleSettings_.moduleType !=
+                IReflexModule(_REFLEX_STORAGE().modules[moduleSettings_.moduleId]).moduleType()
+            ) revert ModuleTypeInvalid(moduleSettings_.moduleType);
 
             // Call pre-registration hook.
             _beforeModuleRegistration(moduleSettings_, moduleAddress);
 
             // Register the module.
-            _modules[moduleSettings_.moduleId] = moduleAddress;
+            _REFLEX_STORAGE().modules[moduleSettings_.moduleId] = moduleAddress;
 
             // Update the module implementation of the module endpoint.
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_ENDPOINT)
-                _relations[_endpoints[moduleSettings_.moduleId]].moduleImplementation = moduleAddress;
+                _REFLEX_STORAGE()
+                    .relations[_REFLEX_STORAGE().endpoints[moduleSettings_.moduleId]]
+                    .moduleImplementation = moduleAddress;
 
             emit ModuleUpgraded(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
 

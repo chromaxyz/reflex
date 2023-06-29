@@ -6,6 +6,7 @@ import {ImplementationERC20} from "../mocks/abstracts/ImplementationERC20.sol";
 
 /**
  * @title Mock Implementation ERC20
+ * @dev Example of a multi-module endpoint, registered in a single-module registry.
  */
 contract MockImplementationERC20 is ImplementationERC20 {
     // ===========

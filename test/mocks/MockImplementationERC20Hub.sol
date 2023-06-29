@@ -6,6 +6,7 @@ import {MockImplementationModule} from "./MockImplementationModule.sol";
 
 /**
  * @title Mock Implementation ERC20 Hub
+ * @dev Example of a single-module endpoint registry for multi-module endpoints.
  */
 contract MockImplementationERC20Hub is MockImplementationModule {
     // ===========
@@ -30,7 +31,7 @@ contract MockImplementationERC20Hub is MockImplementationModule {
     ) external returns (address tokenEndpoint_) {
         tokenEndpoint_ = _createEndpoint(moduleId_, moduleType_, address(0));
 
-        Token storage token = _tokens[tokenEndpoint_];
+        Token storage token = _IMPLEMENTATION_STORAGE().tokens[tokenEndpoint_];
 
         token.name = name_;
         token.symbol = symbol_;

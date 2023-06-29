@@ -8,28 +8,31 @@ import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 import {ReflexBase} from "../../src/ReflexBase.sol";
 import {ReflexInstaller} from "../../src/ReflexInstaller.sol";
 
+// Fixtures
+import {MockHarness} from "../fixtures/MockHarness.sol";
+
 // Mocks
 import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
  * @title Mock Reflex Installer
  */
-contract MockReflexInstaller is ReflexInstaller, MockReflexModule {
+contract MockReflexInstaller is MockHarness, ReflexInstaller, MockReflexModule {
     // =======
     // Storage
     // =======
 
     /**
-     * @dev `bytes32(uint256(keccak256("before.module.registration.counter")) - 1)`
+     * @dev `bytes32(uint256(keccak256("_BEFORE_MODULE_REGISTRATION_COUNTER_SLOT")) - 1)`
      */
     bytes32 internal constant _BEFORE_MODULE_REGISTRATION_COUNTER_SLOT =
-        0x1b727d455ca13074852c4008c1e770610a44626677660029eca1c6d393a06641;
+        0xc82728fbf88d85985c7f4b166fd4d8f3cb0195675e8a793d2788ed1d7b80c621;
 
     /**
-     * @dev `bytes32(uint256(keccak256("get.endpoint.creation.code.counter")) - 1)`
+     * @dev `bytes32(uint256(keccak256("_GET_ENDPOINT_CREATION_CODE_COUNTER_SLOT")) - 1)`
      */
     bytes32 internal constant _GET_ENDPOINT_CREATION_CODE_COUNTER_SLOT =
-        0xd5077e08d231237dc9ff99b01c8b83a05549425a32c5faf5f3e7da16cbeab176;
+        0xf8b59a32e9704d69f615f3a37ed658787f1810f89b57ba1e8fae0a749ff9b3d9;
 
     // ===========
     // Constructor

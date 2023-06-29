@@ -42,7 +42,7 @@ contract ReflexDispatcherTest is ReflexFixture {
         new MockReflexDispatcher(address(this), address(0));
     }
 
-    function testUnitRevertInvalidInstallerModuleIdSentinel() external {
+    function testUnitRevertInvalidInstallerModuleId() external {
         vm.expectRevert();
         new MockReflexDispatcher(address(this), address(_users.Alice));
     }
@@ -60,7 +60,7 @@ contract ReflexDispatcherTest is ReflexFixture {
             })
         );
 
-        vm.expectRevert(IReflexBase.ModuleIdInvalid.selector);
+        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleIdInvalid.selector, moduleId_));
         new MockReflexDispatcher(address(this), address(module));
     }
 
@@ -74,7 +74,7 @@ contract ReflexDispatcherTest is ReflexFixture {
             })
         );
 
-        vm.expectRevert(IReflexBase.ModuleTypeInvalid.selector);
+        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleTypeInvalid.selector, _MODULE_TYPE_MULTI_ENDPOINT));
         new MockReflexDispatcher(address(this), address(module));
     }
 
@@ -83,7 +83,7 @@ contract ReflexDispatcherTest is ReflexFixture {
 
         MockReflexDispatcher dispatcher = new MockReflexDispatcher(address(this), address(installerModuleV1));
 
-        address installerEndpoint = dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER);
+        address installerEndpoint = dispatcher.getEndpoint(_MODULE_ID_INSTALLER);
 
         VmSafe.Log[] memory entries = vm.getRecordedLogs();
 
@@ -115,8 +115,8 @@ contract ReflexDispatcherTest is ReflexFixture {
     }
 
     function testUnitInstallerConfiguration() external {
-        assertEq(dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER), address(installerEndpoint));
-        assertEq(dispatcher.moduleIdToModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
+        assertEq(dispatcher.getEndpoint(_MODULE_ID_INSTALLER), address(installerEndpoint));
+        assertEq(dispatcher.getModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
     }
 
     function testUnitGetOwnerThroughInstallerEndpoint() external {

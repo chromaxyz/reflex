@@ -4,10 +4,13 @@ pragma solidity ^0.8.13;
 // Sources
 import {ReflexDispatcher} from "../../src/ReflexDispatcher.sol";
 
+// Fixtures
+import {MockHarness} from "../fixtures/MockHarness.sol";
+
 /**
  * @title Mock Reflex Dispatcher
  */
-contract MockReflexDispatcher is ReflexDispatcher {
+contract MockReflexDispatcher is MockHarness, ReflexDispatcher {
     // ===========
     // Constructor
     // ===========
@@ -18,7 +21,7 @@ contract MockReflexDispatcher is ReflexDispatcher {
     // Test stubs
     // ==========
 
-    function setModule(uint32 moduleId_, address moduleImplementation_) public {
-        _modules[moduleId_] = moduleImplementation_;
+    function setModuleToImplementation(uint32 moduleId_, address moduleImplementation_) public {
+        _REFLEX_STORAGE().modules[moduleId_] = moduleImplementation_;
     }
 }

@@ -22,8 +22,6 @@ abstract contract TestHarness is Users, Test {
     // Errors
     // ======
 
-    error FailedSetup();
-
     error FreeMemoryPointerOverflowed();
 
     error ZeroSlotNotZero();

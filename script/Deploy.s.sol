@@ -82,7 +82,7 @@ contract DeployScript is Script, DeployConstants {
 
         dispatcher = new MockImplementationDispatcher(msg.sender, address(installerImplementation));
 
-        installerEndpoint = MockImplementationInstaller(dispatcher.moduleIdToEndpoint(_MODULE_ID_INSTALLER));
+        installerEndpoint = MockImplementationInstaller(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
 
         exampleModuleImplementation = new MockImplementationModule(
             IReflexModule.ModuleSettings({
@@ -99,6 +99,6 @@ contract DeployScript is Script, DeployConstants {
 
         vm.stopBroadcast();
 
-        exampleModuleEndpoint = MockImplementationModule(dispatcher.moduleIdToEndpoint(_MODULE_ID_EXAMPLE));
+        exampleModuleEndpoint = MockImplementationModule(dispatcher.getEndpoint(_MODULE_ID_EXAMPLE));
     }
 }

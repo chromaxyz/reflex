@@ -4,26 +4,29 @@ pragma solidity ^0.8.13;
 // Sources
 import {ReflexBase} from "../../src/ReflexBase.sol";
 
+// Fixtures
+import {MockHarness} from "../fixtures/MockHarness.sol";
+
 /**
  * @title Mock Reflex Base
  */
-contract MockReflexBase is ReflexBase {
+contract MockReflexBase is MockHarness, ReflexBase {
     // =========
     // Constants
     // =========
 
     /**
-     * @dev `bytes32(uint256(keccak256("reentrancy.counter")) - 1)`
+     * @dev `bytes32(uint256(keccak256("_REENTRANCY_COUNTER_SLOT")) - 1)`
      */
     bytes32 internal constant _REENTRANCY_COUNTER_SLOT =
-        0xc2db8520a4cb85e45c0b428b71b461e7932f3b9c2b41fa1662675e79660783f2;
+        0x5f809fe156313a375467a4992bdaab633eaa036b3c3ff04934ffb3aba7d3cc9d;
 
     // ===========
     // Constructor
     // ===========
 
     constructor() {
-        _reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
+        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
     }
 
     // ==========
@@ -35,10 +38,10 @@ contract MockReflexBase is ReflexBase {
     }
 
     function getReentrancyStatus() public view returns (uint256) {
-        return _reentrancyStatus;
+        return _REFLEX_STORAGE().reentrancyStatus;
     }
 
-    function getReentrancyStatusLocked() public view returns (bool) {
+    function isReentrancyStatusLocked() public view returns (bool) {
         return _reentrancyStatusLocked();
     }
 
@@ -72,7 +75,7 @@ contract MockReflexBase is ReflexBase {
     }
 
     function guardedCheckLocked() public nonReentrant {
-        assert(getReentrancyStatusLocked());
+        assert(isReentrancyStatusLocked());
         assert(getReentrancyStatus() == _REENTRANCY_GUARD_LOCKED);
     }
 
@@ -81,21 +84,21 @@ contract MockReflexBase is ReflexBase {
     function readCallbackTargetProtected() public nonReadReentrant {}
 
     function readGuardedCheckProtected() public nonReentrant {
-        assert(getReentrancyStatusLocked());
+        assert(isReentrancyStatusLocked());
         assert(getReentrancyStatus() == _REENTRANCY_GUARD_LOCKED);
 
         readCallbackTargetProtected();
     }
 
     function readGuardedCheckUnprotected() public nonReentrant {
-        assert(getReentrancyStatusLocked());
+        assert(isReentrancyStatusLocked());
         assert(getReentrancyStatus() == _REENTRANCY_GUARD_LOCKED);
 
         readCallbackTargetUnprotected();
     }
 
     function unguardedCheckUnlocked() public view {
-        assert(!getReentrancyStatusLocked());
+        assert(!isReentrancyStatusLocked());
         assert(getReentrancyStatus() == _REENTRANCY_GUARD_UNLOCKED);
     }
 

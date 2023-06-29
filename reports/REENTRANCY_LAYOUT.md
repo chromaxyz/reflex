@@ -23,36 +23,36 @@
   "name": "transferOwnership",
   "modifiers": [
     {
-      "id": 27593,
+      "id": 27636,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27592,
+        "id": 27635,
         "name": "onlyOwner",
         "nameLocations": [
-          "1052:9:23"
+          "1086:9:23"
         ],
         "nodeType": "IdentifierPath",
-        "referencedDeclaration": 27976,
-        "src": "1052:9:23"
+        "referencedDeclaration": 28053,
+        "src": "1086:9:23"
       },
       "nodeType": "ModifierInvocation",
-      "src": "1052:9:23"
+      "src": "1086:9:23"
     },
     {
-      "id": 27595,
+      "id": 27638,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27594,
+        "id": 27637,
         "name": "nonReentrant",
         "nameLocations": [
-          "1062:12:23"
+          "1096:12:23"
         ],
         "nodeType": "IdentifierPath",
-        "referencedDeclaration": 27021,
-        "src": "1062:12:23"
+        "referencedDeclaration": 27027,
+        "src": "1096:12:23"
       },
       "nodeType": "ModifierInvocation",
-      "src": "1062:12:23"
+      "src": "1096:12:23"
     }
   ]
 }
@@ -60,20 +60,20 @@
   "name": "acceptOwnership",
   "modifiers": [
     {
-      "id": 27621,
+      "id": 27668,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27620,
+        "id": 27667,
         "name": "nonReentrant",
         "nameLocations": [
-          "1336:12:23"
+          "1404:12:23"
         ],
         "nodeType": "IdentifierPath",
-        "referencedDeclaration": 27021,
-        "src": "1336:12:23"
+        "referencedDeclaration": 27027,
+        "src": "1404:12:23"
       },
       "nodeType": "ModifierInvocation",
-      "src": "1336:12:23"
+      "src": "1404:12:23"
     }
   ]
 }
@@ -81,36 +81,36 @@
   "name": "renounceOwnership",
   "modifiers": [
     {
-      "id": 27656,
+      "id": 27711,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27655,
+        "id": 27710,
         "name": "onlyOwner",
         "nameLocations": [
-          "1732:9:23"
+          "1868:9:23"
         ],
         "nodeType": "IdentifierPath",
-        "referencedDeclaration": 27976,
-        "src": "1732:9:23"
+        "referencedDeclaration": 28053,
+        "src": "1868:9:23"
       },
       "nodeType": "ModifierInvocation",
-      "src": "1732:9:23"
+      "src": "1868:9:23"
     },
     {
-      "id": 27658,
+      "id": 27713,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27657,
+        "id": 27712,
         "name": "nonReentrant",
         "nameLocations": [
-          "1742:12:23"
+          "1878:12:23"
         ],
         "nodeType": "IdentifierPath",
-        "referencedDeclaration": 27021,
-        "src": "1742:12:23"
+        "referencedDeclaration": 27027,
+        "src": "1878:12:23"
       },
       "nodeType": "ModifierInvocation",
-      "src": "1742:12:23"
+      "src": "1878:12:23"
     }
   ]
 }
@@ -118,36 +118,36 @@
   "name": "addModules",
   "modifiers": [
     {
-      "id": 27691,
+      "id": 27752,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27690,
+        "id": 27751,
         "name": "onlyOwner",
         "nameLocations": [
-          "2091:9:23"
+          "2278:9:23"
         ],
         "nodeType": "IdentifierPath",
-        "referencedDeclaration": 27976,
-        "src": "2091:9:23"
+        "referencedDeclaration": 28053,
+        "src": "2278:9:23"
       },
       "nodeType": "ModifierInvocation",
-      "src": "2091:9:23"
+      "src": "2278:9:23"
     },
     {
-      "id": 27693,
+      "id": 27754,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27692,
+        "id": 27753,
         "name": "nonReentrant",
         "nameLocations": [
-          "2101:12:23"
+          "2288:12:23"
         ],
         "nodeType": "IdentifierPath",
-        "referencedDeclaration": 27021,
-        "src": "2101:12:23"
+        "referencedDeclaration": 27027,
+        "src": "2288:12:23"
       },
       "nodeType": "ModifierInvocation",
-      "src": "2101:12:23"
+      "src": "2288:12:23"
     }
   ]
 }
@@ -155,36 +155,36 @@
   "name": "upgradeModules",
   "modifiers": [
     {
-      "id": 27786,
+      "id": 27851,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27785,
+        "id": 27850,
         "name": "onlyOwner",
         "nameLocations": [
-          "3384:9:23"
+          "3621:9:23"
         ],
         "nodeType": "IdentifierPath",
-        "referencedDeclaration": 27976,
-        "src": "3384:9:23"
+        "referencedDeclaration": 28053,
+        "src": "3621:9:23"
       },
       "nodeType": "ModifierInvocation",
-      "src": "3384:9:23"
+      "src": "3621:9:23"
     },
     {
-      "id": 27788,
+      "id": 27853,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 27787,
+        "id": 27852,
         "name": "nonReentrant",
         "nameLocations": [
-          "3394:12:23"
+          "3631:12:23"
         ],
         "nodeType": "IdentifierPath",
-        "referencedDeclaration": 27021,
-        "src": "3394:12:23"
+        "referencedDeclaration": 27027,
+        "src": "3631:12:23"
       },
       "nodeType": "ModifierInvocation",
-      "src": "3394:12:23"
+      "src": "3631:12:23"
     }
   ]
 }
@@ -199,10 +199,7 @@
 **ReflexEndpoint**
 
 ```json
-{
-  "name": "sentinel",
-  "modifiers": []
-}
+
 ```
 
 **ReflexState**
@@ -218,10 +215,10 @@
   "name": "performBatchCall",
   "modifiers": [
     {
-      "id": 28463,
+      "id": 28548,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 28462,
+        "id": 28547,
         "name": "reentrancyAllowed",
         "nameLocations": [
           "1053:17:32"
@@ -239,10 +236,10 @@
   "name": "simulateBatchCallRevert",
   "modifiers": [
     {
-      "id": 28532,
+      "id": 28617,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 28531,
+        "id": 28616,
         "name": "reentrancyAllowed",
         "nameLocations": [
           "1747:17:32"
@@ -260,10 +257,10 @@
   "name": "simulateBatchCallReturn",
   "modifiers": [
     {
-      "id": 28616,
+      "id": 28701,
       "kind": "modifierInvocation",
       "modifierName": {
-        "id": 28615,
+        "id": 28700,
         "name": "reentrancyAllowed",
         "nameLocations": [
           "2611:17:32"
@@ -282,5 +279,8 @@
 **MockImplementationDispatcher**
 
 ```json
-
+{
+  "name": "setImplementationState0",
+  "modifiers": []
+}
 ```

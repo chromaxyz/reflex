@@ -5,28 +5,31 @@ pragma solidity ^0.8.13;
 import {ReflexBase} from "../../src/ReflexBase.sol";
 import {ReflexBatch} from "../../src/periphery/ReflexBatch.sol";
 
+// Fixtures
+import {MockHarness} from "../fixtures/MockHarness.sol";
+
 // Mocks
 import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
  * @title Mock Reflex Batch
  */
-contract MockReflexBatch is ReflexBatch, MockReflexModule {
+contract MockReflexBatch is MockHarness, ReflexBatch, MockReflexModule {
     // =======
     // Storage
     // =======
 
     /**
-     * @dev `bytes32(uint256(keccak256("before.batch.call.counter")) - 1))`
+     * @dev `bytes32(uint256(keccak256("_BEFORE_BATCH_CALL_COUNTER_SLOT")) - 1)`
      */
     bytes32 internal constant _BEFORE_BATCH_CALL_COUNTER_SLOT =
-        0x3c5e0ffea8513071715642321743602785a5c6c585e0f916891665f4ca4543eb;
+        0x1341c5d22aaf5144e19b621a10c11ed727e6c461de3386254a323deb804b3177;
 
     /**
-     * @dev `bytes32(uint256(keccak256("after.batch.call.counter")) - 1))`
+     * @dev `bytes32(uint256(keccak256("_AFTER_BATCH_CALL_COUNTER_SLOT")) - 1)`
      */
     bytes32 internal constant _AFTER_BATCH_CALL_COUNTER_SLOT =
-        0x204a962903d57234ad549571efe3fcf39c3904b5cb380e97ec4f91a693441f7b;
+        0x275df4c7315c3d7a3ff703ad0c15eafa230b4ec1a5793f54ae5d2e4586513a64;
 
     // ===========
     // Constructor

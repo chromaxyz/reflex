@@ -55,12 +55,19 @@ interface IReflexDispatcher is IReflexBase {
      * @param moduleId_ Module id.
      * @return address Module implementation address.
      */
-    function moduleIdToModuleImplementation(uint32 moduleId_) external view returns (address);
+    function getModuleImplementation(uint32 moduleId_) external view returns (address);
 
     /**
      * @notice Returns the endpoint address by module id.
      * @param moduleId_ Module id.
      * @return address Endpoint address.
      */
-    function moduleIdToEndpoint(uint32 moduleId_) external view returns (address);
+    function getEndpoint(uint32 moduleId_) external view returns (address);
+
+    /**
+     * @notice Returns the trust relation by endpoint address.
+     * @param endpoint_ Endpoint address.
+     * @return TrustRelation Trust relation.
+     */
+    function getTrustRelation(address endpoint_) external view returns (TrustRelation memory);
 }
