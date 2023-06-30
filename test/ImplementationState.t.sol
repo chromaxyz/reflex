@@ -2,9 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Vendor
-// solhint-disable-next-line no-console
-import {console2} from "forge-std/console2.sol";
-import {Script} from "forge-std/Script.sol";
+import {Test} from "forge-std/Test.sol";
 
 // Interfaces
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
@@ -13,16 +11,16 @@ import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 import {ReflexConstants} from "../src/ReflexConstants.sol";
 
 // Mocks
+import {ImplementationState} from "../test/mocks/abstracts/ImplementationState.sol";
 import {MockImplementationDispatcher} from "../test/mocks/MockImplementationDispatcher.sol";
 import {MockImplementationInstaller} from "../test/mocks/MockImplementationInstaller.sol";
 import {MockImplementationModule} from "../test/mocks/MockImplementationModule.sol";
 
 /**
- * @title Deploy Script
+ * @title Implementation State Test
+ * @dev Used compiler version: solc 0.8.19+commit.7dd6d404
  */
-contract DeployScript is Script, ReflexConstants {
-    /* solhint-disable no-console */
-
+contract ImplementationStateTest is ReflexConstants, Test {
     // =========
     // Constants
     // =========
@@ -46,13 +44,11 @@ contract DeployScript is Script, ReflexConstants {
     MockImplementationModule public exampleModuleImplementation;
     MockImplementationModule public exampleModuleEndpoint;
 
-    // ===
-    // Run
-    // ===
+    // =====
+    // Tests
+    // =====
 
-    function run() external {
-        vm.startBroadcast();
-
+    function testUnitStorageLayout() external {
         installerImplementation = new MockImplementationInstaller(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INSTALLER,
@@ -62,7 +58,7 @@ contract DeployScript is Script, ReflexConstants {
             })
         );
 
-        dispatcher = new MockImplementationDispatcher(msg.sender, address(installerImplementation));
+        dispatcher = new MockImplementationDispatcher(address(this), address(installerImplementation));
 
         installerEndpoint = MockImplementationInstaller(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
 
@@ -79,16 +75,34 @@ contract DeployScript is Script, ReflexConstants {
         moduleAddresses[0] = address(exampleModuleImplementation);
         installerEndpoint.addModules(moduleAddresses);
 
-        vm.stopBroadcast();
-
         exampleModuleEndpoint = MockImplementationModule(dispatcher.getEndpoint(_MODULE_ID_EXAMPLE));
 
-        console2.log("Installer implementation     :", address(installerImplementation));
-        console2.log("Dispatcher                   :", address(dispatcher));
-        console2.log("Installer endpoint           :", address(installerEndpoint));
-        console2.log("Example module implementation:", address(exampleModuleImplementation));
-        console2.log("Example module endpoint      :", address(exampleModuleEndpoint));
+        bytes32 reflexStorageSlot = dispatcher.REFLEX_STORAGE_SLOT();
+        bytes32 implementationStorageSlot = dispatcher.IMPLEMENTATION_STORAGE_SLOT();
 
-        /* solhint-enable no-console */
+        // Assert owner is stored in Reflex storage slot 1.
+
+        /**
+         * | Name                | Type    | Slot                   | Offset | Bytes |
+         * |---------------------|---------|------------------------|--------|-------|
+         * | ReflexStorage.owner | address | RELEX_STORAGE_SLOT + 1 | 1      | 32    |
+         */
+        assertEq(dispatcher.sload(bytes32(uint256(reflexStorageSlot) + 1)), bytes32(uint256(uint160(address(this)))));
+
+        // Assert pending owner is stored in Reflex storage slot 2.
+
+        /**
+         * | Name                       | Type    | Slot                   | Offset | Bytes |
+         * |----------------------------|---------|------------------------|--------|-------|
+         * | ReflexStorage.pendingOwner | address | RELEX_STORAGE_SLOT + 2 | 2      | 32    |
+         */
+        assertEq(dispatcher.sload(bytes32(uint256(reflexStorageSlot) + 2)), bytes32(uint256(uint160(address(0)))));
+
+        installerEndpoint.transferOwnership(address(0xdeadbeef));
+
+        assertEq(
+            dispatcher.sload(bytes32(uint256(reflexStorageSlot) + 2)),
+            bytes32(uint256(uint160(address(0xdeadbeef))))
+        );
     }
 }

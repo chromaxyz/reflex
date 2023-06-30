@@ -12,6 +12,17 @@ import {ReflexConstants} from "./ReflexConstants.sol";
  * @dev Append-only extendable.
  */
 abstract contract ReflexState is IReflexState, ReflexConstants {
+    // =========
+    // Constants
+    // =========
+
+    /**
+     * @dev `bytes32(uint256(keccak256("_REFLEX_STORAGE")) - 1)`
+     * A `-1` offset is added so the preimage of the hash cannot be known,
+     * reducing the chances of a possible attack.
+     */
+    bytes32 internal constant _REFLEX_STORAGE_SLOT = 0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09;
+
     // =======
     // Storage
     // =======
@@ -59,12 +70,7 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
      */
     function _REFLEX_STORAGE() internal pure returns (ReflexStorage storage storage_) {
         assembly {
-            /**
-             * @dev `bytes32(uint256(keccak256("_REFLEX_STORAGE")) - 1)`
-             * A `-1` offset is added so the preimage of the hash cannot be known,
-             * reducing the chances of a possible attack.
-             */
-            storage_.slot := 0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09
+            storage_.slot := _REFLEX_STORAGE_SLOT
         }
     }
 }

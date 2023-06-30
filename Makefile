@@ -53,4 +53,3 @@ slither:; ./scripts/slither-checklist.sh
 
 # Snapshot
 snapshot:; ./scripts/snapshot.sh -p $(PROFILE) -s "test(Unit|Fuzz|Gas)"
-
