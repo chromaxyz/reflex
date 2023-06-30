@@ -117,9 +117,7 @@ abstract contract ReflexBase is IReflexBase, ReflexState {
      * @return bytes Call result.
      */
     function _callInternalModule(uint32 moduleId_, bytes memory input_) internal virtual returns (bytes memory) {
-        // TODO: check existence of module and zero-check
-        // TODO: Check if module is internal.
-
+        // WARNING: It is assumed that `moduleId_` points to a registered internal module and that it is trusted.
         (bool success, bytes memory result) = _REFLEX_STORAGE().modules[moduleId_].delegatecall(input_);
 
         if (!success) _revertBytes(result);
