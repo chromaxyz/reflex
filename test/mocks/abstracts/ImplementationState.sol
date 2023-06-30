@@ -80,6 +80,7 @@ abstract contract ImplementationState is ReflexState {
      * @dev Get the Implementation storage pointer.
      * @return storage_ Pointer to the Implementation storage state.
      */
+    // solhint-disable-next-line func-name-mixedcase
     function _IMPLEMENTATION_STORAGE() internal pure returns (ImplementationStorage storage storage_) {
         assembly {
             storage_.slot := _IMPLEMENTATION_STORAGE_SLOT
@@ -90,6 +91,7 @@ abstract contract ImplementationState is ReflexState {
     // Reflex test stubs
     // =================
 
+    // solhint-disable-next-line func-name-mixedcase
     function REFLEX_STORAGE_SLOT() public pure returns (bytes32) {
         return _REFLEX_STORAGE_SLOT;
     }
@@ -122,6 +124,7 @@ abstract contract ImplementationState is ReflexState {
     // Implementation test stubs
     // =========================
 
+    // solhint-disable-next-line func-name-mixedcase
     function IMPLEMENTATION_STORAGE_SLOT() public pure returns (bytes32) {
         return _IMPLEMENTATION_STORAGE_SLOT;
     }

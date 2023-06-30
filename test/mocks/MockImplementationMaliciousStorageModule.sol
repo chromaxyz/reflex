@@ -17,6 +17,7 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
     /**
      * @dev NOTE: DO NOT RE-USE THE SAME STORAGE SLOT!
      */
+    // solhint-disable-next-line function-name-mixedcase
     bytes32 internal constant _MALICIOUS_IMPLEMENTATION_STORAGE_SLOT =
         0xf8509337ad8a230e85046288664a1364ac578e6500ef88157efd044485b8c20a;
 
@@ -71,6 +72,7 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
     /**
      * @dev NOTE: DO NOT RE-USE THE SAME STORAGE SLOT!
      */
+    // solhint-disable-next-line func-name-mixedcase
     function _MALICIOUS_IMPLEMENTATION_STORAGE()
         internal
         pure
@@ -90,6 +92,7 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
     // Test stubs
     // ==========
 
+    // solhint-disable-next-line func-name-mixedcase
     function MALICIOUS_IMPLEMENTATION_STORAGE_SLOT() public pure returns (bytes32) {
         return _MALICIOUS_IMPLEMENTATION_STORAGE_SLOT;
     }

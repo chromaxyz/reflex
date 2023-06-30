@@ -68,6 +68,7 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
      * @dev Get the Reflex storage pointer.
      * @return storage_ Pointer to the Reflex storage state.
      */
+    // solhint-disable-next-line func-name-mixedcase
     function _REFLEX_STORAGE() internal pure returns (ReflexStorage storage storage_) {
         assembly {
             storage_.slot := _REFLEX_STORAGE_SLOT

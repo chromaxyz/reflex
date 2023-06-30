@@ -32,7 +32,9 @@ contract ImplementationStateTest is ImplementationFixture {
     MockImplementationModule public exampleModuleImplementation;
     MockImplementationModule public exampleModuleEndpoint;
 
+    // solhint-disable-next-line var-name-mixedcase
     bytes32 public REFLEX_STORAGE_SLOT;
+    // solhint-disable-next-line var-name-mixedcase
     bytes32 public IMPLEMENTATION_STORAGE_SLOT;
 
     // =====
