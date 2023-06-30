@@ -217,28 +217,4 @@ abstract contract ImplementationState is ReflexState {
         _IMPLEMENTATION_STORAGE().tokens[tokenB_].symbol = "TKNB";
         _IMPLEMENTATION_STORAGE().tokens[tokenB_].decimals = 18;
     }
-
-    // =========
-    // Utilities
-    // =========
-
-    function sload(bytes32 slot_) public view returns (bytes32 result_) {
-        assembly ("memory-safe") {
-            result_ := sload(slot_)
-        }
-    }
-
-    function sload(bytes32 startSlot_, uint256 slotCount_) public view returns (bytes memory result_) {
-        result_ = new bytes(32 * slotCount_);
-
-        assembly ("memory-safe") {
-            for {
-                let i := 0
-            } lt(i, slotCount_) {
-                i := add(i, 1)
-            } {
-                mstore(add(result_, mul(add(i, 1), 32)), sload(add(startSlot_, i)))
-            }
-        }
-    }
 }
