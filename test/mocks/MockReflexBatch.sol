@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 // Sources
-import {ReflexBase} from "../../src/ReflexBase.sol";
 import {ReflexBatch} from "../../src/periphery/ReflexBatch.sol";
 
 // Fixtures
@@ -64,15 +63,5 @@ contract MockReflexBatch is MockHarness, ReflexBatch, MockReflexModule {
 
         // Force coverage to flag this branch as covered.
         super._afterBatchCall(x_);
-    }
-
-    // =========
-    // Overrides
-    // =========
-
-    function _getEndpointCreationCode(
-        uint32 moduleId_
-    ) internal virtual override(ReflexBase, MockReflexModule) returns (bytes memory) {
-        return super._getEndpointCreationCode(moduleId_);
     }
 }
