@@ -150,7 +150,7 @@ contract ImplementationStateTest is ImplementationFixture {
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq((reads[0]), keccak256(abi.encode(address(exampleModuleEndpoint), uint256(REFLEX_STORAGE_SLOT) + 5)));
         current = vm.load(address(dispatcher), bytes32(reads[0]));
-        assertEq(uint32(uint256(current) & 0xFFFFFFFF), exampleModuleImplementation.moduleId());
+        assertEq(uint32(uint256(current)), exampleModuleImplementation.moduleId());
         assertEq(uint16(uint256(current) >> 32), exampleModuleImplementation.moduleType());
         assertEq(address(uint160(uint256(current) >> 48)), address(exampleModuleImplementation));
     }
@@ -229,7 +229,7 @@ contract ImplementationStateTest is ImplementationFixture {
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq(uint256(reads[0]), uint256(IMPLEMENTATION_STORAGE_SLOT) + 3);
         current = vm.load(address(dispatcher), bytes32(reads[0]));
-        assertEq(uint8(uint256(current) >> (20 * 8)), _castBoolToUInt8(flag_));
+        assertEq(uint8(uint256(current) >> 160), _castBoolToUInt8(flag_));
 
         /**
          * | Name                                     | Type    | Slot                            | Offset | Bytes |
