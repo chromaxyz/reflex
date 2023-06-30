@@ -98,6 +98,43 @@ abstract contract ImplementationState is ReflexState {
         return _IMPLEMENTATION_STORAGE_SLOT;
     }
 
+    function setImplementationState0(bytes32 message_) public {
+        _IMPLEMENTATION_STORAGE().implementationState0 = message_;
+    }
+
+    function getImplementationState0() public view returns (bytes32) {
+        return _IMPLEMENTATION_STORAGE().implementationState0;
+    }
+
+    function setImplementationState(
+        bytes32 message_,
+        uint256 number_,
+        address target_,
+        address tokenA_,
+        address tokenB_,
+        bool flag_
+    ) public {
+        _IMPLEMENTATION_STORAGE().implementationState0 = message_;
+
+        _IMPLEMENTATION_STORAGE().implementationState1 = number_;
+
+        _IMPLEMENTATION_STORAGE().implementationState2 = target_;
+
+        _IMPLEMENTATION_STORAGE().implementationState3 = target_;
+
+        _IMPLEMENTATION_STORAGE().implementationState4 = flag_;
+
+        _IMPLEMENTATION_STORAGE().implementationState5[target_] = number_;
+
+        _IMPLEMENTATION_STORAGE().tokens[tokenA_].name = "Token A";
+        _IMPLEMENTATION_STORAGE().tokens[tokenA_].symbol = "TKNA";
+        _IMPLEMENTATION_STORAGE().tokens[tokenA_].decimals = 18;
+
+        _IMPLEMENTATION_STORAGE().tokens[tokenB_].name = "Token B";
+        _IMPLEMENTATION_STORAGE().tokens[tokenB_].symbol = "TKNB";
+        _IMPLEMENTATION_STORAGE().tokens[tokenB_].decimals = 18;
+    }
+
     // =========
     // Utilities
     // =========

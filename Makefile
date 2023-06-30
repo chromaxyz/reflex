@@ -25,6 +25,7 @@ build:; ./scripts/build.sh -p $(PROFILE)
 # Test
 test:; ./scripts/test.sh -p $(PROFILE) -s "test(Unit|Fuzz)"
 gas:; ./scripts/test.sh -p $(PROFILE) -s "test(Gas)" -v 3
+storage:; ./scripts/test.sh -p $(PROFILE) -s "test(Unit|Fuzz)Storage" -v 2
 
 # Test a single method
 # test-single:; ./scripts/test.sh -p PROFILE_NAME -s TEST_NAME -v VERBOSITY

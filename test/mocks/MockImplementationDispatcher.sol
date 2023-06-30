@@ -20,16 +20,4 @@ contract MockImplementationDispatcher is ReflexDispatcher, ImplementationState {
      * @param installerModule_ Installer module address.
      */
     constructor(address owner_, address installerModule_) ReflexDispatcher(owner_, installerModule_) {}
-
-    // ==========
-    // Test stubs
-    // ==========
-
-    function setImplementationState0(bytes32 message_) public {
-        _IMPLEMENTATION_STORAGE().implementationState0 = message_;
-    }
-
-    function getImplementationState0() public view returns (bytes32) {
-        return _IMPLEMENTATION_STORAGE().implementationState0;
-    }
 }

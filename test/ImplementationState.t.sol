@@ -61,13 +61,15 @@ contract ImplementationStateTest is ImplementationFixture {
         IMPLEMENTATION_STORAGE_SLOT = dispatcher.IMPLEMENTATION_STORAGE_SLOT();
     }
 
-    function testUnitStorageLayout() external {
+    function testFuzzStorageReflexStorageLayout(address target_) external {
+        vm.assume(target_ != address(0));
+
         // Assert owner is stored in Reflex storage slot 1.
 
         /**
          * | Name                | Type    | Slot                   | Offset | Bytes |
          * |---------------------|---------|------------------------|--------|-------|
-         * | ReflexStorage.owner | address | RELEX_STORAGE_SLOT + 1 | 1      | 32    |
+         * | ReflexStorage.owner | address | RELEX_STORAGE_SLOT + 1 | 0      | 32    |
          */
         assertEq(dispatcher.sload(bytes32(uint256(REFLEX_STORAGE_SLOT) + 1)), bytes32(uint256(uint160(address(this)))));
 
@@ -76,15 +78,33 @@ contract ImplementationStateTest is ImplementationFixture {
         /**
          * | Name                       | Type    | Slot                   | Offset | Bytes |
          * |----------------------------|---------|------------------------|--------|-------|
-         * | ReflexStorage.pendingOwner | address | RELEX_STORAGE_SLOT + 2 | 2      | 32    |
+         * | ReflexStorage.pendingOwner | address | RELEX_STORAGE_SLOT + 2 | 0      | 32    |
          */
         assertEq(dispatcher.sload(bytes32(uint256(REFLEX_STORAGE_SLOT) + 2)), bytes32(uint256(uint160(address(0)))));
 
-        installerEndpoint.transferOwnership(address(0x777));
+        installerEndpoint.transferOwnership(address(target_));
 
         assertEq(
             dispatcher.sload(bytes32(uint256(REFLEX_STORAGE_SLOT) + 2)),
-            bytes32(uint256(uint160(address(0x777))))
+            bytes32(uint256(uint160(address(target_))))
         );
+    }
+
+    function testFuzzStorageImplementationStorageLayout(
+        bytes32 message_,
+        uint256 number_,
+        address target_,
+        address tokenA_,
+        address tokenB_,
+        bool flag_
+    ) external {
+        installerEndpoint.setImplementationState(message_, number_, target_, tokenA_, tokenB_, flag_);
+
+        /**
+         * | Name                                     | Type    | Slot                            | Offset | Bytes |
+         * |------------------------------------------|---------|---------------------------------|--------|-------|
+         * | ImplementationState.implementationState0 | address | IMPLEMENTATION_STORAGE_SLOT + 0 | 0      | 32    |
+         */
+        assertEq(dispatcher.sload(bytes32(uint256(IMPLEMENTATION_STORAGE_SLOT) + 0)), bytes32(message_));
     }
 }
