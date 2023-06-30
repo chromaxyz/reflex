@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
-// Vendor
-// solhint-disable-next-line no-console
-import {console2} from "forge-std/console2.sol";
-
 // Interfaces
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
