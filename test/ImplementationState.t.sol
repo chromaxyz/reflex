@@ -80,11 +80,11 @@ contract ImplementationStateTest is ImplementationFixture {
          */
         assertEq(dispatcher.sload(bytes32(uint256(REFLEX_STORAGE_SLOT) + 2)), bytes32(uint256(uint160(address(0)))));
 
-        installerEndpoint.transferOwnership(address(0xdeadbeef));
+        installerEndpoint.transferOwnership(address(0x777));
 
         assertEq(
             dispatcher.sload(bytes32(uint256(REFLEX_STORAGE_SLOT) + 2)),
-            bytes32(uint256(uint160(address(0xdeadbeef))))
+            bytes32(uint256(uint160(address(0x777))))
         );
     }
 }
