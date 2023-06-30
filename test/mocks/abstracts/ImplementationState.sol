@@ -86,33 +86,116 @@ abstract contract ImplementationState is ReflexState {
         }
     }
 
-    // ==========
-    // Test stubs
-    // ==========
+    // =================
+    // Reflex test stubs
+    // =================
 
     function REFLEX_STORAGE_SLOT() public pure returns (bytes32) {
         return _REFLEX_STORAGE_SLOT;
     }
 
-    function IMPLEMENTATION_STORAGE_SLOT() public pure returns (bytes32) {
-        return _IMPLEMENTATION_STORAGE_SLOT;
+    function getReflexState0() public view returns (uint256) {
+        return _REFLEX_STORAGE().reentrancyStatus;
     }
 
-    function setImplementationState0(bytes32 message_) public {
-        _IMPLEMENTATION_STORAGE().implementationState0 = message_;
+    function getReflexState1() public view returns (address) {
+        return _REFLEX_STORAGE().owner;
+    }
+
+    function getReflexState2() public view returns (address) {
+        return _REFLEX_STORAGE().pendingOwner;
+    }
+
+    function getReflexState3(uint32 moduleId_) public view returns (address) {
+        return _REFLEX_STORAGE().modules[moduleId_];
+    }
+
+    function getReflexState4(uint32 moduleId_) public view returns (address) {
+        return _REFLEX_STORAGE().endpoints[moduleId_];
+    }
+
+    function getReflexState5(address endpoint_) public view returns (TrustRelation memory) {
+        return _REFLEX_STORAGE().relations[endpoint_];
+    }
+
+    // =========================
+    // Implementation test stubs
+    // =========================
+
+    function IMPLEMENTATION_STORAGE_SLOT() public pure returns (bytes32) {
+        return _IMPLEMENTATION_STORAGE_SLOT;
     }
 
     function getImplementationState0() public view returns (bytes32) {
         return _IMPLEMENTATION_STORAGE().implementationState0;
     }
 
+    function getImplementationState1() public view returns (uint256) {
+        return _IMPLEMENTATION_STORAGE().implementationState1;
+    }
+
+    function getImplementationState2() public view returns (address) {
+        return _IMPLEMENTATION_STORAGE().implementationState2;
+    }
+
+    function getImplementationState3() public view returns (address) {
+        return _IMPLEMENTATION_STORAGE().implementationState3;
+    }
+
+    function getImplementationState4() public view returns (bool) {
+        return _IMPLEMENTATION_STORAGE().implementationState4;
+    }
+
+    function getImplementationState5(address target_) public view returns (uint256) {
+        return _IMPLEMENTATION_STORAGE().implementationState5[target_];
+    }
+
+    function setImplementationState0(bytes32 message_) public {
+        _IMPLEMENTATION_STORAGE().implementationState0 = message_;
+    }
+
+    function setImplementationState1(uint256 number_) public {
+        _IMPLEMENTATION_STORAGE().implementationState1 = number_;
+    }
+
+    function setImplementationState2(address target_) public {
+        _IMPLEMENTATION_STORAGE().implementationState2 = target_;
+    }
+
+    function setImplementationState3(address target_) public {
+        _IMPLEMENTATION_STORAGE().implementationState3 = target_;
+    }
+
+    function setImplementationState4(bool flag_) public {
+        _IMPLEMENTATION_STORAGE().implementationState4 = flag_;
+    }
+
+    function setImplementationState5(address target_, uint256 number_) public {
+        _IMPLEMENTATION_STORAGE().implementationState5[target_] = number_;
+    }
+
+    function getToken(
+        address token_,
+        address user_
+    )
+        public
+        view
+        returns (string memory name_, string memory symbol_, uint8 decimals_, uint256 totalSupply_, uint256 balanceOf_)
+    {
+        name_ = _IMPLEMENTATION_STORAGE().tokens[token_].name;
+        symbol_ = _IMPLEMENTATION_STORAGE().tokens[token_].symbol;
+        decimals_ = _IMPLEMENTATION_STORAGE().tokens[token_].decimals;
+        totalSupply_ = _IMPLEMENTATION_STORAGE().tokens[token_].totalSupply;
+        balanceOf_ = _IMPLEMENTATION_STORAGE().tokens[token_].balanceOf[user_];
+    }
+
     function setImplementationState(
         bytes32 message_,
         uint256 number_,
         address target_,
+        bool flag_,
         address tokenA_,
-        address tokenB_,
-        bool flag_
+        address tokenB_
     ) public {
         _IMPLEMENTATION_STORAGE().implementationState0 = message_;
 
