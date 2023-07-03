@@ -13,11 +13,6 @@ interface IReflexInstaller is IReflexModule {
     // ======
 
     /**
-     * @notice Thrown when the installer is frozen.
-     */
-    error InstallerFrozen();
-
-    /**
      * @notice Thrown when the module already has been registered.
      */
     error ModuleExistent(uint32 moduleId);

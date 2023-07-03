@@ -82,8 +82,6 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * @inheritdoc IReflexInstaller
      */
     function addModules(address[] calldata moduleAddresses_) public virtual onlyOwner nonReentrant {
-        if (_REFLEX_STORAGE().frozen) revert InstallerFrozen();
-
         uint256 moduleAddressLength = moduleAddresses_.length;
 
         for (uint256 i = 0; i < moduleAddressLength; ) {
@@ -117,8 +115,6 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
      * @inheritdoc IReflexInstaller
      */
     function upgradeModules(address[] calldata moduleAddresses_) public virtual onlyOwner nonReentrant {
-        if (_REFLEX_STORAGE().frozen) revert InstallerFrozen();
-
         uint256 moduleAddressLength = moduleAddresses_.length;
 
         for (uint256 i = 0; i < moduleAddressLength; ) {
@@ -154,15 +150,6 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
                 ++i;
             }
         }
-    }
-
-    /**
-     * @inheritdoc IReflexInstaller
-     */
-    function freezeInstaller() public virtual onlyOwner nonReentrant {
-        _REFLEX_STORAGE().frozen = true;
-
-        emit InstallerFrozen();
     }
 
     // ============
