@@ -72,9 +72,9 @@ contract ReflexDispatcherTest is ReflexFixture {
     function testUnitLogEmittanceUponConstruction() external {
         vm.recordLogs();
 
-        MockReflexDispatcher dispatcher = new MockReflexDispatcher(address(this), address(installerModuleV1));
+        MockReflexDispatcher dispatcher_ = new MockReflexDispatcher(address(this), address(installerModuleV1));
 
-        address installerEndpoint = dispatcher.getEndpoint(_MODULE_ID_INSTALLER);
+        address installerEndpoint_ = dispatcher_.getEndpoint(_MODULE_ID_INSTALLER);
 
         VmSafe.Log[] memory entries = vm.getRecordedLogs();
 
@@ -85,22 +85,22 @@ contract ReflexDispatcherTest is ReflexFixture {
         assertEq(entries[0].topics.length, 3);
         assertEq(entries[0].topics[0], keccak256("EndpointCreated(uint32,address)"));
         assertEq(entries[0].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
-        assertEq(entries[0].topics[2], bytes32(uint256(uint160(address(installerEndpoint)))));
-        assertEq(entries[0].emitter, address(dispatcher));
+        assertEq(entries[0].topics[2], bytes32(uint256(uint160(address(installerEndpoint_)))));
+        assertEq(entries[0].emitter, address(dispatcher_));
 
         // emit OwnershipTransferred(address,address);
         assertEq(entries[1].topics.length, 3);
         assertEq(entries[1].topics[0], keccak256("OwnershipTransferred(address,address)"));
         assertEq(entries[1].topics[1], bytes32(uint256(uint160(address(0)))));
         assertEq(entries[1].topics[2], bytes32(uint256(uint160(address(this)))));
-        assertEq(entries[1].emitter, address(dispatcher));
+        assertEq(entries[1].emitter, address(dispatcher_));
 
         // emit ModuleAdded(uint32,address);
         assertEq(entries[2].topics.length, 3);
         assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint32,address)"));
         assertEq(entries[2].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
         assertEq(entries[2].topics[2], bytes32(uint256(uint160(address(installerModuleV1)))));
-        assertEq(entries[2].emitter, address(dispatcher));
+        assertEq(entries[2].emitter, address(dispatcher_));
     }
 
     function testUnitInstallerConfiguration() external {
