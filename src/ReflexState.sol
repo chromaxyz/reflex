@@ -36,6 +36,10 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
          */
         uint256 reentrancyStatus;
         /**
+         * @dev Installer status.
+         */
+        bool installerFrozen;
+        /**
          * @dev Owner address.
          */
         address owner;

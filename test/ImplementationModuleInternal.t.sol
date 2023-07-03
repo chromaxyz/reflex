@@ -151,7 +151,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         );
     }
 
-    function testFuzzUpgradeInternalModuleAndDeprecate(bytes32 message_) external brutalizeMemory {
+    function testFuzzUpgradeInternalModule(bytes32 message_) external brutalizeMemory {
         // Initialize the storage in the `Dispatcher` context.
 
         singleModuleEndpoint.callInternalModule(

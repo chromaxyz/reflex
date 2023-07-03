@@ -100,7 +100,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
         _verifyModuleConfiguration(singleModuleMaliciousStorageV4, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
     }
 
-    function testFuzzUpgradeSingleEndpointAndDeprecate(bytes32 message_) external brutalizeMemory {
+    function testFuzzUpgradeSingleEndpoint(bytes32 message_) external brutalizeMemory {
         // Initialize the storage in the `Dispatcher` context.
 
         dispatcher.setImplementationState0(message_);

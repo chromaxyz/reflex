@@ -13,6 +13,11 @@ interface IReflexInstaller is IReflexModule {
     // ======
 
     /**
+     * @notice Thrown when the installer is frozen.
+     */
+    error InstallerFrozen();
+
+    /**
      * @notice Thrown when the module already has been registered.
      */
     error ModuleExistent(uint32 moduleId);
@@ -126,4 +131,14 @@ interface IReflexInstaller is IReflexModule {
      * - Cannot be re-entered.
      */
     function upgradeModules(address[] memory moduleAddresses_) external;
+
+    /**
+     * @notice Freeze the installer.
+     *
+     * Requirements:
+     *
+     * - The caller must be the current owner.
+     * - Cannot be re-entered.
+     */
+    function freezeInstaller() external;
 }

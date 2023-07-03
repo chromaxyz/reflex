@@ -186,7 +186,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         _verifyModuleConfiguration(multiModuleMaliciousStorageV4, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
     }
 
-    function testFuzzUpgradeMultiEndpointAndDeprecate(bytes32 message_) external brutalizeMemory {
+    function testFuzzUpgradeMultiEndpoint(bytes32 message_) external brutalizeMemory {
         // Initialize the storage in the `Dispatcher` context.
 
         dispatcher.setImplementationState0(message_);
