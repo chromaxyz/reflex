@@ -51,12 +51,7 @@ contract ReflexDispatcherTest is ReflexFixture {
         vm.assume(moduleId_ != _MODULE_ID_INSTALLER);
 
         MockReflexModule module = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: moduleId_,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: _MODULE_VERSION_INSTALLER_V1,
-                moduleUpgradeable: true
-            })
+            IReflexModule.ModuleSettings({moduleId: moduleId_, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, moduleId_));
@@ -65,12 +60,7 @@ contract ReflexDispatcherTest is ReflexFixture {
 
     function testUnitRevertInvalidInstallerModuleType() external {
         MockReflexModule module = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_ID_INSTALLER,
-                moduleType: _MODULE_TYPE_MULTI_ENDPOINT,
-                moduleVersion: _MODULE_VERSION_INSTALLER_V1,
-                moduleUpgradeable: true
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INSTALLER, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
         vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, _MODULE_TYPE_MULTI_ENDPOINT));
@@ -107,7 +97,7 @@ contract ReflexDispatcherTest is ReflexFixture {
 
         // emit ModuleAdded(uint32,address,uint32);
         assertEq(entries[2].topics.length, 3);
-        assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint32,address,uint32)"));
+        assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint32,address)"));
         assertEq(entries[2].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
         assertEq(entries[2].topics[2], bytes32(uint256(uint160(address(installerModuleV1)))));
         assertEq(entries[2].emitter, address(dispatcher));

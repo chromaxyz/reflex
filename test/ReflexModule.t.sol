@@ -23,13 +23,10 @@ contract ReflexModuleTest is ReflexFixture {
 
     uint32 internal constant _MODULE_VALID_ID = 5;
     uint16 internal constant _MODULE_VALID_TYPE_SINGLE = _MODULE_TYPE_SINGLE_ENDPOINT;
-    uint16 internal constant _MODULE_VALID_VERSION = 1;
-    bool internal constant _MODULE_VALID_UPGRADEABLE = true;
 
     uint32 internal constant _MODULE_INVALID_ID = 0;
     uint16 internal constant _MODULE_INVALID_TYPE = 777;
     uint16 internal constant _MODULE_INVALID_TYPE_ZERO = 0;
-    uint16 internal constant _MODULE_INVALID_VERSION = 0;
 
     // =======
     // Storage
@@ -47,12 +44,7 @@ contract ReflexModuleTest is ReflexFixture {
         super.setUp();
 
         module = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_VALID_ID,
-                moduleType: _MODULE_VALID_TYPE_SINGLE,
-                moduleVersion: _MODULE_VALID_VERSION,
-                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_VALID_ID, moduleType: _MODULE_VALID_TYPE_SINGLE})
         );
 
         reentrancyAttack = new ReentrancyAttack();
@@ -63,13 +55,7 @@ contract ReflexModuleTest is ReflexFixture {
     // =====
 
     function testUnitModuleSettings() external {
-        _verifyModuleConfiguration(
-            module,
-            _MODULE_VALID_ID,
-            _MODULE_VALID_TYPE_SINGLE,
-            _MODULE_VALID_VERSION,
-            _MODULE_VALID_UPGRADEABLE
-        );
+        _verifyModuleConfiguration(module, _MODULE_VALID_ID, _MODULE_VALID_TYPE_SINGLE);
 
         assertEq(module.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
         assertEq(module.isReentrancyStatusLocked(), false);
@@ -78,49 +64,22 @@ contract ReflexModuleTest is ReflexFixture {
 
     function testUnitRevertInvalidModuleIdZeroValue() external {
         vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, _MODULE_INVALID_ID));
-        module = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_INVALID_ID,
-                moduleType: _MODULE_VALID_TYPE_SINGLE,
-                moduleVersion: _MODULE_VALID_VERSION,
-                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE
-            })
+        new MockReflexModule(
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INVALID_ID, moduleType: _MODULE_VALID_TYPE_SINGLE})
         );
     }
 
     function testUnitRevertInvalidModuleTypeZeroValue() external {
         vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, _MODULE_INVALID_TYPE_ZERO));
-        module = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_VALID_ID,
-                moduleType: _MODULE_INVALID_TYPE_ZERO,
-                moduleVersion: _MODULE_VALID_VERSION,
-                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE
-            })
+        new MockReflexModule(
+            IReflexModule.ModuleSettings({moduleId: _MODULE_VALID_ID, moduleType: _MODULE_INVALID_TYPE_ZERO})
         );
     }
 
     function testUnitRevertInvalidModuleTypeOverflowValue() external {
         vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, _MODULE_INVALID_TYPE));
-        module = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_VALID_ID,
-                moduleType: _MODULE_INVALID_TYPE,
-                moduleVersion: _MODULE_VALID_VERSION,
-                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE
-            })
-        );
-    }
-
-    function testUnitRevertInvalidModuleVersionZeroValue() external {
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleVersionInvalid.selector, _MODULE_INVALID_VERSION));
-        module = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_VALID_ID,
-                moduleType: _MODULE_VALID_TYPE_SINGLE,
-                moduleVersion: _MODULE_INVALID_VERSION,
-                moduleUpgradeable: _MODULE_VALID_UPGRADEABLE
-            })
+        new MockReflexModule(
+            IReflexModule.ModuleSettings({moduleId: _MODULE_VALID_ID, moduleType: _MODULE_INVALID_TYPE})
         );
     }
 

@@ -26,10 +26,6 @@ contract GasBenchmarkTest is ReflexConstants {
     // =========
 
     uint32 internal constant _MODULE_SINGLE_ID = 2;
-    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
-    uint16 internal constant _MODULE_SINGLE_VERSION = 1;
-    bool internal constant _MODULE_SINGLE_UPGRADEABLE = true;
-
     uint32 internal constant _MODULE_ID_BATCH = 3;
 
     // =======
@@ -53,32 +49,19 @@ contract GasBenchmarkTest is ReflexConstants {
 
     function setUp() public virtual {
         installer = new MockImplementationInstaller(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_ID_INSTALLER,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: 1,
-                moduleUpgradeable: true
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INSTALLER, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
+
         dispatcher = new MockImplementationDispatcher(address(this), address(installer));
+
         installerEndpoint = MockImplementationInstaller(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
 
         singleModule = new MockImplementationGasModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         batch = new MockImplementationGasBatch(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_ID_BATCH,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_BATCH, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         address[] memory moduleAddresses = new address[](2);

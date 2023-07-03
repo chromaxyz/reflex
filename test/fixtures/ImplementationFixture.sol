@@ -39,12 +39,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness, MockHar
 
     function setUp() public virtual {
         installer = new MockImplementationInstaller(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_ID_INSTALLER,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: 1,
-                moduleUpgradeable: true
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INSTALLER, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
         dispatcher = new MockImplementationDispatcher(address(this), address(installer));
         installerEndpoint = MockImplementationInstaller(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
@@ -54,23 +49,13 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness, MockHar
     // Test stubs
     // ==========
 
-    function _verifyModuleConfiguration(
-        MockReflexModule module_,
-        uint32 moduleId_,
-        uint16 moduleType_,
-        uint32 moduleVersion_,
-        bool moduleUpgradeable_
-    ) internal {
+    function _verifyModuleConfiguration(MockReflexModule module_, uint32 moduleId_, uint16 moduleType_) internal {
         IReflexModule.ModuleSettings memory moduleSettings = module_.moduleSettings();
 
         assertEq(moduleSettings.moduleId, moduleId_);
         assertEq(module_.moduleId(), moduleId_);
         assertEq(moduleSettings.moduleType, moduleType_);
         assertEq(module_.moduleType(), moduleType_);
-        assertEq(moduleSettings.moduleVersion, moduleVersion_);
-        assertEq(module_.moduleVersion(), moduleVersion_);
-        assertEq(moduleSettings.moduleUpgradeable, moduleUpgradeable_);
-        assertEq(module_.moduleUpgradeable(), moduleUpgradeable_);
     }
 
     function _testRevertBytesCustomError(MockReflexModule endpoint_, uint256 code_, string memory message_) internal {

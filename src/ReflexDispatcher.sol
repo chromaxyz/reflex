@@ -73,7 +73,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
 
         emit EndpointCreated(_MODULE_ID_INSTALLER, endpointAddress);
         emit OwnershipTransferred(address(0), owner_);
-        emit ModuleAdded(_MODULE_ID_INSTALLER, installerModule_, IReflexInstaller(installerModule_).moduleVersion());
+        emit ModuleAdded(_MODULE_ID_INSTALLER, installerModule_);
     }
 
     // ============
