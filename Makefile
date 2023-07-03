@@ -33,6 +33,10 @@ storage:; ./scripts/test.sh -p $(PROFILE) -s "test(Unit|Fuzz)Storage" -v 3
 # Where SCOPE (-s) is for example `testUnitMetadata`.
 # Where VERBOSITY (-v) is for example `3`.
 
+# Deploy
+deploy-local:; ./scripts/deploy.sh
+run-local:; anvil --block-time 12 --chain-id 31337
+
 # ABI
 abi:; ./scripts/abi-generate.sh
 

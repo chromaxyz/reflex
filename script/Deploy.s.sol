@@ -83,8 +83,8 @@ contract DeployScript is Script, ReflexConstants {
 
         exampleModuleEndpoint = MockImplementationModule(dispatcher.getEndpoint(_MODULE_ID_EXAMPLE));
 
-        console2.log("Installer implementation     :", address(installerImplementation));
         console2.log("Dispatcher                   :", address(dispatcher));
+        console2.log("Installer implementation     :", address(installerImplementation));
         console2.log("Installer endpoint           :", address(installerEndpoint));
         console2.log("Example module implementation:", address(exampleModuleImplementation));
         console2.log("Example module endpoint      :", address(exampleModuleEndpoint));
