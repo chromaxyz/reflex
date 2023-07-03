@@ -286,14 +286,13 @@ Prior to adding, upgrading or deprecating a module make sure to go through the [
 
 - It is assumed `owner` is not malicious.
 - It is assumed Reflex `implementers` are not malicious.
-- It is assumed Reflex `implementations` are correct and adhere to guidelines and restrictions set out in the [IMPLEMENTERS](IMPLEMENTERS.md) guide, specifically:
+- It is assumed Reflex `implementations` are correct and adhere to the following guidelines and restrictions:
   - `State` layout is consistent across `Modules`.
   - Reflex has multiple application entrypoints via their endpoints. The endpoint address however stays consistent throughout module upgrades.
   - Reflex does not support `payable` modifiers and native token transfers due to reentrancy concerns.
   - The `Dispatcher` and the internal `Endpoint` contracts are not upgradable.
   - The diamond storage struct defined in `ReflexState` is append-only extendable but implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
   - Native ETH is not supported, instead users are required to wrap their ETH into WETH. This is to prevent an entire class of possible re-entrancy bugs.
-  - Implementers **MUST NOT** implement an `implementation()` or preferably a `sentinel()` method in `Modules` as this causes a function selector clash in the `Endpoint`.
   - Implementers **MUST NOT** implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
   - The registration of `Modules` **MUST BE** permissioned, malicious `Modules` can impact the behaviour of the entire application.
   - `Modules` **MUST NOT** define any storage variables or re-use diamond storage slots. In the rare case this is necessary one should use unstructured storage.
@@ -302,6 +301,7 @@ Prior to adding, upgrading or deprecating a module make sure to go through the [
 - It is assumed that functions tagged as `reentrancyAllowed` **CAN** be re-entered and are safe to be re-entered as they are limited by their scope to a trusted set of contracts as defined through the Reflex framework.
 - It is assumed that functions tagged as `nonReentrant` and `nonReadReentrant` **CAN NOT** be re-entered.
 - It is assumed that there **CAN NOT** be a malicious actor who implements a `Module` with storage side-effects in the `Dispatcher`. If this is compromised in any way all state inside of the `Dispatcher` can be manipulated or corrupted.
+- It is assumed that Solidity's ABI decoder remains tolerant of extra trailing data and will continue to ignore it.
 
 ## Acknowledgements
 

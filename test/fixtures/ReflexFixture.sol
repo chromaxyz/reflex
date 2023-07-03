@@ -15,13 +15,19 @@ import {MockReflexDispatcher} from "../mocks/MockReflexDispatcher.sol";
 import {TestHarness} from "./TestHarness.sol";
 import {MockHarness} from "./MockHarness.sol";
 
-// Script
-import {DeployConstants} from "../../script/Deploy.s.sol";
-
 /**
  * @title Reflex Fixture
  */
-abstract contract ReflexFixture is ReflexConstants, DeployConstants, TestHarness, MockHarness {
+abstract contract ReflexFixture is ReflexConstants, TestHarness, MockHarness {
+    // =========
+    // Constants
+    // =========
+
+    uint32 internal constant _MODULE_VERSION_INSTALLER_V1 = 1;
+    uint32 internal constant _MODULE_VERSION_INSTALLER_V2 = 2;
+    bool internal constant _MODULE_UPGRADEABLE_INSTALLER_V1 = true;
+    bool internal constant _MODULE_UPGRADEABLE_INSTALLER_V2 = true;
+
     // =======
     // Storage
     // =======

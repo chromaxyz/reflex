@@ -22,12 +22,11 @@ function log () {
 VERBOSITY_LEVEL=2
 
 # Variables
-while getopts p:s:c:v: flag
+while getopts p:s:v: flag
 do
   case "${flag}" in
     p) PROFILE=${OPTARG};;
     s) SCOPE=${OPTARG};;
-    c) CONTRACT=${OPTARG};;
     v) VERBOSITY_LEVEL=${OPTARG};;
   esac
 done
