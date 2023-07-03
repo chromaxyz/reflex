@@ -66,7 +66,6 @@ The Solidity ecosystem has been using libraries and collections of code snippets
 
 ```
 .
-├── ReflexBase.sol "Extendable `Base`, internal abstraction for `Dispatcher` and `Module`."
 ├── ReflexConstants.sol "Extendable `Constants`: constants used in the framework."
 ├── ReflexDispatcher.sol  "Non-upgradeable `Dispatcher`: dispatcher to module implementations."
 ├── ReflexEndpoint.sol "Non-upgradeable `Endpoint`, internal proxy-like indirection layer."
@@ -74,7 +73,6 @@ The Solidity ecosystem has been using libraries and collections of code snippets
 ├── ReflexModule.sol
 ├── ReflexState.sol "Extendable `State`, state store of the framework inherited in all modules."
 ├── interfaces
-    ├── IReflexBase.sol "Interface for the `Base`."
     ├── IReflexDispatcher.sol "Interface for the `Dispatcher`."
     ├── IReflexEndpoint.sol "Interface for the `Endpoint`."
     ├── IReflexInstaller.sol "Interface for the `Installer`."

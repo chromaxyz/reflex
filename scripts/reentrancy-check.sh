@@ -34,7 +34,7 @@ fi
 log $GREEN "Verifying reentrancy modifier overview from contracts"
 
 # Variables
-CONTRACTS="ReflexBase ReflexConstants ReflexDispatcher ReflexInstaller ReflexModule ReflexEndpoint ReflexState ReflexBatch MockImplementationDispatcher"
+CONTRACTS="ReflexConstants ReflexDispatcher ReflexInstaller ReflexModule ReflexEndpoint ReflexState ReflexBatch"
 FILENAME=reports/REENTRANCY_LAYOUT.md
 TEMP_FILENAME=reports/REENTRANCY_LAYOUT.temp.md
 

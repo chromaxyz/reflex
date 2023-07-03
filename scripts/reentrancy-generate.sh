@@ -27,7 +27,7 @@ fi
 log $GREEN "Creating reentrancy modifier overview from contracts"
 
 # Variables
-CONTRACTS="ReflexBase ReflexConstants ReflexDispatcher ReflexInstaller ReflexModule ReflexEndpoint ReflexState ReflexBatch MockImplementationDispatcher"
+CONTRACTS="ReflexConstants ReflexDispatcher ReflexInstaller ReflexModule ReflexEndpoint ReflexState ReflexBatch"
 FILENAME=reports/REENTRANCY_LAYOUT.md
 
 # Remove previous reentracy layout
