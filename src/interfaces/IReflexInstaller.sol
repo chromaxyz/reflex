@@ -126,14 +126,4 @@ interface IReflexInstaller is IReflexModule {
      * - Cannot be re-entered.
      */
     function upgradeModules(address[] memory moduleAddresses_) external;
-
-    /**
-     * @notice Freeze the installer.
-     *
-     * Requirements:
-     *
-     * - The caller must be the current owner.
-     * - Cannot be re-entered.
-     */
-    function freezeInstaller() external;
 }
