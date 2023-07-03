@@ -506,12 +506,12 @@ contract ReflexInstallerTest is ReflexFixture {
 
     modifier withHooksExpected(uint256 beforeModuleRegistrationCount_, uint256 getEndpointCreationCodeCount_) {
         assertEq(installerEndpoint.beforeModuleRegistrationCounter(), 0);
-        assertEq(installerEndpoint.getEndpointCreationCodeCounter(), 0);
+        assertEq(installerEndpoint.getInstallerEndpointCreationCodeCounter(), 0);
 
         _;
 
         assertEq(installerEndpoint.beforeModuleRegistrationCounter(), beforeModuleRegistrationCount_);
-        assertEq(installerEndpoint.getEndpointCreationCodeCounter(), getEndpointCreationCodeCount_);
+        assertEq(installerEndpoint.getInstallerEndpointCreationCodeCounter(), getEndpointCreationCodeCount_);
     }
 
     function _addModule(IReflexModule module_, bytes4 selector_) internal {

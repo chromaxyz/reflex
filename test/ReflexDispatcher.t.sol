@@ -25,6 +25,8 @@ contract ReflexDispatcherTest is ReflexFixture {
 
     function setUp() public virtual override {
         super.setUp();
+
+        assertEq(dispatcher.getDispatcherEndpointCreationCodeCounter(), 1);
     }
 
     // =====
@@ -76,8 +78,6 @@ contract ReflexDispatcherTest is ReflexFixture {
 
         VmSafe.Log[] memory entries = vm.getRecordedLogs();
 
-        // TODO: now only `indexed` parameters are checked
-
         // 3 logs are expected to be emitted.
         assertEq(entries.length, 3);
 
@@ -95,7 +95,7 @@ contract ReflexDispatcherTest is ReflexFixture {
         assertEq(entries[1].topics[2], bytes32(uint256(uint160(address(this)))));
         assertEq(entries[1].emitter, address(dispatcher));
 
-        // emit ModuleAdded(uint32,address,uint32);
+        // emit ModuleAdded(uint32,address);
         assertEq(entries[2].topics.length, 3);
         assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint32,address)"));
         assertEq(entries[2].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
