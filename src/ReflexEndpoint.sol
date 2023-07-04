@@ -11,6 +11,15 @@ import {IReflexEndpoint} from "./interfaces/IReflexEndpoint.sol";
  * @dev Non-upgradeable, extendable.
  */
 contract ReflexEndpoint is IReflexEndpoint {
+    // =========
+    // Constants
+    // =========
+
+    /**
+     * @dev `bytes4(keccak256("getModuleImplementation(uint32)"))`.
+     */
+    bytes4 private constant _GET_MODULE_IMPLEMENTATION_SELECTOR = 0xe18a7e33;
+
     // ==========
     // Immutables
     // ==========
@@ -37,6 +46,39 @@ contract ReflexEndpoint is IReflexEndpoint {
 
         _moduleId = moduleId_;
         _deployer = msg.sender;
+    }
+
+    // ============
+    // View methods
+    // ============
+
+    /**
+     * @inheritdoc IReflexEndpoint
+     */
+    function implementation() public view virtual returns (address) {
+        (bool success, bytes memory response) = _deployer.staticcall(
+            abi.encodeWithSelector(_GET_MODULE_IMPLEMENTATION_SELECTOR, _moduleId)
+        );
+
+        return success ? abi.decode(response, (address)) : address(0);
+    }
+
+    // ==============
+    // Public methods
+    // ==============
+
+    /**
+     * @inheritdoc IReflexEndpoint
+     */
+    function sentinel() external virtual {
+        // This branch is expected to never be executed.
+        // If this branch ever were to be executed it is expected to be harmless and have no side-effects.
+        // A `delegatecall` to non-contract address 0 yields `true` and is ignored.
+        assembly {
+            if iszero(caller()) {
+                pop(delegatecall(gas(), 0, 0, 0, 0, 0))
+            }
+        }
     }
 
     // ================
