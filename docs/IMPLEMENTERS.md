@@ -282,6 +282,7 @@ Prior to adding, upgrading or deprecating a module make sure to go through the [
 - It is assumed Reflex `implementations` are correct and adhere to the following guidelines and restrictions:
   - `State` layout is consistent across `Modules`.
   - Reflex has multiple application entrypoints via their endpoints. The endpoint address however stays consistent throughout module upgrades.
+  - Implementers **MUST NOT** implement an `implementation()` or a `sentinel()` method in `Modules` as this causes a function selector clash in the `Endpoint`.
   - Reflex does not support `payable` modifiers and native token transfers due to reentrancy concerns.
   - The `Dispatcher` and the internal `Endpoint` contracts are not upgradable.
   - The diamond storage struct defined in `ReflexState` is append-only extendable but implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
