@@ -67,7 +67,6 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
 
         _REFLEX_STORAGE().relations[endpointAddress] = TrustRelation({
             moduleId: _MODULE_ID_INSTALLER,
-            moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
             moduleImplementation: installerModule_
         });
 

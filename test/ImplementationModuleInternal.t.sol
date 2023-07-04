@@ -96,7 +96,6 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         assertEq(relation.moduleId, 0);
         assertEq(relation.moduleImplementation, address(0));
-        assertEq(relation.moduleType, 0);
     }
 
     function testUnitModuleSettings() external {

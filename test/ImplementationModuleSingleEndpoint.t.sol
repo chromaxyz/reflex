@@ -83,7 +83,6 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         assertEq(relation.moduleId, _MODULE_SINGLE_ID);
         assertEq(relation.moduleImplementation, address(singleModuleV1));
-        assertEq(relation.moduleType, _MODULE_SINGLE_TYPE);
     }
 
     function testUnitModuleSettings() external {

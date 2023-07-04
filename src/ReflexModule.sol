@@ -159,7 +159,6 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
 
         _REFLEX_STORAGE().relations[endpointAddress_] = TrustRelation({
             moduleId: moduleId_,
-            moduleType: moduleType_,
             moduleImplementation: moduleImplementation_
         });
 
