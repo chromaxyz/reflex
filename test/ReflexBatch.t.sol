@@ -29,27 +29,19 @@ contract ReflexBatchTest is ReflexFixture {
     // =========
 
     uint32 internal constant _MODULE_ID_BATCH = 2;
-    uint16 internal constant _MODULE_TYPE_BATCH = _MODULE_TYPE_SINGLE_ENDPOINT;
 
-    uint32 internal constant _MODULE_SINGLE_ID = 100;
-    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
-
-    uint32 internal constant _MODULE_MULTI_ID_A = 101;
-    uint16 internal constant _MODULE_MULTI_TYPE_A = _MODULE_TYPE_MULTI_ENDPOINT;
-
-    uint32 internal constant _MODULE_MULTI_ID_B = 102;
-    uint16 internal constant _MODULE_MULTI_TYPE_B = _MODULE_TYPE_MULTI_ENDPOINT;
-
-    string internal constant _MODULE_MULTI_NAME_A = "TOKEN A";
-    string internal constant _MODULE_MULTI_SYMBOL_A = "TKNA";
-    uint8 internal constant _MODULE_MULTI_DECIMALS_A = 18;
-
-    string internal constant _MODULE_MULTI_NAME_B = "TOKEN B";
-    string internal constant _MODULE_MULTI_SYMBOL_B = "TKNB";
-    uint8 internal constant _MODULE_MULTI_DECIMALS_B = 6;
-
+    uint32 internal constant _MODULE_ID_SINGLE = 100;
+    uint32 internal constant _MODULE_ID_MULTI_A = 101;
+    uint32 internal constant _MODULE_ID_MULTI_B = 102;
     uint32 internal constant _MODULE_INTERNAL_ID = 103;
-    uint16 internal constant _MODULE_INTERNAL_TYPE = _MODULE_TYPE_INTERNAL;
+
+    string internal constant _MODULE_NAME_MULTI_A = "TOKEN A";
+    string internal constant _MODULE_SYMBOL_MULTI_A = "TKNA";
+    uint8 internal constant _MODULE_DECIMALS_MULTI_A = 18;
+
+    string internal constant _MODULE_NAME_MULTI_B = "TOKEN B";
+    string internal constant _MODULE_SYMBOL_MULTI_B = "TKNB";
+    uint8 internal constant _MODULE_DECIMALS_MULTI_B = 6;
 
     // =======
     // Storage
@@ -78,19 +70,19 @@ contract ReflexBatchTest is ReflexFixture {
         externalTarget = new ExternalTarget();
 
         batch = new MockReflexBatch(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_BATCH, moduleType: _MODULE_TYPE_BATCH})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_BATCH, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         singleModule = new MockImplementationERC20Hub(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         multiModule = new MockImplementationERC20(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID_A, moduleType: _MODULE_MULTI_TYPE_A})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI_A, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
         internalModule = new MockImplementationModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         address[] memory moduleAddresses = new address[](4);
@@ -102,15 +94,15 @@ contract ReflexBatchTest is ReflexFixture {
 
         batchEndpoint = MockReflexBatch(dispatcher.getEndpoint(_MODULE_ID_BATCH));
 
-        singleModuleEndpoint = MockImplementationERC20Hub(dispatcher.getEndpoint(_MODULE_SINGLE_ID));
+        singleModuleEndpoint = MockImplementationERC20Hub(dispatcher.getEndpoint(_MODULE_ID_SINGLE));
 
         multiModuleEndpoint = MockImplementationERC20(
             singleModuleEndpoint.addERC20(
-                _MODULE_MULTI_ID_A,
-                _MODULE_MULTI_TYPE_A,
-                _MODULE_MULTI_NAME_A,
-                _MODULE_MULTI_SYMBOL_A,
-                _MODULE_MULTI_DECIMALS_A
+                _MODULE_ID_MULTI_A,
+                _MODULE_TYPE_MULTI_ENDPOINT,
+                _MODULE_NAME_MULTI_A,
+                _MODULE_SYMBOL_MULTI_A,
+                _MODULE_DECIMALS_MULTI_A
             )
         );
     }
@@ -497,17 +489,17 @@ contract ReflexBatchTest is ReflexFixture {
             allowFailure: true,
             endpointAddress: address(
                 singleModuleEndpoint.addERC20(
-                    _MODULE_MULTI_ID_B,
-                    _MODULE_MULTI_TYPE_B,
-                    _MODULE_MULTI_NAME_B,
-                    _MODULE_MULTI_SYMBOL_B,
-                    _MODULE_MULTI_DECIMALS_B
+                    _MODULE_ID_MULTI_B,
+                    _MODULE_TYPE_MULTI_ENDPOINT,
+                    _MODULE_NAME_MULTI_B,
+                    _MODULE_SYMBOL_MULTI_B,
+                    _MODULE_DECIMALS_MULTI_B
                 )
             ),
             callData: abi.encodeCall(ImplementationState.getImplementationState0, ())
         });
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexBatch.ModuleNotRegistered.selector, _MODULE_MULTI_ID_B));
+        vm.expectRevert(abi.encodeWithSelector(IReflexBatch.ModuleNotRegistered.selector, _MODULE_ID_MULTI_B));
         batchEndpoint.performBatchCall(actions);
     }
 

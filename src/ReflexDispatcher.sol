@@ -67,7 +67,6 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
 
         _REFLEX_STORAGE().relations[endpointAddress] = TrustRelation({
             moduleId: _MODULE_ID_INSTALLER,
-            moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
             moduleImplementation: installerModule_
         });
 
@@ -110,18 +109,34 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
      */
     // solhint-disable-next-line payable-fallback, no-complex-fallback
     fallback() external virtual {
+        // [calldata (N bytes)][msg.sender (20 bytes)]
+        assembly {
+            // Message length >= (4 + 20)
+            // 4 bytes for selector used to call the endpoint.
+            // 20 bytes for the trailing `msg.sender`.
+            if lt(calldatasize(), 24) {
+                // Store the function selector of `MessageTooShort()`.
+                mstore(0x00, 0x7f5e6be5)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
+        }
+
         uint32 moduleId = _REFLEX_STORAGE().relations[msg.sender].moduleId;
 
-        if (moduleId == 0) revert CallerNotTrusted();
+        // [calldata (N bytes)][msg.sender (20 bytes)]
+        assembly {
+            if iszero(moduleId) {
+                // Store the function selector of `CallerNotTrusted()`.
+                mstore(0x00, 0xe9cda707)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
+        }
 
         address moduleImplementation = _REFLEX_STORAGE().relations[msg.sender].moduleImplementation;
 
         if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[moduleId];
-
-        // Message length >= (4 + 20)
-        // 4 bytes for selector used to call the endpoint.
-        // 20 bytes for the trailing `msg.sender`.
-        if (msg.data.length < 24) revert MessageTooShort();
 
         // [calldata (N bytes)][msg.sender (20 bytes)]
         assembly {

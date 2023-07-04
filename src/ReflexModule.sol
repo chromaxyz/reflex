@@ -64,7 +64,7 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
     modifier nonReadReentrant() virtual {
         // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
         // Any calls to `nonReadReentrant` after this point will fail.
-        if (_reentrancyStatusLocked()) revert ReadOnlyReentrancy();
+        if (_REFLEX_STORAGE().reentrancyStatus == _REENTRANCY_GUARD_LOCKED) revert ReadOnlyReentrancy();
 
         _;
     }
@@ -159,20 +159,10 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
 
         _REFLEX_STORAGE().relations[endpointAddress_] = TrustRelation({
             moduleId: moduleId_,
-            moduleType: moduleType_,
             moduleImplementation: moduleImplementation_
         });
 
         emit EndpointCreated(moduleId_, endpointAddress_);
-    }
-
-    /**
-     * @dev Returns true if the reentrancy guard is currently set to ` _REENTRANCY_GUARD_LOCKED`
-     * which indicates there is a `nonReentrant` function in the call stack.
-     * @return bool Whether the reentrancy guard is locked.
-     */
-    function _reentrancyStatusLocked() internal view virtual returns (bool) {
-        return _REFLEX_STORAGE().reentrancyStatus == _REENTRANCY_GUARD_LOCKED;
     }
 
     /**
@@ -235,13 +225,16 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
      * @param errorMessage_ Error message.
      */
     function _revertBytes(bytes memory errorMessage_) internal pure virtual {
-        if (errorMessage_.length > 0) {
-            assembly ("memory-safe") {
-                revert(add(32, errorMessage_), mload(errorMessage_))
+        assembly ("memory-safe") {
+            if iszero(mload(errorMessage_)) {
+                // Store the function selector of `EmptyError()`.
+                mstore(0x00, 0x4f3d7def)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
             }
-        }
 
-        revert EmptyError();
+            revert(add(32, errorMessage_), mload(errorMessage_))
+        }
     }
 
     // ============

@@ -122,7 +122,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
 
             IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
 
-            // Verify that the module to upgrade exists and is registered.
+            // Verify that the module exists and is registered.
             if (_REFLEX_STORAGE().modules[moduleSettings_.moduleId] == address(0))
                 revert ModuleNonexistent(moduleSettings_.moduleId);
 

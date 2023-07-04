@@ -25,8 +25,8 @@ contract GasBenchmarkTest is ReflexConstants {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_SINGLE_ID = 2;
-    uint32 internal constant _MODULE_ID_BATCH = 3;
+    uint32 internal constant _MODULE_ID_BATCH = 2;
+    uint32 internal constant _MODULE_ID_SINGLE = 100;
 
     // =======
     // Storage
@@ -57,7 +57,7 @@ contract GasBenchmarkTest is ReflexConstants {
         installerEndpoint = MockImplementationInstaller(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
 
         singleModule = new MockImplementationGasModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         batch = new MockImplementationGasBatch(
@@ -69,7 +69,7 @@ contract GasBenchmarkTest is ReflexConstants {
         moduleAddresses[1] = address(batch);
         installerEndpoint.addModules(moduleAddresses);
 
-        singleModuleEndpoint = MockImplementationGasModule(dispatcher.getEndpoint(_MODULE_SINGLE_ID));
+        singleModuleEndpoint = MockImplementationGasModule(dispatcher.getEndpoint(_MODULE_ID_SINGLE));
         batchEndpoint = MockImplementationGasBatch(dispatcher.getEndpoint(_MODULE_ID_BATCH));
     }
 

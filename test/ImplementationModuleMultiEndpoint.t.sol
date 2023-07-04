@@ -24,25 +24,20 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_SINGLE_ID = 100;
-    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
+    uint32 internal constant _MODULE_ID_SINGLE = 100;
+    uint32 internal constant _MODULE_ID_MULTI = 101;
 
-    uint32 internal constant _MODULE_MULTI_ID = 101;
-    uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_ENDPOINT;
+    string internal constant _MODULE_NAME_MULTI_A = "TOKEN A";
+    string internal constant _MODULE_SYMBOL_MULTI_A = "TKNA";
+    uint8 internal constant _MODULE_DECIMALS_MULTI_A = 18;
 
-    string internal constant _MODULE_MULTI_NAME_A = "TOKEN A";
-    string internal constant _MODULE_MULTI_SYMBOL_A = "TKNA";
-    uint8 internal constant _MODULE_MULTI_DECIMALS_A = 18;
+    string internal constant _MODULE_NAME_MULTI_B = "TOKEN B";
+    string internal constant _MODULE_SYMBOL_MULTI_B = "TKNB";
+    uint8 internal constant _MODULE_DECIMALS_MULTI_B = 6;
 
-    string internal constant _MODULE_MULTI_NAME_B = "TOKEN B";
-    string internal constant _MODULE_MULTI_SYMBOL_B = "TKNB";
-    uint8 internal constant _MODULE_MULTI_DECIMALS_B = 6;
-
-    string internal constant _MODULE_MULTI_NAME_C = "TOKEN C";
-    string internal constant _MODULE_MULTI_SYMBOL_C = "TKNC";
-    uint8 internal constant _MODULE_MULTI_DECIMALS_C = 8;
-
-    uint256 internal constant _TOKEN_MINT_AMOUNT = 100e18;
+    string internal constant _MODULE_NAME_MULTI_C = "TOKEN C";
+    string internal constant _MODULE_SYMBOL_MULTI_C = "TKNC";
+    uint8 internal constant _MODULE_DECIMALS_MULTI_C = 8;
 
     // =======
     // Storage
@@ -69,27 +64,27 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         super.setUp();
 
         singleModuleV1 = new MockImplementationERC20Hub(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         singleModuleV2 = new MockImplementationERC20Hub(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         multiModuleV1 = new MockImplementationERC20(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
         multiModuleV2 = new MockImplementationERC20(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
         multiModuleV3 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
         multiModuleMaliciousStorageV4 = new MockImplementationMaliciousStorageModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
         address[] memory moduleAddresses = new address[](2);
@@ -97,35 +92,35 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         moduleAddresses[1] = address(multiModuleV1);
         installerEndpoint.addModules(moduleAddresses);
 
-        singleModuleEndpoint = MockImplementationERC20Hub(dispatcher.getEndpoint(_MODULE_SINGLE_ID));
+        singleModuleEndpoint = MockImplementationERC20Hub(dispatcher.getEndpoint(_MODULE_ID_SINGLE));
 
         multiModuleEndpointA = MockImplementationERC20(
             singleModuleEndpoint.addERC20(
-                _MODULE_MULTI_ID,
-                _MODULE_MULTI_TYPE,
-                _MODULE_MULTI_NAME_A,
-                _MODULE_MULTI_SYMBOL_A,
-                _MODULE_MULTI_DECIMALS_A
+                _MODULE_ID_MULTI,
+                _MODULE_TYPE_MULTI_ENDPOINT,
+                _MODULE_NAME_MULTI_A,
+                _MODULE_SYMBOL_MULTI_A,
+                _MODULE_DECIMALS_MULTI_A
             )
         );
 
         multiModuleEndpointB = MockImplementationERC20(
             singleModuleEndpoint.addERC20(
-                _MODULE_MULTI_ID,
-                _MODULE_MULTI_TYPE,
-                _MODULE_MULTI_NAME_B,
-                _MODULE_MULTI_SYMBOL_B,
-                _MODULE_MULTI_DECIMALS_B
+                _MODULE_ID_MULTI,
+                _MODULE_TYPE_MULTI_ENDPOINT,
+                _MODULE_NAME_MULTI_B,
+                _MODULE_SYMBOL_MULTI_B,
+                _MODULE_DECIMALS_MULTI_B
             )
         );
 
         multiModuleEndpointC = MockImplementationERC20(
             singleModuleEndpoint.addERC20(
-                _MODULE_MULTI_ID,
-                _MODULE_MULTI_TYPE,
-                _MODULE_MULTI_NAME_C,
-                _MODULE_MULTI_SYMBOL_C,
-                _MODULE_MULTI_DECIMALS_C
+                _MODULE_ID_MULTI,
+                _MODULE_TYPE_MULTI_ENDPOINT,
+                _MODULE_NAME_MULTI_C,
+                _MODULE_SYMBOL_MULTI_C,
+                _MODULE_DECIMALS_MULTI_C
             )
         );
     }
@@ -135,11 +130,11 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
     // =====
 
     function testUnitGetModuleImplementation() external {
-        assertEq(dispatcher.getModuleImplementation(_MODULE_MULTI_ID), address(multiModuleV1));
+        assertEq(dispatcher.getModuleImplementation(_MODULE_ID_MULTI), address(multiModuleV1));
     }
 
     function testUnitGetEndpoint() external {
-        assertEq(dispatcher.getEndpoint(_MODULE_MULTI_ID), address(0));
+        assertEq(dispatcher.getEndpoint(_MODULE_ID_MULTI), address(0));
     }
 
     function testUnitGetTrustRelation() external {
@@ -147,43 +142,39 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         IReflexState.TrustRelation memory relationB = dispatcher.getTrustRelation(address(multiModuleEndpointB));
         IReflexState.TrustRelation memory relationC = dispatcher.getTrustRelation(address(multiModuleEndpointC));
 
-        assertEq(relationA.moduleId, _MODULE_MULTI_ID);
-        assertEq(relationB.moduleId, _MODULE_MULTI_ID);
-        assertEq(relationC.moduleId, _MODULE_MULTI_ID);
+        assertEq(relationA.moduleId, _MODULE_ID_MULTI);
+        assertEq(relationB.moduleId, _MODULE_ID_MULTI);
+        assertEq(relationC.moduleId, _MODULE_ID_MULTI);
 
         assertEq(relationA.moduleImplementation, address(0));
         assertEq(relationB.moduleImplementation, address(0));
         assertEq(relationC.moduleImplementation, address(0));
-
-        assertEq(relationA.moduleType, _MODULE_MULTI_TYPE);
-        assertEq(relationB.moduleType, _MODULE_MULTI_TYPE);
-        assertEq(relationC.moduleType, _MODULE_MULTI_TYPE);
     }
 
     function testUnitModuleSettings() external {
         // Endpoints
 
-        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
-        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
 
-        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
 
-        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
 
         // Modules
 
-        _verifyModuleConfiguration(singleModuleV1, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleV1, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
-        _verifyModuleConfiguration(singleModuleV2, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleV2, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
-        _verifyModuleConfiguration(multiModuleV1, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleV1, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
 
-        _verifyModuleConfiguration(multiModuleV2, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleV2, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
 
-        _verifyModuleConfiguration(multiModuleV3, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleV3, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
 
-        _verifyModuleConfiguration(multiModuleMaliciousStorageV4, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleMaliciousStorageV4, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
     }
 
     function testFuzzUpgradeMultiEndpoint(bytes32 message_) external brutalizeMemory {
@@ -193,9 +184,9 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
 
         // Verify multi-endpoint module.
 
-        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
-        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
-        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
+        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
+        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
 
         // Upgrade multi-endpoint module.
 
@@ -203,9 +194,9 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         moduleAddresses[0] = address(multiModuleV2);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
-        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
-        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
+        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
+        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
@@ -217,7 +208,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleV2);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
@@ -229,9 +220,9 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         moduleAddresses[0] = address(multiModuleV3);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
-        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
-        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
+        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
+        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
@@ -242,8 +233,6 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         bytes32 messageA_,
         bytes32 messageB_
     ) external brutalizeMemory {
-        // TODO: verify this is broken if implementation storage is not implemented correctly.
-
         vm.assume(messageA_ != messageB_);
 
         // Initialize and verify the storage in the `Dispatcher` context.
@@ -258,9 +247,9 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         moduleAddresses[0] = address(multiModuleMaliciousStorageV4);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
-        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
-        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
+        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
+        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
 
         // Verify that the malicious module indeed causes a conflict with the one used in the `Dispatcher` context.
 

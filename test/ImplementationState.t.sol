@@ -21,14 +21,14 @@ contract ImplementationStateTest is ImplementationFixture {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_ID_EXAMPLE = 2;
+    uint32 internal constant _MODULE_ID_SINGLE = 100;
 
     // =======
     // Storage
     // =======
 
-    MockImplementationModule public exampleModuleImplementation;
-    MockImplementationModule public exampleModuleEndpoint;
+    MockImplementationModule public singleModuleImplementation;
+    MockImplementationModule public singleModuleEndpoint;
 
     // solhint-disable-next-line var-name-mixedcase
     bytes32 public REFLEX_STORAGE_SLOT;
@@ -42,15 +42,15 @@ contract ImplementationStateTest is ImplementationFixture {
     function setUp() public virtual override {
         super.setUp();
 
-        exampleModuleImplementation = new MockImplementationModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_EXAMPLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
+        singleModuleImplementation = new MockImplementationModule(
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(exampleModuleImplementation);
+        moduleAddresses[0] = address(singleModuleImplementation);
         installerEndpoint.addModules(moduleAddresses);
 
-        exampleModuleEndpoint = MockImplementationModule(dispatcher.getEndpoint(_MODULE_ID_EXAMPLE));
+        singleModuleEndpoint = MockImplementationModule(dispatcher.getEndpoint(_MODULE_ID_SINGLE));
 
         REFLEX_STORAGE_SLOT = dispatcher.REFLEX_STORAGE_SLOT();
         IMPLEMENTATION_STORAGE_SLOT = dispatcher.IMPLEMENTATION_STORAGE_SLOT();
@@ -115,11 +115,11 @@ contract ImplementationStateTest is ImplementationFixture {
          * | ReflexState.modules | address | REFLEX_STORAGE_SLOT + 3 | 0      | 32    |
          */
         vm.record();
-        dispatcher.getReflexState3(_MODULE_ID_EXAMPLE);
+        dispatcher.getReflexState3(_MODULE_ID_SINGLE);
         (reads, ) = vm.accesses(address(dispatcher));
-        assertEq((reads[0]), keccak256(abi.encode(_MODULE_ID_EXAMPLE, uint256(REFLEX_STORAGE_SLOT) + 3)));
+        assertEq((reads[0]), keccak256(abi.encode(_MODULE_ID_SINGLE, uint256(REFLEX_STORAGE_SLOT) + 3)));
         current = vm.load(address(dispatcher), bytes32(reads[0]));
-        assertEq(address(uint160(uint256(current))), address(exampleModuleImplementation));
+        assertEq(address(uint160(uint256(current))), address(singleModuleImplementation));
 
         /**
          * | Name                  | Type    | Slot                    | Offset | Bytes |
@@ -127,11 +127,11 @@ contract ImplementationStateTest is ImplementationFixture {
          * | ReflexState.endpoints | address | REFLEX_STORAGE_SLOT + 4 | 0      | 32    |
          */
         vm.record();
-        dispatcher.getReflexState4(_MODULE_ID_EXAMPLE);
+        dispatcher.getReflexState4(_MODULE_ID_SINGLE);
         (reads, ) = vm.accesses(address(dispatcher));
-        assertEq((reads[0]), keccak256(abi.encode(_MODULE_ID_EXAMPLE, uint256(REFLEX_STORAGE_SLOT) + 4)));
+        assertEq((reads[0]), keccak256(abi.encode(_MODULE_ID_SINGLE, uint256(REFLEX_STORAGE_SLOT) + 4)));
         current = vm.load(address(dispatcher), bytes32(reads[0]));
-        assertEq(address(uint160(uint256(current))), address(exampleModuleEndpoint));
+        assertEq(address(uint160(uint256(current))), address(singleModuleEndpoint));
 
         /**
          * | Name                  | Type    | Slot                    | Offset | Bytes |
@@ -139,13 +139,12 @@ contract ImplementationStateTest is ImplementationFixture {
          * | ReflexState.relations | address | REFLEX_STORAGE_SLOT + 5 | 0      | 32    |
          */
         vm.record();
-        dispatcher.getReflexState5(address(exampleModuleEndpoint));
+        dispatcher.getReflexState5(address(singleModuleEndpoint));
         (reads, ) = vm.accesses(address(dispatcher));
-        assertEq((reads[0]), keccak256(abi.encode(address(exampleModuleEndpoint), uint256(REFLEX_STORAGE_SLOT) + 5)));
+        assertEq((reads[0]), keccak256(abi.encode(address(singleModuleEndpoint), uint256(REFLEX_STORAGE_SLOT) + 5)));
         current = vm.load(address(dispatcher), bytes32(reads[0]));
-        assertEq(uint32(uint256(current)), exampleModuleImplementation.moduleId());
-        assertEq(uint16(uint256(current) >> 32), exampleModuleImplementation.moduleType());
-        assertEq(address(uint160(uint256(current) >> 48)), address(exampleModuleImplementation));
+        assertEq(uint32(uint256(current)), singleModuleImplementation.moduleId());
+        assertEq(address(uint160(uint256(current) >> 32)), address(singleModuleImplementation));
     }
 
     function testFuzzStorageImplementationStorageLayout(

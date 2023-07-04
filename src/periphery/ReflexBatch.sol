@@ -143,6 +143,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         BatchAction calldata action_
     ) internal virtual returns (bool success_, bytes memory returnData_) {
         address endpointAddress = action_.endpointAddress;
+
         uint32 moduleId_ = _REFLEX_STORAGE().relations[endpointAddress].moduleId;
 
         if (moduleId_ == 0) revert ModuleIdInvalid(moduleId_);

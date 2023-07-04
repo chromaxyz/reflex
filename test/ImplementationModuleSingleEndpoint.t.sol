@@ -22,8 +22,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_SINGLE_ID = 100;
-    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
+    uint32 internal constant _MODULE_ID_SINGLE = 100;
 
     // =======
     // Storage
@@ -44,26 +43,26 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
         super.setUp();
 
         singleModuleV1 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         singleModuleV2 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         singleModuleV3 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         singleModuleMaliciousStorageV4 = new MockImplementationMaliciousStorageModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV1);
         installerEndpoint.addModules(moduleAddresses);
 
-        singleModuleEndpoint = MockImplementationModule(dispatcher.getEndpoint(_MODULE_SINGLE_ID));
+        singleModuleEndpoint = MockImplementationModule(dispatcher.getEndpoint(_MODULE_ID_SINGLE));
     }
 
     // =====
@@ -71,33 +70,32 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     // =====
 
     function testUnitGetModuleImplementation() external {
-        assertEq(dispatcher.getModuleImplementation(_MODULE_SINGLE_ID), address(singleModuleV1));
+        assertEq(dispatcher.getModuleImplementation(_MODULE_ID_SINGLE), address(singleModuleV1));
     }
 
     function testUnitGetEndpoint() external {
-        assertEq(dispatcher.getEndpoint(_MODULE_SINGLE_ID), address(singleModuleEndpoint));
+        assertEq(dispatcher.getEndpoint(_MODULE_ID_SINGLE), address(singleModuleEndpoint));
     }
 
     function testUnitGetTrustRelation() external {
         IReflexState.TrustRelation memory relation = dispatcher.getTrustRelation(address(singleModuleEndpoint));
 
-        assertEq(relation.moduleId, _MODULE_SINGLE_ID);
+        assertEq(relation.moduleId, _MODULE_ID_SINGLE);
         assertEq(relation.moduleImplementation, address(singleModuleV1));
-        assertEq(relation.moduleType, _MODULE_SINGLE_TYPE);
     }
 
     function testUnitModuleSettings() external {
         // Endpoints
 
-        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
         // Modules
 
-        _verifyModuleConfiguration(singleModuleV1, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
-        _verifyModuleConfiguration(singleModuleV2, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
-        _verifyModuleConfiguration(singleModuleV3, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleV1, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
+        _verifyModuleConfiguration(singleModuleV2, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
+        _verifyModuleConfiguration(singleModuleV3, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
-        _verifyModuleConfiguration(singleModuleMaliciousStorageV4, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleMaliciousStorageV4, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
     }
 
     function testFuzzUpgradeSingleEndpoint(bytes32 message_) external brutalizeMemory {
@@ -107,7 +105,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         // Verify single-endpoint module.
 
-        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
         // Upgrade single-endpoint module.
 
@@ -115,7 +113,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleV2);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
@@ -127,7 +125,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleV3);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
@@ -148,7 +146,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         assertEq(dispatcher.getImplementationState0(), messageA_);
 
-        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
         // Upgrade single-endpoint module to malicious storage module.
 
@@ -156,7 +154,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleMaliciousStorageV4);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
         // Verify that the malicious module indeed causes a conflict with the one used in the `Dispatcher` context.
 
