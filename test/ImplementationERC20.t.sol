@@ -24,7 +24,6 @@ contract ImplementationERC20Test is ImplementationFixture {
     // =========
 
     uint32 internal constant _MODULE_ID_TOKEN_HUB = 100;
-
     uint32 internal constant _MODULE_ID_TOKEN = 101;
 
     string internal constant _MODULE_NAME_TOKEN = "TOKEN A";

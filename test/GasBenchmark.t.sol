@@ -25,8 +25,8 @@ contract GasBenchmarkTest is ReflexConstants {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_ID_SINGLE = 2;
-    uint32 internal constant _MODULE_ID_BATCH = 3;
+    uint32 internal constant _MODULE_ID_BATCH = 2;
+    uint32 internal constant _MODULE_ID_SINGLE = 100;
 
     // =======
     // Storage
