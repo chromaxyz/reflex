@@ -23,15 +23,13 @@ contract ImplementationERC20Test is ImplementationFixture {
     // Constants
     // =========
 
-    uint32 internal constant _TOKEN_HUB_MODULE_ID = 100;
-    uint16 internal constant _TOKEN_HUB_MODULE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
+    uint32 internal constant _MODULE_ID_TOKEN_HUB = 100;
 
-    uint32 internal constant _TOKEN_MODULE_ID = 101;
-    uint16 internal constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_ENDPOINT;
+    uint32 internal constant _MODULE_ID_TOKEN = 101;
 
-    string public constant TOKEN_MODULE_NAME = "TOKEN A";
-    string public constant TOKEN_MODULE_SYMBOL = "TKNA";
-    uint8 public constant TOKEN_MODULE_DECIMALS = 18;
+    string internal constant _MODULE_NAME_TOKEN = "TOKEN A";
+    string internal constant _MODULE_SYMBOL_TOKEN = "TKNA";
+    uint8 internal constant _MODULE_DECIMALS_TOKEN = 18;
 
     // =======
     // Storage
@@ -51,11 +49,11 @@ contract ImplementationERC20Test is ImplementationFixture {
         super.setUp();
 
         tokenHub = new MockImplementationERC20Hub(
-            IReflexModule.ModuleSettings({moduleId: _TOKEN_HUB_MODULE_ID, moduleType: _TOKEN_HUB_MODULE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_TOKEN_HUB, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         token = new MockImplementationERC20(
-            IReflexModule.ModuleSettings({moduleId: _TOKEN_MODULE_ID, moduleType: _TOKEN_MODULE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_TOKEN, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
         address[] memory moduleAddresses = new address[](2);
@@ -63,15 +61,15 @@ contract ImplementationERC20Test is ImplementationFixture {
         moduleAddresses[1] = address(token);
         installerEndpoint.addModules(moduleAddresses);
 
-        tokenHubEndpoint = MockImplementationERC20Hub(dispatcher.getEndpoint(_TOKEN_HUB_MODULE_ID));
+        tokenHubEndpoint = MockImplementationERC20Hub(dispatcher.getEndpoint(_MODULE_ID_TOKEN_HUB));
 
         tokenEndpoint = MockImplementationERC20(
             tokenHubEndpoint.addERC20(
-                _TOKEN_MODULE_ID,
-                _TOKEN_MODULE_TYPE,
-                TOKEN_MODULE_NAME,
-                TOKEN_MODULE_SYMBOL,
-                TOKEN_MODULE_DECIMALS
+                _MODULE_ID_TOKEN,
+                _MODULE_TYPE_MULTI_ENDPOINT,
+                _MODULE_NAME_TOKEN,
+                _MODULE_SYMBOL_TOKEN,
+                _MODULE_DECIMALS_TOKEN
             )
         );
     }
@@ -81,9 +79,9 @@ contract ImplementationERC20Test is ImplementationFixture {
     // =====
 
     function testUnitMetadata() external {
-        assertEq(tokenEndpoint.name(), TOKEN_MODULE_NAME);
-        assertEq(tokenEndpoint.symbol(), TOKEN_MODULE_SYMBOL);
-        assertEq(tokenEndpoint.decimals(), TOKEN_MODULE_DECIMALS);
+        assertEq(tokenEndpoint.name(), _MODULE_NAME_TOKEN);
+        assertEq(tokenEndpoint.symbol(), _MODULE_SYMBOL_TOKEN);
+        assertEq(tokenEndpoint.decimals(), _MODULE_DECIMALS_TOKEN);
     }
 
     function testFuzzMint(uint256 amount_) external {

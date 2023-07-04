@@ -21,11 +21,8 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_SINGLE_ID = 100;
-    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
-
+    uint32 internal constant _MODULE_ID_SINGLE = 100;
     uint32 internal constant _MODULE_INTERNAL_ID = 101;
-    uint16 internal constant _MODULE_INTERNAL_TYPE = _MODULE_TYPE_INTERNAL;
 
     // =======
     // Storage
@@ -48,27 +45,27 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         super.setUp();
 
         singleModuleV1 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         singleModuleV2 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         internalModuleV1 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         internalModuleV2 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         internalModuleV3 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         internalModuleMaliciousStorageV4 = new MockImplementationMaliciousStorageModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         address[] memory moduleAddresses = new address[](2);
@@ -76,7 +73,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         moduleAddresses[1] = address(internalModuleV1);
         installerEndpoint.addModules(moduleAddresses);
 
-        singleModuleEndpoint = MockImplementationModule(dispatcher.getEndpoint(_MODULE_SINGLE_ID));
+        singleModuleEndpoint = MockImplementationModule(dispatcher.getEndpoint(_MODULE_ID_SINGLE));
     }
 
     // =====
@@ -101,18 +98,18 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     function testUnitModuleSettings() external {
         // Endpoints
 
-        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
         // Modules
 
-        _verifyModuleConfiguration(singleModuleV1, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
-        _verifyModuleConfiguration(singleModuleV2, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleV1, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
+        _verifyModuleConfiguration(singleModuleV2, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
-        _verifyModuleConfiguration(internalModuleV1, _MODULE_INTERNAL_ID, _MODULE_INTERNAL_TYPE);
-        _verifyModuleConfiguration(internalModuleV2, _MODULE_INTERNAL_ID, _MODULE_INTERNAL_TYPE);
-        _verifyModuleConfiguration(internalModuleV3, _MODULE_INTERNAL_ID, _MODULE_INTERNAL_TYPE);
+        _verifyModuleConfiguration(internalModuleV1, _MODULE_INTERNAL_ID, _MODULE_TYPE_INTERNAL);
+        _verifyModuleConfiguration(internalModuleV2, _MODULE_INTERNAL_ID, _MODULE_TYPE_INTERNAL);
+        _verifyModuleConfiguration(internalModuleV3, _MODULE_INTERNAL_ID, _MODULE_TYPE_INTERNAL);
 
-        _verifyModuleConfiguration(internalModuleMaliciousStorageV4, _MODULE_INTERNAL_ID, _MODULE_INTERNAL_TYPE);
+        _verifyModuleConfiguration(internalModuleMaliciousStorageV4, _MODULE_INTERNAL_ID, _MODULE_TYPE_INTERNAL);
     }
 
     function testFuzzCallInternalModule(bytes32 message_) external {
@@ -161,7 +158,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         // Verify internal module.
 
         _verifyModuleConfiguration(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
@@ -175,7 +172,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
@@ -188,7 +185,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleV2);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
         // Upgrade the upgraded internal module.
 
@@ -197,7 +194,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
@@ -218,7 +215,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         assertEq(dispatcher.getImplementationState0(), messageA_);
 
         _verifyModuleConfiguration(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         // Upgrade internal module to malicious storage module.
@@ -228,7 +225,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         installerEndpoint.upgradeModules(moduleAddresses);
 
         _verifyModuleConfiguration(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         // Verify that the malicious module indeed causes a conflict with the one used in the `Dispatcher` context.
