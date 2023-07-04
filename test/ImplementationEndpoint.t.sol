@@ -18,8 +18,7 @@ contract ImplementationEndpointTest is ImplementationFixture {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_SINGLE_ID = 777;
-    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
+    uint32 internal constant _MODULE_ID_SINGLE = 777;
 
     // =======
     // Storage
@@ -42,7 +41,7 @@ contract ImplementationEndpointTest is ImplementationFixture {
 
     function testUnitRevertCreateModuleWithMaliciousEndpoint() external {
         singleModuleV1 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         address[] memory moduleAddresses = new address[](1);
@@ -51,6 +50,6 @@ contract ImplementationEndpointTest is ImplementationFixture {
         vm.expectRevert(IReflexModule.EndpointInvalid.selector);
         installerEndpoint.addModules(moduleAddresses);
 
-        singleModuleEndpoint = MockImplementationModule(dispatcher.getEndpoint(_MODULE_SINGLE_ID));
+        singleModuleEndpoint = MockImplementationModule(dispatcher.getEndpoint(_MODULE_ID_SINGLE));
     }
 }

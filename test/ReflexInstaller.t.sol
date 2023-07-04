@@ -34,14 +34,9 @@ contract ReflexInstallerTest is ReflexFixture {
 
     bytes4 internal constant _VALID = 0;
 
-    uint32 internal constant _MODULE_SINGLE_ID = 100;
-    uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
-
-    uint32 internal constant _MODULE_MULTI_ID = 101;
-    uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_ENDPOINT;
-
-    uint32 internal constant _MODULE_INTERNAL_ID = 102;
-    uint16 internal constant _MODULE_INTERNAL_TYPE = _MODULE_TYPE_INTERNAL;
+    uint32 internal constant _MODULE_ID_SINGLE = 100;
+    uint32 internal constant _MODULE_ID_MULTI = 101;
+    uint32 internal constant _MODULE_ID_INTERNAL = 102;
 
     // =======
     // Storage
@@ -73,39 +68,39 @@ contract ReflexInstallerTest is ReflexFixture {
         );
 
         singleModuleV1 = new MockReflexModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         singleModuleV2 = new MockReflexModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         singleModuleV3 = new MockReflexModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         multiModuleV1 = new MockReflexModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
         multiModuleV2 = new MockReflexModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
         multiModuleV3 = new MockReflexModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
         internalModuleV1 = new MockReflexModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INTERNAL, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         internalModuleV2 = new MockReflexModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INTERNAL, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         internalModuleV3 = new MockReflexModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INTERNAL, moduleType: _MODULE_TYPE_INTERNAL})
         );
     }
 
@@ -114,19 +109,19 @@ contract ReflexInstallerTest is ReflexFixture {
     // =====
 
     function testUnitModuleSettings() external {
-        _verifyModuleConfiguration(installerModuleV2, _MODULE_ID_INSTALLER, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(installerModuleV2, _MODULE_ID_INSTALLER, _MODULE_TYPE_SINGLE_ENDPOINT);
 
-        _verifyModuleConfiguration(singleModuleV1, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
-        _verifyModuleConfiguration(singleModuleV2, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
-        _verifyModuleConfiguration(singleModuleV3, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleV1, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
+        _verifyModuleConfiguration(singleModuleV2, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
+        _verifyModuleConfiguration(singleModuleV3, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
-        _verifyModuleConfiguration(multiModuleV1, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
-        _verifyModuleConfiguration(multiModuleV2, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
-        _verifyModuleConfiguration(multiModuleV3, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleV1, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
+        _verifyModuleConfiguration(multiModuleV2, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
+        _verifyModuleConfiguration(multiModuleV3, _MODULE_ID_MULTI, _MODULE_TYPE_MULTI_ENDPOINT);
 
-        _verifyModuleConfiguration(internalModuleV1, _MODULE_INTERNAL_ID, _MODULE_INTERNAL_TYPE);
-        _verifyModuleConfiguration(internalModuleV2, _MODULE_INTERNAL_ID, _MODULE_INTERNAL_TYPE);
-        _verifyModuleConfiguration(internalModuleV3, _MODULE_INTERNAL_ID, _MODULE_INTERNAL_TYPE);
+        _verifyModuleConfiguration(internalModuleV1, _MODULE_ID_INTERNAL, _MODULE_TYPE_INTERNAL);
+        _verifyModuleConfiguration(internalModuleV2, _MODULE_ID_INTERNAL, _MODULE_TYPE_INTERNAL);
+        _verifyModuleConfiguration(internalModuleV3, _MODULE_ID_INTERNAL, _MODULE_TYPE_INTERNAL);
     }
 
     // ===============
@@ -285,7 +280,9 @@ contract ReflexInstallerTest is ReflexFixture {
     function testUnitRevertUpgradeModulesModuleNonexistent() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(
-            new MockReflexModule(IReflexModule.ModuleSettings({moduleId: 777, moduleType: _MODULE_SINGLE_TYPE}))
+            new MockReflexModule(
+                IReflexModule.ModuleSettings({moduleId: 777, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
+            )
         );
 
         vm.expectRevert(abi.encodeWithSelector(IReflexInstaller.ModuleNonexistent.selector, 777));
@@ -315,8 +312,8 @@ contract ReflexInstallerTest is ReflexFixture {
     function testUnitAddModulesSingleEndpoint() public withHooksExpected(1, 1) {
         _addModule(singleModuleV1, _VALID);
 
-        address singleModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_SINGLE_ID);
-        address singleModuleEndpointV1 = dispatcher.getEndpoint(_MODULE_SINGLE_ID);
+        address singleModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_ID_SINGLE);
+        address singleModuleEndpointV1 = dispatcher.getEndpoint(_MODULE_ID_SINGLE);
 
         assertEq(singleModuleImplementationV1, address(singleModuleV1));
         assertTrue(singleModuleEndpointV1 != address(0));
@@ -331,13 +328,13 @@ contract ReflexInstallerTest is ReflexFixture {
     function testUnitUpgradeModulesSingleEndpoint() external withHooksExpected(2, 1) {
         _addModule(singleModuleV1, _VALID);
 
-        address singleModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_SINGLE_ID);
-        address singleModuleEndpointV1 = dispatcher.getEndpoint(_MODULE_SINGLE_ID);
+        address singleModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_ID_SINGLE);
+        address singleModuleEndpointV1 = dispatcher.getEndpoint(_MODULE_ID_SINGLE);
 
         _upgradeModule(singleModuleV2, _VALID);
 
-        address singleModuleImplementationV2 = dispatcher.getModuleImplementation(_MODULE_SINGLE_ID);
-        address singleModuleEndpointV2 = dispatcher.getEndpoint(_MODULE_SINGLE_ID);
+        address singleModuleImplementationV2 = dispatcher.getModuleImplementation(_MODULE_ID_SINGLE);
+        address singleModuleEndpointV2 = dispatcher.getEndpoint(_MODULE_ID_SINGLE);
 
         assertEq(singleModuleEndpointV1, singleModuleEndpointV2);
         assertTrue(singleModuleImplementationV1 != singleModuleImplementationV2);
@@ -349,7 +346,7 @@ contract ReflexInstallerTest is ReflexFixture {
         _upgradeModule(singleModuleV2, _VALID);
 
         MockReflexModule singleModuleTypeInvalid = new MockReflexModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_MULTI_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
         _upgradeModule(singleModuleTypeInvalid, IReflexModule.ModuleTypeInvalid.selector);
@@ -362,8 +359,8 @@ contract ReflexInstallerTest is ReflexFixture {
     function testUnitAddModulesMultiEndpoint() external withHooksExpected(1, 0) {
         _addModule(multiModuleV1, _VALID);
 
-        address multiModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_MULTI_ID);
-        address multiModuleEndpointV1 = dispatcher.getEndpoint(_MODULE_MULTI_ID);
+        address multiModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_ID_MULTI);
+        address multiModuleEndpointV1 = dispatcher.getEndpoint(_MODULE_ID_MULTI);
 
         assertEq(multiModuleImplementationV1, address(multiModuleV1));
         assertEq(multiModuleEndpointV1, address(0));
@@ -378,12 +375,12 @@ contract ReflexInstallerTest is ReflexFixture {
     function testUnitUpgradeModulesMultiEndpoint() external withHooksExpected(2, 0) {
         _addModule(multiModuleV1, _VALID);
 
-        address multiModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_MULTI_ID);
+        address multiModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_ID_MULTI);
 
         _upgradeModule(multiModuleV2, _VALID);
 
-        address multiModuleImplementationV2 = dispatcher.getModuleImplementation(_MODULE_MULTI_ID);
-        address multiModuleEndpointV2 = dispatcher.getEndpoint(_MODULE_MULTI_ID);
+        address multiModuleImplementationV2 = dispatcher.getModuleImplementation(_MODULE_ID_MULTI);
+        address multiModuleEndpointV2 = dispatcher.getEndpoint(_MODULE_ID_MULTI);
 
         assertTrue(multiModuleImplementationV1 != multiModuleImplementationV2);
         assertEq(multiModuleEndpointV2, address(0));
@@ -395,7 +392,7 @@ contract ReflexInstallerTest is ReflexFixture {
         _upgradeModule(multiModuleV2, _VALID);
 
         MockReflexModule multiModuleTypeInvalid = new MockReflexModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_INTERNAL_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         _upgradeModule(multiModuleTypeInvalid, IReflexModule.ModuleTypeInvalid.selector);
@@ -408,8 +405,8 @@ contract ReflexInstallerTest is ReflexFixture {
     function testUnitAddModulesInternal() external withHooksExpected(1, 0) {
         _addModule(internalModuleV1, _VALID);
 
-        address internalModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_INTERNAL_ID);
-        address internalModuleEndpointV1 = dispatcher.getEndpoint(_MODULE_INTERNAL_ID);
+        address internalModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_ID_INTERNAL);
+        address internalModuleEndpointV1 = dispatcher.getEndpoint(_MODULE_ID_INTERNAL);
 
         assertEq(internalModuleImplementationV1, address(internalModuleV1));
         assertEq(internalModuleEndpointV1, address(0));
@@ -424,12 +421,12 @@ contract ReflexInstallerTest is ReflexFixture {
     function testUnitUpgradeModulesInternal() external withHooksExpected(2, 0) {
         _addModule(internalModuleV1, _VALID);
 
-        address internalModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_INTERNAL_ID);
+        address internalModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_ID_INTERNAL);
 
         _upgradeModule(internalModuleV2, _VALID);
 
-        address internalModuleImplementationV2 = dispatcher.getModuleImplementation(_MODULE_INTERNAL_ID);
-        address internalModuleEndpointV2 = dispatcher.getEndpoint(_MODULE_INTERNAL_ID);
+        address internalModuleImplementationV2 = dispatcher.getModuleImplementation(_MODULE_ID_INTERNAL);
+        address internalModuleEndpointV2 = dispatcher.getEndpoint(_MODULE_ID_INTERNAL);
 
         assertTrue(internalModuleImplementationV1 != internalModuleImplementationV2);
         assertEq(internalModuleEndpointV2, address(0));
@@ -441,7 +438,7 @@ contract ReflexInstallerTest is ReflexFixture {
         _upgradeModule(internalModuleV2, _VALID);
 
         MockReflexModule internalModuleTypeInvalid = new MockReflexModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_SINGLE_TYPE})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INTERNAL, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         _upgradeModule(internalModuleTypeInvalid, IReflexModule.ModuleTypeInvalid.selector);
@@ -466,13 +463,13 @@ contract ReflexInstallerTest is ReflexFixture {
 
         _addModule(singleModuleV1, _VALID);
 
-        address singleModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_SINGLE_ID);
-        address singleModuleEndpointV1 = dispatcher.getEndpoint(_MODULE_SINGLE_ID);
+        address singleModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_ID_SINGLE);
+        address singleModuleEndpointV1 = dispatcher.getEndpoint(_MODULE_ID_SINGLE);
 
         _upgradeModule(singleModuleV2, _VALID);
 
-        address singleModuleImplementationV2 = dispatcher.getModuleImplementation(_MODULE_SINGLE_ID);
-        address singleModuleEndpointV2 = dispatcher.getEndpoint(_MODULE_SINGLE_ID);
+        address singleModuleImplementationV2 = dispatcher.getModuleImplementation(_MODULE_ID_SINGLE);
+        address singleModuleEndpointV2 = dispatcher.getEndpoint(_MODULE_ID_SINGLE);
 
         assertEq(singleModuleEndpointV1, singleModuleEndpointV2);
         assertTrue(singleModuleImplementationV1 != singleModuleImplementationV2);
@@ -482,12 +479,12 @@ contract ReflexInstallerTest is ReflexFixture {
 
         _addModule(multiModuleV1, _VALID);
 
-        address multiModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_MULTI_ID);
+        address multiModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_ID_MULTI);
 
         _upgradeModule(multiModuleV2, _VALID);
 
-        address multiModuleImplementationV2 = dispatcher.getModuleImplementation(_MODULE_MULTI_ID);
-        address multiModuleEndpointV2 = dispatcher.getEndpoint(_MODULE_MULTI_ID);
+        address multiModuleImplementationV2 = dispatcher.getModuleImplementation(_MODULE_ID_MULTI);
+        address multiModuleEndpointV2 = dispatcher.getEndpoint(_MODULE_ID_MULTI);
 
         assertTrue(multiModuleImplementationV1 != multiModuleImplementationV2);
         assertEq(multiModuleEndpointV2, address(0));
@@ -497,12 +494,12 @@ contract ReflexInstallerTest is ReflexFixture {
 
         _addModule(internalModuleV1, _VALID);
 
-        address internalModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_INTERNAL_ID);
+        address internalModuleImplementationV1 = dispatcher.getModuleImplementation(_MODULE_ID_INTERNAL);
 
         _upgradeModule(internalModuleV2, _VALID);
 
-        address internalModuleImplementationV2 = dispatcher.getModuleImplementation(_MODULE_INTERNAL_ID);
-        address internalModuleEndpointV2 = dispatcher.getEndpoint(_MODULE_INTERNAL_ID);
+        address internalModuleImplementationV2 = dispatcher.getModuleImplementation(_MODULE_ID_INTERNAL);
+        address internalModuleEndpointV2 = dispatcher.getEndpoint(_MODULE_ID_INTERNAL);
 
         assertTrue(internalModuleImplementationV1 != internalModuleImplementationV2);
         assertEq(internalModuleEndpointV2, address(0));
