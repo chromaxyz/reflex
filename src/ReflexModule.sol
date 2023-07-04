@@ -235,13 +235,16 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
      * @param errorMessage_ Error message.
      */
     function _revertBytes(bytes memory errorMessage_) internal pure virtual {
-        if (errorMessage_.length > 0) {
-            assembly ("memory-safe") {
-                revert(add(32, errorMessage_), mload(errorMessage_))
+        assembly ("memory-safe") {
+            if iszero(mload(errorMessage_)) {
+                // Store the function selector of `EmptyError()`.
+                mstore(0x00, 0x4f3d7def)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
             }
-        }
 
-        revert EmptyError();
+            revert(add(32, errorMessage_), mload(errorMessage_))
+        }
     }
 
     // ============

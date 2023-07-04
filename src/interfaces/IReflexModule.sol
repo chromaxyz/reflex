@@ -70,7 +70,7 @@ interface IReflexModule is IReflexState {
     /**
      * @notice Module settings.
      *
-     * @dev Packed slot: 4 + 2 + 4 + 1 + 1 = 12 bytes out of 32 bytes.
+     * @dev Packed slot: 4 + 2 = 6 bytes out of 32 bytes. // TODO: change sizes?
      */
     struct ModuleSettings {
         /**

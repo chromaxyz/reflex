@@ -118,13 +118,18 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
 
         if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[moduleId];
 
-        // Message length >= (4 + 20)
-        // 4 bytes for selector used to call the endpoint.
-        // 20 bytes for the trailing `msg.sender`.
-        if (msg.data.length < 24) revert MessageTooShort();
-
         // [calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
+            // Message length >= (4 + 20)
+            // 4 bytes for selector used to call the endpoint.
+            // 20 bytes for the trailing `msg.sender`.
+            if lt(calldatasize(), 24) {
+                // Store the function selector of `MessageTooShort()`.
+                mstore(0x00, 0x7f5e6be5)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
+
             // We take full control of memory in this inline assembly block because it will not return to Solidity code.
 
             // Copy `msg.data` into memory, starting at position `0`.
