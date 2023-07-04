@@ -30,23 +30,15 @@ contract ReflexBatchTest is ReflexFixture {
 
     uint32 internal constant _MODULE_ID_BATCH = 2;
     uint16 internal constant _MODULE_TYPE_BATCH = _MODULE_TYPE_SINGLE_ENDPOINT;
-    uint16 internal constant _MODULE_VERSION_BATCH = 1;
-    bool internal constant _MODULE_UPGRADEABLE_BATCH = true;
 
     uint32 internal constant _MODULE_SINGLE_ID = 100;
     uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
-    uint16 internal constant _MODULE_SINGLE_VERSION = 1;
-    bool internal constant _MODULE_SINGLE_UPGRADEABLE = true;
 
     uint32 internal constant _MODULE_MULTI_ID_A = 101;
     uint16 internal constant _MODULE_MULTI_TYPE_A = _MODULE_TYPE_MULTI_ENDPOINT;
-    uint16 internal constant _MODULE_MULTI_VERSION_A = 1;
-    bool internal constant _MODULE_MULTI_UPGRADEABLE_A = true;
 
     uint32 internal constant _MODULE_MULTI_ID_B = 102;
     uint16 internal constant _MODULE_MULTI_TYPE_B = _MODULE_TYPE_MULTI_ENDPOINT;
-    uint16 internal constant _MODULE_MULTI_VERSION_B = 1;
-    bool internal constant _MODULE_MULTI_UPGRADEABLE_B = true;
 
     string internal constant _MODULE_MULTI_NAME_A = "TOKEN A";
     string internal constant _MODULE_MULTI_SYMBOL_A = "TKNA";
@@ -58,8 +50,6 @@ contract ReflexBatchTest is ReflexFixture {
 
     uint32 internal constant _MODULE_INTERNAL_ID = 103;
     uint16 internal constant _MODULE_INTERNAL_TYPE = _MODULE_TYPE_INTERNAL;
-    uint16 internal constant _MODULE_INTERNAL_VERSION = 1;
-    bool internal constant _MODULE_INTERNAL_UPGRADEABLE = true;
 
     // =======
     // Storage
@@ -88,39 +78,19 @@ contract ReflexBatchTest is ReflexFixture {
         externalTarget = new ExternalTarget();
 
         batch = new MockReflexBatch(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_ID_BATCH,
-                moduleType: _MODULE_TYPE_BATCH,
-                moduleVersion: _MODULE_VERSION_BATCH,
-                moduleUpgradeable: _MODULE_UPGRADEABLE_BATCH
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_BATCH, moduleType: _MODULE_TYPE_BATCH})
         );
 
         singleModule = new MockImplementationERC20Hub(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
         );
 
         multiModule = new MockImplementationERC20(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_MULTI_ID_A,
-                moduleType: _MODULE_MULTI_TYPE_A,
-                moduleVersion: _MODULE_MULTI_VERSION_A,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_A
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID_A, moduleType: _MODULE_MULTI_TYPE_A})
         );
 
         internalModule = new MockImplementationModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_INTERNAL_ID,
-                moduleType: _MODULE_INTERNAL_TYPE,
-                moduleVersion: _MODULE_INTERNAL_VERSION,
-                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
         );
 
         address[] memory moduleAddresses = new address[](4);

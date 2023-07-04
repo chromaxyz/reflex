@@ -29,16 +29,6 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
      */
     uint16 internal immutable _moduleType;
 
-    /**
-     * @dev Module version.
-     */
-    uint32 internal immutable _moduleVersion;
-
-    /**
-     * @dev Whether the module is upgradeable.
-     */
-    bool internal immutable _moduleUpgradeable;
-
     // =========
     // Modifiers
     // =========
@@ -99,12 +89,9 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
         if (moduleSettings_.moduleId == 0) revert ModuleIdInvalid(moduleSettings_.moduleId);
         if (moduleSettings_.moduleType == 0 || moduleSettings_.moduleType > _MODULE_TYPE_INTERNAL)
             revert ModuleTypeInvalid(moduleSettings_.moduleType);
-        if (moduleSettings_.moduleVersion == 0) revert ModuleVersionInvalid(moduleSettings_.moduleVersion);
 
         _moduleId = moduleSettings_.moduleId;
         _moduleType = moduleSettings_.moduleType;
-        _moduleVersion = moduleSettings_.moduleVersion;
-        _moduleUpgradeable = moduleSettings_.moduleUpgradeable;
     }
 
     // ============
@@ -128,28 +115,8 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
     /**
      * @inheritdoc IReflexModule
      */
-    function moduleVersion() public view virtual returns (uint32) {
-        return _moduleVersion;
-    }
-
-    /**
-     * @inheritdoc IReflexModule
-     */
-    function moduleUpgradeable() public view virtual returns (bool) {
-        return _moduleUpgradeable;
-    }
-
-    /**
-     * @inheritdoc IReflexModule
-     */
     function moduleSettings() public view virtual returns (ModuleSettings memory) {
-        return
-            ModuleSettings({
-                moduleId: _moduleId,
-                moduleType: _moduleType,
-                moduleVersion: _moduleVersion,
-                moduleUpgradeable: _moduleUpgradeable
-            });
+        return ModuleSettings({moduleId: _moduleId, moduleType: _moduleType});
     }
 
     // ================

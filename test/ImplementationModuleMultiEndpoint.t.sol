@@ -26,21 +26,9 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
 
     uint32 internal constant _MODULE_SINGLE_ID = 100;
     uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
-    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V1 = true;
-    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V2 = false;
 
     uint32 internal constant _MODULE_MULTI_ID = 101;
     uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_ENDPOINT;
-    uint16 internal constant _MODULE_MULTI_VERSION_V1 = 1;
-    uint16 internal constant _MODULE_MULTI_VERSION_V2 = 2;
-    uint16 internal constant _MODULE_MULTI_VERSION_V3 = 3;
-    uint16 internal constant _MODULE_MULTI_VERSION_V4 = 4;
-    bool internal constant _MODULE_MULTI_UPGRADEABLE_V1 = true;
-    bool internal constant _MODULE_MULTI_UPGRADEABLE_V2 = true;
-    bool internal constant _MODULE_MULTI_UPGRADEABLE_V3 = false;
-    bool internal constant _MODULE_MULTI_UPGRADEABLE_V4 = true;
 
     string internal constant _MODULE_MULTI_NAME_A = "TOKEN A";
     string internal constant _MODULE_MULTI_SYMBOL_A = "TKNA";
@@ -67,8 +55,7 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
     MockImplementationERC20 public multiModuleV1;
     MockImplementationERC20 public multiModuleV2;
     MockImplementationModule public multiModuleV3;
-    MockImplementationMaliciousStorageModule public multiModuleMaliciousStorageV3;
-    MockImplementationERC20 public multiModuleV4;
+    MockImplementationMaliciousStorageModule public multiModuleMaliciousStorageV4;
 
     MockImplementationERC20 public multiModuleEndpointA;
     MockImplementationERC20 public multiModuleEndpointB;
@@ -82,66 +69,27 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         super.setUp();
 
         singleModuleV1 = new MockImplementationERC20Hub(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION_V1,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V1
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
         );
 
         singleModuleV2 = new MockImplementationERC20Hub(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION_V2,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V2
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
         );
 
         multiModuleV1 = new MockImplementationERC20(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_MULTI_ID,
-                moduleType: _MODULE_MULTI_TYPE,
-                moduleVersion: _MODULE_MULTI_VERSION_V1,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V1
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
         );
 
         multiModuleV2 = new MockImplementationERC20(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_MULTI_ID,
-                moduleType: _MODULE_MULTI_TYPE,
-                moduleVersion: _MODULE_MULTI_VERSION_V2,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V2
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
         );
 
         multiModuleV3 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_MULTI_ID,
-                moduleType: _MODULE_MULTI_TYPE,
-                moduleVersion: _MODULE_MULTI_VERSION_V3,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V3
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
         );
 
-        multiModuleMaliciousStorageV3 = new MockImplementationMaliciousStorageModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_MULTI_ID,
-                moduleType: _MODULE_MULTI_TYPE,
-                moduleVersion: _MODULE_MULTI_VERSION_V3,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V3
-            })
-        );
-
-        multiModuleV4 = new MockImplementationERC20(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_MULTI_ID,
-                moduleType: _MODULE_MULTI_TYPE,
-                moduleVersion: _MODULE_MULTI_VERSION_V4,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V4
-            })
+        multiModuleMaliciousStorageV4 = new MockImplementationMaliciousStorageModule(
+            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
         );
 
         address[] memory moduleAddresses = new address[](2);
@@ -215,127 +163,39 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
     function testUnitModuleSettings() external {
         // Endpoints
 
-        _verifyModuleConfiguration(
-            singleModuleEndpoint,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1
-        );
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
 
-        _verifyModuleConfiguration(
-            multiModuleEndpointA,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V1,
-            _MODULE_MULTI_UPGRADEABLE_V1
-        );
+        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
 
-        _verifyModuleConfiguration(
-            multiModuleEndpointB,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V1,
-            _MODULE_MULTI_UPGRADEABLE_V1
-        );
+        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
 
-        _verifyModuleConfiguration(
-            multiModuleEndpointC,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V1,
-            _MODULE_MULTI_UPGRADEABLE_V1
-        );
+        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
 
         // Modules
 
-        _verifyModuleConfiguration(
-            singleModuleV1,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1
-        );
+        _verifyModuleConfiguration(singleModuleV1, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
 
-        _verifyModuleConfiguration(
-            singleModuleV2,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V2,
-            _MODULE_SINGLE_UPGRADEABLE_V2
-        );
+        _verifyModuleConfiguration(singleModuleV2, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
 
-        _verifyModuleConfiguration(
-            multiModuleV1,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V1,
-            _MODULE_MULTI_UPGRADEABLE_V1
-        );
+        _verifyModuleConfiguration(multiModuleV1, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
 
-        _verifyModuleConfiguration(
-            multiModuleV2,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V2,
-            _MODULE_MULTI_UPGRADEABLE_V2
-        );
+        _verifyModuleConfiguration(multiModuleV2, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
 
-        _verifyModuleConfiguration(
-            multiModuleV3,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V3,
-            _MODULE_MULTI_UPGRADEABLE_V3
-        );
+        _verifyModuleConfiguration(multiModuleV3, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
 
-        _verifyModuleConfiguration(
-            multiModuleMaliciousStorageV3,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V3,
-            _MODULE_MULTI_UPGRADEABLE_V3
-        );
-
-        _verifyModuleConfiguration(
-            multiModuleV4,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V4,
-            _MODULE_MULTI_UPGRADEABLE_V4
-        );
+        _verifyModuleConfiguration(multiModuleMaliciousStorageV4, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
     }
 
-    function testFuzzUpgradeMultiEndpointAndDeprecate(bytes32 message_) external brutalizeMemory {
+    function testFuzzUpgradeMultiEndpoint(bytes32 message_) external brutalizeMemory {
         // Initialize the storage in the `Dispatcher` context.
 
         dispatcher.setImplementationState0(message_);
 
         // Verify multi-endpoint module.
 
-        _verifyModuleConfiguration(
-            multiModuleEndpointA,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V1,
-            _MODULE_MULTI_UPGRADEABLE_V1
-        );
-
-        _verifyModuleConfiguration(
-            multiModuleEndpointB,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V1,
-            _MODULE_MULTI_UPGRADEABLE_V1
-        );
-
-        _verifyModuleConfiguration(
-            multiModuleEndpointC,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V1,
-            _MODULE_MULTI_UPGRADEABLE_V1
-        );
+        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
 
         // Upgrade multi-endpoint module.
 
@@ -343,29 +203,9 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         moduleAddresses[0] = address(multiModuleV2);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(
-            multiModuleEndpointA,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V2,
-            _MODULE_MULTI_UPGRADEABLE_V2
-        );
-
-        _verifyModuleConfiguration(
-            multiModuleEndpointB,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V2,
-            _MODULE_MULTI_UPGRADEABLE_V2
-        );
-
-        _verifyModuleConfiguration(
-            multiModuleEndpointC,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V2,
-            _MODULE_MULTI_UPGRADEABLE_V2
-        );
+        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
@@ -377,87 +217,21 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleV2);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(
-            singleModuleEndpoint,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V2,
-            _MODULE_SINGLE_UPGRADEABLE_V2
-        );
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
         _verifyUnmodifiedStateSlots(message_);
 
-        // Upgrade to deprecate multi-endpoint module.
+        // Upgrade the upgraded multi-endpoint module.
 
         moduleAddresses = new address[](1);
         moduleAddresses[0] = address(multiModuleV3);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(
-            multiModuleEndpointA,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V3,
-            _MODULE_MULTI_UPGRADEABLE_V3
-        );
-
-        _verifyModuleConfiguration(
-            multiModuleEndpointB,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V3,
-            _MODULE_MULTI_UPGRADEABLE_V3
-        );
-
-        _verifyModuleConfiguration(
-            multiModuleEndpointC,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V3,
-            _MODULE_MULTI_UPGRADEABLE_V3
-        );
-
-        // Verify storage is not modified by upgrades in `Dispatcher` context.
-
-        _verifyUnmodifiedStateSlots(message_);
-
-        // Attempt to upgrade multi-endpoint module that was marked as deprecated, this should fail.
-
-        moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(multiModuleV4);
-
-        vm.expectRevert(
-            abi.encodeWithSelector(IReflexInstaller.ModuleNotUpgradeable.selector, multiModuleV4.moduleId())
-        );
-        installerEndpoint.upgradeModules(moduleAddresses);
-
-        // Verify multi-endpoint module was not upgraded.
-
-        _verifyModuleConfiguration(
-            multiModuleEndpointA,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V3,
-            _MODULE_MULTI_UPGRADEABLE_V3
-        );
-
-        _verifyModuleConfiguration(
-            multiModuleEndpointB,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V3,
-            _MODULE_MULTI_UPGRADEABLE_V3
-        );
-
-        _verifyModuleConfiguration(
-            multiModuleEndpointC,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V3,
-            _MODULE_MULTI_UPGRADEABLE_V3
-        );
+        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
@@ -481,32 +255,12 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         // Upgrade multi-endpoint module to malicious storage module.
 
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(multiModuleMaliciousStorageV3);
+        moduleAddresses[0] = address(multiModuleMaliciousStorageV4);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(
-            multiModuleEndpointA,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V3,
-            _MODULE_MULTI_UPGRADEABLE_V3
-        );
-
-        _verifyModuleConfiguration(
-            multiModuleEndpointB,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V3,
-            _MODULE_MULTI_UPGRADEABLE_V3
-        );
-
-        _verifyModuleConfiguration(
-            multiModuleEndpointC,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V3,
-            _MODULE_MULTI_UPGRADEABLE_V3
-        );
+        _verifyModuleConfiguration(multiModuleEndpointA, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointB, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleEndpointC, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
 
         // Verify that the malicious module indeed causes a conflict with the one used in the `Dispatcher` context.
 
@@ -675,7 +429,6 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         assertEq(multiModuleV1.getImplementationState0(), 0);
         assertEq(multiModuleV2.getImplementationState0(), 0);
         assertEq(multiModuleV3.getImplementationState0(), 0);
-        assertEq(multiModuleV4.getImplementationState0(), 0);
 
         assertEq(multiModuleEndpointA.getImplementationState0(), message_);
         assertEq(multiModuleEndpointB.getImplementationState0(), message_);

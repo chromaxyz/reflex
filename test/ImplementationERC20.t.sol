@@ -25,11 +25,9 @@ contract ImplementationERC20Test is ImplementationFixture {
 
     uint32 internal constant _TOKEN_HUB_MODULE_ID = 100;
     uint16 internal constant _TOKEN_HUB_MODULE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
-    uint16 internal constant _TOKEN_HUB_MODULE_VERSION = 1;
 
     uint32 internal constant _TOKEN_MODULE_ID = 101;
     uint16 internal constant _TOKEN_MODULE_TYPE = _MODULE_TYPE_MULTI_ENDPOINT;
-    uint16 internal constant _TOKEN_MODULE_VERSION = 1;
 
     string public constant TOKEN_MODULE_NAME = "TOKEN A";
     string public constant TOKEN_MODULE_SYMBOL = "TKNA";
@@ -53,21 +51,11 @@ contract ImplementationERC20Test is ImplementationFixture {
         super.setUp();
 
         tokenHub = new MockImplementationERC20Hub(
-            IReflexModule.ModuleSettings({
-                moduleId: _TOKEN_HUB_MODULE_ID,
-                moduleType: _TOKEN_HUB_MODULE_TYPE,
-                moduleVersion: _TOKEN_HUB_MODULE_VERSION,
-                moduleUpgradeable: true
-            })
+            IReflexModule.ModuleSettings({moduleId: _TOKEN_HUB_MODULE_ID, moduleType: _TOKEN_HUB_MODULE_TYPE})
         );
 
         token = new MockImplementationERC20(
-            IReflexModule.ModuleSettings({
-                moduleId: _TOKEN_MODULE_ID,
-                moduleType: _TOKEN_MODULE_TYPE,
-                moduleVersion: _TOKEN_MODULE_VERSION,
-                moduleUpgradeable: true
-            })
+            IReflexModule.ModuleSettings({moduleId: _TOKEN_MODULE_ID, moduleType: _TOKEN_MODULE_TYPE})
         );
 
         address[] memory moduleAddresses = new address[](2);

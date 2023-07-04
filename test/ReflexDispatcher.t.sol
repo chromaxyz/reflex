@@ -25,6 +25,8 @@ contract ReflexDispatcherTest is ReflexFixture {
 
     function setUp() public virtual override {
         super.setUp();
+
+        assertEq(dispatcher.getDispatcherEndpointCreationCodeCounter(), 1);
     }
 
     // =====
@@ -51,12 +53,7 @@ contract ReflexDispatcherTest is ReflexFixture {
         vm.assume(moduleId_ != _MODULE_ID_INSTALLER);
 
         MockReflexModule module = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: moduleId_,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: _MODULE_VERSION_INSTALLER_V1,
-                moduleUpgradeable: true
-            })
+            IReflexModule.ModuleSettings({moduleId: moduleId_, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, moduleId_));
@@ -65,12 +62,7 @@ contract ReflexDispatcherTest is ReflexFixture {
 
     function testUnitRevertInvalidInstallerModuleType() external {
         MockReflexModule module = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_ID_INSTALLER,
-                moduleType: _MODULE_TYPE_MULTI_ENDPOINT,
-                moduleVersion: _MODULE_VERSION_INSTALLER_V1,
-                moduleUpgradeable: true
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INSTALLER, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
         vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, _MODULE_TYPE_MULTI_ENDPOINT));
@@ -80,13 +72,11 @@ contract ReflexDispatcherTest is ReflexFixture {
     function testUnitLogEmittanceUponConstruction() external {
         vm.recordLogs();
 
-        MockReflexDispatcher dispatcher = new MockReflexDispatcher(address(this), address(installerModuleV1));
+        MockReflexDispatcher dispatcher_ = new MockReflexDispatcher(address(this), address(installerModuleV1));
 
-        address installerEndpoint = dispatcher.getEndpoint(_MODULE_ID_INSTALLER);
+        address installerEndpoint_ = dispatcher_.getEndpoint(_MODULE_ID_INSTALLER);
 
         VmSafe.Log[] memory entries = vm.getRecordedLogs();
-
-        // TODO: now only `indexed` parameters are checked
 
         // 3 logs are expected to be emitted.
         assertEq(entries.length, 3);
@@ -95,22 +85,22 @@ contract ReflexDispatcherTest is ReflexFixture {
         assertEq(entries[0].topics.length, 3);
         assertEq(entries[0].topics[0], keccak256("EndpointCreated(uint32,address)"));
         assertEq(entries[0].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
-        assertEq(entries[0].topics[2], bytes32(uint256(uint160(address(installerEndpoint)))));
-        assertEq(entries[0].emitter, address(dispatcher));
+        assertEq(entries[0].topics[2], bytes32(uint256(uint160(address(installerEndpoint_)))));
+        assertEq(entries[0].emitter, address(dispatcher_));
 
         // emit OwnershipTransferred(address,address);
         assertEq(entries[1].topics.length, 3);
         assertEq(entries[1].topics[0], keccak256("OwnershipTransferred(address,address)"));
         assertEq(entries[1].topics[1], bytes32(uint256(uint160(address(0)))));
         assertEq(entries[1].topics[2], bytes32(uint256(uint160(address(this)))));
-        assertEq(entries[1].emitter, address(dispatcher));
+        assertEq(entries[1].emitter, address(dispatcher_));
 
-        // emit ModuleAdded(uint32,address,uint32);
+        // emit ModuleAdded(uint32,address);
         assertEq(entries[2].topics.length, 3);
-        assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint32,address,uint32)"));
+        assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint32,address)"));
         assertEq(entries[2].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
         assertEq(entries[2].topics[2], bytes32(uint256(uint160(address(installerModuleV1)))));
-        assertEq(entries[2].emitter, address(dispatcher));
+        assertEq(entries[2].emitter, address(dispatcher_));
     }
 
     function testUnitInstallerConfiguration() external {

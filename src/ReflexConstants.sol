@@ -44,7 +44,7 @@ abstract contract ReflexConstants {
     // ==========
 
     /**
-     * @dev Module id of built-in upgradeable installer module.
+     * @dev Module id of built-in installer module.
      */
     uint32 internal constant _MODULE_ID_INSTALLER = 1;
 }

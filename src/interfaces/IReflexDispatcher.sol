@@ -52,9 +52,8 @@ interface IReflexDispatcher is IReflexState {
      * @notice Emitted when a module is added.
      * @param moduleId Module id.
      * @param moduleImplementation Module implementation.
-     * @param moduleVersion Module version.
      */
-    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 moduleVersion);
+    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation);
 
     /**
      * @notice Emitted when the ownership is transferred.

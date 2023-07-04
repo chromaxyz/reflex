@@ -43,11 +43,6 @@ interface IReflexModule is IReflexState {
     error Reentrancy();
 
     /**
-     * @notice Thrown when the module version is invalid.
-     */
-    error ModuleVersionInvalid(uint32 moduleVersion);
-
-    /**
      * @notice Thrown when an unauthorized user attempts to perform an action.
      */
     error Unauthorized();
@@ -86,14 +81,6 @@ interface IReflexModule is IReflexState {
          * @notice Module type.
          */
         uint16 moduleType;
-        /**
-         * @notice Module version.
-         */
-        uint32 moduleVersion;
-        /**
-         * @notice Whether the module is upgradeable.
-         */
-        bool moduleUpgradeable;
     }
 
     // =======
@@ -111,18 +98,6 @@ interface IReflexModule is IReflexState {
      * @return uint16 Module type.
      */
     function moduleType() external view returns (uint16);
-
-    /**
-     * @notice Get module type.
-     * @return uint16 Module type.
-     */
-    function moduleVersion() external view returns (uint32);
-
-    /**
-     * @notice Get whether module is upgradeable.
-     * @return bool Whether module is upgradeable.
-     */
-    function moduleUpgradeable() external view returns (bool);
 
     /**
      * @notice Get the module settings.

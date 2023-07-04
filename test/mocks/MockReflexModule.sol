@@ -244,15 +244,10 @@ contract MockReflexModule is MockHarness, ReflexModule {
         }
     }
 
-    function _setCounter(bytes32 slot_, uint256 n_) internal {
-        assembly ("memory-safe") {
-            sstore(slot_, n_)
-        }
-    }
-
     function _increaseCounter(bytes32 slot_) internal {
-        uint256 value = _getCounter(slot_);
-        _setCounter(slot_, value + 1);
+        assembly ("memory-safe") {
+            sstore(slot_, add(sload(slot_), 1))
+        }
     }
 
     function _issueLogToEndpoint(bytes memory payload) internal {

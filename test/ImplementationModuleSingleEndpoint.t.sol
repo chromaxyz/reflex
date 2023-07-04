@@ -24,14 +24,6 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
     uint32 internal constant _MODULE_SINGLE_ID = 100;
     uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V3 = 3;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V4 = 4;
-    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V1 = true;
-    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V2 = true;
-    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V3 = false;
-    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V4 = true;
 
     // =======
     // Storage
@@ -40,8 +32,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     MockImplementationModule public singleModuleV1;
     MockImplementationModule public singleModuleV2;
     MockImplementationModule public singleModuleV3;
-    MockImplementationMaliciousStorageModule public singleModuleMaliciousStorageV3;
-    MockImplementationModule public singleModuleV4;
+    MockImplementationMaliciousStorageModule public singleModuleMaliciousStorageV4;
 
     MockImplementationModule public singleModuleEndpoint;
 
@@ -53,48 +44,19 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
         super.setUp();
 
         singleModuleV1 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION_V1,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V1
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
         );
 
         singleModuleV2 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION_V2,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V2
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
         );
 
         singleModuleV3 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION_V3,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V3
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
         );
 
-        singleModuleMaliciousStorageV3 = new MockImplementationMaliciousStorageModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION_V3,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V3
-            })
-        );
-
-        singleModuleV4 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION_V4,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V4
-            })
+        singleModuleMaliciousStorageV4 = new MockImplementationMaliciousStorageModule(
+            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
         );
 
         address[] memory moduleAddresses = new address[](1);
@@ -127,71 +89,25 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     function testUnitModuleSettings() external {
         // Endpoints
 
-        _verifyModuleConfiguration(
-            singleModuleEndpoint,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1
-        );
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
 
         // Modules
 
-        _verifyModuleConfiguration(
-            singleModuleV1,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1
-        );
+        _verifyModuleConfiguration(singleModuleV1, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleV2, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleV3, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
 
-        _verifyModuleConfiguration(
-            singleModuleV2,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V2,
-            _MODULE_SINGLE_UPGRADEABLE_V2
-        );
-
-        _verifyModuleConfiguration(
-            singleModuleV3,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V3,
-            _MODULE_SINGLE_UPGRADEABLE_V3
-        );
-
-        _verifyModuleConfiguration(
-            singleModuleMaliciousStorageV3,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V3,
-            _MODULE_SINGLE_UPGRADEABLE_V3
-        );
-
-        _verifyModuleConfiguration(
-            singleModuleV4,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V4,
-            _MODULE_SINGLE_UPGRADEABLE_V4
-        );
+        _verifyModuleConfiguration(singleModuleMaliciousStorageV4, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
     }
 
-    function testFuzzUpgradeSingleEndpointAndDeprecate(bytes32 message_) external brutalizeMemory {
+    function testFuzzUpgradeSingleEndpoint(bytes32 message_) external brutalizeMemory {
         // Initialize the storage in the `Dispatcher` context.
 
         dispatcher.setImplementationState0(message_);
 
         // Verify single-endpoint module.
 
-        _verifyModuleConfiguration(
-            singleModuleEndpoint,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1
-        );
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
 
         // Upgrade single-endpoint module.
 
@@ -199,55 +115,19 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
         moduleAddresses[0] = address(singleModuleV2);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(
-            singleModuleEndpoint,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V2,
-            _MODULE_SINGLE_UPGRADEABLE_V2
-        );
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
         _verifyUnmodifiedStateSlots(message_);
 
-        // Upgrade to deprecate single-endpoint module.
+        // Upgrade the upgraded single-endpoint module.
 
         moduleAddresses = new address[](1);
         moduleAddresses[0] = address(singleModuleV3);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(
-            singleModuleEndpoint,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V3,
-            _MODULE_SINGLE_UPGRADEABLE_V3
-        );
-
-        // Verify storage is not modified by upgrades in `Dispatcher` context.
-
-        _verifyUnmodifiedStateSlots(message_);
-
-        // Attempt to upgrade single-endpoint module that was marked as deprecated, this should fail.
-
-        moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(singleModuleV4);
-
-        vm.expectRevert(
-            abi.encodeWithSelector(IReflexInstaller.ModuleNotUpgradeable.selector, singleModuleV4.moduleId())
-        );
-        installerEndpoint.upgradeModules(moduleAddresses);
-
-        // Verify single-endpoint module was not upgraded.
-
-        _verifyModuleConfiguration(
-            singleModuleEndpoint,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V3,
-            _MODULE_SINGLE_UPGRADEABLE_V3
-        );
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
@@ -268,27 +148,15 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         assertEq(dispatcher.getImplementationState0(), messageA_);
 
-        _verifyModuleConfiguration(
-            singleModuleEndpoint,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1
-        );
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
 
         // Upgrade single-endpoint module to malicious storage module.
 
         address[] memory moduleAddresses = new address[](1);
-        moduleAddresses[0] = address(singleModuleMaliciousStorageV3);
+        moduleAddresses[0] = address(singleModuleMaliciousStorageV4);
         installerEndpoint.upgradeModules(moduleAddresses);
 
-        _verifyModuleConfiguration(
-            singleModuleEndpoint,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V3,
-            _MODULE_SINGLE_UPGRADEABLE_V3
-        );
+        _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
 
         // Verify that the malicious module indeed causes a conflict with the one used in the `Dispatcher` context.
 
