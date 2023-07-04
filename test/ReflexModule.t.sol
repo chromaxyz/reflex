@@ -83,6 +83,28 @@ contract ReflexModuleTest is ReflexFixture {
         );
     }
 
+    // ==============
+    // Endpoint tests
+    // ==============
+
+    function testUnitRevertCreateEndpointInvalidModuleId() external {
+        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, 0));
+        module.createEndpoint(0, 0, address(0));
+    }
+
+    function testUnitRevertCreateEndpointInvalidModuleType() external {
+        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, 0));
+        module.createEndpoint(102, 0, address(0));
+
+        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, _MODULE_TYPE_INTERNAL));
+        module.createEndpoint(102, _MODULE_TYPE_INTERNAL, address(0));
+    }
+
+    function testUnitRevertBytesEmptyError() external {
+        vm.expectRevert(IReflexModule.EmptyError.selector);
+        module.revertBytes("");
+    }
+
     function testFuzzEarlyReturnRegisteredModule(uint32 moduleId_) external {
         vm.assume(moduleId_ > _MODULE_ID_INSTALLER);
 
@@ -119,31 +141,9 @@ contract ReflexModuleTest is ReflexFixture {
         module.revertBytes(errorMessage_);
     }
 
-    function testUnitRevertBytesEmptyError() external {
-        vm.expectRevert(IReflexModule.EmptyError.selector);
-        module.revertBytes("");
-    }
-
-    // ==============
-    // Endpoint tests
-    // ==============
-
-    function testUnitRevertCreateEndpointInvalidModuleId() external {
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, 0));
-        module.createEndpoint(0, 0, address(0));
-    }
-
-    function testUnitRevertCreateEndpointInvalidModuleType() external {
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, 0));
-        module.createEndpoint(102, 0, address(0));
-
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, _MODULE_TYPE_INTERNAL));
-        module.createEndpoint(102, _MODULE_TYPE_INTERNAL, address(0));
-    }
-
-    // ======================
-    // Reentrancy guard tests
-    // ======================
+    // ================
+    // Reentrancy tests
+    // ================
 
     function testUnitGuardedCheckLocked() external {
         assertEq(module.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
