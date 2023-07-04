@@ -144,8 +144,7 @@ contract ImplementationStateTest is ImplementationFixture {
         assertEq((reads[0]), keccak256(abi.encode(address(exampleModuleEndpoint), uint256(REFLEX_STORAGE_SLOT) + 5)));
         current = vm.load(address(dispatcher), bytes32(reads[0]));
         assertEq(uint32(uint256(current)), exampleModuleImplementation.moduleId());
-        assertEq(uint16(uint256(current) >> 32), exampleModuleImplementation.moduleType());
-        assertEq(address(uint160(uint256(current) >> 48)), address(exampleModuleImplementation));
+        assertEq(address(uint160(uint256(current) >> 32)), address(exampleModuleImplementation));
     }
 
     function testFuzzStorageImplementationStorageLayout(

@@ -11,7 +11,7 @@ interface IReflexState {
 
     /**
      * @notice Trust relationship between `Endpoint` and `Dispatcher`.
-     * @dev Packed slot: 4 + 2 + 20 = 26 bytes out of 32 bytes.
+     * @dev Packed slot: 4 + 20 = 24 bytes out of 32 bytes.
      */
     struct TrustRelation {
         /**
@@ -19,11 +19,6 @@ interface IReflexState {
          * @dev 0 is untrusted.
          */
         uint32 moduleId;
-        /**
-         * @dev Module type.
-         * @dev 0 is untrusted.
-         */
-        uint16 moduleType;
         /**
          * @dev Module implementation.
          * @dev 0 for multi-endpoint and internal modules.

@@ -154,10 +154,6 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         assertEq(relationA.moduleImplementation, address(0));
         assertEq(relationB.moduleImplementation, address(0));
         assertEq(relationC.moduleImplementation, address(0));
-
-        assertEq(relationA.moduleType, _MODULE_MULTI_TYPE);
-        assertEq(relationB.moduleType, _MODULE_MULTI_TYPE);
-        assertEq(relationC.moduleType, _MODULE_MULTI_TYPE);
     }
 
     function testUnitModuleSettings() external {
@@ -242,8 +238,6 @@ contract ImplementationModuleMultiEndpointTest is ImplementationFixture {
         bytes32 messageA_,
         bytes32 messageB_
     ) external brutalizeMemory {
-        // TODO: verify this is broken if implementation storage is not implemented correctly.
-
         vm.assume(messageA_ != messageB_);
 
         // Initialize and verify the storage in the `Dispatcher` context.

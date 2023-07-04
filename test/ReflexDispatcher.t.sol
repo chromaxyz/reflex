@@ -131,8 +131,10 @@ contract ReflexDispatcherTest is ReflexFixture {
         vm.stopPrank();
     }
 
-    function testUnitRevertDispatchCalledNotTrusted() external {
-        (bool success, bytes memory result) = address(dispatcher).call("");
+    function testUnitRevertDispatchCallerNotTrusted() external {
+        (bool success, bytes memory result) = address(dispatcher).call(
+            "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        );
 
         assertFalse(success);
 

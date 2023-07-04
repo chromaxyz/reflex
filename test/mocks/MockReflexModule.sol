@@ -158,7 +158,7 @@ contract MockReflexModule is MockHarness, ReflexModule {
     }
 
     function isReentrancyStatusLocked() public view returns (bool) {
-        return _reentrancyStatusLocked();
+        return _REFLEX_STORAGE().reentrancyStatus == _REENTRANCY_GUARD_LOCKED;
     }
 
     function callback() external nonReentrant {
