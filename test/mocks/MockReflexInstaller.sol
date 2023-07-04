@@ -5,7 +5,6 @@ pragma solidity ^0.8.13;
 import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Sources
-import {ReflexBase} from "../../src/ReflexBase.sol";
 import {ReflexInstaller} from "../../src/ReflexInstaller.sol";
 
 // Fixtures
@@ -62,9 +61,7 @@ contract MockReflexInstaller is MockHarness, ReflexInstaller, MockReflexModule {
         n_ = _getCounter(_GET_ENDPOINT_CREATION_CODE_COUNTER_SLOT);
     }
 
-    function _getEndpointCreationCode(
-        uint32 moduleId_
-    ) internal virtual override(ReflexBase, MockReflexModule) returns (bytes memory) {
+    function _getEndpointCreationCode(uint32 moduleId_) internal virtual override returns (bytes memory) {
         _increaseCounter(_GET_ENDPOINT_CREATION_CODE_COUNTER_SLOT);
 
         // Force coverage to flag this branch as covered.

@@ -7,7 +7,6 @@ import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Sources
 import {ReflexBatch} from "../src/periphery/ReflexBatch.sol";
-import {ReflexBase} from "../src/ReflexBase.sol";
 import {ReflexConstants} from "../src/ReflexConstants.sol";
 import {ReflexModule} from "../src/ReflexModule.sol";
 

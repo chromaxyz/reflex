@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
 # Exit if anything fails
-set -euo pipefail
+set -eo pipefail
 
 # Set environment variables
-set -a; source .env; set +a
+if [ -f .env ]; then
+  set -a; source .env; set +a
+fi
 
 # Change directory to project root
 SCRIPT_PATH="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
@@ -21,13 +23,11 @@ function log () {
   echo -e "\033[0m"
 }
 
-log $GREEN "Deploying using Deploy.s.sol"
+log $GREEN "Deploying on local Anvil instance"
 
-forge script ./script/Deploy.s.sol \
-  --rpc-url $ETH_RPC_URL \
-  --private-key $ETH_PRIVATE_KEY \
-  # --etherscan-api-key $ETHERSCAN_API_KEY \
-  # --verify \
-  # --broadcast
+forge script script/Deploy.s.sol \
+  --private-key $PRIVATE_KEY \
+  --rpc-url http://localhost:8545 \
+  --broadcast
 
 log $GREEN "Done"

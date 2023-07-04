@@ -6,7 +6,6 @@ import {IERC20} from "forge-std/interfaces/IERC20.sol";
 
 // Interfaces
 import {IReflexBatch} from "../src/periphery/interfaces/IReflexBatch.sol";
-import {IReflexBase} from "../src/interfaces/IReflexBase.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
 // Fixtures
@@ -352,7 +351,7 @@ contract ReflexBatchTest is ReflexFixture {
     function testUnitRevertInvalidBatchActionConfiguration() external withHooksExpected(0) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleIdInvalid.selector, 0));
+        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, 0));
         batchEndpoint.simulateBatchCallReturn(actions);
     }
 
@@ -473,7 +472,7 @@ contract ReflexBatchTest is ReflexFixture {
             callData: abi.encodeCall(ImplementationState.getImplementationState0, ())
         });
 
-        vm.expectRevert(IReflexBase.EmptyError.selector);
+        vm.expectRevert(IReflexModule.EmptyError.selector);
         batchEndpoint.performBatchCall(actions);
     }
 
@@ -492,7 +491,7 @@ contract ReflexBatchTest is ReflexFixture {
             callData: abi.encodeCall(ImplementationState.getImplementationState0, ())
         });
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleIdInvalid.selector, 0));
+        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, 0));
         batchEndpoint.performBatchCall(actions);
     }
 
@@ -511,7 +510,7 @@ contract ReflexBatchTest is ReflexFixture {
             callData: abi.encodeCall(ImplementationState.getImplementationState0, ())
         });
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleIdInvalid.selector, 0));
+        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, 0));
         batchEndpoint.performBatchCall(actions);
     }
 

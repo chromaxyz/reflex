@@ -5,7 +5,6 @@ pragma solidity ^0.8.13;
 import {VmSafe} from "forge-std/Vm.sol";
 
 // Interfaces
-import {IReflexBase} from "../src/interfaces/IReflexBase.sol";
 import {IReflexDispatcher} from "../src/interfaces/IReflexDispatcher.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
@@ -60,7 +59,7 @@ contract ReflexDispatcherTest is ReflexFixture {
             })
         );
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleIdInvalid.selector, moduleId_));
+        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, moduleId_));
         new MockReflexDispatcher(address(this), address(module));
     }
 
@@ -74,7 +73,7 @@ contract ReflexDispatcherTest is ReflexFixture {
             })
         );
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexBase.ModuleTypeInvalid.selector, _MODULE_TYPE_MULTI_ENDPOINT));
+        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, _MODULE_TYPE_MULTI_ENDPOINT));
         new MockReflexDispatcher(address(this), address(module));
     }
 

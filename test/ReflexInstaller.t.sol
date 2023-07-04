@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexBase} from "../src/interfaces/IReflexBase.sol";
 import {IReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
@@ -499,7 +498,7 @@ contract ReflexInstallerTest is ReflexFixture {
             })
         );
 
-        _upgradeModule(singleModuleTypeInvalid, IReflexBase.ModuleTypeInvalid.selector);
+        _upgradeModule(singleModuleTypeInvalid, IReflexModule.ModuleTypeInvalid.selector);
     }
 
     function testUnitRevertUpgradeModulesNonUpgradeableSingleEndpoint() external withHooksExpected(3, 1) {
@@ -576,7 +575,7 @@ contract ReflexInstallerTest is ReflexFixture {
             })
         );
 
-        _upgradeModule(multiModuleTypeInvalid, IReflexBase.ModuleTypeInvalid.selector);
+        _upgradeModule(multiModuleTypeInvalid, IReflexModule.ModuleTypeInvalid.selector);
     }
 
     function testUnitRevertUpgradeModulesNonUpgradeableMultiEndpoint() external withHooksExpected(3, 0) {
@@ -653,7 +652,7 @@ contract ReflexInstallerTest is ReflexFixture {
             })
         );
 
-        _upgradeModule(internalModuleTypeInvalid, IReflexBase.ModuleTypeInvalid.selector);
+        _upgradeModule(internalModuleTypeInvalid, IReflexModule.ModuleTypeInvalid.selector);
     }
 
     function testUnitRevertUpgradeModulesNonUpgradeableInternal() external withHooksExpected(3, 0) {
@@ -757,7 +756,7 @@ contract ReflexInstallerTest is ReflexFixture {
         if (selector_ == _VALID) {
             vm.expectEmit(true, true, false, false);
             emit ModuleAdded(module_.moduleId(), address(module_), module_.moduleVersion());
-        } else if (selector_ == IReflexBase.ModuleTypeInvalid.selector) {
+        } else if (selector_ == IReflexModule.ModuleTypeInvalid.selector) {
             vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleType()));
         } else if (selector_ == IReflexModule.ModuleVersionInvalid.selector) {
             vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleVersion()));
@@ -775,7 +774,7 @@ contract ReflexInstallerTest is ReflexFixture {
         if (selector_ == _VALID) {
             vm.expectEmit(true, true, false, false);
             emit ModuleUpgraded(module_.moduleId(), address(module_), module_.moduleVersion());
-        } else if (selector_ == IReflexBase.ModuleTypeInvalid.selector) {
+        } else if (selector_ == IReflexModule.ModuleTypeInvalid.selector) {
             vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleType()));
         } else if (selector_ == IReflexModule.ModuleVersionInvalid.selector) {
             vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleVersion()));

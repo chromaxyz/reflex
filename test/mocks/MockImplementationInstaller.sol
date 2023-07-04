@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 // Sources
-import {ReflexBase} from "../../src/ReflexBase.sol";
 import {ReflexInstaller} from "../../src/ReflexInstaller.sol";
 
 // Mocks
@@ -29,9 +28,7 @@ contract MockImplementationInstaller is ReflexInstaller, MockImplementationModul
     /**
      * @dev NOTE: DO NOT IMPLEMENT INVALID ENDPOINT CREATION CODE!
      */
-    function _getEndpointCreationCode(
-        uint32 moduleId_
-    ) internal virtual override(ReflexBase, MockReflexModule) returns (bytes memory) {
+    function _getEndpointCreationCode(uint32 moduleId_) internal virtual override returns (bytes memory) {
         // Special case for to test invalid endpoint in `ImplementationEndpoint.t.sol`
         if (moduleId_ == 777) return abi.encodePacked(type(RevertingInvalidEndpoint).creationCode);
 

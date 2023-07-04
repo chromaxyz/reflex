@@ -2,12 +2,12 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexBase} from "./IReflexBase.sol";
+import {IReflexState} from "./IReflexState.sol";
 
 /**
  * @title Reflex Dispatcher Interface
  */
-interface IReflexDispatcher is IReflexBase {
+interface IReflexDispatcher is IReflexState {
     // ======
     // Errors
     // ======
@@ -23,6 +23,16 @@ interface IReflexDispatcher is IReflexBase {
     error MessageTooShort();
 
     /**
+     * @notice Thrown when the module id is invalid.
+     */
+    error ModuleIdInvalid(uint32 moduleId);
+
+    /**
+     * @notice Thrown when the module type is invalid.
+     */
+    error ModuleTypeInvalid(uint16 moduleType);
+
+    /**
      * @notice Thrown when an address passed is address(0) and therefore invalid.
      */
     error ZeroAddress();
@@ -30,6 +40,13 @@ interface IReflexDispatcher is IReflexBase {
     // ======
     // Events
     // ======
+
+    /**
+     * @notice Emitted when an endpoint is created.
+     * @param moduleId Module id.
+     * @param endpointAddress The address of the created endpoint.
+     */
+    event EndpointCreated(uint32 indexed moduleId, address indexed endpointAddress);
 
     /**
      * @notice Emitted when a module is added.

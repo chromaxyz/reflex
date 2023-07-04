@@ -1,5 +1,6 @@
 #
-# Profiles: `default`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`
+# Build profiles: `default`, `min-solc`, `via-ir`, `min-solc-via-ir`
+# Test profiles: `default`, `intense`
 #
 # ==================
 # Profile: `default`

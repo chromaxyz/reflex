@@ -21,6 +21,7 @@ A Solidity framework for upgradeable modularized applications.
 
 - [Table of Contents](#table-of-contents)
 - [Traits](#traits)
+- [Reason](#reason)
 - [Contracts](#contracts)
 - [Install](#install)
 - [Usage](#usage)
@@ -50,7 +51,7 @@ A Solidity framework for upgradeable modularized applications.
 Noteably this is a so-called framework, a single well-tested implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
 
-## Why?
+## Reason
 
 In the public discourse there is a lot of valid critique towards the use of (upgradeable) proxy patterns namely that they are difficult to manage, vulnerable if configured incorrectly, broadly unnecessary and in general over-complex and over-engineered.
 
@@ -66,24 +67,22 @@ The Solidity ecosystem has been using libraries and collections of code snippets
 
 ```
 .
-├── ReflexBase.sol "Extendable `Base`, internal abstraction for `Dispatcher` and `Module`."
-├── ReflexConstants.sol "Extendable `Constants`: constants used in the framework."
-├── ReflexDispatcher.sol  "Non-upgradeable `Dispatcher`: dispatcher to module implementations."
-├── ReflexEndpoint.sol "Non-upgradeable `Endpoint`, internal proxy-like indirection layer."
-├── ReflexInstaller.sol "Upgradeable `Installer`, upgradeable built-in installer for modules."
-├── ReflexModule.sol
-├── ReflexState.sol "Extendable `State`, state store of the framework inherited in all modules."
 ├── interfaces
-    ├── IReflexBase.sol "Interface for the `Base`."
-    ├── IReflexDispatcher.sol "Interface for the `Dispatcher`."
-    ├── IReflexEndpoint.sol "Interface for the `Endpoint`."
-    ├── IReflexInstaller.sol "Interface for the `Installer`."
-    ├── IReflexModule.sol "Interface for the `Module`."
-│   └── IReflexState.sol "Interface for the `State`."
-└── periphery
-    ├── ReflexBatch.sol "Upgradeable `Batch`, upgradeable batch call for modules."
-    └── interfaces
-        └── IReflexBatch.sol "Interface for the `Batch`."
+│   ├── IReflexDispatcher.sol
+│   ├── IReflexEndpoint.sol
+│   ├── IReflexInstaller.sol
+│   ├── IReflexModule.sol
+│   └── IReflexState.sol
+├── periphery
+│   ├── interfaces
+│   │   └── IReflexBatch.sol
+│   └── ReflexBatch.sol
+├── ReflexConstants.sol
+├── ReflexDispatcher.sol
+├── ReflexEndpoint.sol
+├── ReflexInstaller.sol
+├── ReflexModule.sol
+└── ReflexState.sol
 ```
 
 ```mermaid
@@ -91,10 +90,8 @@ graph TD
     subgraph Reflex [ ]
 
     ReflexInstaller --> ReflexModule
-    ReflexDispatcher --> ReflexBase
-    ReflexModule --> ReflexBase
-    ReflexBase --> ReflexState
-    ReflexBase --> ReflexEndpoint
+    ReflexDispatcher --> ReflexState
+    ReflexModule --> ReflexState
     ReflexState --> ReflexConstants
     end
 ```

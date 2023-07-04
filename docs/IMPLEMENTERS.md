@@ -184,8 +184,7 @@ In order to use the Reflex framework there are multiple abstract contracts one h
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
-// Vendor
-import { ReflexBase } from "reflex/ReflexBase.sol";
+// Vendors
 import { ReflexConstants } from "reflex/ReflexConstants.sol";
 import { ReflexDispatcher } from "reflex/ReflexDispatcher.sol";
 import { ReflexInstaller } from "reflex/ReflexInstaller.sol";
@@ -200,11 +199,7 @@ abstract contract State is ReflexState, Constants {
   // ...
 }
 
-abstract contract Base is ReflexBase, State {
-  // ...
-}
-
-abstract contract Module is ReflexModule, Base {
+abstract contract Module is ReflexModule, State {
   /**
    * @param moduleSettings_ Module settings.
    */
@@ -222,7 +217,7 @@ contract Installer is ReflexInstaller, Module {
   // ...
 }
 
-contract Dispatcher is ReflexDispatcher, Base {
+contract Dispatcher is ReflexDispatcher, State {
   /**
    * @param owner_ Protocol owner.
    * @param installerModule_ Installer module address.
@@ -242,13 +237,11 @@ As a diagram:
 graph TD
     subgraph Application [ ]
     Dispatcher --> ReflexDispatcher
-    Dispatcher --> Base
+    Dispatcher --> State
     Installer --> ReflexInstaller
     Installer --> Module
     Module --> ReflexModule
-    Module --> Base
-    Base --> ReflexBase
-    Base --> State
+    Module --> State
     State --> ReflexState
     State --> Constants
     Constants --> ReflexConstants
