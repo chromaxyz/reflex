@@ -83,51 +83,6 @@ contract ReflexModuleTest is ReflexFixture {
         );
     }
 
-    function testFuzzEarlyReturnRegisteredModule(uint32 moduleId_) external {
-        vm.assume(moduleId_ > _MODULE_ID_INSTALLER);
-
-        vm.recordLogs();
-
-        address endpointAddress = module.createEndpoint(moduleId_, _MODULE_TYPE_SINGLE_ENDPOINT, address(0));
-
-        VmSafe.Log[] memory entries = vm.getRecordedLogs();
-
-        // 1 log is expected to be emitted.
-        assertEq(entries.length, 1);
-
-        // emit EndpointCreated(address,uint32)
-        assertEq(entries[0].topics.length, 3);
-        assertEq(entries[0].topics[0], keccak256("EndpointCreated(uint32,address)"));
-        assertEq(entries[0].topics[1], bytes32(uint256(moduleId_)));
-        assertEq(entries[0].topics[2], bytes32(uint256(uint160(address(endpointAddress)))));
-        assertEq(entries[0].emitter, address(module));
-
-        vm.recordLogs();
-
-        module.createEndpoint(moduleId_, _MODULE_TYPE_SINGLE_ENDPOINT, address(0));
-
-        entries = vm.getRecordedLogs();
-
-        // No log is expected to be emitted.
-        assertEq(entries.length, 0);
-    }
-
-    function testFuzzRevertBytes(bytes memory errorMessage_) external {
-        vm.assume(errorMessage_.length > 0);
-
-        vm.expectRevert(errorMessage_);
-        module.revertBytes(errorMessage_);
-    }
-
-    function testUnitRevertBytesEmptyError() external {
-        vm.expectRevert(IReflexModule.EmptyError.selector);
-        module.revertBytes("");
-    }
-
-    // ==============
-    // Endpoint tests
-    // ==============
-
     function testUnitRevertCreateEndpointInvalidModuleId() external {
         vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, 0));
         module.createEndpoint(0, 0, address(0));
@@ -141,9 +96,10 @@ contract ReflexModuleTest is ReflexFixture {
         module.createEndpoint(102, _MODULE_TYPE_INTERNAL, address(0));
     }
 
-    // ======================
-    // Reentrancy guard tests
-    // ======================
+    function testUnitRevertBytesEmptyError() external {
+        vm.expectRevert(IReflexModule.EmptyError.selector);
+        module.revertBytes("");
+    }
 
     function testUnitGuardedCheckLocked() external {
         assertEq(module.getReentrancyStatus(), _REENTRANCY_GUARD_UNLOCKED);
@@ -185,5 +141,41 @@ contract ReflexModuleTest is ReflexFixture {
     function testUnitRevertRecursiveIndirectCall() external {
         vm.expectRevert(IReflexModule.Reentrancy.selector);
         module.countIndirectRecursive(10);
+    }
+
+    function testFuzzEarlyReturnRegisteredModule(uint32 moduleId_) external {
+        vm.assume(moduleId_ > _MODULE_ID_INSTALLER);
+
+        vm.recordLogs();
+
+        address endpointAddress = module.createEndpoint(moduleId_, _MODULE_TYPE_SINGLE_ENDPOINT, address(0));
+
+        VmSafe.Log[] memory entries = vm.getRecordedLogs();
+
+        // 1 log is expected to be emitted.
+        assertEq(entries.length, 1);
+
+        // emit EndpointCreated(address,uint32)
+        assertEq(entries[0].topics.length, 3);
+        assertEq(entries[0].topics[0], keccak256("EndpointCreated(uint32,address)"));
+        assertEq(entries[0].topics[1], bytes32(uint256(moduleId_)));
+        assertEq(entries[0].topics[2], bytes32(uint256(uint160(address(endpointAddress)))));
+        assertEq(entries[0].emitter, address(module));
+
+        vm.recordLogs();
+
+        module.createEndpoint(moduleId_, _MODULE_TYPE_SINGLE_ENDPOINT, address(0));
+
+        entries = vm.getRecordedLogs();
+
+        // No log is expected to be emitted.
+        assertEq(entries.length, 0);
+    }
+
+    function testFuzzRevertBytes(bytes memory errorMessage_) external {
+        vm.assume(errorMessage_.length > 0);
+
+        vm.expectRevert(errorMessage_);
+        module.revertBytes(errorMessage_);
     }
 }
