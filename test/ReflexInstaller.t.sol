@@ -9,6 +9,7 @@ import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
 // Mocks
+import {MockReflexInstaller} from "./mocks/MockReflexInstaller.sol";
 import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 
 /**
@@ -70,6 +71,8 @@ contract ReflexInstallerTest is ReflexFixture {
     // Storage
     // =======
 
+    MockReflexInstaller public installerModuleV2;
+
     MockReflexModule public singleModuleV1;
     MockReflexModule public singleModuleV2;
     MockReflexModule public singleModuleV3;
@@ -94,6 +97,15 @@ contract ReflexInstallerTest is ReflexFixture {
         // - V2 is the next version, still upgradeable.
         // - V3 is the next version, not upgradeable.
         // - V4 is never used, expected to throw.
+
+        installerModuleV2 = new MockReflexInstaller(
+            IReflexModule.ModuleSettings({
+                moduleId: _MODULE_ID_INSTALLER,
+                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
+                moduleVersion: _MODULE_VERSION_INSTALLER_V2,
+                moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER_V2
+            })
+        );
 
         singleModuleV1 = new MockReflexModule(
             IReflexModule.ModuleSettings({
@@ -680,7 +692,7 @@ contract ReflexInstallerTest is ReflexFixture {
     function testUnitUpgradeInstaller() external withHooksExpected(7, 1) {
         // Installer upgrade
 
-        assertEq(dispatcher.getModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
+        assertEq(dispatcher.getModuleImplementation(_MODULE_ID_INSTALLER), address(installerImplementation));
         assertTrue(dispatcher.getEndpoint(_MODULE_ID_INSTALLER) == address(installerEndpoint));
 
         _upgradeModule(installerModuleV2, _VALID);

@@ -33,7 +33,7 @@ contract ReflexDispatcherTest is ReflexFixture {
 
     function testUnitRevertInvalidOwnerZeroAddress() external {
         vm.expectRevert(IReflexDispatcher.ZeroAddress.selector);
-        new MockReflexDispatcher(address(0), address(installerModuleV1));
+        new MockReflexDispatcher(address(0), address(installerImplementation));
     }
 
     function testUnitRevertInvalidInstallerZeroAddress() external {
@@ -80,7 +80,7 @@ contract ReflexDispatcherTest is ReflexFixture {
     function testUnitLogEmittanceUponConstruction() external {
         vm.recordLogs();
 
-        MockReflexDispatcher dispatcher = new MockReflexDispatcher(address(this), address(installerModuleV1));
+        MockReflexDispatcher dispatcher = new MockReflexDispatcher(address(this), address(installerImplementation));
 
         address installerEndpoint = dispatcher.getEndpoint(_MODULE_ID_INSTALLER);
 
@@ -109,13 +109,13 @@ contract ReflexDispatcherTest is ReflexFixture {
         assertEq(entries[2].topics.length, 3);
         assertEq(entries[2].topics[0], keccak256("ModuleAdded(uint32,address,uint32)"));
         assertEq(entries[2].topics[1], bytes32(uint256(_MODULE_ID_INSTALLER)));
-        assertEq(entries[2].topics[2], bytes32(uint256(uint160(address(installerModuleV1)))));
+        assertEq(entries[2].topics[2], bytes32(uint256(uint160(address(installerImplementation)))));
         assertEq(entries[2].emitter, address(dispatcher));
     }
 
     function testUnitInstallerConfiguration() external {
         assertEq(dispatcher.getEndpoint(_MODULE_ID_INSTALLER), address(installerEndpoint));
-        assertEq(dispatcher.getModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
+        assertEq(dispatcher.getModuleImplementation(_MODULE_ID_INSTALLER), address(installerImplementation));
     }
 
     function testUnitGetOwnerThroughInstallerEndpoint() external {

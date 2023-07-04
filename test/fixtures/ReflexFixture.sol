@@ -34,9 +34,7 @@ abstract contract ReflexFixture is ReflexConstants, TestHarness, MockHarness {
 
     MockReflexDispatcher public dispatcher;
 
-    MockReflexInstaller public installerModuleV1;
-    MockReflexInstaller public installerModuleV2;
-
+    MockReflexInstaller public installerImplementation;
     MockReflexInstaller public installerEndpoint;
 
     // =====
@@ -44,7 +42,7 @@ abstract contract ReflexFixture is ReflexConstants, TestHarness, MockHarness {
     // =====
 
     function setUp() public virtual {
-        installerModuleV1 = new MockReflexInstaller(
+        installerImplementation = new MockReflexInstaller(
             IReflexModule.ModuleSettings({
                 moduleId: _MODULE_ID_INSTALLER,
                 moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
@@ -53,16 +51,7 @@ abstract contract ReflexFixture is ReflexConstants, TestHarness, MockHarness {
             })
         );
 
-        installerModuleV2 = new MockReflexInstaller(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_ID_INSTALLER,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: _MODULE_VERSION_INSTALLER_V2,
-                moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER_V2
-            })
-        );
-
-        dispatcher = new MockReflexDispatcher(address(this), address(installerModuleV1));
+        dispatcher = new MockReflexDispatcher(address(this), address(installerImplementation));
         installerEndpoint = MockReflexInstaller(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
     }
 
