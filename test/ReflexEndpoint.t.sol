@@ -46,7 +46,13 @@ contract ReflexEndpointTest is ReflexFixture {
     }
 
     function testUnitResolveImplementationAddress() external {
-        assertEq(installerEndpoint.implementation(), address(installer));
+        (bool success, bytes memory data) = address(installerEndpoint).call(
+            abi.encodeWithSignature("implementation()")
+        );
+
+        assertTrue(success);
+
+        assertEq(abi.decode(data, (address)), address(installerImplementation));
     }
 
     function testUnitResolveInvalidImplementationToZeroAddress() external {
