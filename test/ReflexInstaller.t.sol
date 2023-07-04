@@ -9,6 +9,7 @@ import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
 // Mocks
+import {MockReflexInstaller} from "./mocks/MockReflexInstaller.sol";
 import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 
 /**
@@ -46,6 +47,8 @@ contract ReflexInstallerTest is ReflexFixture {
     // Storage
     // =======
 
+    MockReflexInstaller public installerModuleV2;
+
     MockReflexModule public singleModuleV1;
     MockReflexModule public singleModuleV2;
     MockReflexModule public singleModuleV3;
@@ -64,6 +67,10 @@ contract ReflexInstallerTest is ReflexFixture {
 
     function setUp() public virtual override {
         super.setUp();
+
+        installerModuleV2 = new MockReflexInstaller(
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INSTALLER, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
+        );
 
         singleModuleV1 = new MockReflexModule(
             IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
@@ -107,6 +114,8 @@ contract ReflexInstallerTest is ReflexFixture {
     // =====
 
     function testUnitModuleSettings() external {
+        _verifyModuleConfiguration(installerModuleV2, _MODULE_ID_INSTALLER, _MODULE_SINGLE_TYPE);
+
         _verifyModuleConfiguration(singleModuleV1, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
         _verifyModuleConfiguration(singleModuleV2, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
         _verifyModuleConfiguration(singleModuleV3, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
@@ -445,7 +454,7 @@ contract ReflexInstallerTest is ReflexFixture {
     function testUnitUpgradeInstaller() external withHooksExpected(7, 1) {
         // Installer upgrade
 
-        assertEq(dispatcher.getModuleImplementation(_MODULE_ID_INSTALLER), address(installerModuleV1));
+        assertEq(dispatcher.getModuleImplementation(_MODULE_ID_INSTALLER), address(installerImplementation));
         assertTrue(dispatcher.getEndpoint(_MODULE_ID_INSTALLER) == address(installerEndpoint));
 
         _upgradeModule(installerModuleV2, _VALID);
