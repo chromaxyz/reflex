@@ -27,12 +27,7 @@ contract DeployScript is Script, ReflexConstants {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_VERSION_INSTALLER = 1;
-    bool internal constant _MODULE_UPGRADEABLE_INSTALLER = true;
-
     uint32 internal constant _MODULE_ID_EXAMPLE = 2;
-    uint32 internal constant _MODULE_VERSION_EXAMPLE = 1;
-    bool internal constant _MODULE_UPGRADEABLE_EXAMPLE = true;
 
     // =======
     // Storage
@@ -54,12 +49,7 @@ contract DeployScript is Script, ReflexConstants {
         vm.startBroadcast();
 
         installerImplementation = new MockImplementationInstaller(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_ID_INSTALLER,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: _MODULE_VERSION_INSTALLER,
-                moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INSTALLER, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         dispatcher = new MockImplementationDispatcher(msg.sender, address(installerImplementation));
@@ -67,12 +57,7 @@ contract DeployScript is Script, ReflexConstants {
         installerEndpoint = MockImplementationInstaller(dispatcher.getEndpoint(_MODULE_ID_INSTALLER));
 
         exampleModuleImplementation = new MockImplementationModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_ID_EXAMPLE,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: _MODULE_VERSION_EXAMPLE,
-                moduleUpgradeable: _MODULE_UPGRADEABLE_EXAMPLE
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_EXAMPLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         address[] memory moduleAddresses = new address[](1);

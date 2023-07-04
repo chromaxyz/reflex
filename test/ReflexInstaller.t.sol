@@ -20,9 +20,9 @@ contract ReflexInstallerTest is ReflexFixture {
     // Events
     // ======
 
-    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 moduleVersion);
+    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation);
 
-    event ModuleUpgraded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 moduleVersion);
+    event ModuleUpgraded(uint32 indexed moduleId, address indexed moduleImplementation);
 
     event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
 
@@ -36,36 +36,12 @@ contract ReflexInstallerTest is ReflexFixture {
 
     uint32 internal constant _MODULE_SINGLE_ID = 100;
     uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V2 = 2;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V3 = 3;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V4 = 4;
-    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V1 = true;
-    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V2 = true;
-    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V3 = false;
-    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V4 = false;
 
     uint32 internal constant _MODULE_MULTI_ID = 101;
     uint16 internal constant _MODULE_MULTI_TYPE = _MODULE_TYPE_MULTI_ENDPOINT;
-    uint16 internal constant _MODULE_MULTI_VERSION_V1 = 1;
-    uint16 internal constant _MODULE_MULTI_VERSION_V2 = 2;
-    uint16 internal constant _MODULE_MULTI_VERSION_V3 = 3;
-    uint16 internal constant _MODULE_MULTI_VERSION_V4 = 4;
-    bool internal constant _MODULE_MULTI_UPGRADEABLE_V1 = true;
-    bool internal constant _MODULE_MULTI_UPGRADEABLE_V2 = true;
-    bool internal constant _MODULE_MULTI_UPGRADEABLE_V3 = false;
-    bool internal constant _MODULE_MULTI_UPGRADEABLE_V4 = false;
 
     uint32 internal constant _MODULE_INTERNAL_ID = 102;
     uint16 internal constant _MODULE_INTERNAL_TYPE = _MODULE_TYPE_INTERNAL;
-    uint16 internal constant _MODULE_INTERNAL_VERSION_V1 = 1;
-    uint16 internal constant _MODULE_INTERNAL_VERSION_V2 = 2;
-    uint16 internal constant _MODULE_INTERNAL_VERSION_V3 = 3;
-    uint16 internal constant _MODULE_INTERNAL_VERSION_V4 = 4;
-    bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V1 = true;
-    bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V2 = true;
-    bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V3 = false;
-    bool internal constant _MODULE_INTERNAL_UPGRADEABLE_V4 = false;
 
     // =======
     // Storage
@@ -92,100 +68,44 @@ contract ReflexInstallerTest is ReflexFixture {
     function setUp() public virtual override {
         super.setUp();
 
-        // Scenario:
-        // - V1 is the initial module.
-        // - V2 is the next version, still upgradeable.
-        // - V3 is the next version, not upgradeable.
-        // - V4 is never used, expected to throw.
-
         installerModuleV2 = new MockReflexInstaller(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_ID_INSTALLER,
-                moduleType: _MODULE_TYPE_SINGLE_ENDPOINT,
-                moduleVersion: _MODULE_VERSION_INSTALLER_V2,
-                moduleUpgradeable: _MODULE_UPGRADEABLE_INSTALLER_V2
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INSTALLER, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
         singleModuleV1 = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION_V1,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V1
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
         );
 
         singleModuleV2 = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION_V2,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V2
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
         );
 
         singleModuleV3 = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION_V3,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V3
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
         );
 
         multiModuleV1 = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_MULTI_ID,
-                moduleType: _MODULE_MULTI_TYPE,
-                moduleVersion: _MODULE_MULTI_VERSION_V1,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V1
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
         );
 
         multiModuleV2 = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_MULTI_ID,
-                moduleType: _MODULE_MULTI_TYPE,
-                moduleVersion: _MODULE_MULTI_VERSION_V2,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V2
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
         );
 
         multiModuleV3 = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_MULTI_ID,
-                moduleType: _MODULE_MULTI_TYPE,
-                moduleVersion: _MODULE_MULTI_VERSION_V3,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V3
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_MULTI_TYPE})
         );
 
         internalModuleV1 = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_INTERNAL_ID,
-                moduleType: _MODULE_INTERNAL_TYPE,
-                moduleVersion: _MODULE_INTERNAL_VERSION_V1,
-                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V1
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
         );
 
         internalModuleV2 = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_INTERNAL_ID,
-                moduleType: _MODULE_INTERNAL_TYPE,
-                moduleVersion: _MODULE_INTERNAL_VERSION_V2,
-                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V2
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
         );
 
         internalModuleV3 = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_INTERNAL_ID,
-                moduleType: _MODULE_INTERNAL_TYPE,
-                moduleVersion: _MODULE_INTERNAL_VERSION_V3,
-                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V3
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_INTERNAL_TYPE})
         );
     }
 
@@ -194,77 +114,19 @@ contract ReflexInstallerTest is ReflexFixture {
     // =====
 
     function testUnitModuleSettings() external {
-        _verifyModuleConfiguration(
-            singleModuleV1,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V1,
-            _MODULE_SINGLE_UPGRADEABLE_V1
-        );
+        _verifyModuleConfiguration(installerModuleV2, _MODULE_ID_INSTALLER, _MODULE_SINGLE_TYPE);
 
-        _verifyModuleConfiguration(
-            singleModuleV2,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V2,
-            _MODULE_SINGLE_UPGRADEABLE_V2
-        );
+        _verifyModuleConfiguration(singleModuleV1, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleV2, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
+        _verifyModuleConfiguration(singleModuleV3, _MODULE_SINGLE_ID, _MODULE_SINGLE_TYPE);
 
-        _verifyModuleConfiguration(
-            singleModuleV3,
-            _MODULE_SINGLE_ID,
-            _MODULE_SINGLE_TYPE,
-            _MODULE_SINGLE_VERSION_V3,
-            _MODULE_SINGLE_UPGRADEABLE_V3
-        );
+        _verifyModuleConfiguration(multiModuleV1, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleV2, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
+        _verifyModuleConfiguration(multiModuleV3, _MODULE_MULTI_ID, _MODULE_MULTI_TYPE);
 
-        _verifyModuleConfiguration(
-            multiModuleV1,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V1,
-            _MODULE_MULTI_UPGRADEABLE_V1
-        );
-
-        _verifyModuleConfiguration(
-            multiModuleV2,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V2,
-            _MODULE_MULTI_UPGRADEABLE_V2
-        );
-
-        _verifyModuleConfiguration(
-            multiModuleV3,
-            _MODULE_MULTI_ID,
-            _MODULE_MULTI_TYPE,
-            _MODULE_MULTI_VERSION_V3,
-            _MODULE_MULTI_UPGRADEABLE_V3
-        );
-
-        _verifyModuleConfiguration(
-            internalModuleV1,
-            _MODULE_INTERNAL_ID,
-            _MODULE_INTERNAL_TYPE,
-            _MODULE_INTERNAL_VERSION_V1,
-            _MODULE_INTERNAL_UPGRADEABLE_V1
-        );
-
-        _verifyModuleConfiguration(
-            internalModuleV2,
-            _MODULE_INTERNAL_ID,
-            _MODULE_INTERNAL_TYPE,
-            _MODULE_INTERNAL_VERSION_V2,
-            _MODULE_INTERNAL_UPGRADEABLE_V2
-        );
-
-        _verifyModuleConfiguration(
-            internalModuleV3,
-            _MODULE_INTERNAL_ID,
-            _MODULE_INTERNAL_TYPE,
-            _MODULE_INTERNAL_VERSION_V3,
-            _MODULE_INTERNAL_UPGRADEABLE_V3
-        );
+        _verifyModuleConfiguration(internalModuleV1, _MODULE_INTERNAL_ID, _MODULE_INTERNAL_TYPE);
+        _verifyModuleConfiguration(internalModuleV2, _MODULE_INTERNAL_ID, _MODULE_INTERNAL_TYPE);
+        _verifyModuleConfiguration(internalModuleV3, _MODULE_INTERNAL_ID, _MODULE_INTERNAL_TYPE);
     }
 
     // ===============
@@ -423,14 +285,7 @@ contract ReflexInstallerTest is ReflexFixture {
     function testUnitRevertUpgradeModulesModuleNonexistent() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(
-            new MockReflexModule(
-                IReflexModule.ModuleSettings({
-                    moduleId: 777,
-                    moduleType: _MODULE_SINGLE_TYPE,
-                    moduleVersion: 777,
-                    moduleUpgradeable: true
-                })
-            )
+            new MockReflexModule(IReflexModule.ModuleSettings({moduleId: 777, moduleType: _MODULE_SINGLE_TYPE}))
         );
 
         vm.expectRevert(abi.encodeWithSelector(IReflexInstaller.ModuleNonexistent.selector, 777));
@@ -489,46 +344,15 @@ contract ReflexInstallerTest is ReflexFixture {
         assertEq(singleModuleImplementationV2, address(singleModuleV2));
     }
 
-    function testUnitRevertUpgradeInvalidVersionSingleEndpoint() external withHooksExpected(2, 1) {
-        _addModule(singleModuleV1, _VALID);
-        _upgradeModule(singleModuleV2, _VALID);
-
-        _upgradeModule(singleModuleV1, IReflexModule.ModuleVersionInvalid.selector);
-        _upgradeModule(singleModuleV2, IReflexModule.ModuleVersionInvalid.selector);
-    }
-
     function testUnitRevertUpgradeInvalidTypeSingleEndpoint() external withHooksExpected(2, 1) {
         _addModule(singleModuleV1, _VALID);
         _upgradeModule(singleModuleV2, _VALID);
 
         MockReflexModule singleModuleTypeInvalid = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_MULTI_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION_V3,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V3
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_MULTI_TYPE})
         );
 
         _upgradeModule(singleModuleTypeInvalid, IReflexModule.ModuleTypeInvalid.selector);
-    }
-
-    function testUnitRevertUpgradeModulesNonUpgradeableSingleEndpoint() external withHooksExpected(3, 1) {
-        _addModule(singleModuleV1, _VALID);
-        _upgradeModule(singleModuleV2, _VALID);
-        _upgradeModule(singleModuleV3, _VALID);
-
-        _upgradeModule(
-            new MockReflexModule(
-                IReflexModule.ModuleSettings({
-                    moduleId: _MODULE_SINGLE_ID,
-                    moduleType: _MODULE_SINGLE_TYPE,
-                    moduleVersion: _MODULE_SINGLE_VERSION_V4,
-                    moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V4
-                })
-            ),
-            IReflexInstaller.ModuleNotUpgradeable.selector
-        );
     }
 
     // ===========================
@@ -566,46 +390,15 @@ contract ReflexInstallerTest is ReflexFixture {
         assertEq(multiModuleImplementationV2, address(multiModuleV2));
     }
 
-    function testUnitRevertUpgradeInvalidVersionMultiEndpoint() external withHooksExpected(2, 0) {
-        _addModule(multiModuleV1, _VALID);
-        _upgradeModule(multiModuleV2, _VALID);
-
-        _upgradeModule(multiModuleV1, IReflexModule.ModuleVersionInvalid.selector);
-        _upgradeModule(multiModuleV2, IReflexModule.ModuleVersionInvalid.selector);
-    }
-
     function testUnitRevertUpgradeInvalidTypeMultiEndpoint() external withHooksExpected(2, 0) {
         _addModule(multiModuleV1, _VALID);
         _upgradeModule(multiModuleV2, _VALID);
 
         MockReflexModule multiModuleTypeInvalid = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_MULTI_ID,
-                moduleType: _MODULE_INTERNAL_TYPE,
-                moduleVersion: _MODULE_MULTI_VERSION_V3,
-                moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V3
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_MULTI_ID, moduleType: _MODULE_INTERNAL_TYPE})
         );
 
         _upgradeModule(multiModuleTypeInvalid, IReflexModule.ModuleTypeInvalid.selector);
-    }
-
-    function testUnitRevertUpgradeModulesNonUpgradeableMultiEndpoint() external withHooksExpected(3, 0) {
-        _addModule(multiModuleV1, _VALID);
-        _upgradeModule(multiModuleV2, _VALID);
-        _upgradeModule(multiModuleV3, _VALID);
-
-        _upgradeModule(
-            new MockReflexModule(
-                IReflexModule.ModuleSettings({
-                    moduleId: _MODULE_MULTI_ID,
-                    moduleType: _MODULE_MULTI_TYPE,
-                    moduleVersion: _MODULE_MULTI_VERSION_V4,
-                    moduleUpgradeable: _MODULE_MULTI_UPGRADEABLE_V4
-                })
-            ),
-            IReflexInstaller.ModuleNotUpgradeable.selector
-        );
     }
 
     // =====================
@@ -643,46 +436,15 @@ contract ReflexInstallerTest is ReflexFixture {
         assertEq(internalModuleImplementationV2, address(internalModuleV2));
     }
 
-    function testUnitRevertUpgradeInvalidVersionInternal() external withHooksExpected(2, 0) {
-        _addModule(internalModuleV1, _VALID);
-        _upgradeModule(internalModuleV2, _VALID);
-
-        _upgradeModule(internalModuleV1, IReflexModule.ModuleVersionInvalid.selector);
-        _upgradeModule(internalModuleV2, IReflexModule.ModuleVersionInvalid.selector);
-    }
-
     function testUnitRevertUpgradeInvalidTypeInternal() external withHooksExpected(2, 0) {
         _addModule(internalModuleV1, _VALID);
         _upgradeModule(internalModuleV2, _VALID);
 
         MockReflexModule internalModuleTypeInvalid = new MockReflexModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_INTERNAL_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_INTERNAL_VERSION_V3,
-                moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V3
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_SINGLE_TYPE})
         );
 
         _upgradeModule(internalModuleTypeInvalid, IReflexModule.ModuleTypeInvalid.selector);
-    }
-
-    function testUnitRevertUpgradeModulesNonUpgradeableInternal() external withHooksExpected(3, 0) {
-        _addModule(internalModuleV1, _VALID);
-        _upgradeModule(internalModuleV2, _VALID);
-        _upgradeModule(internalModuleV3, _VALID);
-
-        _upgradeModule(
-            new MockReflexModule(
-                IReflexModule.ModuleSettings({
-                    moduleId: _MODULE_INTERNAL_ID,
-                    moduleType: _MODULE_INTERNAL_TYPE,
-                    moduleVersion: _MODULE_INTERNAL_VERSION_V4,
-                    moduleUpgradeable: _MODULE_INTERNAL_UPGRADEABLE_V4
-                })
-            ),
-            IReflexInstaller.ModuleNotUpgradeable.selector
-        );
     }
 
     // ===============
@@ -753,12 +515,12 @@ contract ReflexInstallerTest is ReflexFixture {
 
     modifier withHooksExpected(uint256 beforeModuleRegistrationCount_, uint256 getEndpointCreationCodeCount_) {
         assertEq(installerEndpoint.beforeModuleRegistrationCounter(), 0);
-        assertEq(installerEndpoint.getEndpointCreationCodeCounter(), 0);
+        assertEq(installerEndpoint.getInstallerEndpointCreationCodeCounter(), 0);
 
         _;
 
         assertEq(installerEndpoint.beforeModuleRegistrationCounter(), beforeModuleRegistrationCount_);
-        assertEq(installerEndpoint.getEndpointCreationCodeCounter(), getEndpointCreationCodeCount_);
+        assertEq(installerEndpoint.getInstallerEndpointCreationCodeCounter(), getEndpointCreationCodeCount_);
     }
 
     function _addModule(IReflexModule module_, bytes4 selector_) internal {
@@ -767,11 +529,9 @@ contract ReflexInstallerTest is ReflexFixture {
 
         if (selector_ == _VALID) {
             vm.expectEmit(true, true, false, false);
-            emit ModuleAdded(module_.moduleId(), address(module_), module_.moduleVersion());
+            emit ModuleAdded(module_.moduleId(), address(module_));
         } else if (selector_ == IReflexModule.ModuleTypeInvalid.selector) {
             vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleType()));
-        } else if (selector_ == IReflexModule.ModuleVersionInvalid.selector) {
-            vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleVersion()));
         } else {
             vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleId()));
         }
@@ -785,11 +545,9 @@ contract ReflexInstallerTest is ReflexFixture {
 
         if (selector_ == _VALID) {
             vm.expectEmit(true, true, false, false);
-            emit ModuleUpgraded(module_.moduleId(), address(module_), module_.moduleVersion());
+            emit ModuleUpgraded(module_.moduleId(), address(module_));
         } else if (selector_ == IReflexModule.ModuleTypeInvalid.selector) {
             vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleType()));
-        } else if (selector_ == IReflexModule.ModuleVersionInvalid.selector) {
-            vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleVersion()));
         } else {
             vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleId()));
         }

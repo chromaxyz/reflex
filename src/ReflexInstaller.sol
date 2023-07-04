@@ -103,7 +103,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_ENDPOINT)
                 _createEndpoint(moduleSettings_.moduleId, moduleSettings_.moduleType, moduleAddress);
 
-            emit ModuleAdded(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
+            emit ModuleAdded(moduleSettings_.moduleId, moduleAddress);
 
             unchecked {
                 ++i;
@@ -126,16 +126,6 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             if (_REFLEX_STORAGE().modules[moduleSettings_.moduleId] == address(0))
                 revert ModuleNonexistent(moduleSettings_.moduleId);
 
-            // Verify that current module allows for upgrades.
-            if (!IReflexModule(_REFLEX_STORAGE().modules[moduleSettings_.moduleId]).moduleUpgradeable())
-                revert ModuleNotUpgradeable(moduleSettings_.moduleId);
-
-            // Verify that the next module version is greater than the current module version.
-            if (
-                moduleSettings_.moduleVersion <=
-                IReflexModule(_REFLEX_STORAGE().modules[moduleSettings_.moduleId]).moduleVersion()
-            ) revert ModuleVersionInvalid(moduleSettings_.moduleVersion);
-
             // Verify that the next module type is the same as the current module type.
             if (
                 moduleSettings_.moduleType !=
@@ -154,7 +144,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
                     .relations[_REFLEX_STORAGE().endpoints[moduleSettings_.moduleId]]
                     .moduleImplementation = moduleAddress;
 
-            emit ModuleUpgraded(moduleSettings_.moduleId, moduleAddress, moduleSettings_.moduleVersion);
+            emit ModuleUpgraded(moduleSettings_.moduleId, moduleAddress);
 
             unchecked {
                 ++i;

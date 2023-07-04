@@ -20,8 +20,6 @@ contract ImplementationEndpointTest is ImplementationFixture {
 
     uint32 internal constant _MODULE_SINGLE_ID = 777;
     uint16 internal constant _MODULE_SINGLE_TYPE = _MODULE_TYPE_SINGLE_ENDPOINT;
-    uint16 internal constant _MODULE_SINGLE_VERSION_V1 = 1;
-    bool internal constant _MODULE_SINGLE_UPGRADEABLE_V1 = true;
 
     // =======
     // Storage
@@ -44,12 +42,7 @@ contract ImplementationEndpointTest is ImplementationFixture {
 
     function testUnitRevertCreateModuleWithMaliciousEndpoint() external {
         singleModuleV1 = new MockImplementationModule(
-            IReflexModule.ModuleSettings({
-                moduleId: _MODULE_SINGLE_ID,
-                moduleType: _MODULE_SINGLE_TYPE,
-                moduleVersion: _MODULE_SINGLE_VERSION_V1,
-                moduleUpgradeable: _MODULE_SINGLE_UPGRADEABLE_V1
-            })
+            IReflexModule.ModuleSettings({moduleId: _MODULE_SINGLE_ID, moduleType: _MODULE_SINGLE_TYPE})
         );
 
         address[] memory moduleAddresses = new address[](1);

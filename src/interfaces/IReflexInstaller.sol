@@ -22,11 +22,6 @@ interface IReflexInstaller is IReflexModule {
      */
     error ModuleNonexistent(uint32 moduleId);
 
-    /**
-     * @notice Thrown when the module is attempted to be upgraded but is not upgradeable.
-     */
-    error ModuleNotUpgradeable(uint32 moduleId);
-
     // ======
     // Events
     // ======
@@ -35,17 +30,15 @@ interface IReflexInstaller is IReflexModule {
      * @notice Emitted when a module is added.
      * @param moduleId Module id.
      * @param moduleImplementation Module implementation.
-     * @param moduleVersion Module version.
      */
-    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 moduleVersion);
+    event ModuleAdded(uint32 indexed moduleId, address indexed moduleImplementation);
 
     /**
      * @notice Emitted when a module is upgraded.
      * @param moduleId Module id.
      * @param moduleImplementation Module implementation.
-     * @param moduleVersion Module version.
      */
-    event ModuleUpgraded(uint32 indexed moduleId, address indexed moduleImplementation, uint32 moduleVersion);
+    event ModuleUpgraded(uint32 indexed moduleId, address indexed moduleImplementation);
 
     /**
      * @notice Emitted when the ownership transfer process is started.
