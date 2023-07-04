@@ -110,14 +110,6 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
      */
     // solhint-disable-next-line payable-fallback, no-complex-fallback
     fallback() external virtual {
-        uint32 moduleId = _REFLEX_STORAGE().relations[msg.sender].moduleId;
-
-        if (moduleId == 0) revert CallerNotTrusted();
-
-        address moduleImplementation = _REFLEX_STORAGE().relations[msg.sender].moduleImplementation;
-
-        if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[moduleId];
-
         // [calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
             // Message length >= (4 + 20)
@@ -129,7 +121,26 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
                 // Revert with (offset, size).
                 revert(0x1c, 0x04)
             }
+        }
 
+        uint32 moduleId = _REFLEX_STORAGE().relations[msg.sender].moduleId;
+
+        // [calldata (N bytes)][msg.sender (20 bytes)]
+        assembly {
+            if iszero(moduleId) {
+                // Store the function selector of `CallerNotTrusted()`.
+                mstore(0x00, 0xe9cda707)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
+        }
+
+        address moduleImplementation = _REFLEX_STORAGE().relations[msg.sender].moduleImplementation;
+
+        if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[moduleId];
+
+        // [calldata (N bytes)][msg.sender (20 bytes)]
+        assembly {
             // We take full control of memory in this inline assembly block because it will not return to Solidity code.
 
             // Copy `msg.data` into memory, starting at position `0`.
