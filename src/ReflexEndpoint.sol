@@ -33,7 +33,8 @@ contract ReflexEndpoint is IReflexEndpoint {
     // ================
 
     /**
-     * @dev Will run if no other function in the contract matches the call data.
+     * @dev Forward call to `Dispatcher` if the caller is not the deployer.
+     * If the caller is the deployer, issue a log message in the `Endpoint` context.
      */
     // solhint-disable-next-line payable-fallback, no-complex-fallback
     fallback() external virtual {

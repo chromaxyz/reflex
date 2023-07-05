@@ -105,7 +105,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
     // ================
 
     /**
-     * @notice Dispatch call to module implementation.
+     * @dev Dispatch call to module implementation.
      */
     // solhint-disable-next-line payable-fallback, no-complex-fallback
     fallback() external virtual {
