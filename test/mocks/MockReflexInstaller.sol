@@ -50,11 +50,15 @@ contract MockReflexInstaller is MockHarness, ReflexInstaller, MockReflexModule {
         n_ = _getCounter(_BEFORE_MODULE_REGISTRATION_COUNTER_SLOT);
     }
 
-    function _beforeModuleRegistration(IReflexModule.ModuleSettings memory x_, address y_) internal override {
+    function _beforeModuleRegistration(
+        IReflexModule.ModuleSettings memory x_,
+        address y_,
+        address z_
+    ) internal override {
         _increaseCounter(_BEFORE_MODULE_REGISTRATION_COUNTER_SLOT);
 
         // Force coverage to flag this branch as covered.
-        super._beforeModuleRegistration(x_, y_);
+        super._beforeModuleRegistration(x_, y_, z_);
     }
 
     function getInstallerEndpointCreationCodeCounter() public view returns (uint256 n_) {
