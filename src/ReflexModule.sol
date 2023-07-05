@@ -247,10 +247,9 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
      * In the common case you use a single-endpoint you will override this method in your `Installer` contract.
      * In the exceptional case you use a multi-endpoint module you will override this method in
      * the place you instantiate the endpoint, one of your `Module` contracts.
-     * @param moduleId_ Module id.
      * @return endpointCreationCode_ Endpoint creation code.
      */
-    function _getEndpointCreationCode(uint32 moduleId_) internal virtual returns (bytes memory endpointCreationCode_) {
-        endpointCreationCode_ = abi.encodePacked(type(ReflexEndpoint).creationCode, abi.encode(moduleId_));
+    function _getEndpointCreationCode(uint32) internal virtual returns (bytes memory endpointCreationCode_) {
+        endpointCreationCode_ = type(ReflexEndpoint).creationCode;
     }
 }

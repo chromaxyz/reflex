@@ -16,11 +16,6 @@ contract ReflexEndpoint is IReflexEndpoint {
     // ==========
 
     /**
-     * @dev Same as the implementations' module id.
-     */
-    uint32 internal immutable _moduleId;
-
-    /**
      * @dev Deployer address.
      */
     address internal immutable _deployer;
@@ -29,13 +24,7 @@ contract ReflexEndpoint is IReflexEndpoint {
     // Constructor
     // ===========
 
-    /**
-     * @param moduleId_ Same as the implementations' module id.
-     */
-    constructor(uint32 moduleId_) {
-        if (moduleId_ == 0) revert ModuleIdInvalid(moduleId_);
-
-        _moduleId = moduleId_;
+    constructor() {
         _deployer = msg.sender;
     }
 

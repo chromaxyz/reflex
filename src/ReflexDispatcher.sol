@@ -109,6 +109,8 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
      */
     // solhint-disable-next-line payable-fallback, no-complex-fallback
     fallback() external virtual {
+        // We take full control of memory in this inline assembly block because it will not return to Solidity code.
+
         // [calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
             // Message length >= (4 + 20)
@@ -122,10 +124,12 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
             }
 
             // uint32 moduleId = _REFLEX_STORAGE().relations[msg.sender].moduleId;
-            mstore(0x00, and(caller(), 0xffffffffffffffffffffffffffffffffffffffff))
+            mstore(0x00, caller())
             mstore(0x20, add(_REFLEX_STORAGE_SLOT, 5))
-            let moduleId := and(sload(keccak256(0x00, 0x40)), 0xffffffff)
+            let relations := sload(keccak256(0x00, 0x40))
+            let moduleId := and(relations, 0xffffffff)
 
+            // if (moduleId == 0) revert CallerNotTrusted();
             if iszero(moduleId) {
                 // Store the function selector of `CallerNotTrusted()`.
                 mstore(0x00, 0xe9cda707)
@@ -134,16 +138,13 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
             }
 
             // address moduleImplementation = _REFLEX_STORAGE().relations[msg.sender].moduleImplementation;
-            let moduleImplementation := and(
-                shr(0x20, sload(keccak256(0x00, 0x40))),
-                0xffffffffffffffffffffffffffffffffffffffff
-            )
+            let moduleImplementation := shr(0x20, relations)
 
             // if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[moduleId];
-            if iszero(and(moduleImplementation, 0xffffffffffffffffffffffffffffffffffffffff)) {
+            if iszero(moduleImplementation) {
                 mstore(0x00, and(moduleId, 0xffffffff))
                 mstore(0x20, add(_REFLEX_STORAGE_SLOT, 3))
-                moduleImplementation := and(sload(keccak256(0x00, 0x40)), 0xffffffffffffffffffffffffffffffffffffffff)
+                moduleImplementation := sload(keccak256(0x00, 0x40))
             }
 
             // Copy `msg.data` into memory, starting at position `0`.
@@ -177,10 +178,9 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
      * @notice Hook that is called upon creation of an endpoint to get its implementation.
      * @dev This method may be overridden to customize the endpoint implementation.
      * To override the `Installer` endpoint implementation you override this method in your `Dispatcher` contract.
-     * @param moduleId_ Module id.
      * @return endpointCreationCode_ Endpoint creation code.
      */
-    function _getEndpointCreationCode(uint32 moduleId_) internal virtual returns (bytes memory endpointCreationCode_) {
-        endpointCreationCode_ = abi.encodePacked(type(ReflexEndpoint).creationCode, abi.encode(moduleId_));
+    function _getEndpointCreationCode(uint32) internal virtual returns (bytes memory endpointCreationCode_) {
+        endpointCreationCode_ = type(ReflexEndpoint).creationCode;
     }
 }
