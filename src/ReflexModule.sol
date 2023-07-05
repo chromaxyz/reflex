@@ -45,6 +45,8 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
      * Calling a `nonReentrant` function from another `nonReentrant` function is not supported.
      */
     modifier nonReentrant() virtual {
+        // TODO: can we optimize this further?
+
         // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
         if (_REFLEX_STORAGE().reentrancyStatus != _REENTRANCY_GUARD_UNLOCKED) revert Reentrancy();
 

@@ -154,6 +154,9 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
                 moduleImplementation := sload(keccak256(0x00, 0x40))
             }
 
+            // TODO: add extra check
+            // if (moduleImplementation == address(0)) revert ModuleNotRegistered(moduleId_);
+
             // Copy `msg.data` into memory, starting at position `0`.
             calldatacopy(0x00, 0x00, calldatasize())
 

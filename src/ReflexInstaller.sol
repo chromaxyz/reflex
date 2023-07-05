@@ -103,6 +103,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_ENDPOINT)
                 _createEndpoint(moduleSettings_.moduleId, moduleSettings_.moduleType, moduleAddress);
 
+            // TODO: emit once, not per loop
             emit ModuleAdded(moduleSettings_.moduleId, moduleAddress);
 
             unchecked {
@@ -144,6 +145,7 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
                     .relations[_REFLEX_STORAGE().endpoints[moduleSettings_.moduleId]]
                     .moduleImplementation = moduleAddress;
 
+            // TODO: emit once, not per loop
             emit ModuleUpgraded(moduleSettings_.moduleId, moduleAddress);
 
             unchecked {

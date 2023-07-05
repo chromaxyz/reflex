@@ -13,7 +13,7 @@ interface IReflexDispatcher is IReflexState {
     // ======
 
     /**
-     * @notice Thrown when an unregistered and untrusted user or endpoint calls the {ReflexDispatcher} directly.
+     * @notice Thrown when an unregistered and untrusted user or endpoint calls the `Dispatcher` directly.
      */
     error CallerNotTrusted();
 
