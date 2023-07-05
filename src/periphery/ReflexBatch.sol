@@ -144,15 +144,55 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     ) internal virtual returns (bool success_, bytes memory returnData_) {
         address endpointAddress = action_.endpointAddress;
 
-        TrustRelation memory relation = _REFLEX_STORAGE().relations[endpointAddress];
+        address moduleImplementation;
 
-        if (relation.moduleId == 0) revert ModuleIdInvalid();
+        assembly {
+            // Cache the free memory pointer.
+            let m := mload(0x40)
 
-        address moduleImplementation = relation.moduleImplementation;
+            // TrustRelation memory relation = _REFLEX_STORAGE().relations[msg.sender]
+            // Store the `endpointAddress` at memory position `0` offset.
+            mstore(0x00, endpointAddress)
+            // Store the relations slot at memory position `32` offset.
+            mstore(0x20, _REFLEX_STORAGE_RELATIONS_SLOT)
+            // Load the relation by `endpointAddress` from storage.
+            let relation := sload(keccak256(0x00, 0x40))
 
-        if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[relation.moduleId];
+            // uint32 moduleId = relation.moduleId;
+            let moduleId_ := and(relation, 0xffffffff)
 
-        if (moduleImplementation == address(0)) revert ModuleNotRegistered();
+            // if (relation.moduleId == 0) revert ModuleIdInvalid();
+            if iszero(moduleId_) {
+                // Store the function selector of `ModuleIdInvalid()`.
+                mstore(0x00, 0xd4ec98db)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
+
+            // address moduleImplementation = relation.moduleImplementation;
+            moduleImplementation := and(shr(32, relation), 0xffffffffffffffffffffffffffffffffffffffff)
+
+            // if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[moduleId];
+            if iszero(moduleImplementation) {
+                // Store the module id at memory position `0` offset.
+                mstore(0x00, moduleId_)
+                // Store the module id slot at memory position `32` offset.
+                mstore(0x20, _REFLEX_STORAGE_MODULES_SLOT)
+                // Load the module implementation from storage.
+                moduleImplementation := sload(keccak256(0x00, 0x40))
+            }
+
+            // if (moduleImplementation == address(0)) revert ModuleNotRegistered();
+            if iszero(moduleImplementation) {
+                // Store the function selector of `ModuleNotRegistered()`.
+                mstore(0x00, 0x9c4aee9e)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
+
+            // Restore the free memory pointer.
+            mstore(0x40, m)
+        }
 
         (success_, returnData_) = moduleImplementation.delegatecall(
             abi.encodePacked(action_.callData, uint160(messageSender_), uint160(endpointAddress))

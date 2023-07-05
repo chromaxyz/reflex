@@ -110,6 +110,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
     fallback() external virtual {
         // We take full control of memory in this inline assembly block because it will not return to Solidity code.
 
+        // TODO: tag as memory-safe?
         // [calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
             // if (msg.data.length < 24) revert `MessageTooShort()`.
