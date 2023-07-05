@@ -23,6 +23,48 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
      */
     bytes32 internal constant _REFLEX_STORAGE_SLOT = 0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09;
 
+    /**
+     * @dev Storage slot of the global reentrancy status tracker.
+     * @dev `(uint256(keccak256("_REFLEX_STORAGE")) - 1) + 0`
+     */
+    uint256 internal constant _REFLEX_STORAGE_REENTRANCY_STATUS_SLOT =
+        0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09 + 0;
+
+    /**
+     * @dev Storage slot of the owner address.
+     * @dev `(uint256(keccak256("_REFLEX_STORAGE")) - 1) + 1`
+     */
+    uint256 internal constant _REFLEX_STORAGE_OWNER_SLOT =
+        0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09 + 1;
+
+    /**
+     * @dev Storage slot of the pending owner address.
+     * @dev `(uint256(keccak256("_REFLEX_STORAGE")) - 1) + 2`
+     */
+    uint256 internal constant _REFLEX_STORAGE_PENDING_OWNER_SLOT =
+        0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09 + 2;
+
+    /**
+     * @dev Storage slot of the module mapping.
+     * @dev `(uint256(keccak256("_REFLEX_STORAGE")) - 1) + 3`
+     */
+    uint256 internal constant _REFLEX_STORAGE_MODULES_SLOT =
+        0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09 + 3;
+
+    /**
+     * @dev Storage slot of the endpoint mapping.
+     * @dev `(uint256(keccak256("_REFLEX_STORAGE")) - 1) + 4`
+     */
+    uint256 internal constant _REFLEX_STORAGE_ENDPOINTS_SLOT =
+        0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09 + 4;
+
+    /**
+     * @dev Storage slot of the endpoint to module relation mapping.
+     * @dev `(uint256(keccak256("_REFLEX_STORAGE")) - 1) + 5`
+     */
+    uint256 internal constant _REFLEX_STORAGE_RELATIONS_SLOT =
+        0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09 + 5;
+
     // =======
     // Storage
     // =======

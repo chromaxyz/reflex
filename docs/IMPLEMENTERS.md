@@ -270,11 +270,6 @@ Prior to adding, upgrading or deprecating a module make sure to go through the [
   - Type: `uint16`
   - Range: `(min: 0, reserved: ∈[0 .. 2], available: ∈[3 .. 65535])`
 
-- Module version:
-
-  - Type: `uint32`
-  - Range: `(min: 0, reserved: 0, available: ∈[1 .. 4294967295])`
-
 ## Security assumptions and known limitations
 
 - It is assumed `owner` is not malicious.

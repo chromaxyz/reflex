@@ -21,7 +21,7 @@ contract ReflexModuleTest is ReflexFixture {
     // Constants
     // =========
 
-    uint32 internal constant _MODULE_ID_VALID = 777;
+    uint32 internal constant _MODULE_ID_VALID = type(uint32).max;
     uint16 internal constant _MODULE_TYPE_VALID = _MODULE_TYPE_SINGLE_ENDPOINT;
 
     uint32 internal constant _MODULE_ID_INVALID = 0;

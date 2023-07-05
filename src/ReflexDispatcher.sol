@@ -113,9 +113,8 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
 
         // [calldata (N bytes)][msg.sender (20 bytes)]
         assembly {
-            // Message length >= (4 + 20)
-            // 4 bytes for selector used to call the endpoint.
-            // 20 bytes for the trailing `msg.sender`.
+            // if (msg.data.length < 24) revert `MessageTooShort()`.
+            // Where 4 bytes for selector used to call the endpoint and 20 bytes for the trailing `msg.sender`.
             if lt(calldatasize(), 24) {
                 // Store the function selector of `MessageTooShort()`.
                 mstore(0x00, 0x7f5e6be5)
@@ -123,11 +122,16 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
                 revert(0x1c, 0x04)
             }
 
-            // uint32 moduleId = _REFLEX_STORAGE().relations[msg.sender].moduleId;
+            // TrustRelation memory relation = _REFLEX_STORAGE().relations[msg.sender]
+            // Store the `msg.sender` at memory position `0`.
             mstore(0x00, caller())
-            mstore(0x20, add(_REFLEX_STORAGE_SLOT, 5))
-            let relations := sload(keccak256(0x00, 0x40))
-            let moduleId := and(relations, 0xffffffff)
+            // Store the relations slot at memory position `32`.
+            mstore(0x20, _REFLEX_STORAGE_RELATIONS_SLOT)
+            // Load the relation by `msg.sender` from storage.
+            let relation := sload(keccak256(0x00, 0x40))
+
+            // uint32 moduleId = relation.moduleId;
+            let moduleId := and(relation, 0xffffffff)
 
             // if (moduleId == 0) revert CallerNotTrusted();
             if iszero(moduleId) {
@@ -137,13 +141,16 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
                 revert(0x1c, 0x04)
             }
 
-            // address moduleImplementation = _REFLEX_STORAGE().relations[msg.sender].moduleImplementation;
-            let moduleImplementation := shr(0x20, relations)
+            // address moduleImplementation = relation.moduleImplementation;
+            let moduleImplementation := and(shr(32, relation), 0xffffffffffffffffffffffffffffffffffffffff)
 
             // if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[moduleId];
             if iszero(moduleImplementation) {
-                mstore(0x00, and(moduleId, 0xffffffff))
-                mstore(0x20, add(_REFLEX_STORAGE_SLOT, 3))
+                // Store the module id at memory position `0`.
+                mstore(0x00, moduleId)
+                // Store the module id slot at memory position `32`.
+                mstore(0x20, _REFLEX_STORAGE_MODULES_SLOT)
+                // Load the module implementation from storage.
                 moduleImplementation := sload(keccak256(0x00, 0x40))
             }
 
