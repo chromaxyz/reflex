@@ -146,7 +146,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
 
         address moduleImplementation;
 
-        assembly {
+        assembly ("memory-safe") {
             // Cache the free memory pointer.
             let m := mload(0x40)
 

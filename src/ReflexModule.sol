@@ -45,18 +45,25 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
      * Calling a `nonReentrant` function from another `nonReentrant` function is not supported.
      */
     modifier nonReentrant() virtual {
-        // TODO: can we optimize this further?
+        assembly ("memory-safe") {
+            // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
+            if eq(sload(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT), _REENTRANCY_GUARD_LOCKED) {
+                // Store the function selector of `Reentrancy()`.
+                mstore(0x00, 0xab143c06)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
 
-        // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
-        if (_REFLEX_STORAGE().reentrancyStatus != _REENTRANCY_GUARD_UNLOCKED) revert Reentrancy();
-
-        // Any calls to `nonReentrant` after this point will fail.
-        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_LOCKED;
+            // Any calls to `nonReentrant` after this point will fail.
+            sstore(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_LOCKED)
+        }
 
         _;
 
-        // By storing the original value once again, a refund is triggered.
-        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
+        assembly ("memory-safe") {
+            // By storing the original value once again, a refund is triggered.
+            sstore(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_UNLOCKED)
+        }
     }
 
     /**
@@ -64,9 +71,16 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
      * Calling a `nonReadReentrant` function from another `nonReadReentrant` function is not supported.
      */
     modifier nonReadReentrant() virtual {
-        // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
-        // Any calls to `nonReadReentrant` after this point will fail.
-        if (_REFLEX_STORAGE().reentrancyStatus == _REENTRANCY_GUARD_LOCKED) revert ReadOnlyReentrancy();
+        assembly ("memory-safe") {
+            // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
+            // Any calls to `nonReadReentrant` after this point will fail.
+            if eq(sload(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT), _REENTRANCY_GUARD_LOCKED) {
+                // Store the function selector of `ReadOnlyReentrancy()`.
+                mstore(0x00, 0x49ce9485)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
+        }
 
         _;
     }
