@@ -161,10 +161,10 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     /**
      * @notice Hook that is called before a module is registered.
      * @param moduleSettings_ Module settings.
-     * @param moduleAddress_ Module address.
+     * @param moduleImplementation_ Module implementation.
      */
     function _beforeModuleRegistration(
         IReflexModule.ModuleSettings memory moduleSettings_,
-        address moduleAddress_
+        address moduleImplementation_
     ) internal virtual {}
 }
