@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
-// Vendor
-import {IERC20} from "forge-std/interfaces/IERC20.sol";
-
 // Interfaces
 import {IReflexBatch} from "../src/periphery/interfaces/IReflexBatch.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
@@ -31,9 +28,9 @@ contract ReflexBatchTest is ReflexFixture {
     uint32 internal constant _MODULE_ID_BATCH = 2;
 
     uint32 internal constant _MODULE_ID_SINGLE = 100;
-    uint32 internal constant _MODULE_ID_MULTI_A = 101;
-    uint32 internal constant _MODULE_ID_MULTI_B = 102;
-    uint32 internal constant _MODULE_INTERNAL_ID = 103;
+    uint32 internal constant _MODULE_ID_MULTI_AB = 101;
+    uint32 internal constant _MODULE_ID_MULTI_CD = 102;
+    uint32 internal constant _MODULE_ID_INTERNAL = 103;
 
     string internal constant _MODULE_NAME_MULTI_A = "TOKEN A";
     string internal constant _MODULE_SYMBOL_MULTI_A = "TKNA";
@@ -42,6 +39,14 @@ contract ReflexBatchTest is ReflexFixture {
     string internal constant _MODULE_NAME_MULTI_B = "TOKEN B";
     string internal constant _MODULE_SYMBOL_MULTI_B = "TKNB";
     uint8 internal constant _MODULE_DECIMALS_MULTI_B = 6;
+
+    string internal constant _MODULE_NAME_MULTI_C = "TOKEN C";
+    string internal constant _MODULE_SYMBOL_MULTI_C = "TKNC";
+    uint8 internal constant _MODULE_DECIMALS_MULTI_C = 18;
+
+    string internal constant _MODULE_NAME_MULTI_D = "TOKEN D";
+    string internal constant _MODULE_SYMBOL_MULTI_D = "TKND";
+    uint8 internal constant _MODULE_DECIMALS_MULTI_D = 6;
 
     // =======
     // Storage
@@ -55,8 +60,13 @@ contract ReflexBatchTest is ReflexFixture {
     MockImplementationERC20Hub public singleModule;
     MockImplementationERC20Hub public singleModuleEndpoint;
 
-    MockImplementationERC20 public multiModule;
-    MockImplementationERC20 public multiModuleEndpoint;
+    MockImplementationERC20 public multiModuleAB; // A <> B
+    MockImplementationERC20 public multiModuleEndpointA;
+    MockImplementationERC20 public multiModuleEndpointB;
+
+    MockImplementationERC20 public multiModuleCD; // C <> D
+    MockImplementationERC20 public multiModuleEndpointC;
+    MockImplementationERC20 public multiModuleEndpointD;
 
     MockImplementationModule public internalModule;
 
@@ -77,18 +87,18 @@ contract ReflexBatchTest is ReflexFixture {
             IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
-        multiModule = new MockImplementationERC20(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI_A, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
+        multiModuleAB = new MockImplementationERC20(
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI_AB, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
         internalModule = new MockImplementationModule(
-            IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_TYPE_INTERNAL})
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INTERNAL, moduleType: _MODULE_TYPE_INTERNAL})
         );
 
         address[] memory moduleAddresses = new address[](4);
         moduleAddresses[0] = address(batch);
         moduleAddresses[1] = address(singleModule);
-        moduleAddresses[2] = address(multiModule);
+        moduleAddresses[2] = address(multiModuleAB);
         moduleAddresses[3] = address(internalModule);
         installerEndpoint.addModules(moduleAddresses);
 
@@ -96,13 +106,23 @@ contract ReflexBatchTest is ReflexFixture {
 
         singleModuleEndpoint = MockImplementationERC20Hub(dispatcher.getEndpoint(_MODULE_ID_SINGLE));
 
-        multiModuleEndpoint = MockImplementationERC20(
+        multiModuleEndpointA = MockImplementationERC20(
             singleModuleEndpoint.addERC20(
-                _MODULE_ID_MULTI_A,
+                _MODULE_ID_MULTI_AB,
                 _MODULE_TYPE_MULTI_ENDPOINT,
                 _MODULE_NAME_MULTI_A,
                 _MODULE_SYMBOL_MULTI_A,
                 _MODULE_DECIMALS_MULTI_A
+            )
+        );
+
+        multiModuleEndpointB = MockImplementationERC20(
+            singleModuleEndpoint.addERC20(
+                _MODULE_ID_MULTI_AB,
+                _MODULE_TYPE_MULTI_ENDPOINT,
+                _MODULE_NAME_MULTI_B,
+                _MODULE_SYMBOL_MULTI_B,
+                _MODULE_DECIMALS_MULTI_B
             )
         );
     }
@@ -156,10 +176,11 @@ contract ReflexBatchTest is ReflexFixture {
 
     function testFuzzSimulateBatchCallRevert(
         address target_,
-        uint256 amount_,
+        uint256 amountA_,
+        uint256 amountB_,
         bytes32 message_
-    ) external withHooksExpected(1) withExternalTarget(amount_) {
-        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](7);
+    ) external withHooksExpected(1) withExternalTarget(amountA_) {
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](9);
 
         actions[0] = IReflexBatch.BatchAction({
             allowFailure: false,
@@ -175,29 +196,41 @@ contract ReflexBatchTest is ReflexFixture {
 
         actions[2] = IReflexBatch.BatchAction({
             allowFailure: false,
-            endpointAddress: address(multiModuleEndpoint),
-            callData: abi.encodeCall(MockImplementationERC20.mint, (_brutalize(target_), amount_))
+            endpointAddress: address(multiModuleEndpointA),
+            callData: abi.encodeCall(MockImplementationERC20.mint, (_brutalize(target_), amountA_))
         });
 
         actions[3] = IReflexBatch.BatchAction({
             allowFailure: false,
-            endpointAddress: address(multiModuleEndpoint),
+            endpointAddress: address(multiModuleEndpointA),
             callData: abi.encodeCall(ImplementationERC20.balanceOf, (_brutalize(target_)))
         });
 
         actions[4] = IReflexBatch.BatchAction({
             allowFailure: false,
+            endpointAddress: address(multiModuleEndpointB),
+            callData: abi.encodeCall(MockImplementationERC20.mint, (_brutalize(target_), amountB_))
+        });
+
+        actions[5] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            endpointAddress: address(multiModuleEndpointB),
+            callData: abi.encodeCall(ImplementationERC20.balanceOf, (_brutalize(target_)))
+        });
+
+        actions[6] = IReflexBatch.BatchAction({
+            allowFailure: false,
             endpointAddress: address(singleModuleEndpoint),
             callData: abi.encodeCall(MockReflexModule.unpackMessageSender, ())
         });
 
-        actions[5] = IReflexBatch.BatchAction({
+        actions[7] = IReflexBatch.BatchAction({
             allowFailure: false,
             endpointAddress: address(singleModuleEndpoint),
             callData: abi.encodeCall(MockReflexModule.unpackEndpointAddress, ())
         });
 
-        actions[6] = IReflexBatch.BatchAction({
+        actions[8] = IReflexBatch.BatchAction({
             allowFailure: false,
             endpointAddress: address(batchEndpoint),
             callData: abi.encodeCall(
@@ -206,34 +239,39 @@ contract ReflexBatchTest is ReflexFixture {
             )
         });
 
-        IReflexBatch.BatchActionResponse[] memory responses = new IReflexBatch.BatchActionResponse[](7);
+        IReflexBatch.BatchActionResponse[] memory responses = new IReflexBatch.BatchActionResponse[](9);
         responses[0] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
         responses[1] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(message_)});
         responses[2] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
-        responses[3] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(amount_)});
-        responses[4] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(address(this))});
-        responses[5] = IReflexBatch.BatchActionResponse({
+        responses[3] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(amountA_)});
+        responses[4] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
+        responses[5] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(amountB_)});
+        responses[6] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(address(this))});
+        responses[7] = IReflexBatch.BatchActionResponse({
             success: true,
             returnData: abi.encode(address(singleModuleEndpoint))
         });
-        responses[6] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(amount_)});
+        responses[8] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(amountA_)});
 
         vm.expectRevert(abi.encodeWithSelector(IReflexBatch.BatchSimulation.selector, responses));
         batchEndpoint.simulateBatchCallRevert(actions);
 
-        assertEq(multiModuleEndpoint.balanceOf(_brutalize(target_)), 0);
+        assertEq(multiModuleEndpointA.balanceOf(_brutalize(target_)), 0);
+        assertEq(multiModuleEndpointB.balanceOf(_brutalize(target_)), 0);
 
         batchEndpoint.performBatchCall(actions);
 
-        assertEq(multiModuleEndpoint.balanceOf(_brutalize(target_)), amount_);
+        assertEq(multiModuleEndpointA.balanceOf(_brutalize(target_)), amountA_);
+        assertEq(multiModuleEndpointB.balanceOf(_brutalize(target_)), amountB_);
     }
 
     function testFuzzSimulateBatchCallReturn(
         address target_,
-        uint256 amount_,
+        uint256 amountA_,
+        uint256 amountB_,
         bytes32 message_
-    ) external withHooksExpected(1) withExternalTarget(amount_) {
-        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](7);
+    ) external withHooksExpected(1) withExternalTarget(amountA_) {
+        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](9);
 
         actions[0] = IReflexBatch.BatchAction({
             allowFailure: false,
@@ -249,29 +287,41 @@ contract ReflexBatchTest is ReflexFixture {
 
         actions[2] = IReflexBatch.BatchAction({
             allowFailure: false,
-            endpointAddress: address(multiModuleEndpoint),
-            callData: abi.encodeCall(MockImplementationERC20.mint, (_brutalize(target_), amount_))
+            endpointAddress: address(multiModuleEndpointA),
+            callData: abi.encodeCall(MockImplementationERC20.mint, (_brutalize(target_), amountA_))
         });
 
         actions[3] = IReflexBatch.BatchAction({
             allowFailure: false,
-            endpointAddress: address(multiModuleEndpoint),
+            endpointAddress: address(multiModuleEndpointA),
             callData: abi.encodeCall(ImplementationERC20.balanceOf, (_brutalize(target_)))
         });
 
         actions[4] = IReflexBatch.BatchAction({
             allowFailure: false,
+            endpointAddress: address(multiModuleEndpointB),
+            callData: abi.encodeCall(MockImplementationERC20.mint, (_brutalize(target_), amountB_))
+        });
+
+        actions[5] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            endpointAddress: address(multiModuleEndpointB),
+            callData: abi.encodeCall(ImplementationERC20.balanceOf, (_brutalize(target_)))
+        });
+
+        actions[6] = IReflexBatch.BatchAction({
+            allowFailure: false,
             endpointAddress: address(singleModuleEndpoint),
             callData: abi.encodeCall(MockReflexModule.unpackMessageSender, ())
         });
 
-        actions[5] = IReflexBatch.BatchAction({
+        actions[7] = IReflexBatch.BatchAction({
             allowFailure: false,
             endpointAddress: address(singleModuleEndpoint),
             callData: abi.encodeCall(MockReflexModule.unpackEndpointAddress, ())
         });
 
-        actions[6] = IReflexBatch.BatchAction({
+        actions[8] = IReflexBatch.BatchAction({
             allowFailure: false,
             endpointAddress: address(batchEndpoint),
             callData: abi.encodeCall(
@@ -292,22 +342,30 @@ contract ReflexBatchTest is ReflexFixture {
         assertEq(responses[2].returnData, "");
 
         assertEq(responses[3].success, true);
-        assertEq(responses[3].returnData, abi.encode(amount_));
+        assertEq(responses[3].returnData, abi.encode(amountA_));
 
         assertEq(responses[4].success, true);
-        assertEq(responses[4].returnData, abi.encode(address(this)));
+        assertEq(responses[4].returnData, "");
 
         assertEq(responses[5].success, true);
-        assertEq(responses[5].returnData, abi.encode(address(singleModuleEndpoint)));
+        assertEq(responses[5].returnData, abi.encode(amountB_));
 
         assertEq(responses[6].success, true);
-        assertEq(responses[6].returnData, abi.encode(amount_));
+        assertEq(responses[6].returnData, abi.encode(address(this)));
 
-        assertEq(multiModuleEndpoint.balanceOf(_brutalize(target_)), 0);
+        assertEq(responses[7].success, true);
+        assertEq(responses[7].returnData, abi.encode(address(singleModuleEndpoint)));
+
+        assertEq(responses[8].success, true);
+        assertEq(responses[8].returnData, abi.encode(amountA_));
+
+        assertEq(multiModuleEndpointA.balanceOf(_brutalize(target_)), 0);
+        assertEq(multiModuleEndpointB.balanceOf(_brutalize(target_)), 0);
 
         batchEndpoint.performBatchCall(actions);
 
-        assertEq(multiModuleEndpoint.balanceOf(_brutalize(target_)), amount_);
+        assertEq(multiModuleEndpointA.balanceOf(_brutalize(target_)), amountA_);
+        assertEq(multiModuleEndpointB.balanceOf(_brutalize(target_)), amountB_);
     }
 
     function testUnitRevertInvalidBatchActionConfiguration() external withHooksExpected(0) {
@@ -353,25 +411,25 @@ contract ReflexBatchTest is ReflexFixture {
 
         actions[2] = IReflexBatch.BatchAction({
             allowFailure: false,
-            endpointAddress: address(multiModuleEndpoint),
+            endpointAddress: address(multiModuleEndpointA),
             callData: abi.encodeCall(MockImplementationERC20.mint, (_brutalize(target_), amount_))
         });
 
         actions[3] = IReflexBatch.BatchAction({
             allowFailure: false,
-            endpointAddress: address(multiModuleEndpoint),
+            endpointAddress: address(multiModuleEndpointA),
             callData: abi.encodeCall(ImplementationERC20.balanceOf, (_brutalize(target_)))
         });
 
         actions[4] = IReflexBatch.BatchAction({
             allowFailure: false,
-            endpointAddress: address(multiModuleEndpoint),
+            endpointAddress: address(multiModuleEndpointA),
             callData: abi.encodeCall(MockReflexModule.unpackMessageSender, ())
         });
 
         actions[5] = IReflexBatch.BatchAction({
             allowFailure: false,
-            endpointAddress: address(multiModuleEndpoint),
+            endpointAddress: address(multiModuleEndpointA),
             callData: abi.encodeCall(MockReflexModule.unpackEndpointAddress, ())
         });
 
@@ -384,11 +442,11 @@ contract ReflexBatchTest is ReflexFixture {
             )
         });
 
-        assertEq(multiModuleEndpoint.balanceOf(_brutalize(target_)), 0);
+        assertEq(multiModuleEndpointA.balanceOf(_brutalize(target_)), 0);
 
         batchEndpoint.performBatchCall(actions);
 
-        assertEq(multiModuleEndpoint.balanceOf(_brutalize(target_)), amount_);
+        assertEq(multiModuleEndpointA.balanceOf(_brutalize(target_)), amount_);
     }
 
     function testFuzzPerformBatchCallAllowFailure(
@@ -412,7 +470,7 @@ contract ReflexBatchTest is ReflexFixture {
 
         actions[2] = IReflexBatch.BatchAction({
             allowFailure: false,
-            endpointAddress: address(multiModuleEndpoint),
+            endpointAddress: address(multiModuleEndpointA),
             callData: abi.encodeCall(MockImplementationERC20.mint, (_brutalize(target_), amount_))
         });
 
@@ -476,7 +534,27 @@ contract ReflexBatchTest is ReflexFixture {
         batchEndpoint.performBatchCall(actions);
     }
 
-    function testUnitRevertPerformBatchCallNotRegisteredMultiModule() external withHooksExpected(0) {
+    function testUnitRevertPerformBatchCallNotRegisteredMultiModule() external withHooksExpected(1) {
+        multiModuleEndpointC = MockImplementationERC20(
+            singleModuleEndpoint.addERC20(
+                _MODULE_ID_MULTI_CD,
+                _MODULE_TYPE_MULTI_ENDPOINT,
+                _MODULE_NAME_MULTI_C,
+                _MODULE_SYMBOL_MULTI_C,
+                _MODULE_DECIMALS_MULTI_C
+            )
+        );
+
+        multiModuleEndpointD = MockImplementationERC20(
+            singleModuleEndpoint.addERC20(
+                _MODULE_ID_MULTI_CD,
+                _MODULE_TYPE_MULTI_ENDPOINT,
+                _MODULE_NAME_MULTI_D,
+                _MODULE_SYMBOL_MULTI_D,
+                _MODULE_DECIMALS_MULTI_D
+            )
+        );
+
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](2);
 
         actions[0] = IReflexBatch.BatchAction({
@@ -487,19 +565,23 @@ contract ReflexBatchTest is ReflexFixture {
 
         actions[1] = IReflexBatch.BatchAction({
             allowFailure: true,
-            endpointAddress: address(
-                singleModuleEndpoint.addERC20(
-                    _MODULE_ID_MULTI_B,
-                    _MODULE_TYPE_MULTI_ENDPOINT,
-                    _MODULE_NAME_MULTI_B,
-                    _MODULE_SYMBOL_MULTI_B,
-                    _MODULE_DECIMALS_MULTI_B
-                )
-            ),
+            endpointAddress: address(multiModuleEndpointC),
             callData: abi.encodeCall(ImplementationState.getImplementationState0, ())
         });
 
+        // Expect that an unregistered multi-module implementation throws an error.
         vm.expectRevert(IReflexBatch.ModuleNotRegistered.selector);
+        batchEndpoint.performBatchCall(actions);
+
+        multiModuleCD = new MockImplementationERC20(
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI_CD, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
+        );
+
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(multiModuleCD);
+        installerEndpoint.addModules(moduleAddresses);
+
+        // Expect that once registered the multi-module doesn't throw an error.
         batchEndpoint.performBatchCall(actions);
     }
 

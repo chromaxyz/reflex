@@ -81,13 +81,13 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     /**
      * @inheritdoc IReflexInstaller
      */
-    function addModules(address[] calldata moduleAddresses_) public virtual onlyOwner nonReentrant {
-        uint256 moduleAddressLength = moduleAddresses_.length;
+    function addModules(address[] calldata moduleImplementations_) public virtual onlyOwner nonReentrant {
+        uint256 moduleImplementationsLength = moduleImplementations_.length;
 
-        for (uint256 i = 0; i < moduleAddressLength; ) {
-            address moduleAddress = moduleAddresses_[i];
+        for (uint256 i = 0; i < moduleImplementationsLength; ) {
+            address moduleImplementation_ = moduleImplementations_[i];
 
-            IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
+            IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleImplementation_).moduleSettings();
 
             uint32 moduleId_ = moduleSettings_.moduleId;
 
@@ -95,16 +95,18 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
             if (_REFLEX_STORAGE().modules[moduleId_] != address(0)) revert ModuleAlreadyRegistered();
 
             // Call pre-registration hook.
-            _beforeModuleRegistration(moduleSettings_, moduleAddress);
+            _beforeModuleRegistration(moduleSettings_, moduleImplementation_);
 
-            // Register the module.
-            _REFLEX_STORAGE().modules[moduleId_] = moduleAddress;
+            // Register the module implementation in the module mapping.
+            // This is done for all module types.
+            _REFLEX_STORAGE().modules[moduleId_] = moduleImplementation_;
 
-            // Create and register the endpoint for the module.
+            // Create and register the endpoint for the module and register in the endpoint mapping.
+            // This is only done for single-module endpoints.
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_ENDPOINT)
-                _createEndpoint(moduleId_, moduleSettings_.moduleType, moduleAddress);
+                _createEndpoint(moduleId_, moduleSettings_.moduleType, moduleImplementation_);
 
-            emit ModuleAdded(moduleId_, moduleAddress);
+            emit ModuleAdded(moduleId_, moduleImplementation_);
 
             unchecked {
                 ++i;
@@ -115,13 +117,13 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
     /**
      * @inheritdoc IReflexInstaller
      */
-    function upgradeModules(address[] calldata moduleAddresses_) public virtual onlyOwner nonReentrant {
-        uint256 moduleAddressLength = moduleAddresses_.length;
+    function upgradeModules(address[] calldata moduleImplementations_) public virtual onlyOwner nonReentrant {
+        uint256 moduleImplementationsLength = moduleImplementations_.length;
 
-        for (uint256 i = 0; i < moduleAddressLength; ) {
-            address moduleAddress = moduleAddresses_[i];
+        for (uint256 i = 0; i < moduleImplementationsLength; ) {
+            address moduleImplementation_ = moduleImplementations_[i];
 
-            IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
+            IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleImplementation_).moduleSettings();
 
             uint32 moduleId_ = moduleSettings_.moduleId;
 
@@ -133,18 +135,18 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
                 revert ModuleTypeInvalid();
 
             // Call pre-registration hook.
-            _beforeModuleRegistration(moduleSettings_, moduleAddress);
+            _beforeModuleRegistration(moduleSettings_, moduleImplementation_);
 
-            // Register the module.
-            _REFLEX_STORAGE().modules[moduleId_] = moduleAddress;
+            // Update the module implementation of the module in the modules mapping.
+            _REFLEX_STORAGE().modules[moduleId_] = moduleImplementation_;
 
-            // Update the module implementation of the module endpoint.
+            // Update the module implementation of the module in the endpoint mapping.
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_ENDPOINT)
                 _REFLEX_STORAGE()
                     .relations[_REFLEX_STORAGE().endpoints[moduleId_]]
-                    .moduleImplementation = moduleAddress;
+                    .moduleImplementation = moduleImplementation_;
 
-            emit ModuleUpgraded(moduleId_, moduleAddress);
+            emit ModuleUpgraded(moduleId_, moduleImplementation_);
 
             unchecked {
                 ++i;

@@ -45,7 +45,8 @@ contract ReflexEndpoint is IReflexEndpoint {
             // We take full control of memory because it will not return to Solidity code.
             // Calldata: [number of topics as uint8 (1 byte)][topic #i (32 bytes)]{0,4}[extra log data (N bytes)]
             assembly {
-                // We overwrite the Solidity scratch pad at memory position `0`.
+                // Overwrite the first 32 bytes with 0 at memory position `0` to
+                // prevent any unintended data corruption or leakage.
                 mstore(0x00, 0x00)
 
                 // Copy all transaction data into memory starting at location `31`.

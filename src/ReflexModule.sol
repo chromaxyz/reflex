@@ -151,14 +151,20 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
         uint16 moduleType_,
         address moduleImplementation_
     ) internal virtual returns (address endpointAddress_) {
+        // Verify that the `moduleId_` is valid.
         if (moduleId_ == 0) revert ModuleIdInvalid();
+
+        // Only single-endpoint and multi-endpoint modules can create endpoints.
         if (moduleType_ != _MODULE_TYPE_SINGLE_ENDPOINT && moduleType_ != _MODULE_TYPE_MULTI_ENDPOINT)
             revert ModuleTypeInvalid();
 
+        // If endpoint already exists, return it.
         if (_REFLEX_STORAGE().endpoints[moduleId_] != address(0)) return _REFLEX_STORAGE().endpoints[moduleId_];
 
+        // Fetch the endpoint implementation creation code.
         bytes memory endpointCreationCode = _getEndpointCreationCode(moduleId_);
 
+        // Create the endpoint.
         assembly ("memory-safe") {
             endpointAddress_ := create(0, add(endpointCreationCode, 0x20), mload(endpointCreationCode))
 
@@ -171,8 +177,14 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
             }
         }
 
+        // If single-endpoint, register the endpoint address by module id in the `endpoints` mapping.
         if (moduleType_ == _MODULE_TYPE_SINGLE_ENDPOINT) _REFLEX_STORAGE().endpoints[moduleId_] = endpointAddress_;
 
+        // If single-endpoint or multi-endpoint, register the module id and
+        // module implementation in the `relations` mapping.
+        // For multi-endpoint modules, the module implementation is zero.
+        // In the `Dispatcher` and `Batch` the multi-endpoint module implementation is resolved to
+        // module implementation in the `modules` mapping.
         _REFLEX_STORAGE().relations[endpointAddress_] = TrustRelation({
             moduleId: moduleId_,
             moduleImplementation: moduleImplementation_

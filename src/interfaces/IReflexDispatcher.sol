@@ -28,6 +28,11 @@ interface IReflexDispatcher is IReflexState {
     error ModuleIdInvalid();
 
     /**
+     * @notice Thrown when the module has not been registered yet.
+     */
+    error ModuleNotRegistered();
+
+    /**
      * @notice Thrown when the module type is invalid.
      */
     error ModuleTypeInvalid();
