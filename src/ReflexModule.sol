@@ -182,7 +182,7 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
 
         // If single-endpoint or multi-endpoint, register the module id and
         // module implementation in the `relations` mapping.
-        // For multi-endpoint modules, the module implementation is zero.
+        // For multi-endpoint modules, the module implementation is `address(0)`.
         // In the `Dispatcher` and `Batch` the multi-endpoint module implementation is resolved to
         // module implementation in the `modules` mapping.
         _REFLEX_STORAGE().relations[endpointAddress_] = TrustRelation({

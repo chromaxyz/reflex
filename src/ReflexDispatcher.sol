@@ -155,8 +155,9 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
                 moduleImplementation := sload(keccak256(0x00, 0x40))
             }
 
-            // Revert if module implementation is still 0, this happens when
-            // the multi-module has not been registered yet.
+            // Revert if module implementation is still 0, this happens when the
+            // multi-module implementation has not been registered yet but the endpoint has been registered.
+            // If not caught a delegatecall to `address(0)` would be made which would revert.
             if iszero(moduleImplementation) {
                 // Store the function selector of `ModuleNotRegistered()`.
                 mstore(0x00, 0x9c4aee9e)
