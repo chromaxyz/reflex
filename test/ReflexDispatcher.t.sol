@@ -26,8 +26,7 @@ contract ReflexDispatcherTest is ReflexFixture {
     // =========
 
     uint32 internal constant _MODULE_ID_SINGLE = 100;
-    uint32 internal constant _MODULE_ID_MULTI_A = 101;
-    uint32 internal constant _MODULE_ID_MULTI_B = 102;
+    uint32 internal constant _MODULE_ID_MULTI_AB = 101;
 
     string internal constant _MODULE_NAME_MULTI_A = "TOKEN A";
     string internal constant _MODULE_SYMBOL_MULTI_A = "TKNA";
@@ -153,54 +152,57 @@ contract ReflexDispatcherTest is ReflexFixture {
         }
     }
 
-    // function testUnitRevertModuleNotRegistered() external {
-    //     MockImplementationERC20Hub singleModule = new MockImplementationERC20Hub(
-    //         IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
-    //     );
+    function testFuzzRevertModuleNotRegistered(address target_, uint256 amountA_, uint256 amountB_) external {
+        MockImplementationERC20Hub singleModule = new MockImplementationERC20Hub(
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_SINGLE, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
+        );
 
-    //     MockImplementationERC20 multiModule = new MockImplementationERC20(
-    //         IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI_A, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
-    //     );
+        address[] memory moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(singleModule);
+        installerEndpoint.addModules(moduleAddresses);
 
-    //     address[] memory moduleAddresses = new address[](2);
-    //     moduleAddresses[1] = address(singleModule);
-    //     moduleAddresses[2] = address(multiModule);
-    //     installerEndpoint.addModules(moduleAddresses);
+        MockImplementationERC20Hub singleModuleEndpoint = MockImplementationERC20Hub(
+            dispatcher.getEndpoint(_MODULE_ID_SINGLE)
+        );
 
-    //     MockImplementationERC20Hub singleModuleEndpoint = MockImplementationERC20Hub(
-    //         dispatcher.getEndpoint(_MODULE_ID_SINGLE)
-    //     );
+        MockImplementationERC20 multiModuleAB = new MockImplementationERC20(
+            IReflexModule.ModuleSettings({moduleId: _MODULE_ID_MULTI_AB, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
+        );
 
-    //     address[] memory moduleAddresses = new address[](1);
-    //     moduleAddresses[0] = address(singleModule);
-    //     installerEndpoint.addModules(moduleAddresses);
+        MockImplementationERC20 multiModuleEndpointA = MockImplementationERC20(
+            singleModuleEndpoint.addERC20(
+                _MODULE_ID_MULTI_AB,
+                _MODULE_TYPE_MULTI_ENDPOINT,
+                _MODULE_NAME_MULTI_A,
+                _MODULE_SYMBOL_MULTI_A,
+                _MODULE_DECIMALS_MULTI_A
+            )
+        );
 
-    //     MockImplementationERC20 multiModuleEndpointA = MockImplementationERC20(
-    //         singleModuleEndpoint.addERC20(
-    //             _MODULE_ID_MULTI_A,
-    //             _MODULE_TYPE_MULTI_ENDPOINT,
-    //             _MODULE_NAME_MULTI_A,
-    //             _MODULE_SYMBOL_MULTI_A,
-    //             _MODULE_DECIMALS_MULTI_A
-    //         )
-    //     );
+        MockImplementationERC20 multiModuleEndpointB = MockImplementationERC20(
+            singleModuleEndpoint.addERC20(
+                _MODULE_ID_MULTI_AB,
+                _MODULE_TYPE_MULTI_ENDPOINT,
+                _MODULE_NAME_MULTI_B,
+                _MODULE_SYMBOL_MULTI_B,
+                _MODULE_DECIMALS_MULTI_B
+            )
+        );
 
-    //     MockImplementationERC20 multiModuleEndpointA = singleModuleEndpoint.addERC20(
-    //         _MODULE_ID_MULTI_B,
-    //         _MODULE_TYPE_MULTI_ENDPOINT,
-    //         _MODULE_NAME_MULTI_B,
-    //         _MODULE_SYMBOL_MULTI_B,
-    //         _MODULE_DECIMALS_MULTI_B
-    //     );
+        vm.expectRevert(IReflexDispatcher.ModuleNotRegistered.selector);
+        multiModuleEndpointA.mint(target_, amountA_);
 
-    //     vm.expectRevert(IReflexDispatcher.ModuleNotRegistered.selector);
+        vm.expectRevert(IReflexDispatcher.ModuleNotRegistered.selector);
+        multiModuleEndpointB.mint(target_, amountB_);
 
-    //     // (bool success, bytes memory result) = address(dispatcher).call(
-    //     //     "0x44733ae17fa9385be102ac3eac297483dd6233d62b3e14968d2c17fad02b7bb64139109c6533b7c2b9cadb81"
-    //     // );
-    //     // assertFalse(success);
-    //     // assembly ("memory-safe") {
-    //     //     revert(add(32, result), mload(result))
-    //     // }
-    // }
+        moduleAddresses = new address[](1);
+        moduleAddresses[0] = address(multiModuleAB);
+        installerEndpoint.addModules(moduleAddresses);
+
+        multiModuleEndpointA.mint(target_, amountA_);
+        assertEq(multiModuleEndpointA.balanceOf(target_), amountA_);
+
+        multiModuleEndpointB.mint(target_, amountB_);
+        assertEq(multiModuleEndpointB.balanceOf(target_), amountB_);
+    }
 }
