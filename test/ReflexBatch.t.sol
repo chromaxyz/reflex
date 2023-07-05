@@ -313,7 +313,7 @@ contract ReflexBatchTest is ReflexFixture {
     function testUnitRevertInvalidBatchActionConfiguration() external withHooksExpected(0) {
         IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, 0));
+        vm.expectRevert(IReflexModule.ModuleIdInvalid.selector);
         batchEndpoint.simulateBatchCallReturn(actions);
     }
 
@@ -453,7 +453,7 @@ contract ReflexBatchTest is ReflexFixture {
             callData: abi.encodeCall(ImplementationState.getImplementationState0, ())
         });
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, 0));
+        vm.expectRevert(IReflexModule.ModuleIdInvalid.selector);
         batchEndpoint.performBatchCall(actions);
     }
 
@@ -472,7 +472,7 @@ contract ReflexBatchTest is ReflexFixture {
             callData: abi.encodeCall(ImplementationState.getImplementationState0, ())
         });
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, 0));
+        vm.expectRevert(IReflexModule.ModuleIdInvalid.selector);
         batchEndpoint.performBatchCall(actions);
     }
 
@@ -499,7 +499,7 @@ contract ReflexBatchTest is ReflexFixture {
             callData: abi.encodeCall(ImplementationState.getImplementationState0, ())
         });
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexBatch.ModuleNotRegistered.selector, _MODULE_ID_MULTI_B));
+        vm.expectRevert(IReflexBatch.ModuleNotRegistered.selector);
         batchEndpoint.performBatchCall(actions);
     }
 

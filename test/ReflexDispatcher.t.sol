@@ -56,7 +56,7 @@ contract ReflexDispatcherTest is ReflexFixture {
             IReflexModule.ModuleSettings({moduleId: moduleId_, moduleType: _MODULE_TYPE_SINGLE_ENDPOINT})
         );
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, moduleId_));
+        vm.expectRevert(IReflexModule.ModuleIdInvalid.selector);
         new MockReflexDispatcher(address(this), address(module));
     }
 
@@ -65,7 +65,7 @@ contract ReflexDispatcherTest is ReflexFixture {
             IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INSTALLER, moduleType: _MODULE_TYPE_MULTI_ENDPOINT})
         );
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, _MODULE_TYPE_MULTI_ENDPOINT));
+        vm.expectRevert(IReflexModule.ModuleTypeInvalid.selector);
         new MockReflexDispatcher(address(this), address(module));
     }
 

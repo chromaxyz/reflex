@@ -12,5 +12,5 @@ interface IReflexEndpoint {
     /**
      * @notice Thrown when the module id is invalid.
      */
-    error ModuleIdInvalid(uint32 moduleId);
+    error ModuleIdInvalid();
 }

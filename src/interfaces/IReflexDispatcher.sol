@@ -25,12 +25,12 @@ interface IReflexDispatcher is IReflexState {
     /**
      * @notice Thrown when the module id is invalid.
      */
-    error ModuleIdInvalid(uint32 moduleId);
+    error ModuleIdInvalid();
 
     /**
      * @notice Thrown when the module type is invalid.
      */
-    error ModuleTypeInvalid(uint16 moduleType);
+    error ModuleTypeInvalid();
 
     /**
      * @notice Thrown when an address passed is address(0) and therefore invalid.

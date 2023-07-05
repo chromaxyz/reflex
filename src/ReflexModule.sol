@@ -88,9 +88,9 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
      * @param moduleSettings_ Module settings.
      */
     constructor(ModuleSettings memory moduleSettings_) {
-        if (moduleSettings_.moduleId == 0) revert ModuleIdInvalid(moduleSettings_.moduleId);
+        if (moduleSettings_.moduleId == 0) revert ModuleIdInvalid();
         if (moduleSettings_.moduleType == 0 || moduleSettings_.moduleType > _MODULE_TYPE_INTERNAL)
-            revert ModuleTypeInvalid(moduleSettings_.moduleType);
+            revert ModuleTypeInvalid();
 
         _moduleId = moduleSettings_.moduleId;
         _moduleType = moduleSettings_.moduleType;
@@ -137,9 +137,9 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
         uint16 moduleType_,
         address moduleImplementation_
     ) internal virtual returns (address endpointAddress_) {
-        if (moduleId_ == 0) revert ModuleIdInvalid(moduleId_);
+        if (moduleId_ == 0) revert ModuleIdInvalid();
         if (moduleType_ != _MODULE_TYPE_SINGLE_ENDPOINT && moduleType_ != _MODULE_TYPE_MULTI_ENDPOINT)
-            revert ModuleTypeInvalid(moduleType_);
+            revert ModuleTypeInvalid();
 
         if (_REFLEX_STORAGE().endpoints[moduleId_] != address(0)) return _REFLEX_STORAGE().endpoints[moduleId_];
 

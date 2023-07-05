@@ -277,7 +277,7 @@ contract ReflexInstallerTest is ReflexFixture {
         installerEndpoint.addModules(moduleAddresses);
     }
 
-    function testUnitRevertUpgradeModulesModuleNonexistent() external {
+    function testUnitRevertUpgradeModulesModuleNotRegistered() external {
         address[] memory moduleAddresses = new address[](1);
         moduleAddresses[0] = address(
             new MockReflexModule(
@@ -285,7 +285,7 @@ contract ReflexInstallerTest is ReflexFixture {
             )
         );
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexInstaller.ModuleNonexistent.selector, 777));
+        vm.expectRevert(IReflexInstaller.ModuleNotRegistered.selector);
         installerEndpoint.upgradeModules(moduleAddresses);
     }
 
@@ -322,7 +322,7 @@ contract ReflexInstallerTest is ReflexFixture {
     function testUnitRevertAddModulesExistentSingleEndpoint() external withHooksExpected(1, 1) {
         _addModule(singleModuleV1, _VALID);
 
-        _addModule(singleModuleV1, IReflexInstaller.ModuleExistent.selector);
+        _addModule(singleModuleV1, IReflexInstaller.ModuleAlreadyRegistered.selector);
     }
 
     function testUnitUpgradeModulesSingleEndpoint() external withHooksExpected(2, 1) {
@@ -369,7 +369,7 @@ contract ReflexInstallerTest is ReflexFixture {
     function testUnitRevertAddModulesExistentMultiEndpoint() external withHooksExpected(1, 0) {
         _addModule(multiModuleV1, _VALID);
 
-        _addModule(multiModuleV1, IReflexInstaller.ModuleExistent.selector);
+        _addModule(multiModuleV1, IReflexInstaller.ModuleAlreadyRegistered.selector);
     }
 
     function testUnitUpgradeModulesMultiEndpoint() external withHooksExpected(2, 0) {
@@ -415,7 +415,7 @@ contract ReflexInstallerTest is ReflexFixture {
     function testUnitRevertAddModulesExistentInternal() external withHooksExpected(1, 0) {
         _addModule(internalModuleV1, _VALID);
 
-        _addModule(internalModuleV1, IReflexInstaller.ModuleExistent.selector);
+        _addModule(internalModuleV1, IReflexInstaller.ModuleAlreadyRegistered.selector);
     }
 
     function testUnitUpgradeModulesInternal() external withHooksExpected(2, 0) {
@@ -527,10 +527,8 @@ contract ReflexInstallerTest is ReflexFixture {
         if (selector_ == _VALID) {
             vm.expectEmit(true, true, false, false);
             emit ModuleAdded(module_.moduleId(), address(module_));
-        } else if (selector_ == IReflexModule.ModuleTypeInvalid.selector) {
-            vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleType()));
         } else {
-            vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleId()));
+            vm.expectRevert(selector_);
         }
 
         installerEndpoint.addModules(moduleAddresses);
@@ -543,10 +541,8 @@ contract ReflexInstallerTest is ReflexFixture {
         if (selector_ == _VALID) {
             vm.expectEmit(true, true, false, false);
             emit ModuleUpgraded(module_.moduleId(), address(module_));
-        } else if (selector_ == IReflexModule.ModuleTypeInvalid.selector) {
-            vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleType()));
         } else {
-            vm.expectRevert(abi.encodeWithSelector(selector_, module_.moduleId()));
+            vm.expectRevert(selector_);
         }
 
         installerEndpoint.upgradeModules(moduleAddresses);

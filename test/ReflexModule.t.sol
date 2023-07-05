@@ -63,21 +63,21 @@ contract ReflexModuleTest is ReflexFixture {
     }
 
     function testUnitRevertInvalidModuleIdZeroValue() external {
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, _MODULE_ID_INVALID));
+        vm.expectRevert(IReflexModule.ModuleIdInvalid.selector);
         new MockReflexModule(
             IReflexModule.ModuleSettings({moduleId: _MODULE_ID_INVALID, moduleType: _MODULE_TYPE_VALID})
         );
     }
 
     function testUnitRevertInvalidModuleTypeZeroValue() external {
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, _MODULE_TYPE_INVALID_ZERO));
+        vm.expectRevert(IReflexModule.ModuleTypeInvalid.selector);
         new MockReflexModule(
             IReflexModule.ModuleSettings({moduleId: _MODULE_ID_VALID, moduleType: _MODULE_TYPE_INVALID_ZERO})
         );
     }
 
     function testUnitRevertInvalidModuleTypeOverflowValue() external {
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, _MODULE_TYPE_INVALID));
+        vm.expectRevert(IReflexModule.ModuleTypeInvalid.selector);
         new MockReflexModule(
             IReflexModule.ModuleSettings({moduleId: _MODULE_ID_VALID, moduleType: _MODULE_TYPE_INVALID})
         );
@@ -88,15 +88,15 @@ contract ReflexModuleTest is ReflexFixture {
     // ==============
 
     function testUnitRevertCreateEndpointInvalidModuleId() external {
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleIdInvalid.selector, 0));
+        vm.expectRevert(IReflexModule.ModuleIdInvalid.selector);
         module.createEndpoint(0, 0, address(0));
     }
 
     function testUnitRevertCreateEndpointInvalidModuleType() external {
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, 0));
+        vm.expectRevert(IReflexModule.ModuleTypeInvalid.selector);
         module.createEndpoint(102, 0, address(0));
 
-        vm.expectRevert(abi.encodeWithSelector(IReflexModule.ModuleTypeInvalid.selector, _MODULE_TYPE_INTERNAL));
+        vm.expectRevert(IReflexModule.ModuleTypeInvalid.selector);
         module.createEndpoint(102, _MODULE_TYPE_INTERNAL, address(0));
     }
 

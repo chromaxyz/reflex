@@ -35,9 +35,8 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
         // Verify that the `Installer` module configuration is as expected.
         IReflexModule.ModuleSettings memory moduleSettings_ = IReflexInstaller(installerModule_).moduleSettings();
 
-        if (moduleSettings_.moduleId != _MODULE_ID_INSTALLER) revert ModuleIdInvalid(moduleSettings_.moduleId);
-        if (moduleSettings_.moduleType != _MODULE_TYPE_SINGLE_ENDPOINT)
-            revert ModuleTypeInvalid(moduleSettings_.moduleType);
+        if (moduleSettings_.moduleId != _MODULE_ID_INSTALLER) revert ModuleIdInvalid();
+        if (moduleSettings_.moduleType != _MODULE_TYPE_SINGLE_ENDPOINT) revert ModuleTypeInvalid();
 
         // Initialize the owner.
         _REFLEX_STORAGE().owner = owner_;
@@ -153,9 +152,6 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
                 // Load the module implementation from storage.
                 moduleImplementation := sload(keccak256(0x00, 0x40))
             }
-
-            // TODO: add extra check
-            // if (moduleImplementation == address(0)) revert ModuleNotRegistered(moduleId_);
 
             // Copy `msg.data` into memory, starting at position `0`.
             calldatacopy(0x00, 0x00, calldatasize())

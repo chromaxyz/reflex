@@ -89,22 +89,22 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
 
             IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
 
+            uint32 moduleId_ = moduleSettings_.moduleId;
+
             // Verify that the module to add does not exist and is yet to be registered.
-            if (_REFLEX_STORAGE().modules[moduleSettings_.moduleId] != address(0))
-                revert ModuleExistent(moduleSettings_.moduleId);
+            if (_REFLEX_STORAGE().modules[moduleId_] != address(0)) revert ModuleAlreadyRegistered();
 
             // Call pre-registration hook.
             _beforeModuleRegistration(moduleSettings_, moduleAddress);
 
             // Register the module.
-            _REFLEX_STORAGE().modules[moduleSettings_.moduleId] = moduleAddress;
+            _REFLEX_STORAGE().modules[moduleId_] = moduleAddress;
 
             // Create and register the endpoint for the module.
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_ENDPOINT)
-                _createEndpoint(moduleSettings_.moduleId, moduleSettings_.moduleType, moduleAddress);
+                _createEndpoint(moduleId_, moduleSettings_.moduleType, moduleAddress);
 
-            // TODO: emit once, not per loop
-            emit ModuleAdded(moduleSettings_.moduleId, moduleAddress);
+            emit ModuleAdded(moduleId_, moduleAddress);
 
             unchecked {
                 ++i;
@@ -123,30 +123,28 @@ abstract contract ReflexInstaller is IReflexInstaller, ReflexModule {
 
             IReflexModule.ModuleSettings memory moduleSettings_ = IReflexModule(moduleAddress).moduleSettings();
 
+            uint32 moduleId_ = moduleSettings_.moduleId;
+
             // Verify that the module exists and is registered.
-            if (_REFLEX_STORAGE().modules[moduleSettings_.moduleId] == address(0))
-                revert ModuleNonexistent(moduleSettings_.moduleId);
+            if (_REFLEX_STORAGE().modules[moduleId_] == address(0)) revert ModuleNotRegistered();
 
             // Verify that the next module type is the same as the current module type.
-            if (
-                moduleSettings_.moduleType !=
-                IReflexModule(_REFLEX_STORAGE().modules[moduleSettings_.moduleId]).moduleType()
-            ) revert ModuleTypeInvalid(moduleSettings_.moduleType);
+            if (moduleSettings_.moduleType != IReflexModule(_REFLEX_STORAGE().modules[moduleId_]).moduleType())
+                revert ModuleTypeInvalid();
 
             // Call pre-registration hook.
             _beforeModuleRegistration(moduleSettings_, moduleAddress);
 
             // Register the module.
-            _REFLEX_STORAGE().modules[moduleSettings_.moduleId] = moduleAddress;
+            _REFLEX_STORAGE().modules[moduleId_] = moduleAddress;
 
             // Update the module implementation of the module endpoint.
             if (moduleSettings_.moduleType == _MODULE_TYPE_SINGLE_ENDPOINT)
                 _REFLEX_STORAGE()
-                    .relations[_REFLEX_STORAGE().endpoints[moduleSettings_.moduleId]]
+                    .relations[_REFLEX_STORAGE().endpoints[moduleId_]]
                     .moduleImplementation = moduleAddress;
 
-            // TODO: emit once, not per loop
-            emit ModuleUpgraded(moduleSettings_.moduleId, moduleAddress);
+            emit ModuleUpgraded(moduleId_, moduleAddress);
 
             unchecked {
                 ++i;

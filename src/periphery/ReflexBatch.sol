@@ -142,45 +142,17 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         address messageSender_,
         BatchAction calldata action_
     ) internal virtual returns (bool success_, bytes memory returnData_) {
-        // TODO: optimize in assembly
-
         address endpointAddress = action_.endpointAddress;
 
-        // assembly {
-        //     // TrustRelation memory relation = _REFLEX_STORAGE().relations[msg.sender]
-        //     // Store the `msg.sender` at memory position `0`.
-        //     mstore(0x00, endpointAddress)
-        //     // Store the relations slot at memory position `32`.
-        //     mstore(0x20, _REFLEX_STORAGE_RELATIONS_SLOT)
-        //     // Load the relation by `msg.sender` from storage.
-        //     let relation := sload(keccak256(0x00, 0x40))
+        TrustRelation memory relation = _REFLEX_STORAGE().relations[endpointAddress];
 
-        //     // uint32 moduleId = relation.moduleId;
-        //     let moduleId_ := and(relation, 0xffffffff)
+        if (relation.moduleId == 0) revert ModuleIdInvalid();
 
-        //     // if (moduleId == 0) revert ModuleIdInvalid(moduleId_);
-        //     if iszero(moduleId_) {
-        //         // Store the function selector of `ModuleIdInvalid(moduleId_)`.
-        //         mstore(0x00, 0x0d403d02)
-        //         // Revert with (offset, size).
-        //         revert(0x1c, 0x04)
-        //     }
-        // }
+        address moduleImplementation = relation.moduleImplementation;
 
-        // TODO: optimize reentrancy guard
-        // TODO: replace with assembly
-        // TODO: optimize errors to not pass a `moduleId_` to the error message
+        if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[relation.moduleId];
 
-        // These are two sloads
-        uint32 moduleId_ = _REFLEX_STORAGE().relations[endpointAddress].moduleId;
-
-        if (moduleId_ == 0) revert ModuleIdInvalid(moduleId_);
-
-        address moduleImplementation = _REFLEX_STORAGE().relations[endpointAddress].moduleImplementation;
-
-        if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[moduleId_];
-
-        if (moduleImplementation == address(0)) revert ModuleNotRegistered(moduleId_);
+        if (moduleImplementation == address(0)) revert ModuleNotRegistered();
 
         (success_, returnData_) = moduleImplementation.delegatecall(
             abi.encodePacked(action_.callData, uint160(messageSender_), uint160(endpointAddress))
