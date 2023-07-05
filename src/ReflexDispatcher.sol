@@ -120,27 +120,31 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
                 // Revert with (offset, size).
                 revert(0x1c, 0x04)
             }
-        }
 
-        uint32 moduleId = _REFLEX_STORAGE().relations[msg.sender].moduleId;
+            // uint32 moduleId = _REFLEX_STORAGE().relations[msg.sender].moduleId;
+            mstore(0x00, and(caller(), 0xffffffffffffffffffffffffffffffffffffffff))
+            mstore(0x20, add(_REFLEX_STORAGE_SLOT, 5))
+            let moduleId := and(sload(keccak256(0x00, 0x40)), 0xffffffff)
 
-        // [calldata (N bytes)][msg.sender (20 bytes)]
-        assembly {
             if iszero(moduleId) {
                 // Store the function selector of `CallerNotTrusted()`.
                 mstore(0x00, 0xe9cda707)
                 // Revert with (offset, size).
                 revert(0x1c, 0x04)
             }
-        }
 
-        address moduleImplementation = _REFLEX_STORAGE().relations[msg.sender].moduleImplementation;
+            // address moduleImplementation = _REFLEX_STORAGE().relations[msg.sender].moduleImplementation;
+            let moduleImplementation := and(
+                shr(0x20, sload(keccak256(0x00, 0x40))),
+                0xffffffffffffffffffffffffffffffffffffffff
+            )
 
-        if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[moduleId];
-
-        // [calldata (N bytes)][msg.sender (20 bytes)]
-        assembly {
-            // We take full control of memory in this inline assembly block because it will not return to Solidity code.
+            // if (moduleImplementation == address(0)) moduleImplementation = _REFLEX_STORAGE().modules[moduleId];
+            if iszero(and(moduleImplementation, 0xffffffffffffffffffffffffffffffffffffffff)) {
+                mstore(0x00, and(moduleId, 0xffffffff))
+                mstore(0x20, add(_REFLEX_STORAGE_SLOT, 3))
+                moduleImplementation := and(sload(keccak256(0x00, 0x40)), 0xffffffffffffffffffffffffffffffffffffffff)
+            }
 
             // Copy `msg.data` into memory, starting at position `0`.
             calldatacopy(0x00, 0x00, calldatasize())
