@@ -112,7 +112,7 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
      */
     // solhint-disable-next-line func-name-mixedcase
     function _REFLEX_STORAGE() internal pure returns (ReflexStorage storage storage_) {
-        assembly {
+        assembly ("memory-safe") {
             storage_.slot := _REFLEX_STORAGE_SLOT
         }
     }

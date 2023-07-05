@@ -78,7 +78,7 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
         pure
         returns (MaliciousImplementationStorage storage storage_)
     {
-        assembly {
+        assembly ("memory-safe") {
             /**
              * @dev `bytes32(uint256(keccak256("_IMPLEMENTATION_STORAGE")) - 1)`
              * A `-1` offset is added so the preimage of the hash cannot be known,

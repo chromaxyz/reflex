@@ -28,7 +28,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
 
         if (!success) _revertBytes(result);
 
-        assembly {
+        assembly ("memory-safe") {
             return(add(32, result), mload(result))
         }
     }
@@ -104,7 +104,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
 
         if (bytes4(result) != BatchSimulation.selector) _revertBytes(result);
 
-        assembly {
+        assembly ("memory-safe") {
             result := add(4, result)
         }
 
