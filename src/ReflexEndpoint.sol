@@ -42,10 +42,10 @@ contract ReflexEndpoint is IReflexEndpoint {
 
         // If the caller is the deployer, instead of re-enter - issue a log message.
         if (msg.sender == deployer_) {
+            // We take full control of memory because it will not return to Solidity code.
             // Calldata: [number of topics as uint8 (1 byte)][topic #i (32 bytes)]{0,4}[extra log data (N bytes)]
             assembly {
-                // We take full control of memory in this inline assembly block because it will not return to
-                // Solidity code. We overwrite the Solidity scratch pad at memory position `0`.
+                // We overwrite the Solidity scratch pad at memory position `0`.
                 mstore(0x00, 0x00)
 
                 // Copy all transaction data into memory starting at location `31`.
@@ -90,11 +90,9 @@ contract ReflexEndpoint is IReflexEndpoint {
                 return(0, 0)
             }
         } else {
+            // We take full control of memory because it will not return to Solidity code.
             // Calldata: [calldata (N bytes)]
             assembly {
-                // We take full control of memory in this inline assembly block
-                // because it will not return to Solidity code.
-
                 // Copy msg.data into memory, starting at position `0`.
                 calldatacopy(0x00, 0x00, calldatasize())
 
