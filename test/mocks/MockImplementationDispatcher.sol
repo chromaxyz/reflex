@@ -16,7 +16,7 @@ contract MockImplementationDispatcher is ReflexDispatcher, ImplementationState {
     // ===========
 
     /**
-     * @param owner_ Protocol owner.
+     * @param owner_ Contract owner.
      * @param installerModule_ Installer module address.
      */
     constructor(address owner_, address installerModule_) ReflexDispatcher(owner_, installerModule_) {}

@@ -22,7 +22,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
     // ===========
 
     /**
-     * @param owner_ Protocol owner.
+     * @param owner_ Contract owner.
      * @param installerModule_ Installer module address.
      */
     constructor(address owner_, address installerModule_) {

@@ -45,7 +45,11 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         for (uint256 i = 0; i < actionsLength; ) {
             BatchAction calldata action = actions_[i];
 
-            (bool success, bytes memory result) = _performBatchAction(messageSender, action);
+            (bool success, bytes memory result) = _performBatchAction(
+                messageSender,
+                action.endpointAddress,
+                action.callData
+            );
 
             if (!(success || action.allowFailure)) _revertBytes(result);
 
@@ -71,7 +75,11 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         for (uint256 i = 0; i < actionsLength; ) {
             BatchAction calldata action = actions_[i];
 
-            (bool success, bytes memory result) = _performBatchAction(messageSender, action);
+            (bool success, bytes memory result) = _performBatchAction(
+                messageSender,
+                action.endpointAddress,
+                action.callData
+            );
 
             simulation[i] = BatchActionResponse({success: success, returnData: result});
 
@@ -134,25 +142,22 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     /**
      * @notice Perform a single batch action.
      * @param messageSender_ Message sender.
-     * @param action_ Action to perform.
+     * @param endpointAddress_ Endpoint address.
+     * @param callData_ Call data.
      * @return success_ Whether the batch action was succesful.
      * @return returnData_ The return data of the performed batch action.
      */
     function _performBatchAction(
         address messageSender_,
-        BatchAction calldata action_
+        address endpointAddress_,
+        bytes calldata callData_
     ) internal virtual returns (bool success_, bytes memory returnData_) {
-        address endpointAddress = action_.endpointAddress;
-
         address moduleImplementation;
 
         assembly ("memory-safe") {
-            // Cache the free memory pointer.
-            let m := mload(0x40)
-
             // Load the relation of the `endpointAddress` from storage.
             // Store the `msg.sender` at memory position `0`.
-            mstore(0x00, endpointAddress)
+            mstore(0x00, endpointAddress_)
             // Store the relations slot at memory position `32`.
             mstore(0x20, _REFLEX_STORAGE_RELATIONS_SLOT)
             // Load the relation by `endpointAddress` from storage.
@@ -192,13 +197,10 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
                 // Revert with (offset, size).
                 revert(0x1c, 0x04)
             }
-
-            // Restore the free memory pointer.
-            mstore(0x40, m)
         }
 
         (success_, returnData_) = moduleImplementation.delegatecall(
-            abi.encodePacked(action_.callData, uint160(messageSender_), uint160(endpointAddress))
+            abi.encodePacked(callData_, messageSender_, endpointAddress_)
         );
     }
 }
