@@ -132,7 +132,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
             // Get module id from `relation` by extracting the lower 4 bytes.
             let moduleId := and(relation, 0xffffffff)
 
-            // Revert if module id is 0.
+            // Revert if module id is `0`.
             // This happens when the caller is not a trusted endpoint.
             if iszero(moduleId) {
                 // Store the function selector of `CallerNotTrusted()`.
@@ -157,7 +157,7 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
 
             // Revert if module implementation is still 0, this happens when the
             // multi-module implementation has not been registered yet but the endpoint has been registered.
-            // If not caught a delegatecall to `address(0)` would be made which would revert.
+            // If not caught a delegatecall to `address(0)` would be made which could have potential side-effects.
             if iszero(moduleImplementation) {
                 // Store the function selector of `ModuleNotRegistered()`.
                 mstore(0x00, 0x9c4aee9e)
