@@ -172,14 +172,14 @@ abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
             mstore(calldatasize(), shl(96, caller()))
 
             // Calldata: [original calldata (N bytes)][original msg.sender (20 bytes)][endpoint address (20 bytes)]
-            let result := delegatecall(gas(), moduleImplementation, 0, add(calldatasize(), 20), 0, 0)
+            let success := delegatecall(gas(), moduleImplementation, 0, add(calldatasize(), 20), 0, 0)
 
             // Copy the returned data into memory, starting at position `0`.
             returndatacopy(0x00, 0x00, returndatasize())
 
-            switch result
+            switch success
             case 0 {
-                // If result is 0, revert.
+                // If success is 0, revert.
                 revert(0, returndatasize())
             }
             default {
