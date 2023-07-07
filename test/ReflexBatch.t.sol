@@ -146,11 +146,8 @@ contract ReflexBatchTest is ReflexFixture {
         });
 
         IReflexBatch.BatchActionResponse[] memory responses = new IReflexBatch.BatchActionResponse[](2);
-        responses[0] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(amount_)});
-        responses[1] = IReflexBatch.BatchActionResponse({
-            success: false,
-            returnData: abi.encodeWithSelector(IReflexModule.ZeroAddress.selector)
-        });
+        responses[0] = IReflexBatch.BatchActionResponse({success: true, result: abi.encode(amount_)});
+        responses[1] = IReflexBatch.BatchActionResponse({success: true, result: ""});
 
         vm.expectRevert(abi.encodeWithSelector(IReflexBatch.BatchSimulation.selector, responses));
         batchEndpoint.simulateBatchCallRevert(actions);
@@ -240,18 +237,18 @@ contract ReflexBatchTest is ReflexFixture {
         });
 
         IReflexBatch.BatchActionResponse[] memory responses = new IReflexBatch.BatchActionResponse[](9);
-        responses[0] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
-        responses[1] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(message_)});
-        responses[2] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
-        responses[3] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(amountA_)});
-        responses[4] = IReflexBatch.BatchActionResponse({success: true, returnData: ""});
-        responses[5] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(amountB_)});
-        responses[6] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(address(this))});
+        responses[0] = IReflexBatch.BatchActionResponse({success: true, result: ""});
+        responses[1] = IReflexBatch.BatchActionResponse({success: true, result: abi.encode(message_)});
+        responses[2] = IReflexBatch.BatchActionResponse({success: true, result: ""});
+        responses[3] = IReflexBatch.BatchActionResponse({success: true, result: abi.encode(amountA_)});
+        responses[4] = IReflexBatch.BatchActionResponse({success: true, result: ""});
+        responses[5] = IReflexBatch.BatchActionResponse({success: true, result: abi.encode(amountB_)});
+        responses[6] = IReflexBatch.BatchActionResponse({success: true, result: abi.encode(address(this))});
         responses[7] = IReflexBatch.BatchActionResponse({
             success: true,
-            returnData: abi.encode(address(singleModuleEndpoint))
+            result: abi.encode(address(singleModuleEndpoint))
         });
-        responses[8] = IReflexBatch.BatchActionResponse({success: true, returnData: abi.encode(amountA_)});
+        responses[8] = IReflexBatch.BatchActionResponse({success: true, result: abi.encode(amountA_)});
 
         vm.expectRevert(abi.encodeWithSelector(IReflexBatch.BatchSimulation.selector, responses));
         batchEndpoint.simulateBatchCallRevert(actions);
@@ -333,31 +330,31 @@ contract ReflexBatchTest is ReflexFixture {
         IReflexBatch.BatchActionResponse[] memory responses = batchEndpoint.simulateBatchCallReturn(actions);
 
         assertEq(responses[0].success, true);
-        assertEq(responses[0].returnData, "");
+        assertEq(responses[0].result, "");
 
         assertEq(responses[1].success, true);
-        assertEq(responses[1].returnData, abi.encode(message_));
+        assertEq(responses[1].result, abi.encode(message_));
 
         assertEq(responses[2].success, true);
-        assertEq(responses[2].returnData, "");
+        assertEq(responses[2].result, "");
 
         assertEq(responses[3].success, true);
-        assertEq(responses[3].returnData, abi.encode(amountA_));
+        assertEq(responses[3].result, abi.encode(amountA_));
 
         assertEq(responses[4].success, true);
-        assertEq(responses[4].returnData, "");
+        assertEq(responses[4].result, "");
 
         assertEq(responses[5].success, true);
-        assertEq(responses[5].returnData, abi.encode(amountB_));
+        assertEq(responses[5].result, abi.encode(amountB_));
 
         assertEq(responses[6].success, true);
-        assertEq(responses[6].returnData, abi.encode(address(this)));
+        assertEq(responses[6].result, abi.encode(address(this)));
 
         assertEq(responses[7].success, true);
-        assertEq(responses[7].returnData, abi.encode(address(singleModuleEndpoint)));
+        assertEq(responses[7].result, abi.encode(address(singleModuleEndpoint)));
 
         assertEq(responses[8].success, true);
-        assertEq(responses[8].returnData, abi.encode(amountA_));
+        assertEq(responses[8].result, abi.encode(amountA_));
 
         assertEq(multiModuleEndpointA.balanceOf(_brutalize(target_)), 0);
         assertEq(multiModuleEndpointB.balanceOf(_brutalize(target_)), 0);

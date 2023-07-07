@@ -51,7 +51,7 @@ interface IReflexBatch is IReflexModule {
         /**
          * @notice Encoded return data.
          */
-        bytes returnData;
+        bytes result;
     }
 
     // =======
