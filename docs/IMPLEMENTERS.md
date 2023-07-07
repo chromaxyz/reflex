@@ -140,7 +140,7 @@ The `Dispatcher` then takes the received calldata and appends its view of `msg.s
 
 This data is then sent to the module implementation with `DELEGATECALL`, so the module implementation code is executing within the storage context of the `Dispatcher`.
 
-The module implementation will unpack the original calldata using the solidity ABI decoder, ignoring the trailing `40 bytes`.
+The module implementation will unpack the original calldata using the Solidity ABI decoder, ignoring the trailing `40 bytes`.
 
 Modules are not allowed to access `msg.sender`. Instead, they should use the `unpackMessageSender()` helper in [src/ReflexModule.sol](../src/ReflexModule.sol) which will retrieve the message sender from the trailing calldata. When modules need to access the endpoint address, there is a composite helper `unpackEndpointAddress` which will retrieve the endpoint address from the trailing calldata.
 
@@ -174,7 +174,7 @@ To verify that all external state-modifying methods have a `nonReentrant` or `re
 
 As mentioned before, execution takes place within the `Dispatcher` contract's storage context, not the endpoints'. Implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
 
-To verify that the storage layout is compatible one SHOULD RUN the respective [scripts/storage-check.sh](../scripts/storage-check.sh) and [scripts/storage-generate.sh](../scripts/storage-generate.sh) scripts after applying any updates.
+Reflex uses the [Diamond Storage](https://dev.to/mudgen/how-diamond-storage-works-90e) pattern to manage its own storage. Implementers building on top of Reflex are encouraged to use their own storage struct as implemented in [src/ReflexState.sol](../src/ReflexState.sol).
 
 ## Implementing
 
