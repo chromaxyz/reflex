@@ -55,11 +55,11 @@ abstract contract ReflexCircuitBreaker is IReflexCircuitBreaker, ReflexModule {
     // ================
 
     /**
-     * @dev Get the Reflex storage pointer.
-     * @return storage_ Pointer to the Reflex storage state.
+     * @dev Get the Reflex Circuit Breaker storage pointer.
+     * @return storage_ Pointer to the Reflex Circuit Breaker storage state.
      */
     // solhint-disable-next-line func-name-mixedcase
-    function _REFLEX_CIRCUIT_BREAKER_STORAGE() internal pure returns (ReflexStorage storage storage_) {
+    function _REFLEX_CIRCUIT_BREAKER_STORAGE() internal pure returns (ReflexCircuitBreakerStorage storage storage_) {
         assembly ("memory-safe") {
             storage_.slot := _REFLEX_CIRCUIT_BREAKER_STORAGE_SLOT
         }
