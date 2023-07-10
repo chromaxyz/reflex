@@ -174,7 +174,7 @@ To verify that all external state-modifying methods have a `nonReentrant` or `re
 
 As mentioned before, execution takes place within the `Dispatcher` contract's storage context, not the endpoints'. Implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
 
-Reflex uses the [Diamond Storage](https://dev.to/mudgen/how-diamond-storage-works-90e) pattern to manage its own storage. Implementers building on top of Reflex are encouraged to use their own storage struct as implemented in [src/ReflexState.sol](../src/ReflexState.sol).
+Reflex uses the [Diamond Storage](https://dev.to/mudgen/how-diamond-storage-works-90e) pattern to manage its own storage. Implementers building on top of Reflex are encouraged to use their own storage struct as implemented in [src/ReflexState.sol](../src/ReflexState.sol). A template implementation to get started with Reflex can be found [here](https://github.com/Chroma-Org/Reflex-Template/).
 
 ## Implementing
 
