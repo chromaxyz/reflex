@@ -66,9 +66,9 @@ abstract contract TestHarness is Users, Test {
      * Fills the memory with junk, for more robust testing of inline assembly which reads / writes to the memory.
      */
     modifier brutalizeMemory() {
-        // To prevent a solidity 0.8.13 bug.
+        // To prevent a Solidity 0.8.13 bug.
         // See: https://blog.soliditylang.org/2022/06/15/inline-assembly-memory-side-effects-bug
-        // Basically, we need to access a solidity variable from the assembly to
+        // Basically, we need to access a Solidity variable from the assembly to
         // tell the compiler that this assembly block is not in isolation.
         {
             uint256 zero;
