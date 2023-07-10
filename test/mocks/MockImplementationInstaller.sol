@@ -45,7 +45,7 @@ contract MockImplementationInstaller is ReflexInstaller, MockImplementationModul
  */
 contract RevertingInvalidEndpoint {
     constructor() {
-        assembly {
+        assembly ("memory-safe") {
             revert(0, 0)
         }
     }

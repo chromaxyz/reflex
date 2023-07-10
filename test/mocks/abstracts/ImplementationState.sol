@@ -82,7 +82,7 @@ abstract contract ImplementationState is ReflexState {
      */
     // solhint-disable-next-line func-name-mixedcase
     function _IMPLEMENTATION_STORAGE() internal pure returns (ImplementationStorage storage storage_) {
-        assembly {
+        assembly ("memory-safe") {
             storage_.slot := _IMPLEMENTATION_STORAGE_SLOT
         }
     }

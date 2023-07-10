@@ -45,16 +45,25 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
      * Calling a `nonReentrant` function from another `nonReentrant` function is not supported.
      */
     modifier nonReentrant() virtual {
-        // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
-        if (_REFLEX_STORAGE().reentrancyStatus != _REENTRANCY_GUARD_UNLOCKED) revert Reentrancy();
+        assembly ("memory-safe") {
+            // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
+            if eq(sload(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT), _REENTRANCY_GUARD_LOCKED) {
+                // Store the function selector of `Reentrancy()`.
+                mstore(0x00, 0xab143c06)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
 
-        // Any calls to `nonReentrant` after this point will fail.
-        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_LOCKED;
+            // Any calls to `nonReentrant` after this point will fail.
+            sstore(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_LOCKED)
+        }
 
         _;
 
-        // By storing the original value once again, a refund is triggered.
-        _REFLEX_STORAGE().reentrancyStatus = _REENTRANCY_GUARD_UNLOCKED;
+        assembly ("memory-safe") {
+            // By storing the original value once again, a refund is triggered.
+            sstore(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_UNLOCKED)
+        }
     }
 
     /**
@@ -62,9 +71,16 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
      * Calling a `nonReadReentrant` function from another `nonReadReentrant` function is not supported.
      */
     modifier nonReadReentrant() virtual {
-        // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
-        // Any calls to `nonReadReentrant` after this point will fail.
-        if (_REFLEX_STORAGE().reentrancyStatus == _REENTRANCY_GUARD_LOCKED) revert ReadOnlyReentrancy();
+        assembly ("memory-safe") {
+            // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
+            // Any calls to `nonReadReentrant` after this point will fail.
+            if eq(sload(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT), _REENTRANCY_GUARD_LOCKED) {
+                // Store the function selector of `ReadOnlyReentrancy()`.
+                mstore(0x00, 0x49ce9485)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
+        }
 
         _;
     }
@@ -86,9 +102,9 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
      * @param moduleSettings_ Module settings.
      */
     constructor(ModuleSettings memory moduleSettings_) {
-        if (moduleSettings_.moduleId == 0) revert ModuleIdInvalid(moduleSettings_.moduleId);
+        if (moduleSettings_.moduleId == 0) revert ModuleIdInvalid();
         if (moduleSettings_.moduleType == 0 || moduleSettings_.moduleType > _MODULE_TYPE_INTERNAL)
-            revert ModuleTypeInvalid(moduleSettings_.moduleType);
+            revert ModuleTypeInvalid();
 
         _moduleId = moduleSettings_.moduleId;
         _moduleType = moduleSettings_.moduleType;
@@ -135,14 +151,20 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
         uint16 moduleType_,
         address moduleImplementation_
     ) internal virtual returns (address endpointAddress_) {
-        if (moduleId_ == 0) revert ModuleIdInvalid(moduleId_);
-        if (moduleType_ != _MODULE_TYPE_SINGLE_ENDPOINT && moduleType_ != _MODULE_TYPE_MULTI_ENDPOINT)
-            revert ModuleTypeInvalid(moduleType_);
+        // Verify that the `moduleId_` is valid.
+        if (moduleId_ == 0) revert ModuleIdInvalid();
 
+        // Only single-endpoint and multi-endpoint modules can create endpoints.
+        if (moduleType_ != _MODULE_TYPE_SINGLE_ENDPOINT && moduleType_ != _MODULE_TYPE_MULTI_ENDPOINT)
+            revert ModuleTypeInvalid();
+
+        // If endpoint already exists, return it.
         if (_REFLEX_STORAGE().endpoints[moduleId_] != address(0)) return _REFLEX_STORAGE().endpoints[moduleId_];
 
+        // Fetch the endpoint implementation creation code.
         bytes memory endpointCreationCode = _getEndpointCreationCode(moduleId_);
 
+        // Create the endpoint.
         assembly ("memory-safe") {
             endpointAddress_ := create(0, add(endpointCreationCode, 0x20), mload(endpointCreationCode))
 
@@ -155,8 +177,14 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
             }
         }
 
+        // If single-endpoint, register the endpoint address by module id in the `endpoints` mapping.
         if (moduleType_ == _MODULE_TYPE_SINGLE_ENDPOINT) _REFLEX_STORAGE().endpoints[moduleId_] = endpointAddress_;
 
+        // If single-endpoint or multi-endpoint, register the module id and
+        // module implementation in the `relations` mapping.
+        // For multi-endpoint modules, the module implementation is `address(0)`.
+        // In the `Dispatcher` and `Batch` the multi-endpoint module implementation is resolved to
+        // module implementation in the `modules` mapping.
         _REFLEX_STORAGE().relations[endpointAddress_] = TrustRelation({
             moduleId: moduleId_,
             moduleImplementation: moduleImplementation_
@@ -247,10 +275,9 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
      * In the common case you use a single-endpoint you will override this method in your `Installer` contract.
      * In the exceptional case you use a multi-endpoint module you will override this method in
      * the place you instantiate the endpoint, one of your `Module` contracts.
-     * @param moduleId_ Module id.
      * @return endpointCreationCode_ Endpoint creation code.
      */
-    function _getEndpointCreationCode(uint32 moduleId_) internal virtual returns (bytes memory endpointCreationCode_) {
-        endpointCreationCode_ = abi.encodePacked(type(ReflexEndpoint).creationCode, abi.encode(moduleId_));
+    function _getEndpointCreationCode(uint32) internal virtual returns (bytes memory endpointCreationCode_) {
+        endpointCreationCode_ = type(ReflexEndpoint).creationCode;
     }
 }

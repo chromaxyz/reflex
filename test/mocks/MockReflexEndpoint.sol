@@ -11,12 +11,5 @@ import {MockHarness} from "../fixtures/MockHarness.sol";
  * @title Mock Reflex Endpoint
  */
 contract MockReflexEndpoint is MockHarness, ReflexEndpoint {
-    // ===========
-    // Constructor
-    // ===========
 
-    /**
-     * @param moduleId_ Module id.
-     */
-    constructor(uint32 moduleId_) ReflexEndpoint(moduleId_) {}
 }

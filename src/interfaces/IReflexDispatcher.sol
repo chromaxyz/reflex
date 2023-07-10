@@ -13,7 +13,7 @@ interface IReflexDispatcher is IReflexState {
     // ======
 
     /**
-     * @notice Thrown when an unregistered and untrusted user or endpoint calls the {ReflexDispatcher} directly.
+     * @notice Thrown when an unregistered and untrusted user or endpoint calls the `Dispatcher` directly.
      */
     error CallerNotTrusted();
 
@@ -25,12 +25,17 @@ interface IReflexDispatcher is IReflexState {
     /**
      * @notice Thrown when the module id is invalid.
      */
-    error ModuleIdInvalid(uint32 moduleId);
+    error ModuleIdInvalid();
+
+    /**
+     * @notice Thrown when the module has not been registered yet.
+     */
+    error ModuleNotRegistered();
 
     /**
      * @notice Thrown when the module type is invalid.
      */
-    error ModuleTypeInvalid(uint16 moduleType);
+    error ModuleTypeInvalid();
 
     /**
      * @notice Thrown when an address passed is address(0) and therefore invalid.

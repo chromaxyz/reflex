@@ -16,7 +16,7 @@ interface IReflexBatch is IReflexModule {
 
     error BatchSimulationFailed();
 
-    error ModuleNotRegistered(uint32 moduleId_);
+    error ModuleNotRegistered();
 
     // =======
     // Structs
@@ -51,7 +51,7 @@ interface IReflexBatch is IReflexModule {
         /**
          * @notice Encoded return data.
          */
-        bytes returnData;
+        bytes result;
     }
 
     // =======

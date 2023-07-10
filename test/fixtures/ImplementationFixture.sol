@@ -122,7 +122,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness, MockHar
 
         bytes32 topic1 = bytes32(uint256(1));
 
-        vm.expectEmit(false, false, false, true, address(endpoint_));
+        vm.expectEmit({emitter: address(endpoint_)});
         assembly ("memory-safe") {
             let ptr := mload(0x40)
             mstore(ptr, message)
@@ -140,7 +140,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness, MockHar
         bytes32 topic1 = bytes32(uint256(1));
         bytes32 topic2 = bytes32(uint256(2));
 
-        vm.expectEmit(true, false, false, true, address(endpoint_));
+        vm.expectEmit({emitter: address(endpoint_)});
         assembly ("memory-safe") {
             let ptr := mload(0x40)
             mstore(ptr, message)
@@ -159,7 +159,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness, MockHar
         bytes32 topic2 = bytes32(uint256(2));
         bytes32 topic3 = bytes32(uint256(3));
 
-        vm.expectEmit(true, true, false, true, address(endpoint_));
+        vm.expectEmit({emitter: address(endpoint_)});
         assembly ("memory-safe") {
             let ptr := mload(0x40)
             mstore(ptr, message)
@@ -179,7 +179,7 @@ abstract contract ImplementationFixture is ReflexConstants, TestHarness, MockHar
         bytes32 topic3 = bytes32(uint256(3));
         bytes32 topic4 = bytes32(uint256(4));
 
-        vm.expectEmit(true, true, true, true, address(endpoint_));
+        vm.expectEmit({emitter: address(endpoint_)});
         assembly ("memory-safe") {
             let ptr := mload(0x40)
             mstore(ptr, message)

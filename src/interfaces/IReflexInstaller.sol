@@ -15,12 +15,12 @@ interface IReflexInstaller is IReflexModule {
     /**
      * @notice Thrown when the module already has been registered.
      */
-    error ModuleExistent(uint32 moduleId);
+    error ModuleAlreadyRegistered();
 
     /**
      * @notice Thrown when the module has not been registered yet.
      */
-    error ModuleNonexistent(uint32 moduleId);
+    error ModuleNotRegistered();
 
     // ======
     // Events
