@@ -1,56 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
-// Vendor
-// solhint-disable-next-line no-console
-import {console2} from "forge-std/console2.sol";
-import {Test} from "forge-std/Test.sol";
-
 // Invariants
+import {InvariantBase} from "./InvariantBase.sol";
 import {IInvariantHandler, InvariantHandler} from "./InvariantHandler.sol";
 
 // Fixtures
 import {BoundedHandler} from "../fixtures/TestHarness.sol";
 
 /**
- * @title Implementation Invariant Base
+ * @title  Unbounded Invariant Test
  */
-contract ImplementationInvariantBase is Test {
-    // =======
-    // Storage
-    // =======
-
-    IInvariantHandler public handler;
-
-    // =====
-    // Setup
-    // =====
-
-    function setUp() public virtual {}
-
-    function _invariantA() internal view {
-        // solhint-disable-next-line no-console
-        console2.log("# INVARIANT: A #");
-    }
-
-    function _invariantB() internal view {
-        // solhint-disable-next-line no-console
-        console2.log("# INVARIANT: B #");
-    }
-
-    function _createLog() internal {
-        /* solhint-disable no-console */
-        console2.log("# CALL SUMMARY #");
-
-        console2.log("warp", handler.getCallCount("warp"));
-        /* solhint-enable no-console */
-    }
-}
-
-/**
- * @title Implementation Unbounded Invariant Test
- */
-contract ImplementationUnboundedInvariantTest is ImplementationInvariantBase {
+contract UnboundedInvariantTest is InvariantBase {
     // =====
     // Setup
     // =====
@@ -58,13 +19,13 @@ contract ImplementationUnboundedInvariantTest is ImplementationInvariantBase {
     function setUp() public virtual override {
         super.setUp();
 
-        handler = IInvariantHandler(address(new ImplementationUnboundedInvariantHandler()));
+        handler = IInvariantHandler(address(new UnboundedInvariantHandler()));
         handler.setUp();
 
         targetContract(address(handler));
 
         bytes4[] memory selectors = new bytes4[](1);
-        selectors[0] = ImplementationUnboundedInvariantHandler.warp.selector;
+        selectors[0] = UnboundedInvariantHandler.warp.selector;
 
         targetSelector(FuzzSelector({addr: address(handler), selectors: selectors}));
     }
@@ -87,9 +48,9 @@ contract ImplementationUnboundedInvariantTest is ImplementationInvariantBase {
 }
 
 /**
- * @title Implementation Unbounded Invariant Test
+ * @title  Unbounded Invariant Test
  */
-contract ImplementationBoundedInvariantTest is ImplementationInvariantBase {
+contract BoundedInvariantTest is InvariantBase {
     // =====
     // Setup
     // =====
@@ -97,13 +58,13 @@ contract ImplementationBoundedInvariantTest is ImplementationInvariantBase {
     function setUp() public virtual override {
         super.setUp();
 
-        handler = IInvariantHandler(address(new ImplementationBoundedInvariantHandler()));
+        handler = IInvariantHandler(address(new BoundedInvariantHandler()));
         handler.setUp();
 
         targetContract(address(handler));
 
         bytes4[] memory selectors = new bytes4[](1);
-        selectors[0] = ImplementationBoundedInvariantHandler.warp.selector;
+        selectors[0] = BoundedInvariantHandler.warp.selector;
 
         targetSelector(FuzzSelector({addr: address(handler), selectors: selectors}));
     }
@@ -128,7 +89,7 @@ contract ImplementationBoundedInvariantTest is ImplementationInvariantBase {
 /**
  * @title Unbounded Invariant Handler
  */
-contract ImplementationUnboundedInvariantHandler is InvariantHandler {
+contract UnboundedInvariantHandler is InvariantHandler {
     // =====
     // Setup
     // =====
@@ -151,7 +112,7 @@ contract ImplementationUnboundedInvariantHandler is InvariantHandler {
 /**
  * @title Bounded Invariant Handler
  */
-contract ImplementationBoundedInvariantHandler is ImplementationUnboundedInvariantHandler, BoundedHandler {
+contract BoundedInvariantHandler is UnboundedInvariantHandler, BoundedHandler {
     // =====
     // Setup
     // =====

@@ -24,8 +24,8 @@ build:; ./scripts/build.sh -p $(PROFILE)
 
 # Test
 test:; ./scripts/test.sh -p $(PROFILE) -s "test(Unit|Fuzz)"
-test-bounded:; ./scripts/test.sh -p bounded -s "Bounded" -v 3
-test-unbounded:; ./scripts/test.sh -p unbounded -s "Unbounded" -v 3
+test-bounded:; ./scripts/test.sh -p bounded -s "Bounded" -v 2
+test-unbounded:; ./scripts/test.sh -p unbounded -s "Unbounded" -v 2
 test-gas:; ./scripts/test.sh -p $(PROFILE) -s "test(Gas)" -v 3
 
 
