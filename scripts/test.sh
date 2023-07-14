@@ -45,4 +45,10 @@ if [[ "$PROFILE" = "default" || "$PROFILE" = "intense" || "$PROFILE" = "min-solc
     --verbosity $VERBOSITY
 fi
 
+if [[ "$PROFILE" = "unbounded" || "$PROFILE" = "bounded" ]]; then
+  forge test \
+    --match-contract $SCOPE \
+    --verbosity $VERBOSITY
+fi
+
 log $GREEN "Done"

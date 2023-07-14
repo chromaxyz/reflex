@@ -2,16 +2,16 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Sources
-import {ReflexConstants} from "../src/ReflexConstants.sol";
+import {ReflexConstants} from "../../src/ReflexConstants.sol";
 
 // Fixtures
-import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
+import {ImplementationFixture} from "../fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
+import {MockImplementationModule} from "../mocks/MockImplementationModule.sol";
 
 /**
  * @title Implementation State Test

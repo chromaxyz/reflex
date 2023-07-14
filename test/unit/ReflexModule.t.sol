@@ -5,13 +5,13 @@ pragma solidity ^0.8.13;
 import {VmSafe} from "forge-std/Vm.sol";
 
 // Interfaces
-import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Fixtures
-import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
+import {ReflexFixture} from "../fixtures/ReflexFixture.sol";
 
 // Mocks
-import {MockReflexModule, ReentrancyAttack} from "./mocks/MockReflexModule.sol";
+import {MockReflexModule, ReentrancyAttack} from "../mocks/MockReflexModule.sol";
 
 /**
  * @title Reflex Module Test

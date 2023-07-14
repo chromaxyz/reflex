@@ -2,25 +2,25 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexBatch} from "../src/periphery/interfaces/IReflexBatch.sol";
-import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {IReflexBatch} from "../../src/periphery/interfaces/IReflexBatch.sol";
+import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Sources
-import {ReflexBatch} from "../src/periphery/ReflexBatch.sol";
-import {ReflexConstants} from "../src/ReflexConstants.sol";
-import {ReflexModule} from "../src/ReflexModule.sol";
+import {ReflexBatch} from "../../src/periphery/ReflexBatch.sol";
+import {ReflexConstants} from "../../src/ReflexConstants.sol";
+import {ReflexModule} from "../../src/ReflexModule.sol";
 
 // Mocks
-import {ImplementationState} from "./mocks/abstracts/ImplementationState.sol";
-import {MockImplementationDispatcher} from "./mocks/MockImplementationDispatcher.sol";
-import {MockImplementationInstaller} from "./mocks/MockImplementationInstaller.sol";
+import {ImplementationState} from "../mocks/abstracts/ImplementationState.sol";
+import {MockImplementationDispatcher} from "../mocks/MockImplementationDispatcher.sol";
+import {MockImplementationInstaller} from "../mocks/MockImplementationInstaller.sol";
 
 /**
- * @title Gas Benchmark Test
+ * @title Benchmark Test
  * @dev This contract is used to benchmark the gas costs of Reflex.
  * @dev Used compiler version: solc 0.8.19+commit.7dd6d404
  */
-contract GasBenchmarkTest is ReflexConstants {
+contract BenchmarkTest is ReflexConstants {
     // =========
     // Constants
     // =========

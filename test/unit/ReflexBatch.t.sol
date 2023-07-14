@@ -2,20 +2,20 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexBatch} from "../src/periphery/interfaces/IReflexBatch.sol";
-import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {IReflexBatch} from "../../src/periphery/interfaces/IReflexBatch.sol";
+import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Fixtures
-import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
+import {ReflexFixture} from "../fixtures/ReflexFixture.sol";
 
 // Mocks
-import {ImplementationERC20} from "./mocks/abstracts/ImplementationERC20.sol";
-import {ImplementationState} from "./mocks/abstracts/ImplementationState.sol";
-import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
-import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
-import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
-import {MockReflexBatch} from "./mocks/MockReflexBatch.sol";
-import {MockReflexModule} from "./mocks/MockReflexModule.sol";
+import {ImplementationERC20} from "../mocks/abstracts/ImplementationERC20.sol";
+import {ImplementationState} from "../mocks/abstracts/ImplementationState.sol";
+import {MockImplementationERC20} from "../mocks/MockImplementationERC20.sol";
+import {MockImplementationERC20Hub} from "../mocks/MockImplementationERC20Hub.sol";
+import {MockImplementationModule} from "../mocks/MockImplementationModule.sol";
+import {MockReflexBatch} from "../mocks/MockReflexBatch.sol";
+import {MockReflexModule} from "../mocks/MockReflexModule.sol";
 
 /**
  * @title Reflex Batch Test

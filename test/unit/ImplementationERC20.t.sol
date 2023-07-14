@@ -5,15 +5,15 @@ pragma solidity ^0.8.13;
 import {stdError} from "forge-std/StdError.sol";
 
 // Interfaces
-import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
+import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
 
 // Fixtures
-import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
+import {ImplementationFixture} from "../fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {ImplementationERC20} from "./mocks/abstracts/ImplementationERC20.sol";
-import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
-import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
+import {ImplementationERC20} from "../mocks/abstracts/ImplementationERC20.sol";
+import {MockImplementationERC20} from "../mocks/MockImplementationERC20.sol";
+import {MockImplementationERC20Hub} from "../mocks/MockImplementationERC20Hub.sol";
 
 /**
  * @title Implementation ERC20 Test

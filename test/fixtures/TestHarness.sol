@@ -42,10 +42,6 @@ abstract contract TestHarness is Users, Test {
     uint256 internal _gasStart;
     uint256 internal _gasUsed;
 
-    uint256 internal _currentTimestamp;
-    uint256[] internal _timestamps;
-    uint256 internal _timestampCount;
-
     // =========
     // Modifiers
     // =========
@@ -183,4 +179,92 @@ abstract contract TestHarness is Users, Test {
         // solhint-disable-next-line no-console
         console2.log(string(abi.encodePacked("[GAS] ", _gasLabel, "()")), _gasUsed);
     }
+}
+
+/**
+ * @title Unbounded Handler
+ *
+ * @dev Abstract unbounded handler to inherit in invariant tests.
+ * @dev Returns on failure.
+ */
+abstract contract UnboundedHandler is TestHarness {
+    // =======
+    // Storage
+    // =======
+
+    address[] public actors;
+    address public currentActor;
+
+    uint256 internal _currentTimestamp;
+    uint256[] internal _timestamps;
+    uint256 internal _timestampCount;
+
+    mapping(bytes32 => uint256) internal _callCounters;
+
+    // =========
+    // Modifiers
+    // =========
+
+    modifier useActor(uint256 actorIndexSeed_) {
+        currentActor = actors[bound(actorIndexSeed_, 0, actors.length - 1)];
+
+        _;
+    }
+
+    modifier useCurrentTimestamp() {
+        vm.warp(_currentTimestamp);
+
+        _;
+    }
+
+    modifier countCall(bytes32 message_) {
+        /* solhint-disable no-console */
+        console2.log("# START #", string(abi.encodePacked(message_)));
+        increaseCallCount(message_);
+
+        _;
+
+        console2.log("# END #", string(abi.encodePacked(message_)));
+        /* solhint-enable no-console */
+    }
+
+    // ===========
+    // Constructor
+    // ===========
+
+    constructor() {
+        _currentTimestamp = block.timestamp;
+    }
+
+    // =======
+    // Methods
+    // =======
+
+    function addActor(address actor_) public virtual {
+        actors.push(actor_);
+    }
+
+    function setCurrentTimestamp(uint256 currentTimestamp_) public {
+        _timestamps.push(currentTimestamp_);
+        _timestampCount++;
+        _currentTimestamp = currentTimestamp_;
+    }
+
+    function increaseCallCount(bytes32 message_) public {
+        _callCounters[message_] += 1;
+    }
+
+    function getCallCount(bytes32 message_) public view virtual returns (uint256) {
+        return _callCounters[message_];
+    }
+}
+
+/**
+ * @title Bounded Handler
+ *
+ * @dev Abstract bounded handler to inherit in invariant tests.
+ * @dev Reverts on failure.
+ */
+abstract contract BoundedHandler is UnboundedHandler {
+
 }

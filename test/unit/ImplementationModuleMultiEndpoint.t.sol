@@ -2,19 +2,19 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexEndpoint} from "../src/interfaces/IReflexEndpoint.sol";
-import {IReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
-import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
-import {IReflexState} from "../src/interfaces/IReflexState.sol";
+import {IReflexEndpoint} from "../../src/interfaces/IReflexEndpoint.sol";
+import {IReflexInstaller} from "../../src/interfaces/IReflexInstaller.sol";
+import {IReflexModule} from "../../src/interfaces/IReflexModule.sol";
+import {IReflexState} from "../../src/interfaces/IReflexState.sol";
 
 // Fixtures
-import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
+import {ImplementationFixture} from "../fixtures/ImplementationFixture.sol";
 
 // Mocks
-import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
-import {MockImplementationERC20} from "./mocks/MockImplementationERC20.sol";
-import {MockImplementationERC20Hub} from "./mocks/MockImplementationERC20Hub.sol";
-import {MockImplementationMaliciousStorageModule} from "./mocks/MockImplementationMaliciousStorageModule.sol";
+import {MockImplementationModule} from "../mocks/MockImplementationModule.sol";
+import {MockImplementationERC20} from "../mocks/MockImplementationERC20.sol";
+import {MockImplementationERC20Hub} from "../mocks/MockImplementationERC20Hub.sol";
+import {MockImplementationMaliciousStorageModule} from "../mocks/MockImplementationMaliciousStorageModule.sol";
 
 /**
  * @title Implementation Module Multi Endpoint Test
