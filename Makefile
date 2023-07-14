@@ -4,7 +4,7 @@
 # Include .env file and export its variables
 -include .env
 
-# Profiles: `default`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`, `bounded`, `unbounded`
+# Profiles: `default`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`
 PROFILE?=default
 
 # Setup
@@ -13,8 +13,7 @@ install:;
 	npm install
 
 # Update
-update:;
-	forge update
+update:; forge update
 
 # Clean
 clean:; forge clean
@@ -24,14 +23,12 @@ build:; ./scripts/build.sh -p $(PROFILE)
 
 # Test
 test:; ./scripts/test.sh -p $(PROFILE) -s "test(Unit|Fuzz)"
-test-bounded:; ./scripts/test.sh -p bounded -s "Bounded" -v 2
-test-unbounded:; ./scripts/test.sh -p unbounded -s "Unbounded" -v 2
+test-invariant:; ./scripts/test.sh -p $(PROFILE) -s "invariant" -v 3
 test-gas:; ./scripts/test.sh -p $(PROFILE) -s "test(Gas)" -v 3
-
 
 # Test a single method
 # test-single:; ./scripts/test.sh -p PROFILE_NAME -s TEST_NAME -v VERBOSITY
-# Where PROFILE_NAME (-p) is one of `default`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`, `bounded`, `unbounded`.
+# Where PROFILE_NAME (-p) is one of `default`, `intense`, `min-solc`, `via-ir`, `min-solc-via-ir`.
 # Where SCOPE (-s) is for example `testUnitMetadata`.
 # Where VERBOSITY (-v) is for example `3`.
 

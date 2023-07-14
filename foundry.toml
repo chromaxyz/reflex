@@ -15,6 +15,9 @@ libs = ["node_modules", "lib"]
 [profile.default.fuzz]
 runs = 1_000
 
+[profile.default.invariant]
+fail_on_revert = true
+
 # ==================
 # Profile: `intense`
 # ==================
@@ -48,19 +51,3 @@ solc = "0.8.13"
 
 [profile.min-solc-via-ir.fuzz]
 runs = 1_000
-
-# ==================
-# Profile: `bounded`
-# ==================
-[profile.bounded.invariant]
-runs = 256
-depth = 15
-fail_on_revert = true
-
-# ====================
-# Profile: `unbounded`
-# ====================
-[profile.unbounded.invariant]
-runs = 256
-depth = 15
-fail_on_revert = false
