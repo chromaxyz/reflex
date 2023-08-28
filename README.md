@@ -59,9 +59,9 @@ If you can get away without having to use a proxy please do so, it is better to 
 
 There are however situations where you run into contract size limitations and you are looking for a reasonable way to modularize your architecture, you would like to expand the feature set of your product over time, allow bugs to be fixed in the early days of a protocol or you want to separate your business logic from your architecture to reduce mental overhead.
 
-Until now some projects have relied on the [Diamond Proxy](https://eips.ethereum.org/EIPS/eip-2535) pattern in an effort to address these issues. Reflex aims to be a better solution to the core problem the Diamond Proxy standard aims to resolve but fails to address.
+Until now projects that express these needs have relied on the [Diamond Proxy](https://eips.ethereum.org/EIPS/eip-2535) pattern. Reflex aims to be a better solution to the core problem the Diamond Proxy standard aims to resolve but fails to address.
 
-The Solidity ecosystem has been using libraries and collections of code snippets intended to be composed together. We propose that the natural evolution are barebone, comprehesive and opiniated frameworks and this is the first of its kind.
+The Solidity ecosystem has been using libraries and collections of code snippets intended to be composed together. We propose that the natural evolution are barebone, comprehensive and opinionated frameworks and this is the first of its kind.
 
 ## Contracts
 
