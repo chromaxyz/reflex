@@ -6,7 +6,7 @@ title = "Reflex"
 description = "Documentation for Reflex"
 
 [output.html]
-git-repository-url = "https://github.com/chroma-org/reflex.git"
+git-repository-url = "https://github.com/chromaxyz/reflex.git"
 default-theme = "ayu"
 no-section-label = true
 

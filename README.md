@@ -6,10 +6,10 @@ A Solidity framework for upgradeable modularized applications.
 
 [![Tests][gha-contracts-badge]][gha-contracts] [![Linter][gha-lint-badge]][gha-lint] [![Foundry][foundry-badge]][foundry] [![License: GPL-3.0-or-later][license-badge]][license]
 
-[gha-contracts]: https://github.com/Chroma-Org/Reflex/actions/workflows/contracts.yml
-[gha-contracts-badge]: https://github.com/Chroma-Org/Reflex/actions/workflows/contracts.yml/badge.svg
-[gha-lint]: https://github.com/Chroma-Org/Reflex/actions/workflows/lint.yml
-[gha-lint-badge]: https://github.com/Chroma-Org/Reflex/actions/workflows/lint.yml/badge.svg
+[gha-contracts]: https://github.com/chromaxyz/reflex/actions/workflows/contracts.yml
+[gha-contracts-badge]: https://github.com/chromaxyz/reflex/actions/workflows/contracts.yml/badge.svg
+[gha-lint]: https://github.com/chromaxyz/reflex/actions/workflows/lint.yml
+[gha-lint-badge]: https://github.com/chromaxyz/reflex/actions/workflows/lint.yml/badge.svg
 [foundry]: https://getfoundry.sh/
 [foundry-badge]: https://img.shields.io/badge/Built%20with-Foundry-DEA584.svg
 [license]: https://www.gnu.org/licenses/gpl-3.0
@@ -21,7 +21,7 @@ A Solidity framework for upgradeable modularized applications.
 
 - [Table of Contents](#table-of-contents)
 - [Traits](#traits)
-- [Reason](#reason)
+- [Motivation](#motivation)
 - [Contracts](#contracts)
 - [Install](#install)
 - [Usage](#usage)
@@ -51,17 +51,17 @@ A Solidity framework for upgradeable modularized applications.
 Noteably this is a so-called framework, a single well-tested implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
 
-## Reason
+To get started with Reflex we’ve created [Reflex Template](https://github.com/chromaxyz/reflex-template), a minimal template repository showing the basic use of Reflex in an application context.
 
-In the public discourse there is a lot of valid critique towards the use of (upgradeable) proxy patterns namely that they are difficult to manage, vulnerable if configured incorrectly, broadly unnecessary and in general over-complex and over-engineered.
+## Motivation
 
-If you can get away without having to use a proxy please do so, it is better to do so in almost all cases. Build libre, permissionless and immutable systems whenever you can.
+If you are looking to iterate and expand the feature set of your smart contract application throughout the development lifecycle, Reflex is for you.
 
-There are however situations where you run into contract size limitations and you are looking for a reasonable way to modularize your architecture, you would like to expand the feature set of your product over time, allow bugs to be fixed in the early days of a protocol or you want to separate your business logic from your architecture to reduce mental overhead.
+Until now the Solidity ecosystem has been using libraries and collections of code snippets intended to be composed together. We propose that the natural evolution are barebone, comprehensive and opinionated frameworks and this is the first of its kind.
 
-Until now projects that express these needs have relied on the [Diamond Proxy](https://eips.ethereum.org/EIPS/eip-2535) pattern. Reflex aims to be a better solution to the core problem the Diamond Proxy standard aims to resolve but fails to address.
+As the name suggests it is a nod to React, the popular JavaScript framework for the web. Like React, Reflex is built on the powerful abstraction of modules.
 
-The Solidity ecosystem has been using libraries and collections of code snippets intended to be composed together. We propose that the natural evolution are barebone, comprehensive and opinionated frameworks and this is the first of its kind.
+In React, you as a developer do need to concern yourself with the internals of React Fiber’s reconciler to use React in your application: it just works. In the same light Reflex aims to alleviate developers from the implementation details of building upgradeable modular smart contracts.
 
 ## Contracts
 
@@ -101,13 +101,7 @@ graph TD
 To install for [**Foundry**](https://github.com/foundry-rs/foundry):
 
 ```sh
-TODO: ADD LINK
-```
-
-To install for [**Hardhat**](https://github.com/nomiclabs/hardhat):
-
-```sh
-TODO: ADD LINK
+forge install chromaxyz/reflex
 ```
 
 ## Usage

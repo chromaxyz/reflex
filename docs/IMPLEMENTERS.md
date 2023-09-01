@@ -85,7 +85,7 @@ sequenceDiagram
     Module Endpoint->>User: Response
 ```
 
-## Endpoint
+## Endpoints
 
 Endpoints are non-upgradeable contracts that have two jobs:
 
@@ -95,6 +95,7 @@ Endpoints are non-upgradeable contracts that have two jobs:
 Although endpoints themselves are non-upgradeable, they integrate with Reflex's module system, which does allow for upgrades.
 
 Modules cannot be called directly. Instead, they must be invoked through an endpoint.
+
 By default, all endpoints are implemented by the same code: [src/ReflexEndpoint.sol](../src/ReflexEndpoint.sol). This is a very simple contract that forwards its requests to the `Dispatcher`, along with the original `msg.sender`. The call is done with a normal `call()`, so the execution takes place within the `Dispatcher` contract's storage context, not the endpoints'.
 
 Endpoints contain the bare minimum amount of logic required for forwarding. This is because they are not upgradeable. They should ideally be as optimized as possible so as to minimise gas costs since many of them will be deployed.
