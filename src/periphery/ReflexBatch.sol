@@ -58,7 +58,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     /**
      * @inheritdoc IReflexBatch
      */
-    function simulateBatchCallRevert(BatchAction[] calldata actions_) public virtual reentrancyAllowed {
+    function simulateBatchCall(BatchAction[] calldata actions_) public virtual reentrancyAllowed {
         address messageSender = _unpackMessageSender();
         uint256 actionsLength = actions_.length;
 
@@ -78,35 +78,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
             }
         }
 
-        _afterBatchCall(messageSender);
-
         revert BatchSimulation(simulation);
-    }
-
-    /**
-     * @inheritdoc IReflexBatch
-     */
-    function simulateBatchCallReturn(
-        BatchAction[] calldata actions_
-    ) public virtual reentrancyAllowed returns (BatchActionResponse[] memory simulation_) {
-        // WARNING: It is assumed attacker will never be able to control _modules (storage) nor _moduleId (immutable).
-        (bool success, bytes memory result) = _REFLEX_STORAGE().modules[_moduleId].delegatecall(
-            abi.encodePacked(
-                abi.encodeWithSelector(IReflexBatch.simulateBatchCallRevert.selector, actions_),
-                uint160(_unpackMessageSender()),
-                uint160(_unpackEndpointAddress())
-            )
-        );
-
-        if (success) revert BatchSimulationFailed();
-
-        if (bytes4(result) != BatchSimulation.selector) _revertBytes(result);
-
-        assembly ("memory-safe") {
-            result := add(4, result)
-        }
-
-        simulation_ = abi.decode(result, (BatchActionResponse[]));
     }
 
     // ============
