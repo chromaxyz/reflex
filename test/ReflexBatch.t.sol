@@ -150,7 +150,7 @@ contract ReflexBatchTest is ReflexFixture {
         responses[1] = IReflexBatch.BatchActionResponse({success: true, result: ""});
 
         vm.expectRevert(abi.encodeWithSelector(IReflexBatch.BatchSimulation.selector, responses));
-        batchEndpoint.simulateBatchCallRevert(actions);
+        batchEndpoint.simulateBatchCall(actions);
 
         batchEndpoint.performBatchCall(actions);
     }
@@ -171,7 +171,7 @@ contract ReflexBatchTest is ReflexFixture {
         batchEndpoint.performBatchCall(actions);
     }
 
-    function testFuzzSimulateBatchCallRevert(
+    function testFuzzSimulateBatchCall(
         address target_,
         uint256 amountA_,
         uint256 amountB_,
@@ -251,7 +251,7 @@ contract ReflexBatchTest is ReflexFixture {
         responses[8] = IReflexBatch.BatchActionResponse({success: true, result: abi.encode(amountA_)});
 
         vm.expectRevert(abi.encodeWithSelector(IReflexBatch.BatchSimulation.selector, responses));
-        batchEndpoint.simulateBatchCallRevert(actions);
+        batchEndpoint.simulateBatchCall(actions);
 
         assertEq(multiModuleEndpointA.balanceOf(_brutalize(target_)), 0);
         assertEq(multiModuleEndpointB.balanceOf(_brutalize(target_)), 0);
@@ -260,131 +260,6 @@ contract ReflexBatchTest is ReflexFixture {
 
         assertEq(multiModuleEndpointA.balanceOf(_brutalize(target_)), amountA_);
         assertEq(multiModuleEndpointB.balanceOf(_brutalize(target_)), amountB_);
-    }
-
-    function testFuzzSimulateBatchCallReturn(
-        address target_,
-        uint256 amountA_,
-        uint256 amountB_,
-        bytes32 message_
-    ) external withHooksExpected(1) withExternalTarget(amountA_) {
-        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](9);
-
-        actions[0] = IReflexBatch.BatchAction({
-            allowFailure: false,
-            endpointAddress: address(singleModuleEndpoint),
-            callData: abi.encodeCall(ImplementationState.setImplementationState0, (message_))
-        });
-
-        actions[1] = IReflexBatch.BatchAction({
-            allowFailure: false,
-            endpointAddress: address(singleModuleEndpoint),
-            callData: abi.encodeCall(ImplementationState.getImplementationState0, ())
-        });
-
-        actions[2] = IReflexBatch.BatchAction({
-            allowFailure: false,
-            endpointAddress: address(multiModuleEndpointA),
-            callData: abi.encodeCall(MockImplementationERC20.mint, (_brutalize(target_), amountA_))
-        });
-
-        actions[3] = IReflexBatch.BatchAction({
-            allowFailure: false,
-            endpointAddress: address(multiModuleEndpointA),
-            callData: abi.encodeCall(ImplementationERC20.balanceOf, (_brutalize(target_)))
-        });
-
-        actions[4] = IReflexBatch.BatchAction({
-            allowFailure: false,
-            endpointAddress: address(multiModuleEndpointB),
-            callData: abi.encodeCall(MockImplementationERC20.mint, (_brutalize(target_), amountB_))
-        });
-
-        actions[5] = IReflexBatch.BatchAction({
-            allowFailure: false,
-            endpointAddress: address(multiModuleEndpointB),
-            callData: abi.encodeCall(ImplementationERC20.balanceOf, (_brutalize(target_)))
-        });
-
-        actions[6] = IReflexBatch.BatchAction({
-            allowFailure: false,
-            endpointAddress: address(singleModuleEndpoint),
-            callData: abi.encodeCall(MockReflexModule.unpackMessageSender, ())
-        });
-
-        actions[7] = IReflexBatch.BatchAction({
-            allowFailure: false,
-            endpointAddress: address(singleModuleEndpoint),
-            callData: abi.encodeCall(MockReflexModule.unpackEndpointAddress, ())
-        });
-
-        actions[8] = IReflexBatch.BatchAction({
-            allowFailure: false,
-            endpointAddress: address(batchEndpoint),
-            callData: abi.encodeCall(
-                batchEndpoint.performStaticCall,
-                (address(externalTarget), abi.encodeCall(ExternalTarget.getNumber, ()))
-            )
-        });
-
-        IReflexBatch.BatchActionResponse[] memory responses = batchEndpoint.simulateBatchCallReturn(actions);
-
-        assertEq(responses[0].success, true);
-        assertEq(responses[0].result, "");
-
-        assertEq(responses[1].success, true);
-        assertEq(responses[1].result, abi.encode(message_));
-
-        assertEq(responses[2].success, true);
-        assertEq(responses[2].result, "");
-
-        assertEq(responses[3].success, true);
-        assertEq(responses[3].result, abi.encode(amountA_));
-
-        assertEq(responses[4].success, true);
-        assertEq(responses[4].result, "");
-
-        assertEq(responses[5].success, true);
-        assertEq(responses[5].result, abi.encode(amountB_));
-
-        assertEq(responses[6].success, true);
-        assertEq(responses[6].result, abi.encode(address(this)));
-
-        assertEq(responses[7].success, true);
-        assertEq(responses[7].result, abi.encode(address(singleModuleEndpoint)));
-
-        assertEq(responses[8].success, true);
-        assertEq(responses[8].result, abi.encode(amountA_));
-
-        assertEq(multiModuleEndpointA.balanceOf(_brutalize(target_)), 0);
-        assertEq(multiModuleEndpointB.balanceOf(_brutalize(target_)), 0);
-
-        batchEndpoint.performBatchCall(actions);
-
-        assertEq(multiModuleEndpointA.balanceOf(_brutalize(target_)), amountA_);
-        assertEq(multiModuleEndpointB.balanceOf(_brutalize(target_)), amountB_);
-    }
-
-    function testUnitRevertInvalidBatchActionConfiguration() external withHooksExpected(0) {
-        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
-
-        vm.expectRevert(IReflexModule.ModuleIdInvalid.selector);
-        batchEndpoint.simulateBatchCallReturn(actions);
-    }
-
-    function testUnitRevertBatchSimulationFailed() external withHooksExpected(0) {
-        dispatcher.setModuleToImplementation(batch.moduleId(), address(0));
-
-        IReflexBatch.BatchAction[] memory actions = new IReflexBatch.BatchAction[](1);
-
-        actions[0] = IReflexBatch.BatchAction({
-            allowFailure: false,
-            endpointAddress: address(singleModuleEndpoint),
-            callData: abi.encodeCall(ImplementationState.getImplementationState0, ())
-        });
-
-        vm.expectRevert(IReflexBatch.BatchSimulationFailed.selector);
-        batchEndpoint.simulateBatchCallReturn(actions);
     }
 
     function testFuzzPerformBatchCall(
