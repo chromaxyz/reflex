@@ -1,50 +1,59 @@
 #
-# Build profiles: `default`, `min-solc`, `via-ir`, `min-solc-via-ir`
-# Test profiles: `default`, `intense`
+# Build profiles: `default`, `optimized`, `optimized-via-ir`, `min-solc`, `min-solc-via-ir`
 #
 # ==================
 # Profile: `default`
 # ==================
 [profile.default]
-solc = "0.8.19"
-optimizer = true
-optimizer_runs = 10_000
+solc = "0.8.23"
+evm_version = "paris"
+via_ir = false
 auto_detect_solc = false
 libs = ["node_modules", "lib"]
 
 [profile.default.fuzz]
-runs = 1_000
-
-# ==================
-# Profile: `intense`
-# ==================
-[profile.intense.fuzz]
 runs = 10_000
 
-# =================
-# Profile: `via-ir`
-# =================
-[profile.via-ir]
-via_ir = true
+# ====================
+# Profile: `optimized`
+# ====================
+[profile.optimized]
+optimizer = true
+optimizer_runs = 1_000_000
 
-[profile.via-ir.fuzz]
-runs = 1_000
+[profile.optimized.fuzz]
+runs = 10_000
+
+# ===========================
+# Profile: `optimized-via-ir`
+# ===========================
+[profile.optimized-via-ir]
+via_ir = true
+optimizer = true
+optimizer_runs = 1_000_000
+
+[profile.optimized-via-ir.fuzz]
+runs = 10_000
 
 # ===================
 # Profile: `min-solc`
 # ===================
 [profile.min-solc]
 solc = "0.8.13"
+optimizer = true
+optimizer_runs = 1_000_000
 
 [profile.min-solc.fuzz]
-runs = 1_000
+runs = 10_000
 
 # ==========================
 # Profile: `min-solc-via-ir`
 # ==========================
 [profile.min-solc-via-ir]
-via_ir = true
 solc = "0.8.13"
+via_ir = true
+optimizer = true
+optimizer_runs = 1_000_000
 
 [profile.min-solc-via-ir.fuzz]
-runs = 1_000
+runs = 10_000
