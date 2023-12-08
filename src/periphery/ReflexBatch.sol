@@ -46,7 +46,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
      * @inheritdoc IReflexBatch
      */
     function simulateBatchCall(BatchAction[] calldata actions_) public virtual onlyOffChain {
-        // The `onlyOffChain` modifier ensures that this function is only called off-chain.
+        // The `onlyOffChain` greatly improves the likeliness that this function is only called off-chain.
 
         // If somehow the transaction is performed on-chain, we rely on the correct
         // behavior of the `revert BatchSimulation(simulation)` statement.
