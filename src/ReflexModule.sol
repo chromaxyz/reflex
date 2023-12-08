@@ -82,9 +82,12 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
 
     /**
      * @dev Throws if called by any account on-chain.
-     * @dev This modifier is used to restrict the execution of a method to off-chain only.
+     * @dev This modifier is used to restrict the execution of a method to off-chain using (eth_call) only.
      */
     modifier onlyOffChain() virtual {
+        // It is ASSUMED that GASPRICE (0x3a) is ALWAYS 0 for off-chain calls.
+        // Pre EIP-1559, the GASPRICE (0x3a) represented the maximum amount of wei per gas.
+        // Post EIP-1559, the GASPRICE (0x3a) MUST return the `priority_fee_per_gas + block.base_fee_per_gas`.
         if (tx.gasprice != 0) revert ExecutionRestricted();
 
         _;

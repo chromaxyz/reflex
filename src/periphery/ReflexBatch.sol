@@ -53,7 +53,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
 
         // To accurately simulate the conditions of a batch call symmetrically to `performBatchCall`
         // we opt to mark the function as non-reentrant and call the `_beforeBatchCall()` hook.
-        //
+
         // It is assumed that in ALL cases the simulation will ALWAYS revert:
         // - Therefore it is safe to use `_beforeNonReentrant()` without the risk of bricking the contract.
         // - Therefore we omit the `_afterNonReentrant()` and `_afterBatchCall()` hooks.
