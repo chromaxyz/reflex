@@ -45,25 +45,11 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
      * Calling a `nonReentrant` function from another `nonReentrant` function is not supported.
      */
     modifier nonReentrant() virtual {
-        assembly ("memory-safe") {
-            // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
-            if eq(sload(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT), _REENTRANCY_GUARD_LOCKED) {
-                // Store the function selector of `Reentrancy()`.
-                mstore(0x00, 0xab143c06)
-                // Revert with (offset, size).
-                revert(0x1c, 0x04)
-            }
-
-            // Any calls to `nonReentrant` after this point will fail.
-            sstore(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_LOCKED)
-        }
+        _beforeNonReentrant();
 
         _;
 
-        assembly ("memory-safe") {
-            // By storing the original value once again, a refund is triggered.
-            sstore(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_UNLOCKED)
-        }
+        _afterNonReentrant();
     }
 
     /**
@@ -138,6 +124,34 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
     // ================
     // Internal methods
     // ================
+
+    /**
+     * @dev Before non-reentrant hook.
+     */
+    function _beforeNonReentrant() internal virtual {
+        assembly ("memory-safe") {
+            // On the first call to `nonReentrant`, _status will be `_REENTRANCY_GUARD_UNLOCKED`.
+            if eq(sload(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT), _REENTRANCY_GUARD_LOCKED) {
+                // Store the function selector of `Reentrancy()`.
+                mstore(0x00, 0xab143c06)
+                // Revert with (offset, size).
+                revert(0x1c, 0x04)
+            }
+
+            // Any calls to `nonReentrant` after this point will fail.
+            sstore(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_LOCKED)
+        }
+    }
+
+    /**
+     * @dev After non-reentrant hook.
+     */
+    function _afterNonReentrant() internal virtual {
+        assembly ("memory-safe") {
+            // By storing the original value once again, a refund is triggered.
+            sstore(_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT, _REENTRANCY_GUARD_UNLOCKED)
+        }
+    }
 
     /**
      * @dev Create or return existing endpoint by module id.

@@ -14,8 +14,6 @@ interface IReflexBatch is IReflexModule {
 
     error BatchSimulation(BatchActionResponse[] simulation);
 
-    error BatchSimulationDidNotRevert();
-
     error ModuleNotRegistered();
 
     // =======
@@ -57,17 +55,6 @@ interface IReflexBatch is IReflexModule {
     // =======
     // Methods
     // =======
-
-    /**
-     * @notice Execute a staticcall to an arbitrary address with an arbitrary payload.
-     * @param contractAddress_ Address of the contract to call.
-     * @param callData_ Encoded call data.
-     * @return bytes Encoded return data.
-     *
-     * @dev Intended to be used in static-called batches, to e.g. provide
-     * detailed information about the impacts of the simulated operation.
-     */
-    function performStaticCall(address contractAddress_, bytes memory callData_) external view returns (bytes memory);
 
     /**
      * @notice Perform a batch call to interact with multiple modules in a single transaction.

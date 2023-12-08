@@ -21,19 +21,6 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     /**
      * @inheritdoc IReflexBatch
      */
-    function performStaticCall(address contractAddress_, bytes memory callData_) public view returns (bytes memory) {
-        (bool success, bytes memory result) = contractAddress_.staticcall(callData_);
-
-        if (!success) _revertBytes(result);
-
-        assembly ("memory-safe") {
-            return(add(32, result), mload(result))
-        }
-    }
-
-    /**
-     * @inheritdoc IReflexBatch
-     */
     function performBatchCall(BatchAction[] calldata actions_) public virtual nonReentrant {
         address messageSender = _unpackMessageSender();
         uint256 actionsLength = actions_.length;
@@ -58,16 +45,37 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     /**
      * @inheritdoc IReflexBatch
      */
-    function simulateBatchCall(BatchAction[] calldata actions_) public virtual nonReentrant {
-        // Even though the simulation is marked as `nonReentrant` it is expected to have reverted before
-        // the reentrancy has unlocked at the end of the function.
-        // The compiler marks this as unreachable code, this is expected.
-        _simulateBatchCall(actions_);
+    function simulateBatchCall(BatchAction[] calldata actions_) public virtual {
+        // To accurately simulate the conditions of a batch call we opt to mark the
+        // function as non-reentrant and call the `_beforeBatchCall()` hook.
+        //
+        // It is assumed that in ALL cases the simulation will ALWAYS revert:
+        // - Therefore it is safe to use `_beforeNonReentrant()` without the risk of bricking the contract.
+        // - Therefore we omit the `_afterNonReentrant()` and `_afterBatchCall()` hooks.
+        _beforeNonReentrant();
 
-        // It is expected that the simulation reverts before this point.
-        // In the edge case it does not, revert regardless to prevent unexpected behavior.
-        // The compiler marks this as unreachable code, this is expected.
-        revert BatchSimulationDidNotRevert();
+        address messageSender = _unpackMessageSender();
+        uint256 actionsLength = actions_.length;
+
+        _beforeBatchCall(messageSender);
+
+        BatchActionResponse[] memory simulation = new BatchActionResponse[](actions_.length);
+
+        for (uint256 i = 0; i < actionsLength; ) {
+            BatchAction calldata action = actions_[i];
+
+            (bool success, bytes memory result) = _performBatchAction(action, messageSender);
+
+            simulation[i] = BatchActionResponse({success: success, result: result});
+
+            unchecked {
+                ++i;
+            }
+        }
+
+        // It is assumed that in ALL cases the simulation will ALWAYS revert.
+        // Therefore we omit the `_afterNonReentrant()` and `_afterBatchCall()` hooks.
+        revert BatchSimulation(simulation);
     }
 
     // ============
@@ -89,34 +97,6 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     // ================
     // Internal methods
     // ================
-
-    /**
-     * @notice Simulate a batch call.
-     * @param actions_ List of actions to perform.
-     * @dev It is expected that this function always reverts.
-     */
-    function _simulateBatchCall(BatchAction[] calldata actions_) internal virtual {
-        address messageSender = _unpackMessageSender();
-        uint256 actionsLength = actions_.length;
-
-        _beforeBatchCall(messageSender);
-
-        BatchActionResponse[] memory simulation = new BatchActionResponse[](actions_.length);
-
-        for (uint256 i = 0; i < actionsLength; ) {
-            BatchAction calldata action = actions_[i];
-
-            (bool success, bytes memory result) = _performBatchAction(action, messageSender);
-
-            simulation[i] = BatchActionResponse({success: success, result: result});
-
-            unchecked {
-                ++i;
-            }
-        }
-
-        revert BatchSimulation(simulation);
-    }
 
     /**
      * @notice Perform a single batch action.
