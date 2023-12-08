@@ -14,7 +14,7 @@ interface IReflexBatch is IReflexModule {
 
     error BatchSimulation(BatchActionResponse[] simulation);
 
-    error BatchSimulationFailed();
+    error BatchSimulationDidNotRevert();
 
     error ModuleNotRegistered();
 

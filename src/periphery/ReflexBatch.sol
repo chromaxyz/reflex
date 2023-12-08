@@ -34,7 +34,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     /**
      * @inheritdoc IReflexBatch
      */
-    function performBatchCall(BatchAction[] calldata actions_) public virtual reentrancyAllowed {
+    function performBatchCall(BatchAction[] calldata actions_) public virtual nonReentrant {
         address messageSender = _unpackMessageSender();
         uint256 actionsLength = actions_.length;
 
@@ -58,27 +58,16 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     /**
      * @inheritdoc IReflexBatch
      */
-    function simulateBatchCall(BatchAction[] calldata actions_) public virtual reentrancyAllowed {
-        address messageSender = _unpackMessageSender();
-        uint256 actionsLength = actions_.length;
+    function simulateBatchCall(BatchAction[] calldata actions_) public virtual nonReentrant {
+        // Even though the simulation is marked as `nonReentrant` it is expected to have reverted before
+        // the reentrancy has unlocked at the end of the function.
+        // The compiler marks this as unreachable code, this is expected.
+        _simulateBatchCall(actions_);
 
-        _beforeBatchCall(messageSender);
-
-        BatchActionResponse[] memory simulation = new BatchActionResponse[](actions_.length);
-
-        for (uint256 i = 0; i < actionsLength; ) {
-            BatchAction calldata action = actions_[i];
-
-            (bool success, bytes memory result) = _performBatchAction(action, messageSender);
-
-            simulation[i] = BatchActionResponse({success: success, result: result});
-
-            unchecked {
-                ++i;
-            }
-        }
-
-        revert BatchSimulation(simulation);
+        // It is expected that the simulation reverts before this point.
+        // In the edge case it does not, revert regardless to prevent unexpected behavior.
+        // The compiler marks this as unreachable code, this is expected.
+        revert BatchSimulationDidNotRevert();
     }
 
     // ============
@@ -100,6 +89,34 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     // ================
     // Internal methods
     // ================
+
+    /**
+     * @notice Simulate a batch call.
+     * @param actions_ List of actions to perform.
+     * @dev It is expected that this function always reverts.
+     */
+    function _simulateBatchCall(BatchAction[] calldata actions_) internal virtual {
+        address messageSender = _unpackMessageSender();
+        uint256 actionsLength = actions_.length;
+
+        _beforeBatchCall(messageSender);
+
+        BatchActionResponse[] memory simulation = new BatchActionResponse[](actions_.length);
+
+        for (uint256 i = 0; i < actionsLength; ) {
+            BatchAction calldata action = actions_[i];
+
+            (bool success, bytes memory result) = _performBatchAction(action, messageSender);
+
+            simulation[i] = BatchActionResponse({success: success, result: result});
+
+            unchecked {
+                ++i;
+            }
+        }
+
+        revert BatchSimulation(simulation);
+    }
 
     /**
      * @notice Perform a single batch action.

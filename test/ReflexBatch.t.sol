@@ -461,13 +461,13 @@ contract ReflexBatchTest is ReflexFixture {
     // Attacks
     // =======
 
-    function testUnitAttackRecursiveBatch() external {
+    function testUnitRevertRecursiveBatch() external {
         IReflexBatch.BatchAction[] memory innerActions = new IReflexBatch.BatchAction[](1);
 
         innerActions[0] = IReflexBatch.BatchAction({
             allowFailure: false,
             endpointAddress: address(singleModuleEndpoint),
-            callData: abi.encodeCall(ImplementationState.setImplementationState0, (bytes32("777")))
+            callData: abi.encodeCall(MockReflexModule.unpackMessageSender, ())
         });
 
         IReflexBatch.BatchAction[] memory outerActions = new IReflexBatch.BatchAction[](1);
@@ -478,9 +478,16 @@ contract ReflexBatchTest is ReflexFixture {
             callData: abi.encodeCall(batchEndpoint.performBatchCall, (innerActions))
         });
 
-        // vm.expectRevert(IReflexModule.ReentrancyAttackFailed.selector);
-        // impersonationAttack.attackRecursiveBatch{value: 1 ether}(outerActions);
+        IReflexBatch.BatchActionResponse[] memory outerResponses = new IReflexBatch.BatchActionResponse[](1);
+        outerResponses[0] = IReflexBatch.BatchActionResponse({
+            success: false,
+            result: abi.encodePacked(IReflexModule.Reentrancy.selector)
+        });
 
+        vm.expectRevert(abi.encodeWithSelector(IReflexBatch.BatchSimulation.selector, outerResponses));
+        batchEndpoint.simulateBatchCall(outerActions);
+
+        vm.expectRevert(IReflexModule.Reentrancy.selector);
         batchEndpoint.performBatchCall(outerActions);
     }
 
