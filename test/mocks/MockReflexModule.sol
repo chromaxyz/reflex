@@ -190,7 +190,7 @@ contract MockReflexModule is MockHarness, ReflexModule {
     function countAndCall(ReentrancyAttack attacker_) public nonReentrant {
         _increaseCounter(_REENTRANCY_COUNTER_SLOT);
 
-        attacker_.attackCallSender(bytes4(keccak256("callback()")));
+        attacker_.attackReenter(bytes4(keccak256("callback()")));
     }
 
     function guardedCheckLocked() public nonReentrant {

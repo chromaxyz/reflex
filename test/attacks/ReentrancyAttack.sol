@@ -16,7 +16,7 @@ contract ReentrancyAttack {
     // Test stubs
     // ==========
 
-    function attackCallSender(bytes4 data) external {
+    function attackReenter(bytes4 data) external {
         (bool success, ) = msg.sender.call(abi.encodeWithSelector(data));
 
         if (!success) revert ReentrancyAttackFailed();

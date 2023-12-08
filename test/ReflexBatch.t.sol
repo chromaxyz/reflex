@@ -5,6 +5,9 @@ pragma solidity ^0.8.13;
 import {IReflexBatch} from "../src/periphery/interfaces/IReflexBatch.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
+// Attacks
+import {ImpersonatorAttack} from "./attacks/ImpersonatorAttack.sol";
+
 // Fixtures
 import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
@@ -70,6 +73,12 @@ contract ReflexBatchTest is ReflexFixture {
 
     MockImplementationModule public internalModule;
 
+    // =======
+    // Attacks
+    // =======
+
+    ImpersonatorAttack public impersonatorAttack;
+
     // =====
     // Setup
     // =====
@@ -125,6 +134,8 @@ contract ReflexBatchTest is ReflexFixture {
                 _MODULE_DECIMALS_MULTI_B
             )
         );
+
+        impersonatorAttack = new ImpersonatorAttack(dispatcher, batchEndpoint);
     }
 
     function testFuzzSimulateBatchCall(
@@ -398,7 +409,7 @@ contract ReflexBatchTest is ReflexFixture {
     // Attacks
     // =======
 
-    function testUnitRevertRecursiveBatch() external {
+    function testUnitRevertAttackRecursiveBatch() external withHooksExpected(0) {
         IReflexBatch.BatchAction[] memory innerActions = new IReflexBatch.BatchAction[](1);
 
         innerActions[0] = IReflexBatch.BatchAction({
@@ -426,6 +437,10 @@ contract ReflexBatchTest is ReflexFixture {
 
         vm.expectRevert(IReflexModule.Reentrancy.selector);
         batchEndpoint.performBatchCall(outerActions);
+    }
+
+    function testUnitRevertAttackImpersonate() external {
+        impersonatorAttack.attackImpersonate();
     }
 
     // =========
