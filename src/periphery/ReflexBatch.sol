@@ -45,13 +45,19 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
     /**
      * @inheritdoc IReflexBatch
      */
-    function simulateBatchCall(BatchAction[] calldata actions_) public virtual {
-        // To accurately simulate the conditions of a batch call we opt to mark the
-        // function as non-reentrant and call the `_beforeBatchCall()` hook.
+    function simulateBatchCall(BatchAction[] calldata actions_) public virtual onlyOffChain {
+        // The `onlyOffChain` modifier ensures that this function is only called off-chain.
+
+        // If somehow the transaction is performed on-chain, we rely on the correct
+        // behavior of the `revert BatchSimulation(simulation)` statement.
+
+        // To accurately simulate the conditions of a batch call symmetrically to `performBatchCall`
+        // we opt to mark the function as non-reentrant and call the `_beforeBatchCall()` hook.
         //
         // It is assumed that in ALL cases the simulation will ALWAYS revert:
         // - Therefore it is safe to use `_beforeNonReentrant()` without the risk of bricking the contract.
         // - Therefore we omit the `_afterNonReentrant()` and `_afterBatchCall()` hooks.
+
         _beforeNonReentrant();
 
         address messageSender = _unpackMessageSender();
@@ -73,8 +79,6 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
             }
         }
 
-        // It is assumed that in ALL cases the simulation will ALWAYS revert.
-        // Therefore we omit the `_afterNonReentrant()` and `_afterBatchCall()` hooks.
         revert BatchSimulation(simulation);
     }
 

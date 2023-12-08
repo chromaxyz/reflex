@@ -80,6 +80,16 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
         _;
     }
 
+    /**
+     * @dev Throws if called by any account on-chain.
+     * @dev This modifier is used to restrict the execution of a method to off-chain only.
+     */
+    modifier onlyOffChain() virtual {
+        if (tx.gasprice != 0) revert ExecutionRestricted();
+
+        _;
+    }
+
     // ===========
     // Constructor
     // ===========

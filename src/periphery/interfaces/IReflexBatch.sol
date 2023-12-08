@@ -12,8 +12,14 @@ interface IReflexBatch is IReflexModule {
     // Errors
     // ======
 
+    /**
+     * @dev Thrown with the result of a batch simulation.
+     */
     error BatchSimulation(BatchActionResponse[] simulation);
 
+    /**
+     * @dev Thrown when a module is not registered.
+     */
     error ModuleNotRegistered();
 
     // =======
@@ -64,6 +70,7 @@ interface IReflexBatch is IReflexModule {
 
     /**
      * @notice Simulate a batch call to interact with multiple modules in a single transaction.
+     * It is not possible to simulate a batch call on-chain. To simulate a batch call, use `eth_call`.
      * @param actions_ List of actions to simulate.
      *
      * @dev During simulation all batch actions are executed, regardless of the `allowFailure` flag.

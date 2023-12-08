@@ -23,6 +23,11 @@ interface IReflexModule is IReflexState {
     error EndpointInvalid();
 
     /**
+     * @notice Thrown when an off-chain only method is called on-chain.
+     */
+    error ExecutionRestricted();
+
+    /**
      * @notice Thrown when the module id is invalid.
      */
     error ModuleIdInvalid();
