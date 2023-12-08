@@ -457,6 +457,33 @@ contract ReflexBatchTest is ReflexFixture {
         batchEndpoint.performBatchCall(actions);
     }
 
+    // =======
+    // Attacks
+    // =======
+
+    function testUnitAttackRecursiveBatch() external {
+        IReflexBatch.BatchAction[] memory innerActions = new IReflexBatch.BatchAction[](1);
+
+        innerActions[0] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            endpointAddress: address(singleModuleEndpoint),
+            callData: abi.encodeCall(ImplementationState.setImplementationState0, (bytes32("777")))
+        });
+
+        IReflexBatch.BatchAction[] memory outerActions = new IReflexBatch.BatchAction[](1);
+
+        outerActions[0] = IReflexBatch.BatchAction({
+            allowFailure: false,
+            endpointAddress: address(batchEndpoint),
+            callData: abi.encodeCall(batchEndpoint.performBatchCall, (innerActions))
+        });
+
+        // vm.expectRevert(IReflexModule.ReentrancyAttackFailed.selector);
+        // impersonationAttack.attackRecursiveBatch{value: 1 ether}(outerActions);
+
+        batchEndpoint.performBatchCall(outerActions);
+    }
+
     // =========
     // Utilities
     // =========

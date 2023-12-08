@@ -163,7 +163,7 @@ abstract contract ReflexBatch is IReflexBatch, ReflexModule {
         // TODO: implement in assembly.
         (success_, result_) = moduleImplementation.delegatecall(
             // TODO: optimize to avoid memory expansion.
-            abi.encodePacked(action_.callData, messageSender_, endpointAddress)
+            abi.encodePacked(action_.callData, uint160(messageSender_), uint160(endpointAddress))
         );
     }
 }

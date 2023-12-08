@@ -7,11 +7,14 @@ import {VmSafe} from "forge-std/Vm.sol";
 // Interfaces
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
 
+// Attacks
+import {ReentrancyAttack} from "./attacks/ReentrancyAttack.sol";
+
 // Fixtures
 import {ReflexFixture} from "./fixtures/ReflexFixture.sol";
 
 // Mocks
-import {MockReflexModule, ReentrancyAttack} from "./mocks/MockReflexModule.sol";
+import {MockReflexModule} from "./mocks/MockReflexModule.sol";
 
 /**
  * @title Reflex Module Test
@@ -34,6 +37,11 @@ contract ReflexModuleTest is ReflexFixture {
 
     MockReflexModule public module;
     MockReflexModule public moduleEndpoint;
+
+    // =======
+    // Attacks
+    // =======
+
     ReentrancyAttack public reentrancyAttack;
 
     // =====

@@ -4,6 +4,9 @@ pragma solidity ^0.8.13;
 // Sources
 import {ReflexModule} from "../../src/ReflexModule.sol";
 
+// Attacks
+import {ReentrancyAttack} from "../attacks/ReentrancyAttack.sol";
+
 // Fixtures
 import {MockHarness} from "../fixtures/MockHarness.sol";
 
@@ -187,7 +190,7 @@ contract MockReflexModule is MockHarness, ReflexModule {
     function countAndCall(ReentrancyAttack attacker_) public nonReentrant {
         _increaseCounter(_REENTRANCY_COUNTER_SLOT);
 
-        attacker_.callSender(bytes4(keccak256("callback()")));
+        attacker_.attackCallSender(bytes4(keccak256("callback()")));
     }
 
     function guardedCheckLocked() public nonReentrant {
@@ -297,30 +300,5 @@ contract PanicThrower {
 
     function throwPanicArithmeticUnderflow() external pure returns (uint256) {
         return type(uint256).min - 1;
-    }
-}
-
-// =========
-// Utilities
-// =========
-
-/**
- * @title Reentrancy Attack
- */
-contract ReentrancyAttack {
-    // ======
-    // Errors
-    // ======
-
-    error ReentrancyAttackFailed();
-
-    // ==========
-    // Test stubs
-    // ==========
-
-    function callSender(bytes4 data) external {
-        (bool success, ) = msg.sender.call(abi.encodeWithSelector(data));
-
-        if (!success) revert ReentrancyAttackFailed();
     }
 }
