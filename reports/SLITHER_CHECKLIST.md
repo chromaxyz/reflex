@@ -72,29 +72,29 @@ Confidence: High
 ../src/periphery/ReflexBatch.sol#L111-L168
 
 - [ ] ID-9
-      [ReflexState.\_REFLEX_STORAGE()](../src/ReflexState.sol#L114-L118) uses assembly - [INLINE ASM](../src/ReflexState.sol#L115-L117)
-
-../src/ReflexState.sol#L114-L118
-
-- [ ] ID-10
       [ReflexModule.\_unpackTrailingParameters()](../src/ReflexModule.sol#L238-L249) uses assembly - [INLINE ASM](../src/ReflexModule.sol#L245-L248)
 
 ../src/ReflexModule.sol#L238-L249
 
-- [ ] ID-11
+- [ ] ID-10
       [ReflexModule.\_revertBytes(bytes)](../src/ReflexModule.sol#L255-L266) uses assembly - [INLINE ASM](../src/ReflexModule.sol#L256-L265)
 
 ../src/ReflexModule.sol#L255-L266
 
-- [ ] ID-12
+- [ ] ID-11
       [ReflexDispatcher.constructor(address,address)](../src/ReflexDispatcher.sol#L28-L75) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L53-L63)
 
 ../src/ReflexDispatcher.sol#L28-L75
 
-- [ ] ID-13
+- [ ] ID-12
       [ReflexModule.\_unpackMessageSender()](../src/ReflexModule.sol#L215-L220) uses assembly - [INLINE ASM](../src/ReflexModule.sol#L217-L219)
 
 ../src/ReflexModule.sol#L215-L220
+
+- [ ] ID-13
+      [ReflexState.\_REFLEX_STORAGE()](../src/ReflexState.sol#L115-L119) uses assembly - [INLINE ASM](../src/ReflexState.sol#L116-L118)
+
+../src/ReflexState.sol#L115-L119
 
 - [ ] ID-14
       [ReflexDispatcher.fallback()](../src/ReflexDispatcher.sol#L110-L189) uses assembly - [INLINE ASM](../src/ReflexDispatcher.sol#L113-L188)
@@ -230,9 +230,9 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-37
-      Function [ReflexState.\_REFLEX_STORAGE()](../src/ReflexState.sol#L114-L118) is not in mixedCase
+      Function [ReflexState.\_REFLEX_STORAGE()](../src/ReflexState.sol#L115-L119) is not in mixedCase
 
-../src/ReflexState.sol#L114-L118
+../src/ReflexState.sol#L115-L119
 
 ## similar-names
 
@@ -260,9 +260,9 @@ Impact: Informational
 Confidence: High
 
 - [ ] ID-40
-      [ReflexState.\_REFLEX_STORAGE_OWNER_SLOT](../src/ReflexState.sol#L36-L37) is never used in [ReflexBatch](../src/periphery/ReflexBatch.sol#L16-L169)
+      [ReflexState.\_REFLEX_STORAGE_OWNER_SLOT](../src/ReflexState.sol#L37-L38) is never used in [ReflexBatch](../src/periphery/ReflexBatch.sol#L16-L169)
 
-../src/ReflexState.sol#L36-L37
+../src/ReflexState.sol#L37-L38
 
 - [ ] ID-41
       [ReflexConstants.\_MODULE_ID_INSTALLER](../src/ReflexConstants.sol#L49) is never used in [ReflexInstaller](../src/ReflexInstaller.sol#L17-L170)
@@ -270,14 +270,14 @@ Confidence: High
 ../src/ReflexConstants.sol#L49
 
 - [ ] ID-42
-      [ReflexState.\_REFLEX_STORAGE_ENDPOINTS_SLOT](../src/ReflexState.sol#L57-L58) is never used in [ReflexInstaller](../src/ReflexInstaller.sol#L17-L170)
+      [ReflexState.\_REFLEX_STORAGE_ENDPOINTS_SLOT](../src/ReflexState.sol#L58-L59) is never used in [ReflexInstaller](../src/ReflexInstaller.sol#L17-L170)
 
-../src/ReflexState.sol#L57-L58
+../src/ReflexState.sol#L58-L59
 
 - [ ] ID-43
-      [ReflexState.\_REFLEX_STORAGE_ENDPOINTS_SLOT](../src/ReflexState.sol#L57-L58) is never used in [ReflexDispatcher](../src/ReflexDispatcher.sol#L19-L204)
+      [ReflexState.\_REFLEX_STORAGE_ENDPOINTS_SLOT](../src/ReflexState.sol#L58-L59) is never used in [ReflexDispatcher](../src/ReflexDispatcher.sol#L19-L204)
 
-../src/ReflexState.sol#L57-L58
+../src/ReflexState.sol#L58-L59
 
 - [ ] ID-44
       [ReflexConstants.\_MODULE_TYPE_MULTI_ENDPOINT](../src/ReflexConstants.sol#L35) is never used in [ReflexDispatcher](../src/ReflexDispatcher.sol#L19-L204)
@@ -285,29 +285,29 @@ Confidence: High
 ../src/ReflexConstants.sol#L35
 
 - [ ] ID-45
-      [ReflexState.\_REFLEX_STORAGE_MODULES_SLOT](../src/ReflexState.sol#L50-L51) is never used in [ReflexInstaller](../src/ReflexInstaller.sol#L17-L170)
+      [ReflexState.\_REFLEX_STORAGE_MODULES_SLOT](../src/ReflexState.sol#L51-L52) is never used in [ReflexInstaller](../src/ReflexInstaller.sol#L17-L170)
 
-../src/ReflexState.sol#L50-L51
+../src/ReflexState.sol#L51-L52
 
 - [ ] ID-46
-      [ReflexState.\_REFLEX_STORAGE_PENDING_OWNER_SLOT](../src/ReflexState.sol#L43-L44) is never used in [ReflexInstaller](../src/ReflexInstaller.sol#L17-L170)
+      [ReflexState.\_REFLEX_STORAGE_PENDING_OWNER_SLOT](../src/ReflexState.sol#L44-L45) is never used in [ReflexInstaller](../src/ReflexInstaller.sol#L17-L170)
 
-../src/ReflexState.sol#L43-L44
+../src/ReflexState.sol#L44-L45
 
 - [ ] ID-47
-      [ReflexState.\_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT](../src/ReflexState.sol#L29-L30) is never used in [ReflexDispatcher](../src/ReflexDispatcher.sol#L19-L204)
+      [ReflexState.\_REFLEX_STORAGE_REENTRANCY_STATUS_SLOT](../src/ReflexState.sol#L30-L31) is never used in [ReflexDispatcher](../src/ReflexDispatcher.sol#L19-L204)
 
-../src/ReflexState.sol#L29-L30
+../src/ReflexState.sol#L30-L31
 
 - [ ] ID-48
-      [ReflexState.\_REFLEX_STORAGE_RELATIONS_SLOT](../src/ReflexState.sol#L64-L65) is never used in [ReflexInstaller](../src/ReflexInstaller.sol#L17-L170)
+      [ReflexState.\_REFLEX_STORAGE_RELATIONS_SLOT](../src/ReflexState.sol#L65-L66) is never used in [ReflexInstaller](../src/ReflexInstaller.sol#L17-L170)
 
-../src/ReflexState.sol#L64-L65
+../src/ReflexState.sol#L65-L66
 
 - [ ] ID-49
-      [ReflexState.\_REFLEX_STORAGE_OWNER_SLOT](../src/ReflexState.sol#L36-L37) is never used in [ReflexDispatcher](../src/ReflexDispatcher.sol#L19-L204)
+      [ReflexState.\_REFLEX_STORAGE_OWNER_SLOT](../src/ReflexState.sol#L37-L38) is never used in [ReflexDispatcher](../src/ReflexDispatcher.sol#L19-L204)
 
-../src/ReflexState.sol#L36-L37
+../src/ReflexState.sol#L37-L38
 
 - [ ] ID-50
       [ReflexConstants.\_MODULE_ID_INSTALLER](../src/ReflexConstants.sol#L49) is never used in [ReflexBatch](../src/periphery/ReflexBatch.sol#L16-L169)
@@ -315,24 +315,24 @@ Confidence: High
 ../src/ReflexConstants.sol#L49
 
 - [ ] ID-51
-      [ReflexState.\_REFLEX_STORAGE_PENDING_OWNER_SLOT](../src/ReflexState.sol#L43-L44) is never used in [ReflexDispatcher](../src/ReflexDispatcher.sol#L19-L204)
+      [ReflexState.\_REFLEX_STORAGE_PENDING_OWNER_SLOT](../src/ReflexState.sol#L44-L45) is never used in [ReflexDispatcher](../src/ReflexDispatcher.sol#L19-L204)
 
-../src/ReflexState.sol#L43-L44
+../src/ReflexState.sol#L44-L45
 
 - [ ] ID-52
-      [ReflexState.\_REFLEX_STORAGE_OWNER_SLOT](../src/ReflexState.sol#L36-L37) is never used in [ReflexInstaller](../src/ReflexInstaller.sol#L17-L170)
+      [ReflexState.\_REFLEX_STORAGE_OWNER_SLOT](../src/ReflexState.sol#L37-L38) is never used in [ReflexInstaller](../src/ReflexInstaller.sol#L17-L170)
 
-../src/ReflexState.sol#L36-L37
+../src/ReflexState.sol#L37-L38
 
 - [ ] ID-53
-      [ReflexState.\_REFLEX_STORAGE_PENDING_OWNER_SLOT](../src/ReflexState.sol#L43-L44) is never used in [ReflexBatch](../src/periphery/ReflexBatch.sol#L16-L169)
+      [ReflexState.\_REFLEX_STORAGE_PENDING_OWNER_SLOT](../src/ReflexState.sol#L44-L45) is never used in [ReflexBatch](../src/periphery/ReflexBatch.sol#L16-L169)
 
-../src/ReflexState.sol#L43-L44
+../src/ReflexState.sol#L44-L45
 
 - [ ] ID-54
-      [ReflexState.\_REFLEX_STORAGE_ENDPOINTS_SLOT](../src/ReflexState.sol#L57-L58) is never used in [ReflexBatch](../src/periphery/ReflexBatch.sol#L16-L169)
+      [ReflexState.\_REFLEX_STORAGE_ENDPOINTS_SLOT](../src/ReflexState.sol#L58-L59) is never used in [ReflexBatch](../src/periphery/ReflexBatch.sol#L16-L169)
 
-../src/ReflexState.sol#L57-L58
+../src/ReflexState.sol#L58-L59
 
 - [ ] ID-55
       [ReflexConstants.\_MODULE_TYPE_INTERNAL](../src/ReflexConstants.sol#L40) is never used in [ReflexDispatcher](../src/ReflexDispatcher.sol#L19-L204)
