@@ -17,6 +17,7 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
     // =========
 
     /**
+     * @dev Storage entrypoint of Reflex.
      * @dev `bytes32(keccak256(abi.encode(uint256(keccak256("reflex")) - 1)) & ~bytes32(uint256(0xff)))`
      * Uses EIP-7201 Namespaced Storage Layout: https://eips.ethereum.org/EIPS/eip-7201
      * The formula is chosen to be safe against collisions with the standard Solidity storage layout.
