@@ -17,53 +17,54 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
     // =========
 
     /**
-     * @dev `bytes32(uint256(keccak256("_REFLEX_STORAGE")) - 1)`
-     * A `-1` offset is added so the preimage of the hash cannot be known,
-     * reducing the chances of a possible attack.
+     * @dev Storage entrypoint of Reflex.
+     * @dev `bytes32(keccak256(abi.encode(uint256(keccak256("reflex")) - 1)) & ~bytes32(uint256(0xff)))`
+     * Uses EIP-7201 Namespaced Storage Layout: https://eips.ethereum.org/EIPS/eip-7201
+     * The formula is chosen to be safe against collisions with the standard Solidity storage layout.
      */
-    bytes32 internal constant _REFLEX_STORAGE_SLOT = 0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09;
+    bytes32 internal constant _REFLEX_STORAGE_SLOT = 0x73ad830a85e52f69177de11e47bee176868f5b16670f49ea9de2fc41c4c0f900;
 
     /**
      * @dev Storage slot of the global reentrancy status tracker.
-     * @dev `(uint256(keccak256("_REFLEX_STORAGE")) - 1) + 0`
+     * @dev `_REFLEX_STORAGE_LAYOUT + 0`
      */
     uint256 internal constant _REFLEX_STORAGE_REENTRANCY_STATUS_SLOT =
-        0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09 + 0;
+        0x73ad830a85e52f69177de11e47bee176868f5b16670f49ea9de2fc41c4c0f900 + 0;
 
     /**
      * @dev Storage slot of the owner address.
-     * @dev `(uint256(keccak256("_REFLEX_STORAGE")) - 1) + 1`
+     * @dev `_REFLEX_STORAGE_LAYOUT + 1`
      */
     uint256 internal constant _REFLEX_STORAGE_OWNER_SLOT =
-        0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09 + 1;
+        0x73ad830a85e52f69177de11e47bee176868f5b16670f49ea9de2fc41c4c0f900 + 1;
 
     /**
      * @dev Storage slot of the pending owner address.
-     * @dev `(uint256(keccak256("_REFLEX_STORAGE")) - 1) + 2`
+     * @dev `_REFLEX_STORAGE_LAYOUT + 2`
      */
     uint256 internal constant _REFLEX_STORAGE_PENDING_OWNER_SLOT =
-        0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09 + 2;
+        0x73ad830a85e52f69177de11e47bee176868f5b16670f49ea9de2fc41c4c0f900 + 2;
 
     /**
      * @dev Storage slot of the module mapping.
-     * @dev `(uint256(keccak256("_REFLEX_STORAGE")) - 1) + 3`
+     * @dev `_REFLEX_STORAGE_LAYOUT + 3`
      */
     uint256 internal constant _REFLEX_STORAGE_MODULES_SLOT =
-        0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09 + 3;
+        0x73ad830a85e52f69177de11e47bee176868f5b16670f49ea9de2fc41c4c0f900 + 3;
 
     /**
      * @dev Storage slot of the endpoint mapping.
-     * @dev `(uint256(keccak256("_REFLEX_STORAGE")) - 1) + 4`
+     * @dev `_REFLEX_STORAGE_LAYOUT + 4`
      */
     uint256 internal constant _REFLEX_STORAGE_ENDPOINTS_SLOT =
-        0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09 + 4;
+        0x73ad830a85e52f69177de11e47bee176868f5b16670f49ea9de2fc41c4c0f900 + 4;
 
     /**
      * @dev Storage slot of the endpoint to module relation mapping.
-     * @dev `(uint256(keccak256("_REFLEX_STORAGE")) - 1) + 5`
+     * @dev `_REFLEX_STORAGE_LAYOUT + 5`
      */
     uint256 internal constant _REFLEX_STORAGE_RELATIONS_SLOT =
-        0x9ae9f1beea1ab16fc6eb61501e697d7f95dba720bc92d8f5c0ec2c2a99f1ae09 + 5;
+        0x73ad830a85e52f69177de11e47bee176868f5b16670f49ea9de2fc41c4c0f900 + 5;
 
     // =======
     // Storage
@@ -72,6 +73,7 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
     /**
      * @dev Append-only extendable.
      */
+    /// @custom:storage-location erc7201:reflex
     struct ReflexStorage {
         /**
          * @dev Global reentrancy status tracker.
