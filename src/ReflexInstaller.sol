@@ -11,7 +11,7 @@ import {ReflexModule} from "./ReflexModule.sol";
 /**
  * @title Reflex Installer
  *
- * The `Installer` manages the ownership of the Reflex layer and the registration of modules.
+ * @dev The `Installer` manages the ownership of the Reflex layer and the registration of modules.
  * The owner has the ability to add modules and upgrade existing modules.
  * The transferral of ownership is a two-step process, where the new owner must accept the ownership transfer.
  * The `Installer` is also a module itself with an endpoint and can be upgraded.
