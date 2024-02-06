@@ -141,6 +141,8 @@ abstract contract ReflexModule is IReflexModule, ReflexState {
 
     /**
      * @dev Create or return existing endpoint by module id.
+     * `Endpoints` are commonly created by the `Installer` upon registering of a module
+     * and by multi-module factories upon instance creation.
      * @param moduleId_ Module id.
      * @param moduleType_ Module type.
      * @param moduleImplementation_ Module implementation.

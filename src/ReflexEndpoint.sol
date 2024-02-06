@@ -9,7 +9,7 @@ import {IReflexEndpoint} from "./interfaces/IReflexEndpoint.sol";
  *
  * @dev `Endpoints` are trusted contracts that receive calls and forward them to the `Dispatcher` using `CALL`.
  * The forwarded calldata is appended with the `msg.sender` of the original call.
- * `Endpoints` are commonly deployed by the `Installer` upon registering of a module
+ * `Endpoints` are commonly created by the `Installer` upon registering of a module
  * and by multi-module factories upon instance creation.
  *
  * @dev Execution takes place within the Dispatcher's storage context, not the endpoints'.
