@@ -19,19 +19,28 @@ A Solidity framework for upgradeable modularized applications.
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
-- [Traits](#traits)
-- [Motivation](#motivation)
-- [Contracts](#contracts)
-- [Install](#install)
-- [Usage](#usage)
-  - [Install Commands](#install-commands)
-  - [Build Commands](#build-commands)
-  - [Test Commands](#test-commands)
-- [Safety](#safety)
-- [Contributing](#contributing)
-- [Acknowledgements](#acknowledgements)
-- [License](#license)
+- [Reflex](#reflex)
+  - [Table of Contents](#table-of-contents)
+  - [Documentation](#documentation)
+  - [Traits](#traits)
+  - [Motivation](#motivation)
+  - [Contracts](#contracts)
+  - [Install](#install)
+  - [Usage](#usage)
+    - [Install Commands](#install-commands)
+    - [Build Commands](#build-commands)
+    - [Test Commands](#test-commands)
+  - [Safety](#safety)
+  - [Known limitations](#known-limitations)
+  - [Contributing](#contributing)
+  - [Acknowledgements](#acknowledgements)
+  - [License](#license)
+
+## Documentation
+
+- [Checklist](./docs/CHECKLIST.md)
+- [Contributors](./docs/CONTRIBUTORS.md)
+- [Implementers](./docs/IMPLEMENTERS.md)
 
 ## Traits
 
@@ -48,7 +57,7 @@ A Solidity framework for upgradeable modularized applications.
 - A built-in installer allowing you to add, upgrade and deprecate modules throughout the application lifespan.
 - Has a global reentrancy lock capable of covering every storage-modifying method in the inheriting application.
 
-Noteably this is a so-called framework, a single well-tested implementation rather than a specification.
+Notably this is a so-called framework, a single well-tested implementation rather than a specification.
 The framework serves as the foundation of your modular application allowing you to focus on your business logic.
 
 To get started with Reflex we’ve created [Reflex Template](https://github.com/chromaxyz/reflex-template), a minimal template repository showing the basic use of Reflex in an application context.
