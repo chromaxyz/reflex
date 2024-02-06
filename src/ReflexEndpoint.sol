@@ -25,6 +25,7 @@ contract ReflexEndpoint is IReflexEndpoint {
     // ===========
 
     constructor() {
+        // Register the deployer to perform logic on calls originating from the deployer.
         DISPATCHER = msg.sender;
     }
 
@@ -38,6 +39,7 @@ contract ReflexEndpoint is IReflexEndpoint {
      */
     // solhint-disable-next-line payable-fallback, no-complex-fallback
     fallback() external virtual {
+        // It is not possible to access immutable variables from the assembly block.
         address dispatcher = DISPATCHER;
 
         // If the caller is the deployer, instead of re-enter - issue a log message.
