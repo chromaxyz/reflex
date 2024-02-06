@@ -22,12 +22,12 @@ abstract contract ReflexModule is IReflexModule, ReflexStorage {
     /**
      * @dev Module id.
      */
-    uint32 internal immutable _moduleId;
+    uint32 internal immutable _MODULE_ID;
 
     /**
      * @dev Module type.
      */
-    uint16 internal immutable _moduleType;
+    uint16 internal immutable _MODULE_TYPE;
 
     // =========
     // Modifiers
@@ -106,8 +106,8 @@ abstract contract ReflexModule is IReflexModule, ReflexStorage {
         if (moduleSettings_.moduleType == 0 || moduleSettings_.moduleType > _MODULE_TYPE_INTERNAL)
             revert ModuleTypeInvalid();
 
-        _moduleId = moduleSettings_.moduleId;
-        _moduleType = moduleSettings_.moduleType;
+        _MODULE_ID = moduleSettings_.moduleId;
+        _MODULE_TYPE = moduleSettings_.moduleType;
     }
 
     // ============
@@ -118,21 +118,21 @@ abstract contract ReflexModule is IReflexModule, ReflexStorage {
      * @inheritdoc IReflexModule
      */
     function moduleId() public view virtual returns (uint32) {
-        return _moduleId;
+        return _MODULE_ID;
     }
 
     /**
      * @inheritdoc IReflexModule
      */
     function moduleType() public view virtual returns (uint16) {
-        return _moduleType;
+        return _MODULE_TYPE;
     }
 
     /**
      * @inheritdoc IReflexModule
      */
     function moduleSettings() public view virtual returns (ModuleSettings memory) {
-        return ModuleSettings({moduleId: _moduleId, moduleType: _moduleType});
+        return ModuleSettings({moduleId: _MODULE_ID, moduleType: _MODULE_TYPE});
     }
 
     // ================
@@ -141,6 +141,8 @@ abstract contract ReflexModule is IReflexModule, ReflexStorage {
 
     /**
      * @dev Create or return existing endpoint by module id.
+     * `Endpoints` are commonly created by the `Installer` upon registering of a module
+     * and by multi-module factories upon instance creation.
      * @param moduleId_ Module id.
      * @param moduleType_ Module type.
      * @param moduleImplementation_ Module implementation.
