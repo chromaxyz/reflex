@@ -9,6 +9,5 @@
   "solidity.packageDefaultDependenciesDirectory": "lib",
   "search.exclude": {
     "lib": true
-  },
-  "cSpell.enabled": true
+  }
 }
