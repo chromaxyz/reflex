@@ -13,7 +13,12 @@ import {ReflexState} from "./ReflexState.sol";
 /**
  * @title Reflex Dispatcher
  *
- * @dev Execution takes place within the Dispatcher's storage context.
+ * @dev Execution takes place within the Dispatchers' storage context.
+ *
+ * The `Dispatcher` will take a call from a trusted endpoint, lookup the associated module and `DELEGATECALL`
+ * to the module with the `endpoint address` appended to the calldata. The original calldata includes the
+ * original `msg.sender` appended to it.
+ *
  * @dev Non-upgradeable, extendable.
  */
 abstract contract ReflexDispatcher is IReflexDispatcher, ReflexState {
