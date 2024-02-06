@@ -21,7 +21,6 @@ A Solidity framework for upgradeable modularized applications.
 
 - [Reflex](#reflex)
   - [Table of Contents](#table-of-contents)
-  - [Documentation](#documentation)
   - [Traits](#traits)
   - [Motivation](#motivation)
   - [Contracts](#contracts)
@@ -30,17 +29,12 @@ A Solidity framework for upgradeable modularized applications.
     - [Install Commands](#install-commands)
     - [Build Commands](#build-commands)
     - [Test Commands](#test-commands)
+  - [Resources](#resources)
   - [Safety](#safety)
   - [Known limitations](#known-limitations)
   - [Contributing](#contributing)
   - [Acknowledgements](#acknowledgements)
   - [License](#license)
-
-## Documentation
-
-- [Checklist](./docs/CHECKLIST.md)
-- [Contributors](./docs/CONTRIBUTORS.md)
-- [Implementers](./docs/IMPLEMENTERS.md)
 
 ## Traits
 
@@ -161,6 +155,12 @@ Usage: `PROFILE=default make test`.
 | Command                                    | Action                                    |
 | ------------------------------------------ | ----------------------------------------- |
 | `make test` or `PROFILE=default make test` | Run all tests with the `default` profile. |
+
+## Resources
+
+- [Checklist](./docs/CHECKLIST.md)
+- [Contributors](./docs/CONTRIBUTORS.md)
+- [Implementers](./docs/IMPLEMENTERS.md)
 
 ## Safety
 
