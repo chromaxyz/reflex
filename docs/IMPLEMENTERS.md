@@ -2,21 +2,25 @@
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
-- [Modules](#modules)
-  - [Single-endpoint modules](#single-endpoint-modules)
-  - [Multi-endpoint modules](#multi-endpoint-modules)
-  - [Internal modules](#internal-modules)
-  - [User interaction flow](#user-interaction-flow)
-- [Endpoints](#endpoints)
-  - [Endpoint => Dispatcher](#endpoint--dispatcher)
-  - [Dispatcher => Module](#dispatcher--module)
-  - [Module => Endpoint](#module--endpoint)
-- [Implementing](#implementing)
-- [Framework deployment](#framework-deployment)
-- [Module deployment](#module-deployment)
-- [Numerical limitations](#numerical-limitations)
-- [Acknowledgements](#acknowledgements)
+- [Implementers](#implementers)
+  - [Table of Contents](#table-of-contents)
+  - [Modules](#modules)
+    - [Single-endpoint modules](#single-endpoint-modules)
+    - [Multi-endpoint modules](#multi-endpoint-modules)
+    - [Internal modules](#internal-modules)
+    - [User interaction flow](#user-interaction-flow)
+  - [Endpoints](#endpoints)
+    - [Endpoint =\> Dispatcher](#endpoint--dispatcher)
+    - [Dispatcher =\> Module](#dispatcher--module)
+    - [Module =\> Endpoint](#module--endpoint)
+  - [Reentrancy guard](#reentrancy-guard)
+  - [Storage](#storage)
+  - [Implementing](#implementing)
+  - [Framework deployment](#framework-deployment)
+  - [Module deployment](#module-deployment)
+  - [Numerical limitations](#numerical-limitations)
+  - [Security assumptions and known limitations](#security-assumptions-and-known-limitations)
+  - [Acknowledgements](#acknowledgements)
 
 ## Modules
 
@@ -98,7 +102,7 @@ Modules cannot be called directly. Instead, they must be invoked through an endp
 
 By default, all endpoints are implemented by the same code: [src/ReflexEndpoint.sol](../src/ReflexEndpoint.sol). This is a very simple contract that forwards its requests to the `Dispatcher`, along with the original `msg.sender`. The call is done with a normal `call()`, so the execution takes place within the `Dispatcher` contract's storage context, not the endpoints'.
 
-Endpoints contain the bare minimum amount of logic required for forwarding. This is because they are not upgradeable. They should ideally be as optimized as possible so as to minimise gas costs since many of them will be deployed.
+Endpoints contain the bare minimum amount of logic required for forwarding. This is because they are not upgradeable. They should ideally be as optimized as possible so as to minimize gas costs since many of them will be deployed.
 
 The `Dispatcher` contract ensures that all requests to it are from a known trusted endpoint address. The only way that addresses can become known trusted is when the `Dispatcher` contract itself creates them. In this way, the original `msg.sender` sent by the endpoint can be trusted.
 
@@ -122,7 +126,7 @@ In the `fallback` method, the `Dispatcher` contract looks up its view of `msg.se
 
 The presumed endpoint address is then looked up in the internal `_relations` mapping, which must exist otherwise the call is reverted. It is determined to exist by having a non-zero entry in the `moduleId` field (modules must have non-zero IDs, see section [Numerical limitations](#numerical-limitations)).
 
-The only way an endpoint address can be added to internal `_relations` mapping is if the `Dispatcher` contract itself creates it (using the `_createEndpoint` function in [src/ReflexBase.sol](../src/ReflexBase.sol)).
+The only way an endpoint address can be added to internal `_relations` mapping is if the `Dispatcher` contract itself creates it (using the `_createEndpoint` function in [src/ReflexModule.sol](../src/ReflexModule.sol)).
 
 In the case of a `single-endpoint module`, the same storage slot in the internal `_relations` mapping will also contain an address for the module's implementation.
 
@@ -159,9 +163,9 @@ When the endpoint sees a call to its fallback from the `Dispatcher`, it knows no
 
 The endpoint unpacks this message and executes the appropriate log instruction: `log0`, `log1`, `log2`, `log3` or `log4`, depending on the number of topics.
 
-## Reentracy guard
+## Reentrancy guard
 
-All `single-endpoint` modules and `multi-endpoint` modules `CALL` (not `DELEGATECALL`) the `Dispatcher` meaning that all operations happen inside of the `Dispatcher` storage context. This allows us to have a single global re-entrancy lock that can cover every storage modifiying method in the protocol.
+All `single-endpoint` modules and `multi-endpoint` modules `CALL` (not `DELEGATECALL`) the `Dispatcher` meaning that all operations happen inside of the `Dispatcher` storage context. This allows us to have a single global reentrancy lock that can cover every storage modifying method in the protocol.
 
 There are exceptions however to this rule and these must be handled with great care namely:
 
@@ -281,7 +285,7 @@ Prior to adding, upgrading or deprecating a module make sure to go through the [
   - Reflex does not support `payable` modifiers and native token transfers due to reentrancy concerns.
   - The `Dispatcher` and the internal `Endpoint` contracts are not upgradable.
   - The diamond storage struct defined in `ReflexState` is append-only extendable but implementers must remain vigilant to not cause storage clashes by defining storage slots directly inside of `Modules`.
-  - Native ETH is not supported, instead users are required to wrap their ETH into WETH. This is to prevent an entire class of possible re-entrancy bugs.
+  - Native ETH is not supported, instead users are required to wrap their ETH into WETH. This is to prevent an entire class of possible reentrancy bugs.
   - Implementers **MUST NOT** implement a `selfdestruct` inside of `Modules` as this causes disastrous unexpected behaviour.
   - The registration of `Modules` **MUST BE** permissioned, malicious `Modules` can impact the behaviour of the entire application.
   - `Modules` **MUST NOT** define any storage variables or re-use diamond storage slots. In the rare case this is necessary one should use unstructured storage.
