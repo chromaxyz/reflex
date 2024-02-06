@@ -82,17 +82,5 @@ interface IReflexBatch is IReflexModule {
      * @dev During simulation all batch actions are executed, regardless of the `allowFailure` flag.
      * @dev Reverts with simulation results.
      */
-    function simulateBatchCallRevert(BatchAction[] memory actions_) external;
-
-    /**
-     * @notice Simulate a batch call, catch the revert and parse it to BatchActionResponse[].
-     * @param actions_ List of actions to simulate.
-     * @return simulation_ The decoded simulation of the simulated batched actions.
-     *
-     * @dev During simulation all batch actions are executed, regardless of the `allowFailure` flag.
-     * @dev Returns with simulation results.
-     */
-    function simulateBatchCallReturn(
-        BatchAction[] memory actions_
-    ) external returns (BatchActionResponse[] memory simulation_);
+    function simulateBatchCall(BatchAction[] memory actions_) external;
 }
