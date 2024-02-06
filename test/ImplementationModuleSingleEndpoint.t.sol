@@ -5,7 +5,7 @@ pragma solidity ^0.8.13;
 import {IReflexEndpoint} from "../src/interfaces/IReflexEndpoint.sol";
 import {IReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
-import {IReflexState} from "../src/interfaces/IReflexState.sol";
+import {IReflexStorage} from "../src/interfaces/IReflexStorage.sol";
 
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
@@ -78,7 +78,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     }
 
     function testUnitGetTrustRelation() external {
-        IReflexState.TrustRelation memory relation = dispatcher.getTrustRelation(address(singleModuleEndpoint));
+        IReflexStorage.TrustRelation memory relation = dispatcher.getTrustRelation(address(singleModuleEndpoint));
 
         assertEq(relation.moduleId, _MODULE_ID_SINGLE);
         assertEq(relation.moduleImplementation, address(singleModuleV1));
@@ -101,7 +101,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     function testFuzzUpgradeSingleEndpoint(bytes32 message_) external brutalizeMemory {
         // Initialize the storage in the `Dispatcher` context.
 
-        dispatcher.setImplementationState0(message_);
+        dispatcher.setImplementationStorage0(message_);
 
         // Verify single-endpoint module.
 
@@ -142,9 +142,9 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         // Initialize and verify the storage in the `Dispatcher` context.
 
-        dispatcher.setImplementationState0(messageA_);
+        dispatcher.setImplementationStorage0(messageA_);
 
-        assertEq(dispatcher.getImplementationState0(), messageA_);
+        assertEq(dispatcher.getImplementationStorage0(), messageA_);
 
         _verifyModuleConfiguration(singleModuleEndpoint, _MODULE_ID_SINGLE, _MODULE_TYPE_SINGLE_ENDPOINT);
 
@@ -166,31 +166,33 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         // Overwrite storage in the `Dispatcher` context from the malicious module.
 
-        MockImplementationMaliciousStorageModule(address(singleModuleEndpoint)).setMaliciousImplementationState0(
+        MockImplementationMaliciousStorageModule(address(singleModuleEndpoint)).setMaliciousImplementationStorage0(
             messageB_
         );
 
         // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
 
         assertEq(
-            MockImplementationMaliciousStorageModule(address(singleModuleEndpoint)).getMaliciousImplementationState0(),
+            MockImplementationMaliciousStorageModule(address(singleModuleEndpoint))
+                .getMaliciousImplementationStorage0(),
             messageB_
         );
 
         // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
 
-        assertEq(dispatcher.getImplementationState0(), messageB_);
+        assertEq(dispatcher.getImplementationStorage0(), messageB_);
 
         // Overwrite storage in the `Dispatcher` context.
 
-        dispatcher.setImplementationState0(messageA_);
+        dispatcher.setImplementationStorage0(messageA_);
 
         // Verify that the storage in the `Dispatcher` context has been overwritten.
 
-        assertEq(dispatcher.getImplementationState0(), messageA_);
+        assertEq(dispatcher.getImplementationStorage0(), messageA_);
 
         assertEq(
-            MockImplementationMaliciousStorageModule(address(singleModuleEndpoint)).getMaliciousImplementationState0(),
+            MockImplementationMaliciousStorageModule(address(singleModuleEndpoint))
+                .getMaliciousImplementationStorage0(),
             messageA_
         );
     }
@@ -260,9 +262,9 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     // =========
 
     function _verifyUnmodifiedStateSlots(bytes32 message_) internal {
-        assertEq((singleModuleV1).getImplementationState0(), 0);
-        assertEq((singleModuleV2).getImplementationState0(), 0);
-        assertEq(singleModuleEndpoint.getImplementationState0(), message_);
-        assertEq(dispatcher.getImplementationState0(), message_);
+        assertEq((singleModuleV1).getImplementationStorage0(), 0);
+        assertEq((singleModuleV2).getImplementationStorage0(), 0);
+        assertEq(singleModuleEndpoint.getImplementationStorage0(), message_);
+        assertEq(dispatcher.getImplementationStorage0(), message_);
     }
 }

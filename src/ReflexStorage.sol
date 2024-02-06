@@ -2,16 +2,16 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexState} from "./interfaces/IReflexState.sol";
+import {IReflexStorage} from "./interfaces/IReflexStorage.sol";
 
 // Sources
 import {ReflexConstants} from "./ReflexConstants.sol";
 
 /**
- * @title Reflex State
+ * @title Reflex Storage
  * @dev Append-only extendable.
  */
-abstract contract ReflexState is IReflexState, ReflexConstants {
+abstract contract ReflexStorage is IReflexStorage, ReflexConstants {
     // =========
     // Constants
     // =========
@@ -74,7 +74,7 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
      * @dev Append-only extendable.
      */
     /// @custom:storage-location erc7201:reflex
-    struct ReflexStorage {
+    struct ReflexStorageLayout {
         /**
          * @dev Global reentrancy status tracker.
          */
@@ -113,7 +113,7 @@ abstract contract ReflexState is IReflexState, ReflexConstants {
      * @return storage_ Pointer to the Reflex storage state.
      */
     // solhint-disable-next-line func-name-mixedcase
-    function _REFLEX_STORAGE() internal pure returns (ReflexStorage storage storage_) {
+    function _REFLEX_STORAGE() internal pure returns (ReflexStorageLayout storage storage_) {
         assembly ("memory-safe") {
             storage_.slot := _REFLEX_STORAGE_SLOT
         }

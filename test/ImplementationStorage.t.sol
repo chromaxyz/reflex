@@ -16,7 +16,7 @@ import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 /**
  * @title Implementation State Test
  */
-contract ImplementationStateTest is ImplementationFixture {
+contract ImplementationStorageTest is ImplementationFixture {
     // =========
     // Constants
     // =========
@@ -65,36 +65,36 @@ contract ImplementationStateTest is ImplementationFixture {
         bytes32 current;
 
         /**
-         * | Name                           | Type    | Slot                   | Offset | Bytes |
-         * |--------------------------------|---------|------------------------|--------|-------|
-         * | ReflexStorage.reentrancyStatus | address | RELEX_STORAGE_SLOT + 0 | 0      | 32    |
+         * | Name                                 | Type    | Slot                   | Offset | Bytes |
+         * |--------------------------------------|---------|------------------------|--------|-------|
+         * | ReflexStorageLayout.reentrancyStatus | address | RELEX_STORAGE_SLOT + 0 | 0      | 32    |
          */
         vm.record();
-        dispatcher.getReflexState0();
+        dispatcher.getReflexStorage0();
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq(uint256(reads[0]), uint256(REFLEX_STORAGE_SLOT) + 0);
         current = vm.load(address(dispatcher), bytes32(reads[0]));
         assertEq(uint256(current), 1);
 
         /**
-         * | Name                | Type    | Slot                   | Offset | Bytes |
-         * |---------------------|---------|------------------------|--------|-------|
-         * | ReflexStorage.owner | address | RELEX_STORAGE_SLOT + 1 | 0      | 32    |
+         * | Name                      | Type    | Slot                   | Offset | Bytes |
+         * |---------------------------|---------|------------------------|--------|-------|
+         * | ReflexStorageLayout.owner | address | RELEX_STORAGE_SLOT + 1 | 0      | 32    |
          */
         vm.record();
-        dispatcher.getReflexState1();
+        dispatcher.getReflexStorage1();
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq(uint256(reads[0]), uint256(REFLEX_STORAGE_SLOT) + 1);
         current = vm.load(address(dispatcher), bytes32(reads[0]));
         assertEq(address(uint160(uint256(current))), address(this));
 
         /**
-         * | Name                       | Type    | Slot                   | Offset | Bytes |
-         * |----------------------------|---------|------------------------|--------|-------|
-         * | ReflexStorage.pendingOwner | address | RELEX_STORAGE_SLOT + 2 | 0      | 32    |
+         * | Name                             | Type    | Slot                   | Offset | Bytes |
+         * |----------------------------------|---------|------------------------|--------|-------|
+         * | ReflexStorageLayout.pendingOwner | address | RELEX_STORAGE_SLOT + 2 | 0      | 32    |
          */
         vm.record();
-        dispatcher.getReflexState2();
+        dispatcher.getReflexStorage2();
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq(uint256(reads[0]), uint256(REFLEX_STORAGE_SLOT) + 2);
         current = vm.load(address(dispatcher), bytes32(reads[0]));
@@ -103,43 +103,43 @@ contract ImplementationStateTest is ImplementationFixture {
         installerEndpoint.transferOwnership(address(target_));
 
         vm.record();
-        dispatcher.getReflexState2();
+        dispatcher.getReflexStorage2();
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq(uint256(reads[0]), uint256(REFLEX_STORAGE_SLOT) + 2);
         current = vm.load(address(dispatcher), bytes32(reads[0]));
         assertEq(address(uint160(uint256(current))), address(target_));
 
         /**
-         * | Name                | Type    | Slot                    | Offset | Bytes |
-         * |---------------------|---------|-------------------------|--------|-------|
-         * | ReflexState.modules | address | REFLEX_STORAGE_SLOT + 3 | 0      | 32    |
+         * | Name                        | Type    | Slot                    | Offset | Bytes |
+         * |-----------------------------|---------|-------------------------|--------|-------|
+         * | ReflexStorageLayout.modules | address | REFLEX_STORAGE_SLOT + 3 | 0      | 32    |
          */
         vm.record();
-        dispatcher.getReflexState3(_MODULE_ID_SINGLE);
+        dispatcher.getReflexStorage3(_MODULE_ID_SINGLE);
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq((reads[0]), keccak256(abi.encode(_MODULE_ID_SINGLE, uint256(REFLEX_STORAGE_SLOT) + 3)));
         current = vm.load(address(dispatcher), bytes32(reads[0]));
         assertEq(address(uint160(uint256(current))), address(singleModuleImplementation));
 
         /**
-         * | Name                  | Type    | Slot                    | Offset | Bytes |
-         * |-----------------------|---------|-------------------------|--------|-------|
-         * | ReflexState.endpoints | address | REFLEX_STORAGE_SLOT + 4 | 0      | 32    |
+         * | Name                          | Type    | Slot                    | Offset | Bytes |
+         * |-------------------------------|---------|-------------------------|--------|-------|
+         * | ReflexStorageLayout.endpoints | address | REFLEX_STORAGE_SLOT + 4 | 0      | 32    |
          */
         vm.record();
-        dispatcher.getReflexState4(_MODULE_ID_SINGLE);
+        dispatcher.getReflexStorage4(_MODULE_ID_SINGLE);
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq((reads[0]), keccak256(abi.encode(_MODULE_ID_SINGLE, uint256(REFLEX_STORAGE_SLOT) + 4)));
         current = vm.load(address(dispatcher), bytes32(reads[0]));
         assertEq(address(uint160(uint256(current))), address(singleModuleEndpoint));
 
         /**
-         * | Name                  | Type    | Slot                    | Offset | Bytes |
-         * |-----------------------|---------|-------------------------|--------|-------|
-         * | ReflexState.relations | address | REFLEX_STORAGE_SLOT + 5 | 0      | 32    |
+         * | Name                          | Type    | Slot                    | Offset | Bytes |
+         * |-------------------------------|---------|-------------------------|--------|-------|
+         * | ReflexStorageLayout.relations | address | REFLEX_STORAGE_SLOT + 5 | 0      | 32    |
          */
         vm.record();
-        dispatcher.getReflexState5(address(singleModuleEndpoint));
+        dispatcher.getReflexStorage5(address(singleModuleEndpoint));
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq((reads[0]), keccak256(abi.encode(address(singleModuleEndpoint), uint256(REFLEX_STORAGE_SLOT) + 5)));
         current = vm.load(address(dispatcher), bytes32(reads[0]));
@@ -160,85 +160,85 @@ contract ImplementationStateTest is ImplementationFixture {
         bytes32[] memory reads;
         bytes32 current;
 
-        // Set implementation state.
-        installerEndpoint.setImplementationState(message_, number_, target_, flag_, tokenA_, tokenB_);
+        // Set implementation storage.
+        installerEndpoint.setImplementationStorage(message_, number_, target_, flag_, tokenA_, tokenB_);
 
         /**
-         * | Name                                     | Type    | Slot                            | Offset | Bytes |
-         * |------------------------------------------|---------|---------------------------------|--------|-------|
-         * | ImplementationState.implementationState0 | address | IMPLEMENTATION_STORAGE_SLOT + 0 | 0      | 32    |
+         * | Name                                         | Type    | Slot                            | Offset | Bytes |
+         * |----------------------------------------------|---------|---------------------------------|--------|-------|
+         * | ImplementationStorage.implementationStorage0 | address | IMPLEMENTATION_STORAGE_SLOT + 0 | 0      | 32    |
          */
         vm.record();
-        dispatcher.getImplementationState0();
+        dispatcher.getImplementationStorage0();
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq(uint256(reads[0]), uint256(IMPLEMENTATION_STORAGE_SLOT) + 0);
         current = vm.load(address(dispatcher), bytes32(reads[0]));
         assertEq(current, message_);
 
         /**
-         * | Name                                     | Type    | Slot                            | Offset | Bytes |
-         * |------------------------------------------|---------|---------------------------------|--------|-------|
-         * | ImplementationState.implementationState1 | address | IMPLEMENTATION_STORAGE_SLOT + 1 | 0      | 32    |
+         * | Name                                         | Type    | Slot                            | Offset | Bytes |
+         * |----------------------------------------------|---------|---------------------------------|--------|-------|
+         * | ImplementationStorage.implementationStorage1 | address | IMPLEMENTATION_STORAGE_SLOT + 1 | 0      | 32    |
          */
         vm.record();
-        dispatcher.getImplementationState1();
+        dispatcher.getImplementationStorage1();
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq(uint256(reads[0]), uint256(IMPLEMENTATION_STORAGE_SLOT) + 1);
         current = vm.load(address(dispatcher), bytes32(reads[0]));
         assertEq(uint256(current), number_);
 
         /**
-         * | Name                                     | Type    | Slot                            | Offset | Bytes |
-         * |------------------------------------------|---------|---------------------------------|--------|-------|
-         * | ImplementationState.implementationState2 | address | IMPLEMENTATION_STORAGE_SLOT + 2 | 0      | 20    |
+         * | Name                                         | Type    | Slot                            | Offset | Bytes |
+         * |----------------------------------------------|---------|---------------------------------|--------|-------|
+         * | ImplementationStorage.implementationStorage2 | address | IMPLEMENTATION_STORAGE_SLOT + 2 | 0      | 20    |
          */
         vm.record();
-        dispatcher.getImplementationState2();
+        dispatcher.getImplementationStorage2();
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq(uint256(reads[0]), uint256(IMPLEMENTATION_STORAGE_SLOT) + 2);
         current = vm.load(address(dispatcher), bytes32(reads[0]));
         assertEq(address(uint160(uint256(current))), target_);
 
         /**
-         * | Name                                     | Type    | Slot                            | Offset | Bytes |
-         * |------------------------------------------|---------|---------------------------------|--------|-------|
-         * | ImplementationState.implementationState3 | address | IMPLEMENTATION_STORAGE_SLOT + 3 | 0      | 20    |
+         * | Name                                         | Type    | Slot                            | Offset | Bytes |
+         * |----------------------------------------------|---------|---------------------------------|--------|-------|
+         * | ImplementationStorage.implementationStorage3 | address | IMPLEMENTATION_STORAGE_SLOT + 3 | 0      | 20    |
          */
         vm.record();
-        dispatcher.getImplementationState3();
+        dispatcher.getImplementationStorage3();
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq(uint256(reads[0]), uint256(IMPLEMENTATION_STORAGE_SLOT) + 3);
         current = vm.load(address(dispatcher), bytes32(reads[0]));
         assertEq(address(uint160(uint256(current))), target_);
 
         /**
-         * | Name                                     | Type    | Slot                            | Offset | Bytes |
-         * |------------------------------------------|---------|---------------------------------|--------|-------|
-         * | ImplementationState.implementationState4 | address | IMPLEMENTATION_STORAGE_SLOT + 3 | 0      | 1     |
+         * | Name                                         | Type    | Slot                            | Offset | Bytes |
+         * |----------------------------------------------|---------|---------------------------------|--------|-------|
+         * | ImplementationStorage.implementationStorage4 | address | IMPLEMENTATION_STORAGE_SLOT + 3 | 0      | 1     |
          */
         vm.record();
-        dispatcher.getImplementationState4();
+        dispatcher.getImplementationStorage4();
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq(uint256(reads[0]), uint256(IMPLEMENTATION_STORAGE_SLOT) + 3);
         current = vm.load(address(dispatcher), bytes32(reads[0]));
         assertEq(uint8(uint256(current) >> 160), _castBoolToUInt8(flag_));
 
         /**
-         * | Name                                     | Type    | Slot                            | Offset | Bytes |
-         * |------------------------------------------|---------|---------------------------------|--------|-------|
-         * | ImplementationState.implementationState5 | address | IMPLEMENTATION_STORAGE_SLOT + 4 | 0      | 32    |
+         * | Name                                         | Type    | Slot                            | Offset | Bytes |
+         * |----------------------------------------------|---------|---------------------------------|--------|-------|
+         * | ImplementationStorage.implementationStorage5 | address | IMPLEMENTATION_STORAGE_SLOT + 4 | 0      | 32    |
          */
         vm.record();
-        dispatcher.getImplementationState5(target_);
+        dispatcher.getImplementationStorage5(target_);
         (reads, ) = vm.accesses(address(dispatcher));
         assertEq((reads[0]), keccak256(abi.encode(target_, uint256(IMPLEMENTATION_STORAGE_SLOT) + 4)));
         current = vm.load(address(dispatcher), bytes32(reads[0]));
         assertEq(uint256(current), number_);
 
         /**
-         * | Name                       | Type    | Slot                            | Offset | Bytes |
-         * |----------------------------|---------|---------------------------------|--------|-------|
-         * | ImplementationState.tokens | address | IMPLEMENTATION_STORAGE_SLOT + 5 | 0      | 32    |
+         * | Name                         | Type    | Slot                            | Offset | Bytes |
+         * |------------------------------|---------|---------------------------------|--------|-------|
+         * | ImplementationStorage.tokens | address | IMPLEMENTATION_STORAGE_SLOT + 5 | 0      | 32    |
          */
         vm.record();
         dispatcher.getToken(tokenA_, address(dispatcher));

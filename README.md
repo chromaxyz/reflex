@@ -19,19 +19,21 @@ A Solidity framework for upgradeable modularized applications.
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
-- [Traits](#traits)
-- [Motivation](#motivation)
-- [Contracts](#contracts)
-- [Install](#install)
-- [Usage](#usage)
-  - [Install Commands](#install-commands)
-  - [Build Commands](#build-commands)
-  - [Test Commands](#test-commands)
-- [Safety](#safety)
-- [Contributing](#contributing)
-- [Acknowledgements](#acknowledgements)
-- [License](#license)
+- [Reflex](#reflex)
+  - [Table of Contents](#table-of-contents)
+  - [Traits](#traits)
+  - [Motivation](#motivation)
+  - [Contracts](#contracts)
+  - [Install](#install)
+  - [Usage](#usage)
+    - [Install Commands](#install-commands)
+    - [Build Commands](#build-commands)
+    - [Test Commands](#test-commands)
+  - [Safety](#safety)
+  - [Known limitations](#known-limitations)
+  - [Contributing](#contributing)
+  - [Acknowledgements](#acknowledgements)
+  - [License](#license)
 
 ## Traits
 
@@ -72,7 +74,7 @@ In React, you as a developer do need to concern yourself with the internals of R
 │   ├── IReflexEndpoint.sol
 │   ├── IReflexInstaller.sol
 │   ├── IReflexModule.sol
-│   └── IReflexState.sol
+│   └── IReflexStorage.sol
 ├── periphery
 │   ├── interfaces
 │   │   └── IReflexBatch.sol
@@ -82,7 +84,7 @@ In React, you as a developer do need to concern yourself with the internals of R
 ├── ReflexEndpoint.sol
 ├── ReflexInstaller.sol
 ├── ReflexModule.sol
-└── ReflexState.sol
+└── ReflexStorage.sol
 ```
 
 ```mermaid
@@ -90,9 +92,9 @@ graph TD
     subgraph Reflex [ ]
 
     ReflexInstaller --> ReflexModule
-    ReflexDispatcher --> ReflexState
-    ReflexModule --> ReflexState
-    ReflexState --> ReflexConstants
+    ReflexDispatcher --> ReflexStorage
+    ReflexModule --> ReflexStorage
+    ReflexStorage --> ReflexConstants
     end
 ```
 

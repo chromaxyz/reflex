@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 // Interfaces
 import {IReflexInstaller} from "../src/interfaces/IReflexInstaller.sol";
 import {IReflexModule} from "../src/interfaces/IReflexModule.sol";
-import {IReflexState} from "../src/interfaces/IReflexState.sol";
+import {IReflexStorage} from "../src/interfaces/IReflexStorage.sol";
 
 // Fixtures
 import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
@@ -89,7 +89,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     }
 
     function testUnitGetTrustRelation() external {
-        IReflexState.TrustRelation memory relation = dispatcher.getTrustRelation(address(internalModuleV1));
+        IReflexStorage.TrustRelation memory relation = dispatcher.getTrustRelation(address(internalModuleV1));
 
         assertEq(relation.moduleId, 0);
         assertEq(relation.moduleImplementation, address(0));
@@ -116,7 +116,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         bytes32 value = abi.decode(
             singleModuleEndpoint.callInternalModule(
                 _MODULE_INTERNAL_ID,
-                abi.encodeWithSignature("getImplementationState0()")
+                abi.encodeWithSignature("getImplementationStorage0()")
             ),
             (bytes32)
         );
@@ -125,13 +125,13 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         singleModuleEndpoint.callInternalModule(
             _MODULE_INTERNAL_ID,
-            abi.encodeWithSignature("setImplementationState0(bytes32)", message_)
+            abi.encodeWithSignature("setImplementationStorage0(bytes32)", message_)
         );
 
         value = abi.decode(
             singleModuleEndpoint.callInternalModule(
                 _MODULE_INTERNAL_ID,
-                abi.encodeWithSignature("getImplementationState0()")
+                abi.encodeWithSignature("getImplementationStorage0()")
             ),
             (bytes32)
         );
@@ -143,7 +143,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
         vm.expectRevert();
         singleModuleEndpoint.callInternalModule(
             _MODULE_INTERNAL_ID,
-            abi.encodeWithSignature("getImplementationState777()")
+            abi.encodeWithSignature("getImplementationStorage777()")
         );
     }
 
@@ -152,7 +152,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         singleModuleEndpoint.callInternalModule(
             _MODULE_INTERNAL_ID,
-            abi.encodeWithSignature("setImplementationState0(bytes32)", message_)
+            abi.encodeWithSignature("setImplementationStorage0(bytes32)", message_)
         );
 
         // Verify internal module.
@@ -210,9 +210,9 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         // Initialize and verify the storage in the `Dispatcher` context.
 
-        dispatcher.setImplementationState0(messageA_);
+        dispatcher.setImplementationStorage0(messageA_);
 
-        assertEq(dispatcher.getImplementationState0(), messageA_);
+        assertEq(dispatcher.getImplementationStorage0(), messageA_);
 
         _verifyModuleConfiguration(
             IReflexModule.ModuleSettings({moduleId: _MODULE_INTERNAL_ID, moduleType: _MODULE_TYPE_INTERNAL})
@@ -245,7 +245,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         singleModuleEndpoint.callInternalModule(
             _MODULE_INTERNAL_ID,
-            abi.encodeWithSignature("setMaliciousImplementationState0(bytes32)", messageB_)
+            abi.encodeWithSignature("setMaliciousImplementationStorage0(bytes32)", messageB_)
         );
 
         // Verify storage has been modified by malicious upgrade in `Dispatcher` context.
@@ -254,7 +254,7 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
             abi.decode(
                 singleModuleEndpoint.callInternalModule(
                     _MODULE_INTERNAL_ID,
-                    abi.encodeWithSignature("getMaliciousImplementationState0()")
+                    abi.encodeWithSignature("getMaliciousImplementationStorage0()")
                 ),
                 (bytes32)
             ),
@@ -263,21 +263,21 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
 
         // Verify that the storage in the `Dispatcher` context has been overwritten, this is disastrous.
 
-        assertEq(dispatcher.getImplementationState0(), messageB_);
+        assertEq(dispatcher.getImplementationStorage0(), messageB_);
 
         // Overwrite storage in the `Dispatcher` context.
 
-        dispatcher.setImplementationState0(messageA_);
+        dispatcher.setImplementationStorage0(messageA_);
 
         // Verify that the storage in the `Dispatcher` context has been overwritten.
 
-        assertEq(dispatcher.getImplementationState0(), messageA_);
+        assertEq(dispatcher.getImplementationStorage0(), messageA_);
 
         assertEq(
             abi.decode(
                 singleModuleEndpoint.callInternalModule(
                     _MODULE_INTERNAL_ID,
-                    abi.encodeWithSignature("getMaliciousImplementationState0()")
+                    abi.encodeWithSignature("getMaliciousImplementationStorage0()")
                 ),
                 (bytes32)
             ),
@@ -300,24 +300,24 @@ contract ImplementationModuleInternalTest is ImplementationFixture {
     }
 
     function _verifyUnmodifiedStateSlots(bytes32 message_) internal {
-        assertEq(singleModuleV1.getImplementationState0(), 0);
-        assertEq(singleModuleV2.getImplementationState0(), 0);
-        assertEq(singleModuleEndpoint.getImplementationState0(), message_);
+        assertEq(singleModuleV1.getImplementationStorage0(), 0);
+        assertEq(singleModuleV2.getImplementationStorage0(), 0);
+        assertEq(singleModuleEndpoint.getImplementationStorage0(), message_);
 
-        assertEq(internalModuleV1.getImplementationState0(), 0);
-        assertEq(internalModuleV2.getImplementationState0(), 0);
-        assertEq(internalModuleV3.getImplementationState0(), 0);
+        assertEq(internalModuleV1.getImplementationStorage0(), 0);
+        assertEq(internalModuleV2.getImplementationStorage0(), 0);
+        assertEq(internalModuleV3.getImplementationStorage0(), 0);
 
         assertEq(
             abi.decode(
                 singleModuleEndpoint.callInternalModule(
                     _MODULE_INTERNAL_ID,
-                    abi.encodeWithSignature("getImplementationState0()")
+                    abi.encodeWithSignature("getImplementationStorage0()")
                 ),
                 (bytes32)
             ),
             message_
         );
-        assertEq(dispatcher.getImplementationState0(), message_);
+        assertEq(dispatcher.getImplementationStorage0(), message_);
     }
 }

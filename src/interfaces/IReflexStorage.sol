@@ -2,9 +2,9 @@
 pragma solidity ^0.8.13;
 
 /**
- * @title Reflex State Interface
+ * @title Reflex Storage Interface
  */
-interface IReflexState {
+interface IReflexStorage {
     // =======
     // Structs
     // =======
