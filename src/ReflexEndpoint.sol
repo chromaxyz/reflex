@@ -16,16 +16,16 @@ contract ReflexEndpoint is IReflexEndpoint {
     // ==========
 
     /**
-     * @dev Deployer address.
+     * @notice Address of the `Dispatcher`, the deployer of this contract.
      */
-    address internal immutable _deployer;
+    address public immutable DISPATCHER;
 
     // ===========
     // Constructor
     // ===========
 
     constructor() {
-        _deployer = msg.sender;
+        DISPATCHER = msg.sender;
     }
 
     // ================
@@ -38,10 +38,10 @@ contract ReflexEndpoint is IReflexEndpoint {
      */
     // solhint-disable-next-line payable-fallback, no-complex-fallback
     fallback() external virtual {
-        address deployer_ = _deployer;
+        address dispatcher = DISPATCHER;
 
         // If the caller is the deployer, instead of re-enter - issue a log message.
-        if (msg.sender == deployer_) {
+        if (msg.sender == dispatcher) {
             // We take full control of memory because it will not return to Solidity code.
             // Calldata: [number of topics as uint8 (1 byte)][topic #i (32 bytes)]{0,4}[extra log data (N bytes)]
             assembly {
@@ -103,7 +103,7 @@ contract ReflexEndpoint is IReflexEndpoint {
                 // Call so that execution happens within the `Dispatcher` context.
                 // Out and outsize are 0 because we don't know the size yet.
                 // Calldata: [calldata (N bytes)][msg.sender (20 bytes)]
-                let result := call(gas(), deployer_, 0, 0, add(calldatasize(), 20), 0, 0)
+                let result := call(gas(), dispatcher, 0, 0, add(calldatasize(), 20), 0, 0)
 
                 // Copy the returned data into memory, starting at position `0`.
                 returndatacopy(0x00, 0x00, returndatasize())
