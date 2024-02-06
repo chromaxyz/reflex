@@ -6,7 +6,7 @@ import {IReflexModule} from "./interfaces/IReflexModule.sol";
 
 // Sources
 import {ReflexEndpoint} from "./ReflexEndpoint.sol";
-import {ReflexState} from "./ReflexState.sol";
+import {ReflexStorage} from "./ReflexStorage.sol";
 
 /**
  * @title Reflex Module
@@ -14,7 +14,7 @@ import {ReflexState} from "./ReflexState.sol";
  * @dev Execution takes place within the Dispatcher's storage context.
  * @dev Upgradeable, extendable.
  */
-abstract contract ReflexModule is IReflexModule, ReflexState {
+abstract contract ReflexModule is IReflexModule, ReflexStorage {
     // ==========
     // Immutables
     // ==========

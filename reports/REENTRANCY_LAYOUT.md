@@ -196,7 +196,7 @@
 
 ```
 
-**ReflexState**
+**ReflexStorage**
 
 ```json
 

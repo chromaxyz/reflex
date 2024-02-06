@@ -6,7 +6,7 @@ import {MockReflexModule} from "./MockReflexModule.sol";
 
 /**
  * @title Mock Implementation Malicious Storage Module
- * @dev Example of a module which incorrectly implements storage by overriding `ImplementationState`.
+ * @dev Example of a module which incorrectly implements storage by overriding `ImplementationStorage`.
  * @dev Instead it implements storage directly in the module.
  */
 contract MockImplementationMaliciousStorageModule is MockReflexModule {
@@ -43,12 +43,12 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
     // Test stubs
     // ==========
 
-    function setMaliciousImplementationState0(bytes32 message_) public {
-        _MALICIOUS_IMPLEMENTATION_STORAGE().implementationState0 = message_;
+    function setMaliciousImplementationStorage0(bytes32 message_) public {
+        _MALICIOUS_IMPLEMENTATION_STORAGE().implementationStorage0 = message_;
     }
 
-    function getMaliciousImplementationState0() public view returns (bytes32) {
-        return _MALICIOUS_IMPLEMENTATION_STORAGE().implementationState0;
+    function getMaliciousImplementationStorage0() public view returns (bytes32) {
+        return _MALICIOUS_IMPLEMENTATION_STORAGE().implementationStorage0;
     }
 
     // =======
@@ -58,11 +58,11 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
     /**
      * @dev Append-only extendable.
      */
-    struct MaliciousImplementationStorage {
+    struct MaliciousImplementationStorageLayout {
         /**
-         * @notice Implementation state 0.
+         * @notice Implementation storage 0.
          */
-        bytes32 implementationState0;
+        bytes32 implementationStorage0;
     }
 
     // ================
@@ -76,7 +76,7 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
     function _MALICIOUS_IMPLEMENTATION_STORAGE()
         internal
         pure
-        returns (MaliciousImplementationStorage storage storage_)
+        returns (MaliciousImplementationStorageLayout storage storage_)
     {
         assembly ("memory-safe") {
             /**
