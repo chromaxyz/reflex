@@ -18,7 +18,7 @@ contract ReflexEndpoint is IReflexEndpoint {
     /**
      * @notice Address of the `Dispatcher`, the deployer of this contract.
      */
-    address public immutable DISPATCHER;
+    address internal immutable _DISPATCHER;
 
     // ===========
     // Constructor
@@ -26,7 +26,7 @@ contract ReflexEndpoint is IReflexEndpoint {
 
     constructor() {
         // Register the deployer to perform logic on calls originating from the deployer.
-        DISPATCHER = msg.sender;
+        _DISPATCHER = msg.sender;
     }
 
     // ================
@@ -40,7 +40,7 @@ contract ReflexEndpoint is IReflexEndpoint {
     // solhint-disable-next-line payable-fallback, no-complex-fallback
     fallback() external virtual {
         // It is not possible to access immutable variables from the assembly block.
-        address dispatcher = DISPATCHER;
+        address dispatcher = _DISPATCHER;
 
         // If the caller is the deployer, instead of re-enter - issue a log message.
         if (msg.sender == dispatcher) {
