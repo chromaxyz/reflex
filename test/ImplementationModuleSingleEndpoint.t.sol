@@ -117,7 +117,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
-        _verifyUnmodifiedStateSlots(message_);
+        _verifyUnmodifiedStorageSlots(message_);
 
         // Upgrade the upgraded single-endpoint module.
 
@@ -129,7 +129,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
 
         // Verify storage is not modified by upgrades in `Dispatcher` context.
 
-        _verifyUnmodifiedStateSlots(message_);
+        _verifyUnmodifiedStorageSlots(message_);
     }
 
     function testFuzzUpgradeSingleModuleToMaliciousStorageModule(
@@ -261,7 +261,7 @@ contract ImplementationModuleSingleEndpointTest is ImplementationFixture {
     // Utilities
     // =========
 
-    function _verifyUnmodifiedStateSlots(bytes32 message_) internal {
+    function _verifyUnmodifiedStorageSlots(bytes32 message_) internal {
         assertEq((singleModuleV1).getImplementationStorage0(), 0);
         assertEq((singleModuleV2).getImplementationStorage0(), 0);
         assertEq(singleModuleEndpoint.getImplementationStorage0(), message_);

@@ -43,27 +43,27 @@ abstract contract ImplementationStorage is ReflexStorage {
      */
     struct ImplementationStorageLayout {
         /**
-         * @notice Implementation state 0.
+         * @notice Implementation storage 0.
          */
         bytes32 implementationStorage0;
         /**
-         * @notice Implementation state 1.
+         * @notice Implementation storage 1.
          */
         uint256 implementationStorage1;
         /**
-         * @notice Implementation state 2.
+         * @notice Implementation storage 2.
          */
         address implementationStorage2;
         /**
-         * @notice Implementation state 3.
+         * @notice Implementation storage 3.
          */
         address implementationStorage3;
         /**
-         * @notice Implementation state 4.
+         * @notice Implementation storage 4.
          */
         bool implementationStorage4;
         /**
-         * @notice Implementation state 5.
+         * @notice Implementation storage 5.
          */
         mapping(address => uint256) implementationStorage5;
         /**
@@ -78,7 +78,7 @@ abstract contract ImplementationStorage is ReflexStorage {
 
     /**
      * @dev Get the Implementation storage pointer.
-     * @return storage_ Pointer to the Implementation storage state.
+     * @return storage_ Pointer to the Implementation storage slot.
      */
     // solhint-disable-next-line func-name-mixedcase
     function _IMPLEMENTATION_STORAGE() internal pure returns (ImplementationStorageLayout storage storage_) {

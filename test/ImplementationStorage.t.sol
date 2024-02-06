@@ -14,7 +14,7 @@ import {ImplementationFixture} from "./fixtures/ImplementationFixture.sol";
 import {MockImplementationModule} from "./mocks/MockImplementationModule.sol";
 
 /**
- * @title Implementation State Test
+ * @title Implementation Storage Test
  */
 contract ImplementationStorageTest is ImplementationFixture {
     // =========

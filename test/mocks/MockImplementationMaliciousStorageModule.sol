@@ -60,7 +60,7 @@ contract MockImplementationMaliciousStorageModule is MockReflexModule {
      */
     struct MaliciousImplementationStorageLayout {
         /**
-         * @notice Implementation state 0.
+         * @notice Implementation storage 0.
          */
         bytes32 implementationStorage0;
     }

@@ -110,7 +110,7 @@ abstract contract ReflexStorage is IReflexStorage, ReflexConstants {
 
     /**
      * @dev Get the Reflex storage pointer.
-     * @return storage_ Pointer to the Reflex storage state.
+     * @return storage_ Pointer to the Reflex storage slot.
      */
     // solhint-disable-next-line func-name-mixedcase
     function _REFLEX_STORAGE() internal pure returns (ReflexStorageLayout storage storage_) {
