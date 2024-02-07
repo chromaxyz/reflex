@@ -7,6 +7,11 @@ import {IReflexEndpoint} from "./interfaces/IReflexEndpoint.sol";
 /**
  * @title Reflex Endpoint
  *
+ * @dev `Endpoints` are trusted contracts that receive calls and forward them to the `Dispatcher` using `CALL`.
+ * The forwarded calldata is appended with the `msg.sender` of the original call.
+ * `Endpoints` are commonly created by the `Installer` upon registering of a module
+ * and by multi-module factories upon instance creation.
+ *
  * @dev Execution takes place within the Dispatcher's storage context, not the endpoints'.
  * @dev Non-upgradeable, extendable.
  */
@@ -16,16 +21,17 @@ contract ReflexEndpoint is IReflexEndpoint {
     // ==========
 
     /**
-     * @dev Deployer address.
+     * @notice Address of the `Dispatcher`, the deployer of this contract.
      */
-    address internal immutable _deployer;
+    address internal immutable _DISPATCHER;
 
     // ===========
     // Constructor
     // ===========
 
     constructor() {
-        _deployer = msg.sender;
+        // Register the deployer to perform logic on calls originating from the deployer.
+        _DISPATCHER = msg.sender;
     }
 
     // ================
@@ -38,10 +44,11 @@ contract ReflexEndpoint is IReflexEndpoint {
      */
     // solhint-disable-next-line payable-fallback, no-complex-fallback
     fallback() external virtual {
-        address deployer_ = _deployer;
+        // It is not possible to access immutable variables from the assembly block.
+        address dispatcher = _DISPATCHER;
 
         // If the caller is the deployer, instead of re-enter - issue a log message.
-        if (msg.sender == deployer_) {
+        if (msg.sender == dispatcher) {
             // We take full control of memory because it will not return to Solidity code.
             // Calldata: [number of topics as uint8 (1 byte)][topic #i (32 bytes)]{0,4}[extra log data (N bytes)]
             assembly {
@@ -103,7 +110,7 @@ contract ReflexEndpoint is IReflexEndpoint {
                 // Call so that execution happens within the `Dispatcher` context.
                 // Out and outsize are 0 because we don't know the size yet.
                 // Calldata: [calldata (N bytes)][msg.sender (20 bytes)]
-                let result := call(gas(), deployer_, 0, 0, add(calldatasize(), 20), 0, 0)
+                let result := call(gas(), dispatcher, 0, 0, add(calldatasize(), 20), 0, 0)
 
                 // Copy the returned data into memory, starting at position `0`.
                 returndatacopy(0x00, 0x00, returndatasize())

@@ -2,12 +2,12 @@
 pragma solidity ^0.8.13;
 
 // Interfaces
-import {IReflexState} from "./IReflexState.sol";
+import {IReflexStorage} from "./IReflexStorage.sol";
 
 /**
  * @title Reflex Module Interface
  */
-interface IReflexModule is IReflexState {
+interface IReflexModule is IReflexStorage {
     // ======
     // Errors
     // ======

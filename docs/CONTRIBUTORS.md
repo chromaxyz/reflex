@@ -8,7 +8,7 @@ When making a pull request, ensure that:
 - Code coverage remains at 100%, run [`scripts/coverage.sh`](../scripts/coverage.sh).
 - All new code adheres to the style guide:
   - All lint checks pass.
-  - Code is thoroughly commented with natspec where relevant.
+  - Code is thoroughly commented with NatSpec where relevant.
 - If making a change to the contracts:
   - Gas snapshots are provided and demonstrate an improvement (or an acceptable deficit given other improvements).
   - Reference contracts are modified correspondingly if relevant.
@@ -28,7 +28,6 @@ When making a pull request, ensure that:
 ```solidity
 // Vendor
 import { Test } from "forge-std/Test.sol";
-
 ```
 
 - Code blocks are commented as follows:
@@ -57,7 +56,7 @@ To install Foundry:
 curl -L https://foundry.paradigm.xyz | bash
 ```
 
-This will download foundryup. To start Foundry, run:
+This will download `foundryup`. To start Foundry, run:
 
 ```sh
 foundryup

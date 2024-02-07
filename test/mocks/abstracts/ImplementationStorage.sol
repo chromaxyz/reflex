@@ -2,12 +2,12 @@
 pragma solidity ^0.8.13;
 
 // Sources
-import {ReflexState} from "../../../src/ReflexState.sol";
+import {ReflexStorage} from "../../../src/ReflexStorage.sol";
 
 /**
- * @title Implementation State
+ * @title Implementation Storage
  */
-abstract contract ImplementationState is ReflexState {
+abstract contract ImplementationStorage is ReflexStorage {
     // =========
     // Constants
     // =========
@@ -41,31 +41,31 @@ abstract contract ImplementationState is ReflexState {
     /**
      * @dev Append-only extendable.
      */
-    struct ImplementationStorage {
+    struct ImplementationStorageLayout {
         /**
-         * @notice Implementation state 0.
+         * @notice Implementation storage 0.
          */
-        bytes32 implementationState0;
+        bytes32 implementationStorage0;
         /**
-         * @notice Implementation state 1.
+         * @notice Implementation storage 1.
          */
-        uint256 implementationState1;
+        uint256 implementationStorage1;
         /**
-         * @notice Implementation state 2.
+         * @notice Implementation storage 2.
          */
-        address implementationState2;
+        address implementationStorage2;
         /**
-         * @notice Implementation state 3.
+         * @notice Implementation storage 3.
          */
-        address implementationState3;
+        address implementationStorage3;
         /**
-         * @notice Implementation state 4.
+         * @notice Implementation storage 4.
          */
-        bool implementationState4;
+        bool implementationStorage4;
         /**
-         * @notice Implementation state 5.
+         * @notice Implementation storage 5.
          */
-        mapping(address => uint256) implementationState5;
+        mapping(address => uint256) implementationStorage5;
         /**
          * @notice Token mapping.
          */
@@ -78,10 +78,10 @@ abstract contract ImplementationState is ReflexState {
 
     /**
      * @dev Get the Implementation storage pointer.
-     * @return storage_ Pointer to the Implementation storage state.
+     * @return storage_ Pointer to the Implementation storage slot.
      */
     // solhint-disable-next-line func-name-mixedcase
-    function _IMPLEMENTATION_STORAGE() internal pure returns (ImplementationStorage storage storage_) {
+    function _IMPLEMENTATION_STORAGE() internal pure returns (ImplementationStorageLayout storage storage_) {
         assembly ("memory-safe") {
             storage_.slot := _IMPLEMENTATION_STORAGE_SLOT
         }
@@ -96,27 +96,27 @@ abstract contract ImplementationState is ReflexState {
         return _REFLEX_STORAGE_SLOT;
     }
 
-    function getReflexState0() public view returns (uint256) {
+    function getReflexStorage0() public view returns (uint256) {
         return _REFLEX_STORAGE().reentrancyStatus;
     }
 
-    function getReflexState1() public view returns (address) {
+    function getReflexStorage1() public view returns (address) {
         return _REFLEX_STORAGE().owner;
     }
 
-    function getReflexState2() public view returns (address) {
+    function getReflexStorage2() public view returns (address) {
         return _REFLEX_STORAGE().pendingOwner;
     }
 
-    function getReflexState3(uint32 moduleId_) public view returns (address) {
+    function getReflexStorage3(uint32 moduleId_) public view returns (address) {
         return _REFLEX_STORAGE().modules[moduleId_];
     }
 
-    function getReflexState4(uint32 moduleId_) public view returns (address) {
+    function getReflexStorage4(uint32 moduleId_) public view returns (address) {
         return _REFLEX_STORAGE().endpoints[moduleId_];
     }
 
-    function getReflexState5(address endpoint_) public view returns (TrustRelation memory) {
+    function getReflexStorage5(address endpoint_) public view returns (TrustRelation memory) {
         return _REFLEX_STORAGE().relations[endpoint_];
     }
 
@@ -129,52 +129,52 @@ abstract contract ImplementationState is ReflexState {
         return _IMPLEMENTATION_STORAGE_SLOT;
     }
 
-    function getImplementationState0() public view returns (bytes32) {
-        return _IMPLEMENTATION_STORAGE().implementationState0;
+    function getImplementationStorage0() public view returns (bytes32) {
+        return _IMPLEMENTATION_STORAGE().implementationStorage0;
     }
 
-    function getImplementationState1() public view returns (uint256) {
-        return _IMPLEMENTATION_STORAGE().implementationState1;
+    function getImplementationStorage1() public view returns (uint256) {
+        return _IMPLEMENTATION_STORAGE().implementationStorage1;
     }
 
-    function getImplementationState2() public view returns (address) {
-        return _IMPLEMENTATION_STORAGE().implementationState2;
+    function getImplementationStorage2() public view returns (address) {
+        return _IMPLEMENTATION_STORAGE().implementationStorage2;
     }
 
-    function getImplementationState3() public view returns (address) {
-        return _IMPLEMENTATION_STORAGE().implementationState3;
+    function getImplementationStorage3() public view returns (address) {
+        return _IMPLEMENTATION_STORAGE().implementationStorage3;
     }
 
-    function getImplementationState4() public view returns (bool) {
-        return _IMPLEMENTATION_STORAGE().implementationState4;
+    function getImplementationStorage4() public view returns (bool) {
+        return _IMPLEMENTATION_STORAGE().implementationStorage4;
     }
 
-    function getImplementationState5(address target_) public view returns (uint256) {
-        return _IMPLEMENTATION_STORAGE().implementationState5[target_];
+    function getImplementationStorage5(address target_) public view returns (uint256) {
+        return _IMPLEMENTATION_STORAGE().implementationStorage5[target_];
     }
 
-    function setImplementationState0(bytes32 message_) public {
-        _IMPLEMENTATION_STORAGE().implementationState0 = message_;
+    function setImplementationStorage0(bytes32 message_) public {
+        _IMPLEMENTATION_STORAGE().implementationStorage0 = message_;
     }
 
-    function setImplementationState1(uint256 number_) public {
-        _IMPLEMENTATION_STORAGE().implementationState1 = number_;
+    function setImplementationStorage1(uint256 number_) public {
+        _IMPLEMENTATION_STORAGE().implementationStorage1 = number_;
     }
 
-    function setImplementationState2(address target_) public {
-        _IMPLEMENTATION_STORAGE().implementationState2 = target_;
+    function setImplementationStorage2(address target_) public {
+        _IMPLEMENTATION_STORAGE().implementationStorage2 = target_;
     }
 
-    function setImplementationState3(address target_) public {
-        _IMPLEMENTATION_STORAGE().implementationState3 = target_;
+    function setImplementationStorage3(address target_) public {
+        _IMPLEMENTATION_STORAGE().implementationStorage3 = target_;
     }
 
-    function setImplementationState4(bool flag_) public {
-        _IMPLEMENTATION_STORAGE().implementationState4 = flag_;
+    function setImplementationStorage4(bool flag_) public {
+        _IMPLEMENTATION_STORAGE().implementationStorage4 = flag_;
     }
 
-    function setImplementationState5(address target_, uint256 number_) public {
-        _IMPLEMENTATION_STORAGE().implementationState5[target_] = number_;
+    function setImplementationStorage5(address target_, uint256 number_) public {
+        _IMPLEMENTATION_STORAGE().implementationStorage5[target_] = number_;
     }
 
     function getToken(
@@ -192,7 +192,7 @@ abstract contract ImplementationState is ReflexState {
         balanceOf_ = _IMPLEMENTATION_STORAGE().tokens[token_].balanceOf[user_];
     }
 
-    function setImplementationState(
+    function setImplementationStorage(
         bytes32 message_,
         uint256 number_,
         address target_,
@@ -200,17 +200,12 @@ abstract contract ImplementationState is ReflexState {
         address tokenA_,
         address tokenB_
     ) public {
-        _IMPLEMENTATION_STORAGE().implementationState0 = message_;
-
-        _IMPLEMENTATION_STORAGE().implementationState1 = number_;
-
-        _IMPLEMENTATION_STORAGE().implementationState2 = target_;
-
-        _IMPLEMENTATION_STORAGE().implementationState3 = target_;
-
-        _IMPLEMENTATION_STORAGE().implementationState4 = flag_;
-
-        _IMPLEMENTATION_STORAGE().implementationState5[target_] = number_;
+        _IMPLEMENTATION_STORAGE().implementationStorage0 = message_;
+        _IMPLEMENTATION_STORAGE().implementationStorage1 = number_;
+        _IMPLEMENTATION_STORAGE().implementationStorage2 = target_;
+        _IMPLEMENTATION_STORAGE().implementationStorage3 = target_;
+        _IMPLEMENTATION_STORAGE().implementationStorage4 = flag_;
+        _IMPLEMENTATION_STORAGE().implementationStorage5[target_] = number_;
 
         _IMPLEMENTATION_STORAGE().tokens[tokenA_].name = "Token A";
         _IMPLEMENTATION_STORAGE().tokens[tokenA_].symbol = "TKNA";

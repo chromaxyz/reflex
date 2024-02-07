@@ -11,7 +11,7 @@ import {ReflexConstants} from "../src/ReflexConstants.sol";
 import {ReflexModule} from "../src/ReflexModule.sol";
 
 // Mocks
-import {ImplementationState} from "./mocks/abstracts/ImplementationState.sol";
+import {ImplementationStorage} from "./mocks/abstracts/ImplementationStorage.sol";
 import {MockImplementationDispatcher} from "./mocks/MockImplementationDispatcher.sol";
 import {MockImplementationInstaller} from "./mocks/MockImplementationInstaller.sol";
 
@@ -197,7 +197,7 @@ contract GasBenchmarkTest is ReflexConstants {
 /**
  * @title Mock Implementation Gas Module
  */
-contract MockImplementationGasModule is ReflexModule, ImplementationState {
+contract MockImplementationGasModule is ReflexModule, ImplementationStorage {
     // =======
     // Storage
     // =======
